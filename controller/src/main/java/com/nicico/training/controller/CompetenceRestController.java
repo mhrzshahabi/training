@@ -93,22 +93,24 @@ public class CompetenceRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
+        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
+            for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                for (SearchDTO.CriteriaRq c : criterion.getCriteria()) {
+                    if (c.getFieldName().equals("competenceLevelId") ) {
+                        c.setValue(Long.valueOf(String.valueOf(c.getValue().get(0))));
+                    }
+                    if (c.getFieldName().equals("competencePriorityId") ) {
+                        c.setValue(Long.valueOf(String.valueOf(c.getValue().get(0))));
+                    }
+                }
+
+             }
+        }
+
+
         SearchDTO.SearchRs<CompetenceDTO.Info> response = competenceService.search(request);
         for (CompetenceDTO.Info  row:response.getList()){
-            if (row.getCompetencePriorityId()!=null){
-                String priority=parameterValueService.getInfo(row.getCompetencePriorityId()).getTitle();
-                row.setCompetencePriority(priority);
-
-            }else {
-                row.setCompetencePriority("");
-            }
-            if (row.getCompetenceLevelId()!=null){
-                String level=parameterValueService.getInfo(row.getCompetenceLevelId()).getTitle();
-                row.setCompetenceLevel(level);
-
-            }else {
-                row.setCompetenceLevel("");
-            }
             Boolean used=competenceService.checkUsed(row.getId());
             row.setIsUsed(used);
         }

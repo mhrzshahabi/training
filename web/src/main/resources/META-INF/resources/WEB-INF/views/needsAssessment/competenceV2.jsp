@@ -342,7 +342,7 @@
                 title: "فعال",
                 type: "checkbox",
                 width: "2",
-                // defaultValue: true,
+                defaultValue: true,
 
                 changed: function (form, item, value) {
 

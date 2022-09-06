@@ -10,6 +10,10 @@
     const red = "#ff8abc";
     const green = "#5dd851";
     const blue = "#0380fc";
+    let competenceAttitudeGapData = [];
+    let competenceKnowledgeGapData = [];
+    let competenceAbilityGapData = [];
+
     <%--var apiHeader = {--%>
     <%--    "Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>",--%>
     <%--    'Content-Type': 'application/json'--%>
@@ -165,8 +169,17 @@
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
             {name: "categoryId", title: "گروه"},
             {name: "subCategoryId", title: "زیر گروه"},
-            {name: "competenceLevel", title: "حیطه"},
-            {name: "competencePriority", title: "اولویت"}
+            {name: "competenceLevelId",valueMap: {
+                    108: "دانشی",
+                    109: "توانشی",
+                    110: "نگرشی"
+                }, title: "حیطه", filterOperator: "equals"},
+            {name: "competencePriorityId", filterOperator: "equals", valueMap: {
+                    111: "عملکردی توسعه",
+                    112: "عملکردی بهبود",
+                    113: "ضروری ضمن خدمت",
+                    574: "ضروری انتصاب سمت"
+                },title: "اولویت"}
         ],
         fetchDataURL: competenceUrl + "/spec-list",
     });
@@ -231,13 +244,44 @@
         ],
         fetchDataURL: parameterValueUrl + "/listByCode/v2/gapCompetenceType/iscList",
     });
-    let DataSource_Skill_JspNeedsAssessmentGap = isc.TrDS.create({
-        ID: "DataSource_Skill_JspNeedsAssessmentGap",
+
+
+    let DataSource_competence_Attitude_JspNeedsAssessmentGap = isc.TrDS.create({
+        ID: "DataSource_competence_Attitude_JspNeedsAssessmentGap",
         fields: [
             {name: "id", hidden:true},
             {name: "code", title: "کد شایستگی", align: "center"},
-            {name: "name", title: "نام شایستگی", align: "center"}
+            {name: "title", title: "نام شایستگی", align: "center"},
+            {name: "competencePriorityId", hidden:true}
         ],
+        testData: competenceAttitudeGapData,
+        clientOnly: true
+
+    });
+
+    let DataSource_competence_Knowledge_JspNeedsAssessmentGap = isc.TrDS.create({
+        ID: "DataSource_competence_Knowledge_JspNeedsAssessmentGap",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "code", title: "کد شایستگی", align: "center"},
+            {name: "title", title: "نام شایستگی", align: "center"},
+            {name: "competencePriorityId", hidden:true}
+        ],
+        testData: competenceKnowledgeGapData,
+        clientOnly: true
+
+    });
+
+    let DataSource_competence_Ability_JspNeedsAssessmentGap = isc.TrDS.create({
+        ID: "DataSource_competence_Ability_JspNeedsAssessmentGap",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "code", title: "کد شایستگی", align: "center"},
+            {name: "title", title: "نام شایستگی", align: "center"},
+            {name: "competencePriorityId", hidden:true}
+        ],
+        testData: competenceAbilityGapData,
+        clientOnly: true
 
     });
 
@@ -274,7 +318,7 @@
                 click: function () {
                     let record = ListGrid_Competence_JspNeedsAssessmentGap.getSelectedRecord();
                     if   (record !== undefined && record !== null ){
-                        ListGrid_NeedsAssessment_JspENAGap.setData([]);
+                        // ListGrid_NeedsAssessment_JspENAGap.setData([]);
                         Window_AddCompetenceGap.show();
                     }
                     else {
@@ -531,370 +575,74 @@
     <%--});--%>
 
     <%--let oldCourseRecord = {};--%>
-    <%--let Menu_ListGrid_JspENA = isc.Menu.create({--%>
-    <%--    data: [--%>
-    <%--        {--%>
-    <%--            title: "جزییات دوره",--%>
-    <%--            click: function () {--%>
-    <%--                if(selectedRecord.course !== undefined) {--%>
-    <%--                    let id = selectedRecord.course.id;--%>
-    <%--                    wait.show()--%>
-    <%--                    isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "spec-list?id=" + id, "GET", null, (resp) => {--%>
-    <%--                        wait.close()--%>
-    <%--                        if (resp.httpResponseCode !== 200) {--%>
-    <%--                            createDialog("info", "<spring:message code='error'/>");--%>
-    <%--                        }--%>
-    <%--                        let fields = [--%>
-    <%--                            {--%>
-    <%--                                name: "code", title: "<spring:message code="corse_code"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                autoFitWidth: true,--%>
-    <%--                                filterOperator: "iContains"--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "titleFa",--%>
-    <%--                                title: "<spring:message code="course_fa_name"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                autoFitWidth: true,--%>
-    <%--                                filterOperator: "iContains",--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "titleEn",--%>
-    <%--                                title: "<spring:message code="course_en_name"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                filterOperator: "iContains",--%>
-    <%--                                hidden: true--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "category.titleFa",--%>
-    <%--                                title: "<spring:message code="course_category"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                filterOperator: "equals"--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "subCategory.titleFa",--%>
-    <%--                                title: "<spring:message code="course_subcategory"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                filterOperator: "iContains",--%>
-    <%--                                sortNormalizer: function (record) {--%>
-    <%--                                    return record.subCategory.titleFa;--%>
-    <%--                                }--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "erunType.titleFa",--%>
-    <%--                                title: "<spring:message code="course_eruntype"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                filterOperator: "iContains",--%>
-    <%--                                // allowFilterOperators: false,--%>
-    <%--                                canFilter: false,--%>
-    <%--                                canSort: false,--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "elevelType.titleFa", title: "<spring:message--%>
-    <%--    code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",--%>
-    <%--                                canFilter: false,--%>
-    <%--                                canSort: false--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "etheoType.titleFa", title: "<spring:message--%>
-    <%--    code="course_etheoType"/>", align: "center", filterOperator: "iContains",--%>
-    <%--                                canFilter: false,--%>
-    <%--                                canSort: false--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "theoryDuration", title: "<spring:message--%>
-    <%--            code="course_theoryDuration"/>", align: "center", filterOperator: "equals",--%>
-    <%--                                filterEditorProperties: {--%>
-    <%--                                    keyPressFilter: "[0-9]"--%>
-    <%--                                }--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "etechnicalType.titleFa", title: "<spring:message--%>
-    <%--             code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",--%>
-    <%--                                canSort: false,--%>
-    <%--                                canFilter: false--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "minTeacherDegree", title: "<spring:message--%>
-    <%--    code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "minTeacherExpYears", title: "<spring:message--%>
-    <%--    code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "minTeacherEvalScore", title: "<spring:message--%>
-    <%--    code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true--%>
-    <%--                            },--%>
-    <%--                            // {--%>
-    <%--                            //     name: "knowledge",--%>
-    <%--                            //     title: "دانشی",--%>
-    <%--                            //     align: "center",--%>
-    <%--                            //     filterOperator: "greaterThan",--%>
-    <%--                            //     format: "%",--%>
-    <%--                            //     width: "50"--%>
-    <%--                            //     // formatCellValue: function (value, record) {--%>
-    <%--                            //     //     // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";--%>
-    <%--                            //     //     var gdpPerCapita = Math.round(record.theoryDuration/10);--%>
-    <%--                            //     //     return isc.NumberUtil.format(gdpPerCapita, "%");--%>
-    <%--                            //     // }--%>
-    <%--                            // },--%>
-    <%--                            // {name: "skill", title: "مهارتی", align: "center", filterOperator: "greaterThan", format: "%", width: "50"},--%>
-    <%--                            // {--%>
-    <%--                            //     name: "attitude",--%>
-    <%--                            //     title: "نگرشی",--%>
-    <%--                            //     align: "center",--%>
-    <%--                            //     filterOperator: "greaterThan",--%>
-    <%--                            //     format: "%",--%>
-    <%--                            //     width: "50"--%>
-    <%--                            // },--%>
-    <%--                            {name: "needText", title: "شرح", hidden: true},--%>
-    <%--                            {name: "description", title: "توضیحات", hidden: true},--%>
-    <%--                            {--%>
-    <%--                                name: "workflowStatus",--%>
-    <%--                                title: "<spring:message code="status"/>",--%>
-    <%--                                align: "center",--%>
-    <%--                                autoFitWidth: true,--%>
-    <%--                                filterOperator: "iContains"--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "behavioralLevel", title: "سطح رفتاری",--%>
-    <%--                                // hidden:true,--%>
-    <%--                                valueMap: {--%>
-    <%--                                    "1": "مشاهده",--%>
-    <%--                                    "2": "مصاحبه",--%>
-    <%--                                    "3": "کار پروژه ای"--%>
-    <%--                                }--%>
-    <%--                            },--%>
-    <%--                            {--%>
-    <%--                                name: "evaluation", title: "<spring:message code="evaluation.level"/>",--%>
-    <%--                                valueMap: {--%>
-    <%--                                    "1": "واکنشی",--%>
-    <%--                                    "2": "یادگیری",--%>
-    <%--                                    "3": "رفتاری",--%>
-    <%--                                    "4": "نتایج"--%>
-    <%--                                }--%>
-    <%--                            },--%>
-    <%--                            &lt;%&ndash;{&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;name: "workflowStatusCode",&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;title: "<spring:message code="status"/>",&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;align: "center",&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;autoFitWidth: true,&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;filterOperator: "iContains",&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;hidden: true&ndash;%&gt;--%>
-    <%--                            &lt;%&ndash;},&ndash;%&gt;--%>
-    <%--                            // {name: "hasGoal", type: "boolean", title: "بدون هدف", hidden: true, canFilter: false},--%>
-    <%--                            // {name: "hasSkill", type: "boolean", title: "بدون مهارت", hidden: true, canFilter: false}--%>
-    <%--                        ];--%>
-    <%--                        showDetailViewer("جزئیات دوره", fields, JSON.parse(resp.data).response.data);--%>
-    <%--                    }));--%>
-    <%--                }--%>
-    <%--                else{--%>
-
-    <%--                }--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {isSeparator: true},--%>
-    <%--        {--%>
-    <%--            title: "ویرایش دوره",--%>
-    <%--            click: function () {--%>
-    <%--                if(selectedRecord.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {--%>
-    <%--                    let Window_AddCourse_JspENA = isc.Window.create({--%>
-    <%--                        title: "<spring:message code="course.plural.list"/>",--%>
-    <%--                        // placement: "fillScreen",--%>
-    <%--                        width: "40%",--%>
-    <%--                        height: "50%",--%>
-    <%--                        minWidth: 1024,--%>
-    <%--                        keepInParentRect: true,--%>
-    <%--                        autoSize: false,--%>
-    <%--                        show() {--%>
-    <%--                            let cr = {--%>
-    <%--                                _constructor: "AdvancedCriteria",--%>
-    <%--                                operator: "and",--%>
-    <%--                                criteria: [--%>
-    <%--                                    {fieldName: "categoryId", operator: "equals", value: selectedRecord.skill.categoryId},--%>
-    <%--                                    {fieldName: "subCategoryId", operator: "equals", value: selectedRecord.skill.subCategoryId},--%>
-    <%--                                ]--%>
-    <%--                            }--%>
-
-    <%--                            ListGrid_AddCourse_JspENA.setImplicitCriteria(cr);--%>
-    <%--                            ListGrid_AddCourse_JspENA.invalidateCache();--%>
-    <%--                            ListGrid_AddCourse_JspENA.fetchData(null, ()=>{--%>
-    <%--                                if(selectedRecord.skill.courseId !== undefined){--%>
-    <%--                                    oldCourseRecord = ListGrid_AddCourse_JspENA.getData().localData.toArray().find(a=>a.id===selectedRecord.skill.courseId);--%>
-    <%--                                    if(oldCourseRecord != null) {--%>
-    <%--                                        ListGrid_AddCourse_JspENA.selectRecord(oldCourseRecord);--%>
-    <%--                                    }--%>
-    <%--                                }--%>
-    <%--                            });--%>
-    <%--                            this.Super("show", arguments);--%>
-    <%--                        },--%>
-    <%--                        items: [--%>
-    <%--                            isc.TrHLayout.create({--%>
-    <%--                                members: [--%>
-    <%--                                    isc.TrLG.create({--%>
-    <%--                                        ID: "ListGrid_AddCourse_JspENA",--%>
-    <%--                                        dataSource: RestDataSource_AddCourse_JspENA,--%>
-    <%--                                        selectionType: "single",--%>
-    <%--                                        selectionAppearance:"checkbox",--%>
-    <%--                                        filterOnKeypress: false,--%>
-    <%--                                        dataPageSize: 1000,--%>
-    <%--                                        fields: [--%>
-    <%--                                            {--%>
-    <%--                                                name: "code",--%>
-    <%--                                                title: "<spring:message code="course.code"/>",--%>
-    <%--                                                filterOperator: "iContains",--%>
-    <%--                                                autoFitWidth: true--%>
-    <%--                                            },--%>
-    <%--                                            {--%>
-    <%--                                                name: "titleFa",--%>
-    <%--                                                title: "<spring:message code="course.title"/>",--%>
-    <%--                                                filterOperator: "iContains",--%>
-    <%--                                                autoFitWidth: true--%>
-    <%--                                            },--%>
-    <%--                                            {--%>
-    <%--                                                name: "createdBy",--%>
-    <%--                                                title: "<spring:message code="created.by.user"/>",--%>
-    <%--                                                filterOperator: "iContains"--%>
-    <%--                                            },--%>
-    <%--                                            {--%>
-    <%--                                                name: "theoryDuration",--%>
-    <%--                                                title: "<spring:message code="course_Running_time"/>",--%>
-    <%--                                                filterOperator: "equals",--%>
-    <%--                                            },--%>
-    <%--                                            {--%>
-    <%--                                                name: "categoryId",--%>
-    <%--                                                title: "<spring:message code="category"/> ",--%>
-    <%--                                                optionDataSource: RestDataSource_category_JspENA,--%>
-    <%--                                                filterOnKeypress: true,--%>
-    <%--                                                valueField: "id",--%>
-    <%--                                                displayField: "titleFa",--%>
-    <%--                                                filterOperator: "equals",--%>
-    <%--                                            },--%>
-    <%--                                            {--%>
-    <%--                                                name: "subCategoryId",--%>
-    <%--                                                title: "<spring:message code="subcategory"/> ",--%>
-    <%--                                                optionDataSource: RestDataSource_subCategory_JspENA,--%>
-    <%--                                                filterOnKeypress: true,--%>
-    <%--                                                valueField: "id",--%>
-    <%--                                                displayField: "titleFa",--%>
-    <%--                                                filterOperator: "equals",--%>
-    <%--                                            },--%>
-    <%--                                        ],--%>
-    <%--                                        gridComponents: ["filterEditor", "header", "body"],--%>
-    <%--                                        selectionChanged(record, state){--%>
-    <%--                                            if(state){--%>
-    <%--                                                if((selectedRecord.skill.courseId == null)||(record.id !== selectedRecord.skill.courseId)){--%>
-    <%--                                                    let dialog = createDialog("ask", "از تغییر دوره مهارت " + selectedRecord.skill.titleFa + " به دوره انتخاب شده مطمئن هستید.");--%>
-    <%--                                                    dialog.addProperties({--%>
-    <%--                                                        buttonClick: function (button, index) {--%>
-    <%--                                                            this.close();--%>
-    <%--                                                            if (index === 0) {--%>
-    <%--                                                                let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId;--%>
-    <%--                                                                wait.show();--%>
-    <%--                                                                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {--%>
-    <%--                                                                    wait.close()--%>
-    <%--                                                                    if (resp.httpResponseCode !== 200) {--%>
-    <%--                                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");--%>
-    <%--                                                                    }--%>
-    <%--                                                                    editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));--%>
-    <%--                                                                    ListGrid_SkillAll_JspNeedsAssessment_Refresh();--%>
-    <%--                                                                    Window_AddCourse_JspENA.close()--%>
-    <%--                                                                }));--%>
-    <%--                                                            }else {--%>
-    <%--                                                                ListGrid_AddCourse_JspENA.selectSingleRecord (oldCourseRecord);--%>
-    <%--                                                                // ListGrid_AddCourse_JspENA.deselectRecord(record);--%>
-    <%--                                                            }--%>
-    <%--                                                        }--%>
-    <%--                                                    });--%>
-    <%--                                                }--%>
-    <%--                                            }--%>
-    <%--                                        },--%>
-    <%--                                    }),--%>
-    <%--                                ]--%>
-    <%--                            })]--%>
-    <%--                    });--%>
-    <%--                    Window_AddCourse_JspENA.show()--%>
-    <%--                }--%>
-    <%--                else{--%>
-    <%--                    createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {isSeparator: true},--%>
-    <%--        {--%>
-    <%--            title: "تغییر اولویت به ضمن خدمت",--%>
-    <%--            click: function () {--%>
-    <%--                let records;--%>
-
-    <%--                if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Ability_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();--%>
-
-    <%--                updatePriority_AllSelectedRecords(records, 111);--%>
-    <%--                hasChanged = true;--%>
-    <%--                canSendToWorkFlowNA = true;--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {isSeparator: true},--%>
-    <%--        {--%>
-    <%--            title: "تغییر اولویت به عملکردی بهبود",--%>
-    <%--            click: function () {--%>
-    <%--                let records;--%>
-
-    <%--                if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Ability_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();--%>
-
-    <%--                updatePriority_AllSelectedRecords(records, 112);--%>
-    <%--                hasChanged = true;--%>
-    <%--                canSendToWorkFlowNA = true;--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {isSeparator: true},--%>
-    <%--        {--%>
-    <%--            title: "تغییر اولویت به توسعه ای",--%>
-    <%--            click: function () {--%>
-    <%--                let records;--%>
-
-    <%--                if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Ability_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();--%>
-
-    <%--                updatePriority_AllSelectedRecords(records, 113);--%>
-    <%--                hasChanged = true;--%>
-    <%--                canSendToWorkFlowNA = true;--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {isSeparator: true},--%>
-    <%--        {--%>
-    <%--            title: "تغییر اولویت به انتصاب سمت",--%>
-    <%--            click: function () {--%>
-    <%--                let records;--%>
-
-    <%--                if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Ability_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();--%>
-    <%--                if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())--%>
-    <%--                    records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();--%>
-
-    <%--                updatePriority_AllSelectedRecords(records, 574);--%>
-    <%--                hasChanged = true;--%>
-    <%--                canSendToWorkFlowNA = true;--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+    let Menu_ListGrid_Competence_JspNeedsAssessmentGap = isc.Menu.create({
+        data: [
+            {
+                title: "افزودن شایستگی",
+                click: function () {
+                    let record = ListGrid_Competence_JspNeedsAssessmentGap.getSelectedRecord();
+                    if   (record !== undefined && record !== null ){
+                        // ListGrid_NeedsAssessment_JspENAGap.setData([]);
+                        Window_AddCompetenceGap.show();
+                    }
+                    else {
+                        createDialog("info","<spring:message code='msg.no.records.selected'/>");
+                    }
+                }
+            }
+        ]
+    });
+    let Menu_ListGrid_Knowledge_JspNeedsAssessmentGap = isc.Menu.create({
+        data: [
+            {
+                title: "افزودن دوره",
+                click: function () {
+                    let record = ListGrid_Knowledge_JspNeedsAssessmentGap.getSelectedRecord();
+                    if   (record !== undefined && record !== null ){
+                        // ListGrid_NeedsAssessment_JspENAGap.setData([]);
+                        Window_AddCourseGap.show();
+                    }
+                    else {
+                        createDialog("info","<spring:message code='msg.no.records.selected'/>");
+                    }
+                }
+            }
+        ]
+    });
+    let Menu_ListGrid_Ability_JspNeedsAssessmentGap = isc.Menu.create({
+        data: [
+            {
+                title: "افزودن دوره",
+                click: function () {
+                    let record = ListGrid_Ability_JspNeedsAssessmentGap.getSelectedRecord();
+                    if   (record !== undefined && record !== null ){
+                        // ListGrid_NeedsAssessment_JspENAGap.setData([]);
+                        Window_AddCourseGap.show();
+                    }
+                    else {
+                        createDialog("info","<spring:message code='msg.no.records.selected'/>");
+                    }
+                }
+            }
+        ]
+    });
+    let Menu_ListGrid_Attitude_JspNeedsAssessmentGap = isc.Menu.create({
+        data: [
+            {
+                title: "افزودن دوره",
+                click: function () {
+                    let record = ListGrid_Attitude_JspNeedsAssessmentGap.getSelectedRecord();
+                    if   (record !== undefined && record !== null ){
+                        // ListGrid_NeedsAssessment_JspENAGap.setData([]);
+                        Window_AddCourseGap.show();
+                    }
+                    else {
+                        createDialog("info","<spring:message code='msg.no.records.selected'/>");
+                    }
+                }
+            }
+        ]
+    });
     <%--let Menu_LG_Competence_JspENA = isc.Menu.create({--%>
     <%--    data: [--%>
     <%--        {--%>
@@ -1060,16 +808,42 @@
             {name: "competenceType.title", title: "نوع شایستگی"},
             {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENA, displayField: "titleFa", valueField:"id"},
             {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENA, displayField: "titleFa", valueField:"id"},
-            {name: "competenceLevel", title: "حیطه" , },
-            {name: "competencePriority", title: "اولویت" , }
+            {name: "competenceLevelId", title: "حیطه" , },
+            {name: "competencePriorityId", title: "اولویت" , }
         ],
         gridComponents: ["filterEditor", "header", "body"],
         rowDoubleClick(record){
-            if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
-                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
-                return;
+            switch (record.competenceLevelId) {
+                case 108:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")) {
+                    DataSource_competence_Knowledge_JspNeedsAssessmentGap.addData(record);
+                         return;
+                     }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                }
+                    break;
+                case 109:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")) {
+                    DataSource_competence_Ability_JspNeedsAssessmentGap.addData(record);
+                        return;
+                    }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+
+                }
+                    break;
+                case 110:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id")) {
+                        DataSource_competence_Attitude_JspNeedsAssessmentGap.addData(record);
+                    return;
+                }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+
             }
-            createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                    break;
+            }
         },
         selectionChanged(record, state) {
             if (state === true) {
@@ -1078,50 +852,49 @@
                     operator: "and",
                     criteria: [{fieldName: "competenceId", operator: "equals", value: record.id}]
                 };
-                ListGrid_NeedsAssessment_JspENAGap.invalidateCache();
-                ListGrid_NeedsAssessment_JspENAGap.setImplicitCriteria(criteria);
-                ListGrid_NeedsAssessment_JspENAGap.fetchData(criteria);
+                // ListGrid_NeedsAssessment_JspENAGap.invalidateCache();
+                // ListGrid_NeedsAssessment_JspENAGap.setImplicitCriteria(criteria);
+                // ListGrid_NeedsAssessment_JspENAGap.fetchData(criteria);
             }
         }
     });
-    let ListGrid_NeedsAssessment_JspENAGap = isc.TrLG.create({
-        dataSource: RestDataSource_NeedsAssessment_JspENAGap,
-        showHeaderContextMenu: false,
-        selectionType: "single",
-        // contextMenu: Menu_LG_History_JspENA,
-        filterOnKeypress: true,
-        canDragRecordsOut: true,
-        autoFetchData: false,
-        dragDataAction: "none",
-        canAcceptDroppedRecords: true,
-        fields: [
-            {name: "objectName", title: "نام عنوان", filterOperator: "iContains", autoFitWidth: true},
-            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "objectType", title: "<spring:message code="title"/>", width:90, valueMap: priorityList},
-            {name: "competence.title", title: "نام شایستگی", filterOperator: "iContains"},
-            {name: "competence.competenceType.title", title: "نوع شایستگی", filterOperator: "iContains"},
-            {name: "skill.titleFa", title: "نام مهارت", filterOperator: "iContains"},
-            {name: "needsAssessmentDomain.title", title: "حیطه", filterOperator: "iContains"},
-            {name: "needsAssessmentPriority.title", title: "اولویت", filterOperator: "iContains"},
-        ],
-        gridComponents: [
-            isc.Label.create({
-                contents: "<style>b{color: white}</style><b>تاریخچه شایستگی</b>",
-                backgroundColor: "#fe9d2a",
-                align: "left",
-                padding: 4,
-                borderRadius: 2,
-                height: 28,
-                // showEdges: true
-            }),
-            "filterEditor", "header", "body"],
-    });
+    <%--let ListGrid_NeedsAssessment_JspENAGap = isc.TrLG.create({--%>
+    <%--    dataSource: RestDataSource_NeedsAssessment_JspENAGap,--%>
+    <%--    showHeaderContextMenu: false,--%>
+    <%--    selectionType: "single",--%>
+    <%--    // contextMenu: Menu_LG_History_JspENA,--%>
+    <%--    filterOnKeypress: true,--%>
+    <%--    canDragRecordsOut: true,--%>
+    <%--    autoFetchData: false,--%>
+    <%--    dragDataAction: "none",--%>
+    <%--    canAcceptDroppedRecords: true,--%>
+    <%--    fields: [--%>
+    <%--        {name: "objectName", title: "نام عنوان", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "objectType", title: "<spring:message code="title"/>", width:90, valueMap: priorityList},--%>
+    <%--        {name: "competence.title", title: "نام شایستگی", filterOperator: "iContains"},--%>
+    <%--        {name: "competence.competenceType.title", title: "نوع شایستگی", filterOperator: "iContains"},--%>
+    <%--        {name: "skill.titleFa", title: "نام مهارت", filterOperator: "iContains"},--%>
+    <%--        {name: "needsAssessmentDomain.title", title: "حیطه", filterOperator: "iContains"},--%>
+    <%--        {name: "needsAssessmentPriority.title", title: "اولویت", filterOperator: "iContains"},--%>
+    <%--    ],--%>
+    <%--    gridComponents: [--%>
+    <%--        isc.Label.create({--%>
+    <%--            contents: "<style>b{color: white}</style><b>تاریخچه شایستگی</b>",--%>
+    <%--            backgroundColor: "#fe9d2a",--%>
+    <%--            align: "left",--%>
+    <%--            padding: 4,--%>
+    <%--            borderRadius: 2,--%>
+    <%--            height: 28,--%>
+    <%--            // showEdges: true--%>
+    <%--        }),--%>
+    <%--        "filterEditor", "header", "body"],--%>
+    <%--});--%>
 
     let ListGrid_Competence_JspNeedsAssessmentGap = isc.TrLG.create({
         ID: "ListGrid_Competence_JspNeedsAssessmentGap",
         dataSource: DataSource_Competence_JspNeedsAssessmentGap,
-
-
+        contextMenu: Menu_ListGrid_Competence_JspNeedsAssessmentGap,
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
             CompetenceTS_needsAssessmentGap, "header", "body"
@@ -1277,17 +1050,17 @@
     let ListGrid_Knowledge_JspNeedsAssessmentGap = isc.ListGrid.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessmentGap",
         autoFetchData:false,
-        dataSource: DataSource_Skill_JspNeedsAssessmentGap,
+        dataSource: DataSource_competence_Knowledge_JspNeedsAssessmentGap,
         showRowNumbers: false,
         selectionType:"multiple",
         autoSaveEdits:false,
         sortField: 0,
         sortDirection: "descending",
         implicitCriteria:{"needsAssessmentDomainId":108},
-        // contextMenu: Menu_ListGrid_JspENA,
+        contextMenu: Menu_ListGrid_Knowledge_JspNeedsAssessmentGap,
          headerSpans: [
             {
-                fields: ["code","name"],
+                fields: ["code","title"],
                 title: "<spring:message code="knowledge"/>"
             }],
 
@@ -1300,6 +1073,12 @@
         canRemoveRecords:true,
         showHeaderContextMenu: false,
         showFilterEditor:true,
+        selectionChanged(record, state) {
+            if (state === true) {
+                ListGrid_Attitude_JspNeedsAssessmentGap.deselectAllRecords();
+                ListGrid_Ability_JspNeedsAssessmentGap.deselectAllRecords();
+            }
+        },
         <%--removeRecordClick(rowNum){--%>
         <%--    removeRecord_JspNeedsAssessment(this.getRecord(rowNum));--%>
         <%--},--%>
@@ -1318,9 +1097,9 @@
         <%--    editing = true;--%>
         <%--    this.Super("dataChanged",arguments);--%>
         <%--},--%>
-        <%--getCellCSSText(record) {--%>
-        <%--    return priorityColor(record);--%>
-        <%--},--%>
+        getCellCSSText(record) {
+            return priorityColor(record);
+        },
         <%--recordDoubleClick(viewer, record){--%>
         <%--    updatePriority_JspEditNeedsAssessment(viewer, record);--%>
         <%--},--%>
@@ -1332,16 +1111,16 @@
     });
     let ListGrid_Ability_JspNeedsAssessmentGap = isc.ListGrid.create({
         ID: "ListGrid_Ability_JspNeedsAssessmentGap",
-        dataSource: DataSource_Skill_JspNeedsAssessmentGap,
+        dataSource: DataSource_competence_Ability_JspNeedsAssessmentGap,
         autoFetchData:false,
         showRowNumbers: false,
-        // contextMenu: Menu_ListGrid_JspENA,
+        contextMenu: Menu_ListGrid_Ability_JspNeedsAssessmentGap,
         selectionType:"multiple",
         sortField: 0,
         sortDirection: "descending",
         headerSpans: [
             {
-                fields: ["code","name"],
+                fields: ["code","title"],
                 title: "<spring:message code="ability"/>"
             }],
 
@@ -1356,6 +1135,12 @@
         canRemoveRecords:true,
         showFilterEditor:true,
         implicitCriteria:{"needsAssessmentDomainId":109},
+        selectionChanged(record, state) {
+            if (state === true) {
+                ListGrid_Knowledge_JspNeedsAssessmentGap.deselectAllRecords();
+                ListGrid_Attitude_JspNeedsAssessmentGap.deselectAllRecords();
+            }
+        },
         <%--removeRecordClick(rowNum){--%>
         <%--    removeRecord_JspNeedsAssessment(this.getRecord(rowNum));--%>
         <%--},--%>
@@ -1373,9 +1158,9 @@
         <%--    editing = true;--%>
         <%--    this.Super("dataChanged",arguments);--%>
         <%--},--%>
-        <%--getCellCSSText: function (record) {--%>
-        <%--    return priorityColor(record);--%>
-        <%--},--%>
+        getCellCSSText: function (record) {
+            return priorityColor(record);
+        },
         <%--recordDoubleClick(viewer, record){--%>
         <%--    updatePriority_JspEditNeedsAssessment(viewer, record);--%>
         <%--},--%>
@@ -1387,17 +1172,17 @@
     });
     let ListGrid_Attitude_JspNeedsAssessmentGap = isc.ListGrid.create({
         ID: "ListGrid_Attitude_JspNeedsAssessmentGap",
-        dataSource: DataSource_Skill_JspNeedsAssessmentGap,
+        dataSource: DataSource_competence_Attitude_JspNeedsAssessmentGap,
         showHeaderContextMenu: false,
         showRowNumbers: false,
         autoFetchData:false,
-        // contextMenu: Menu_ListGrid_JspENA,
+        contextMenu: Menu_ListGrid_Attitude_JspNeedsAssessmentGap,
         selectionType:"multiple",
         sortField: 0,
         sortDirection: "descending",
          headerSpans: [
             {
-                fields: ["code","name"],
+                fields: ["code","title"],
                 title: "<spring:message code="attitude"/>"
             }],
 
@@ -1414,6 +1199,12 @@
         canRemoveRecords:true,
         showFilterEditor:true,
         implicitCriteria:{"needsAssessmentDomainId":110},
+        selectionChanged(record, state) {
+            if (state === true) {
+                ListGrid_Knowledge_JspNeedsAssessmentGap.deselectAllRecords();
+                ListGrid_Ability_JspNeedsAssessmentGap.deselectAllRecords();
+            }
+        },
         <%--removeRecordClick(rowNum){--%>
         <%--    removeRecord_JspNeedsAssessment(this.getRecord(rowNum));--%>
         <%--},--%>
@@ -1444,9 +1235,9 @@
         //     }
         //     return false;
         // },
-        // getCellCSSText: function (record) {
-        //     return priorityColor(record);
-        // },
+        getCellCSSText: function (record) {
+            return priorityColor(record);
+        },
         // recordDoubleClick(viewer, record){
         //     updatePriority_JspEditNeedsAssessment(viewer, record);
         // },
@@ -1457,9 +1248,8 @@
         // }
 
     });
-
-    let Window_AddCompetenceGap = isc.Window.create({
-        title: "<spring:message code="competence.list"/>",
+    let Window_AddCourseGap = isc.Window.create({
+        title: "لیست دوره ها",
         width: "80%",
         height: "70%",
         keepInParentRect: true,
@@ -1469,7 +1259,7 @@
             isc.TrVLayout.create({
                 members: [
                     ListGrid_AllCompetence_JspNeedsAssessmentGap,
-                    ListGrid_NeedsAssessment_JspENAGap
+                    // ListGrid_NeedsAssessment_JspENAGap
                 ]
             })],
         show(){
@@ -1489,6 +1279,39 @@
             ListGrid_AllCompetence_JspNeedsAssessmentGap.fetchData();
         }
     });
+
+    let Window_AddCompetenceGap = isc.Window.create({
+        title: "<spring:message code="competence.list"/>",
+        width: "80%",
+        height: "70%",
+        keepInParentRect: true,
+        isModal: false,
+        autoSize: false,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    ListGrid_AllCompetence_JspNeedsAssessmentGap,
+                    // ListGrid_NeedsAssessment_JspENAGap
+                ]
+            })],
+        show(){
+            let record = ListGrid_Competence_JspNeedsAssessmentGap.getSelectedRecord();
+            let competenceTitle= record.title
+
+            this.Super("show", arguments);
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2},
+                    {fieldName: "competenceType.title", operator: "equals", value:competenceTitle},
+                    {fieldName: "active", operator: "equals", value:true},
+                ]
+            }
+            ListGrid_AllCompetence_JspNeedsAssessmentGap.setImplicitCriteria(criteria);
+            ListGrid_AllCompetence_JspNeedsAssessmentGap.fetchData();
+        }
+    });
+
 
     <%--let DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({--%>
     <%--    ID: "DynamicForm_JspEditNeedsAssessment",--%>
@@ -2276,18 +2099,18 @@
     <%--        createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل تغییر است.")--%>
     <%--    }--%>
     <%--}--%>
-    <%--function priorityColor(record){--%>
-    <%--    switch (record.needsAssessmentPriorityId) {--%>
-    <%--        case 111:--%>
-    <%--            return "background-color : " + red;--%>
-    <%--        case 112:--%>
-    <%--            return "background-color : " + yellow;--%>
-    <%--        case 113:--%>
-    <%--            return "background-color : " + green;--%>
-    <%--        case 574:--%>
-    <%--            return "background-color : " + blue;--%>
-    <%--    }--%>
-    <%--}--%>
+    function priorityColor(record){
+        switch (record.competencePriorityId) {
+            case 113:
+                return "background-color : " + red;
+            case 112:
+                return "background-color : " + yellow;
+            case 111:
+                return "background-color : " + green;
+            case 574:
+                return "background-color : " + blue;
+        }
+    }
 
     <%--let ListGrid_SkillAll_JspNeedsAssessment_Refresh = ()=>{--%>
     <%--    let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();--%>
@@ -2315,7 +2138,7 @@
         gapObjectId=record.id
             gapObjectType=type
 
-        DataSource_Skill_JspNeedsAssessmentGap.fetchDataURL = needAssessmentWithGap + "iscList/"+gapObjectType+"/"+gapObjectId;
+        // DataSource_Skill_JspNeedsAssessmentGap.fetchDataURL = needAssessmentWithGap + "iscList/"+gapObjectType+"/"+gapObjectId;
         ListGrid_Knowledge_JspNeedsAssessmentGap.fetchData();
         ListGrid_Knowledge_JspNeedsAssessmentGap.invalidateCache();
         ListGrid_Ability_JspNeedsAssessmentGap.fetchData();
@@ -2649,7 +2472,9 @@
 <%--        });--%>
 <%--        wait.close();--%>
 <%--    }--%>
-
+    function checkSaveDataGap(data, dataSource, field) {
+            return dataSource.testData.find(f => f[field] === data[field]) == null;
+    }
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
 
     // </script>
