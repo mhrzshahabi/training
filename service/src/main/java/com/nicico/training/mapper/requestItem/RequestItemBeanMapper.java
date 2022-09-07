@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.requestItem;
 
 import com.nicico.bpmsclient.model.flowable.task.TaskHistory;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.*;
@@ -12,7 +13,9 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -47,6 +50,7 @@ public abstract class RequestItemBeanMapper {
 
     @Mappings({
             @Mapping(source = "competenceReqId", target = "requestNo", qualifiedByName = "toRequestNo"),
+            @Mapping(source = "competenceReqId", target = "requestDate", qualifiedByName = "toRequestDate"),
             @Mapping(source = "competenceReqId", target = "applicant", qualifiedByName = "toApplicant"),
             @Mapping(source = "competenceReqId", target = "requestType", qualifiedByName = "toRequestType"),
             @Mapping(source = "competenceReqId", target = "letterNumber", qualifiedByName = "toLetterNumber")
@@ -55,7 +59,7 @@ public abstract class RequestItemBeanMapper {
     public abstract List<RequestItemDTO.ReportInfo> toRequestItemReportInfoDtoList(List<RequestItem> requestItemList);
 
     @Mappings({
-            @Mapping(source = "assignee", target = "assignee", qualifiedByName = "toAssigneeName"),
+            @Mapping(source = "assignee", target = "assignee", qualifiedByName = "toAssigneeName")
     })
     public abstract BPMSReqItemProcessHistoryDto toBPMSReqItemProcessHistoryDto(TaskHistory taskHistory);
     public abstract List<BPMSReqItemProcessHistoryDto> toBPMSReqItemProcessHistoryDtoList(List<TaskHistory> taskHistoryList);
@@ -114,6 +118,17 @@ public abstract class RequestItemBeanMapper {
         if (competenceReqId != null)
             return competenceRequestService.get(competenceReqId).getId();
         else return null;
+    }
+
+    @Named("toRequestDate")
+    protected String toRequestDate(Long competenceReqId) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if (competenceReqId != null) {
+            Date requestDate = competenceRequestService.get(competenceReqId).getRequestDate();
+            if (requestDate != null)
+                return DateUtil.convertMiToKh(formatter.format(requestDate));
+            else return "";
+        } else return "";
     }
 
     @Named("toApplicant")

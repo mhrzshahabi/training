@@ -37,12 +37,13 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
     }
 
     @Override
-    public RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion) {
+    public RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion, Long chiefOpinionId) {
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = new RequestItemCoursesDetailDTO.OpinionInfo();
         List<RequestItemCoursesDetail> requestItemCoursesDetails = requestItemCoursesDetailDAO.findAllByRequestItemProcessDetailId(requestItemProcessDetailId);
         List<RequestItemCoursesDetailDTO.Info> infoList = modelMapper.map(requestItemCoursesDetails, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
         opinionInfo.setCourses(infoList);
         opinionInfo.setFinalOpinion(chiefOpinion);
+        opinionInfo.setFinalOpinionId(chiefOpinionId);
 
         return opinionInfo;
     }

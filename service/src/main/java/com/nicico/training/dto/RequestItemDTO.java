@@ -51,9 +51,12 @@ public class RequestItemDTO {
         private Long id;
         private Long requestNo;
         private String applicant;
+        private String requestDate;
         private String requestType;
         private String letterNumber;
         private String nationalCode;
+        private String letterNumberSent;
+        private String dateSent;
     }
 
     @Getter

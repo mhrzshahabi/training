@@ -15,6 +15,7 @@
             {name: "processInstanceId", hidden: true},
             {name: "requestNo", title: "شماره درخواست", filterOperator: "iContains"},
             {name: "applicant", title: "درخواست دهنده", filterOperator: "iContains"},
+            {name: "requestDate", title: "تاریخ درخواست", filterOperator: "iContains"},
             {name: "requestType", title: "نوع درخواست", filterOperator: "iContains"},
             {name: "letterNumber", title: "شماره نامه کارگزینی", filterOperator: "iContains"},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
@@ -28,6 +29,8 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
+            {name: "letterNumberSent", title: "شماره نامه ارسالی به کارگزینی", filterOperator: "iContains"},
+            {name: "dateSent", title: "تاریخ ارسال به کارگزینی", filterOperator: "iContains"},
             {name: "competenceReqId", hidden: true}
         ],
         fetchDataURL: requestItemUrl + "/report-list"
@@ -45,12 +48,12 @@
 
     //--------------------------------------------------------Actions---------------------------------------------------
 
-    ToolStripButton_Refresh_Competence_Request = isc.ToolStripButtonRefresh.create({
+    ToolStripButton_Refresh_Competence_Request_Item = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Competence_Request_Item.invalidateCache();
         }
     });
-    ToolStrip_Actions_Requests_Certification = isc.ToolStrip.create({
+    ToolStrip_Actions_Competence_Request_Item = isc.ToolStrip.create({
         width: "100%",
         border: '0px',
         membersMargin: 5,
@@ -59,7 +62,7 @@
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Competence_Request
+                    ToolStripButton_Refresh_Competence_Request_Item
                 ]
             })
         ]
@@ -73,6 +76,7 @@
         autoFetchData: true,
         showFilterEditor: true,
         canAutoFitFields: true,
+        allowAdvancedCriteria: true,
         dataSource: RestDataSource_Competence_Request_Item,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
@@ -83,22 +87,37 @@
             {
                 name: "requestNo",
                 width: "10%",
-                align: "center"
+                align: "center",
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "applicant",
                 width: "10%",
-                align: "center"
+                align: "center",
+                canFilter: false,
+                canSort: false
+            },
+            {
+                name: "requestDate",
+                width: "10%",
+                align: "center",
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "requestType",
                 width: "10%",
-                align: "center"
+                align: "center",
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "letterNumber",
                 width: "10%",
-                align: "center"
+                align: "center",
+                canFilter: false,
+                canSort: false
             },
             {
                 name: "processInstanceId",
@@ -120,51 +139,17 @@
                 align: "center"
             },
             {
-                name: "name",
-                width: "10%",
-                align: "center",
-                hidden: true
-            },
-            {
-                name: "lastName",
-                width: "10%",
-                align: "center",
-                hidden: true
-            },
-            {
-                name: "educationLevel",
-                width: "10%",
-                align: "center",
-                hidden: true
-            },
-            {
-                name: "educationMajor",
-                width: "10%",
-                align: "center",
-                hidden: true
-            },
-            {
-                name: "currentPostTitle",
-                width: "10%",
-                align: "center",
-                canFilter: false,
-                hidden: true
-            },
-            {
-                name: "postTitle",
-                width: "10%",
-                align: "center",
-                canFilter: false,
-                hidden: true
-            },
-            {
-                name: "affairs",
-                width: "10%",
-                align: "center",
-                hidden: true
-            },
-            {
                 name: "post",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "letterNumberSent",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "dateSent",
                 width: "10%",
                 align: "center"
             },
@@ -208,11 +193,11 @@
 
     //------------------------------------------------------Main Layout-------------------------------------------------
 
-    VLayout_Body_Certification_Jsp = isc.VLayout.create({
+    VLayout_Body_Competence_Request_Item = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actions_Requests_Certification,
+            ToolStrip_Actions_Competence_Request_Item,
             ListGrid_Competence_Request_Item
         ]
     });

@@ -36,6 +36,7 @@ public class RequestItemCoursesDetailDTO {
     public static class OpinionInfo {
         private List<Info> courses;
         private String finalOpinion;
+        private Long finalOpinionId;
     }
 
     @Getter

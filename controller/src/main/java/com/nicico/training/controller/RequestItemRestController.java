@@ -32,9 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
-
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -186,11 +183,9 @@ public class RequestItemRestController {
                                                                      @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq;
-
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
@@ -204,8 +199,7 @@ public class RequestItemRestController {
         searchRq.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        searchRq.setCriteria(createCriteria(EOperator.notNull, "processInstanceId", null));
-        List<RequestItem> resultList = requestItemService.search(searchRq);
+        List<RequestItem> resultList = requestItemService.search(searchRq).stream().filter(item -> item.getProcessInstanceId() != null).collect(Collectors.toList());
         List<RequestItemDTO.ReportInfo> result = requestItemBeanMapper.toRequestItemReportInfoDtoList(resultList);
 
         ISC.Response<RequestItemDTO.ReportInfo> response = new ISC.Response<>();
@@ -278,8 +272,8 @@ public class RequestItemRestController {
         String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
         if (requestItemProcessDetail != null) {
-            opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
-                    parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+            ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
+            opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
         }
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
@@ -303,8 +297,8 @@ public class RequestItemRestController {
 
         String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
-        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
-                parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
+        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
         List<RequestItemCoursesDetailDTO.Info> verifiedCoursesByPlanningChief = opinionInfo.getCourses();
 
         for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : verifiedCoursesByPlanningChief) {
