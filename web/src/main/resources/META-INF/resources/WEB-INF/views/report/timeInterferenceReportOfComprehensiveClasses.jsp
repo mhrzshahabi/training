@@ -121,13 +121,14 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 {name: "studentWorkCode"},
                 {name: "studentAffairs"},
                 {name: "concurrentCourses"},
+                {name: "classCode"},
                 {name: "addingUser"},
                 {name: "lastModifiedBy"},
                 {name: "sessionDate"},
                 {name: "sessionStartHour"},
                 {name: "sessionEndHour"},
             ],
-
+    fetchDataURL: timeInterferenceComprehensiveClassesReportUrl + "/iscList"
     });
 
     ListGrid_TimeInterference = isc.ListGrid.create({
@@ -198,6 +199,13 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
             {
                 name: "concurrentCourses",
                 title: "دوره های همزمان",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "classCode",
+                title: "کد کلاس",
                 width: "10%",
                 align: "center",
                 canFilter: false

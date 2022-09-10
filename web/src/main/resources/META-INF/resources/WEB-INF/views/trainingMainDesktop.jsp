@@ -1304,7 +1304,7 @@
     const departmentUrl = rootUrl + "/department";
     const operationalChartUrl = rootUrl + "/operationalchart";
     const educationalCalenderReportUrl = rootUrl + "/view-educational-calender-report"
-    const timeInterferenceComprehensiveClassesReportUrl = rootUrl + "/view-timeInterference-Comprehensive-Classes-report"
+    const timeInterferenceComprehensiveClassesReportUrl = rootUrl + "/timeInterference-Comprehensive-Classes-report"
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
