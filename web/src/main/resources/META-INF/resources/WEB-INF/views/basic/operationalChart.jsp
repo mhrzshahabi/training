@@ -355,6 +355,9 @@
             let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
             DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
 
+            let user =record.userName;
+             DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
+
         }
 
         Window_JspOperationalChart.show();
