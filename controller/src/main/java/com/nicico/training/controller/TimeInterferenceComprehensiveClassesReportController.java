@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -28,13 +29,12 @@ public class TimeInterferenceComprehensiveClassesReportController {
     public ResponseEntity<ISC<TimeInterferenceComprehensiveClassesDTO>> iscList(HttpServletRequest iscRq) throws Exception {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-//        List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
+        List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
 
-//        String fromDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("fromDate")).collect(Collectors.toList()).get(0).getValue().get(0);
-//        String toDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("toDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String startDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("startDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String endDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("endDate")).collect(Collectors.toList()).get(0).getValue().get(0);
 
-        List<TimeInterferenceComprehensiveClassesDTO> reportDTOList = timeInterferenceComprehensiveClassesReportService.list("1399/12/05", "1401/04/04");
-//        List<TimeInterferenceComprehensiveClassesDTO> reportDTOList = timeInterferenceComprehensiveClassesReportService.list( fromDate, toDate);
+        List<TimeInterferenceComprehensiveClassesDTO> reportDTOList = timeInterferenceComprehensiveClassesReportService.list( startDate, endDate);
 
         ISC.Response<TimeInterferenceComprehensiveClassesDTO> response = new ISC.Response<>();
         response.setData(reportDTOList)

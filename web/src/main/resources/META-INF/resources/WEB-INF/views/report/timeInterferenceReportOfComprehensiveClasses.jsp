@@ -4,6 +4,7 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
 
+    let url;
 
 
 //-----------------------------------------------------------------------------------------------------------------------
@@ -85,10 +86,18 @@ var DynamicForm_TimeInterference = isc.DynamicForm.create({
                 }
                 var timeInterference_Report_wait = createDialog("wait");
                 setTimeout(function () {
-                    let url = timeInterferenceComprehensiveClassesReportUrl + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
 
+                    url = timeInterferenceComprehensiveClassesReportUrl + "/iscList?"+ form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
                     RestDataSource_TimeInterference.fetchDataURL = url;
 
+                    ListGrid_TimeInterference.setImplicitCriteria({
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "startDate", operator: "greaterOrEqual", value: form.getValue("startDate")},
+                            {fieldName: "endDate", operator: "lessOrEqual", value: form.getValue("endDate")},
+                        ]
+                    });
                     ListGrid_TimeInterference.invalidateCache();
                     ListGrid_TimeInterference.fetchData();
                     timeInterference_Report_wait.close();
@@ -128,30 +137,16 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 {name: "sessionStartHour"},
                 {name: "sessionEndHour"},
             ],
-    fetchDataURL: timeInterferenceComprehensiveClassesReportUrl + "/iscList"
+
     });
 
-    ListGrid_TimeInterference = isc.ListGrid.create({
+    ListGrid_TimeInterference = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_TimeInterference,
         gridComponents: [DynamicForm_TimeInterference,
-        //     isc.ToolStripButtonExcel.create({
-        //         margin:5,
-        //         align: "left",
-        //         click:function() {
-        //             let title="گزارش تداخل زمانی کلاسهای فراگیر "+DynamicForm_TimeInterference.getItem("startDate").getValue()+ " الی "+DynamicForm_TimeInterference.getItem("endDate").getValue();
-        //             ExportToFile.downloadExcel(null, ListGrid_TimeInterference , 'TimeInterferenceReport', 0, null, '',title  , DynamicForm_TimeInterference.getValuesAsAdvancedCriteria(), null,2);
-        //         }
-        //     })
-        //     ,isc.ToolStripButtonRefresh.create({
-        //         align: "left",
-        //         click: function () {
-        //             ListGrid_TimeInterference.invalidateCache();
-        //         }
-        //     })
-            , "header", "filterEditor", "body"],
-        autoFetchData: true,
+                  , "header", "filterEditor", "body"],
+        autoFetchData: false,
         showFilterEditor:true,
         sortDirection: "descending",
         initialSort: [
@@ -305,9 +300,7 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
         if (ListGrid_TimeInterference.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
-            // let title="گزارش تداخل زمانی کلاسهای فراگیر "+DynamicForm_TimeInterference.getItem("startDate").getValue()+ " الی "+DynamicForm_TimeInterference.getItem("endDate").getValue();
-            // ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference , timeInterferenceComprehensiveClassesReportUrl , 0, null, '',title  , mainCriteria, null);
-            ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference , timeInterferenceComprehensiveClassesReportUrl , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , mainCriteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_TimeInterference , url , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , ListGrid_TimeInterference.implicitCriteria, null);
     }
 
 // </script>

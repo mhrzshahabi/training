@@ -1,8 +1,6 @@
 package com.nicico.training.iservice;
 
 import com.nicico.training.dto.TimeInterferenceComprehensiveClassesDTO;
-
-
 import java.util.List;
 
 
