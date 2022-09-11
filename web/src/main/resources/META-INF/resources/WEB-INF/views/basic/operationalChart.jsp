@@ -243,10 +243,18 @@
                 {name: "nationalCode"},
                 {name: "title"},
             ],
-        transformResponse: function (dsResponse) {
-            return this.Super("transformResponse", arguments);
-        },
-        fetchDataURL: operationalChartUrl + "/spec-list",
+    });
+
+    let RestDataSource_Parent_ListGrid = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "complex"},
+                {name: "userName"},
+                {name: "nationalCode"},
+                {name: "title"},
+            ],
+        fetchDataURL: operationalChartUrl + "/spec-list"
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -292,7 +300,7 @@
             {
                 name: "parentId",
                 title: "سطح بالادست",
-                optionDataSource: RestDataSource_Parent,
+                optionDataSource: RestDataSource_Parent_ListGrid,
                 displayField: "userName",
                 autoFetchData: true,
                 valueField: "id",
@@ -349,6 +357,7 @@
             let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
             DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
             DynamicForm_JspOperationalChart.getItem("complexId").disable();
+            RestDataSource_Parent.fetchDataURL = operationalChartUrl + "/parent-list/"+ DynamicForm_JspOperationalChart.getItem("complexId").getValue()
             Window_JspOperationalChart.show();
         }
 
@@ -377,9 +386,11 @@
                 let user = record.userName;
                 DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
             }
+            RestDataSource_Parent.fetchDataURL = operationalChartUrl + "/parent-list/"+ DynamicForm_JspOperationalChart.getItem("complexId").getValue()
+            Window_JspOperationalChart.show();
+
         }
 
-        Window_JspOperationalChart.show();
     }
 
     function OperationalChart_save_result(resp) {
@@ -701,12 +712,14 @@
                 title: "سطح بالادست",
                 optionDataSource: RestDataSource_Parent,
                 displayField: "userName",
+                // autoFetchData: false,
                 autoFetchData: true,
                 valueField: "id",
                 textAlign: "center",
                 required: false,
                 validateOnExit: true,
                 length: 255,
+                cachePickListResults: false,
                 pickListFields: [
                     {
                         name: "userName",

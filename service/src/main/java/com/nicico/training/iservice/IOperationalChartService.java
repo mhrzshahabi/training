@@ -23,5 +23,5 @@ public interface IOperationalChartService {
 
     OperationalChartDTO.Info addChild(Long parent_id, Long child_id);
 
-    SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
+    SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq,Long complexId) throws NoSuchFieldException, IllegalAccessException;
 }

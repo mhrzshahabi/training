@@ -79,7 +79,27 @@ public class OperationalChartRestController {
         SearchDTO.SearchRs<OperationalChartDTO.Info> searchRs = null;
 
         try {
-            searchRs = operationalChartService.deepSearch(searchRq);
+            searchRs = operationalChartService.deepSearch(searchRq,null);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/parent-list/{complexId}")
+    public ResponseEntity<ISC<OperationalChartDTO.Info>> parentList(HttpServletRequest iscRq,@PathVariable Long complexId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<OperationalChartDTO.Info> searchRs = null;
+
+        try {
+            searchRs = operationalChartService.deepSearch(searchRq,complexId);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
