@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Calendar;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -1038,44 +1039,127 @@ public class EvaluationRestController {
 
     @GetMapping(value = "/getBehavioralInClass/{classId}")
     @Transactional
-    public ResponseEntity<ISC<EvaluationDTO.BehavioralAnalysist>> getBehavioralInClass(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        SearchDTO.SearchRs<EvaluationDTO.BehavioralAnalysist> searchRs = new SearchDTO.SearchRs<>();
+    public ResponseEntity<ISC<EvaluationDTO.BehavioralAnalysis>> getBehavioralInClass(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        SearchDTO.SearchRs<EvaluationDTO.BehavioralAnalysis> searchRs = new SearchDTO.SearchRs<>();
         List<Evaluation> list = evaluationService.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 156L, 230L);
-        List<EvaluationDTO.BehavioralAnalysist> finalList = new ArrayList<>();
-        for (Evaluation evaluation : list) {
-            EvaluationDTO.BehavioralAnalysist behavioralForms = new EvaluationDTO.BehavioralAnalysist();
-            behavioralForms.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
-            behavioralForms.setStatus(evaluation.getStatus());
-            if (evaluation.getEvaluatorTypeId() == 188) {
-                ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
-                behavioralForms.setEvaluatorId(classStudent.getId());
-                behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
-                behavioralForms.setNationalCode(classStudent.getStudent().getNationalCode());
+        List<EvaluationDTO.BehavioralAnalysis> finalList = new ArrayList<>();
 
-            } else {
-                ViewActivePersonnel personnel = evaluationService.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                behavioralForms.setEvaluatorId(personnel.getId());
-                behavioralForms.setNationalCode(personnel.getNationalCode());
-                behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+        if (list.size() != 0) {
+
+            Set<Long> evaluatedIdList = list.stream().map(Evaluation::getEvaluatedId).collect(Collectors.toSet());
+            for (Long evaluatedId : evaluatedIdList) {
+
+                EvaluationDTO.BehavioralAnalysis behavioralForm = new EvaluationDTO.BehavioralAnalysis();
+
+                List<Evaluation> evaluatedFilterList = list.stream().filter(item -> item.getEvaluatedId().equals(evaluatedId)).collect(Collectors.toList());
+                Evaluation evaluationData = evaluatedFilterList.stream().findFirst().get();
+                ClassStudent classStudent = classStudentService.getClassStudent(evaluationData.getEvaluatedId());
+
+                behavioralForm.setEvaluatedPersonnelNo(classStudent.getStudent().getPersonnelNo());
+                behavioralForm.setEvaluatedNationalCode(classStudent.getStudent().getNationalCode());
+                behavioralForm.setEvaluatedFullName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                behavioralForm.setEvaluatedMobile(classStudent.getStudent().getContactInfo().getMobile());
+
+                Set<Long> evaluatorTypeList = evaluatedFilterList.stream().map(Evaluation::getEvaluatorTypeId).collect(Collectors.toSet());
+                for (Long evaluatorType : evaluatorTypeList) {
+
+                    List<Evaluation> evaluationList = evaluatedFilterList.stream().filter(item -> item.getEvaluatorTypeId().equals(evaluatorType)).collect(Collectors.toList());
+                    Long evaluatorTypeId = evaluationList.get(0).getEvaluatorTypeId();
+                    final Optional<ParameterValue> optionalParameterValue = iParameterValueService.findById(evaluatorTypeId);
+                    if (optionalParameterValue.isPresent()) {
+
+                        final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                        switch (parameterValue.getTitle()) {
+
+                            case "فراگیر":
+                                int i = 0;
+                                for (Evaluation evaluation : evaluationList) {
+                                    if (evaluationService.getEvaluationFormGrade(evaluation) != null) {
+                                        i++;
+                                        if (behavioralForm.getStudentGrade() != null)
+                                            behavioralForm.setStudentGrade(String.valueOf(Double.parseDouble(behavioralForm.getStudentGrade()) + evaluationService.getEvaluationFormGrade(evaluation)));
+                                        else
+                                            behavioralForm.setStudentGrade(String.valueOf(evaluationService.getEvaluationFormGrade(evaluation)));
+                                    }
+                                }
+                                if (behavioralForm.getStudentGrade() != null)
+                                    behavioralForm.setStudentGrade(String.valueOf(Double.parseDouble(behavioralForm.getStudentGrade()) / i));
+                                break;
+                            case "سرپرست":
+                                int j = 0;
+                                for (Evaluation evaluation : evaluationList) {
+                                    if (evaluationService.getEvaluationFormGrade(evaluation) != null) {
+                                        j++;
+                                        if (behavioralForm.getSupervisorGrade() != null)
+                                            behavioralForm.setSupervisorGrade(String.valueOf(Double.parseDouble(behavioralForm.getSupervisorGrade()) + evaluationService.getEvaluationFormGrade(evaluation)));
+                                        else
+                                            behavioralForm.setSupervisorGrade(String.valueOf(evaluationService.getEvaluationFormGrade(evaluation)));
+                                    }
+                                }
+                                if (behavioralForm.getSupervisorGrade() != null)
+                                    behavioralForm.setSupervisorGrade(String.valueOf(Double.parseDouble(behavioralForm.getSupervisorGrade()) / j));
+                                break;
+                            case "زیر دست":
+                                int k = 0;
+                                for (Evaluation evaluation : evaluationList) {
+                                    if (evaluationService.getEvaluationFormGrade(evaluation) != null) {
+                                        k++;
+                                        if (behavioralForm.getServitorGrade() != null)
+                                            behavioralForm.setServitorGrade(String.valueOf(Double.parseDouble(behavioralForm.getServitorGrade()) + evaluationService.getEvaluationFormGrade(evaluation)));
+                                        else
+                                            behavioralForm.setServitorGrade(String.valueOf(evaluationService.getEvaluationFormGrade(evaluation)));
+                                    }
+                                }
+                                if (behavioralForm.getServitorGrade() != null)
+                                    behavioralForm.setServitorGrade(String.valueOf(Double.parseDouble(behavioralForm.getServitorGrade()) / k));
+                                break;
+                            case "همکار":
+                                int m = 0;
+                                for (Evaluation evaluation : evaluationList) {
+                                    if (evaluationService.getEvaluationFormGrade(evaluation) != null) {
+                                        m++;
+                                        if (behavioralForm.getCoWorkerGrade() != null)
+                                            behavioralForm.setCoWorkerGrade(String.valueOf(Double.parseDouble(behavioralForm.getCoWorkerGrade()) + evaluationService.getEvaluationFormGrade(evaluation)));
+                                        else
+                                            behavioralForm.setCoWorkerGrade(String.valueOf(evaluationService.getEvaluationFormGrade(evaluation)));
+                                    }
+                                }
+                                if (behavioralForm.getCoWorkerGrade() != null)
+                                    behavioralForm.setCoWorkerGrade(String.valueOf(Double.parseDouble(behavioralForm.getCoWorkerGrade()) / m));
+                                break;
+                            case "نماینده آموزش":
+                                int n = 0;
+                                for (Evaluation evaluation : evaluationList) {
+                                    if (evaluationService.getEvaluationFormGrade(evaluation) != null) {
+                                        n++;
+                                        if (behavioralForm.getTrainingGrade() != null)
+                                            behavioralForm.setTrainingGrade(String.valueOf(Double.parseDouble(behavioralForm.getTrainingGrade()) + evaluationService.getEvaluationFormGrade(evaluation)));
+                                        else
+                                            behavioralForm.setTrainingGrade(String.valueOf(evaluationService.getEvaluationFormGrade(evaluation)));
+                                    }
+                                }
+                                if (behavioralForm.getTrainingGrade() != null)
+                                    behavioralForm.setTrainingGrade(String.valueOf(Double.parseDouble(behavioralForm.getTrainingGrade()) / n));
+                                break;
+                        }
+                    }
+
+                }
+
+                if (behavioralForm.getStudentGrade() == null)
+                    behavioralForm.setStudentGrade("عدم تکميل فرم");
+                if (behavioralForm.getSupervisorGrade() == null)
+                    behavioralForm.setSupervisorGrade("عدم تکميل فرم");
+                if (behavioralForm.getServitorGrade() == null)
+                    behavioralForm.setServitorGrade("عدم تکميل فرم");
+                if (behavioralForm.getCoWorkerGrade() == null)
+                    behavioralForm.setCoWorkerGrade("عدم تکميل فرم");
+                if (behavioralForm.getTrainingGrade() == null)
+                    behavioralForm.setTrainingGrade("عدم تکميل فرم");
+                finalList.add(behavioralForm);
             }
-            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatedId());
-
-            behavioralForms.setId(evaluation.getId());
-            behavioralForms.setEvaluatedId(evaluation.getEvaluatedId());
-            behavioralForms.setEvaluatedName(classStudent.getStudent().getFirstName()+" "+classStudent.getStudent().getLastName());
-            final Optional<ParameterValue> optionalParameterValue = iParameterValueService.findById(evaluation.getEvaluatorTypeId());
-            if (optionalParameterValue.isPresent()) {
-                final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                behavioralForms.setEvaluatorTypeTitle(parameterValue.getTitle());
-            }
-            if (!evaluation.getStatus())
-                behavioralForms.setEvaluationRate("هیچ فرمی ثبت نشده");
-            else
-                behavioralForms.setEvaluationRate(evaluationService.getEvaluationFormGrade(evaluation).toString());
-
-            behavioralForms.setStatus(evaluation.getStatus());
-            finalList.add(behavioralForms);
         }
+
         searchRs.setList(finalList);
         searchRs.setTotalCount(Long.parseLong(finalList.size() + ""));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);

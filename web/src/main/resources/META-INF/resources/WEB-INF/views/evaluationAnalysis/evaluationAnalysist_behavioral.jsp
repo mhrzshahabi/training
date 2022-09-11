@@ -64,23 +64,17 @@
 
     var RestDataSource_evaluation_behavioral_analysist = isc.TrDS.create({
         fields: [
-            {name: "id"},
-            {name: "evaluatorName"},
-            {name: "evaluatedName"},
-            {name: "evaluatedId"},
-            {name: "nationalCode"},
-            {name: "evaluatorTypeTitle"},
-            {name: "behavioralToOnlineStatus"},
-            {name: "status",
-                valueMap:{
-                    "true": "ثبت شده",
-                    "false" : "ثبت نشده"
-                }},
-            {name: "evaluationRate",
-               },
-
+            {name: "evaluatedPersonnelNo", title: "شماره پرسنلی", filterOperator: "iContains"},
+            {name: "evaluatedNationalCode", title: "کد ملی", filterOperator: "iContains"},
+            {name: "evaluatedFullName", title: "نام", filterOperator: "iContains"},
+            {name: "evaluatedMobile", title: "موبایل", filterOperator: "iContains"},
+            {name: "studentGrade", title: "نمره ارزیابی فراگیر به خودش", filterOperator: "iContains"},
+            {name: "supervisorGrade", title: "نمره ارزیابی سرپرست به فراگیر", filterOperator: "iContains"},
+            {name: "servitorGrade", title: "نمره ارزیابی زیردست به فراگیر", filterOperator: "iContains"},
+            {name: "coWorkerGrade", title: "نمره ارزیابی همکار به فراگیر", filterOperator: "iContains"},
+            {name: "trainingGrade", title: "نمره ارزیابی مسئول آموزش به فراگیر", filterOperator: "iContains"}
         ],
-        fetchDataURL: evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId,
+        fetchDataURL: evaluationUrl + "/getBehavioralInClass/" + behavioralEvaluationClassId,
     });
 
     var ListGrid_evaluation_behavioral_analysist = isc.TrLG.create({
@@ -96,43 +90,19 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         initialSort: [
-            {property: "evaluatedId", direction: "descending", primarySort: true}
+            {property: "evaluatedPersonnelNo", direction: "descending", primarySort: true}
         ],
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "evaluatedId", title: "evaluatedId",  canEdit: false, hidden: true},
-            {
-                name: "evaluatedName",
-                title: "ارزیابی شونده",
-                align: "center",
-                canFilter: false,
-            },
-            {
-                name: "evaluatorName",
-                title: "ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "nationalCode",
-                title: "کد ملی ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "evaluatorTypeTitle",
-                title: "نوع ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "status",
-                title: "وضعیت ارزیابی",
-                align: "center",canFilter: false,
-            },{
-                name: "evaluationRate",
-                title: "نمره ارزیابی",
-                align: "center",canFilter: false,
-            },
-
-        ],
+            {name: "evaluatedPersonnelNo"},
+            {name: "evaluatedNationalCode"},
+            {name: "evaluatedFullName"},
+            {name: "evaluatedMobile"},
+            {name: "studentGrade"},
+            {name: "supervisorGrade"},
+            {name: "servitorGrade"},
+            {name: "coWorkerGrade"},
+            {name: "trainingGrade"}
+        ]
     });
 
     var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
@@ -230,3 +200,4 @@
         criteriaForm.submitForm();
     }
 
+    // </script>
