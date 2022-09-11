@@ -338,8 +338,20 @@
     function ListGrid_OperationalChart_Add() {
         methodOperationalChart = "POST";
         saveActionUrlOperationalChart = operationalChartUrl + "/create";
-        DynamicForm_JspOperationalChart.clearValues();
-        Window_JspOperationalChart.show();
+
+        let complexFilter = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+        if (complexFilter === undefined) {
+            createDialog("info", "لطفا فیلتر مجتمع را انتخاب کنید.");
+            return;
+        }else{
+
+            DynamicForm_JspOperationalChart.clearValues();
+            let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+            DynamicForm_JspOperationalChart.getItem("complexId").disable();
+            Window_JspOperationalChart.show();
+        }
+
     }
 
     function ListGrid_OperationalChart_Edit(record) {
@@ -349,15 +361,22 @@
             methodOperationalChart = "PUT";
             saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
 
-            DynamicForm_JspOperationalChart.clearValues();
-            DynamicForm_JspOperationalChart.editRecord(record);
+            let complexFilter = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            if (complexFilter === undefined) {
+                createDialog("info", "لطفا فیلتر مجتمع را انتخاب کنید.");
+                return;
+            }else {
 
-            let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
-            DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+                DynamicForm_JspOperationalChart.clearValues();
+                DynamicForm_JspOperationalChart.editRecord(record);
 
-            let user =record.userName;
-             DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
+                let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+                DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+                DynamicForm_JspOperationalChart.getItem("complexId").disable();
 
+                let user = record.userName;
+                DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
+            }
         }
 
         Window_JspOperationalChart.show();
