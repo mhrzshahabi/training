@@ -351,6 +351,10 @@
 
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
+
+            let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+
         }
 
         Window_JspOperationalChart.show();
