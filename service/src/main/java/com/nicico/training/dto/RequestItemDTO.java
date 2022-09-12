@@ -46,6 +46,22 @@ public class RequestItemDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("RequestItemReportInfo")
+    public static class ReportInfo extends RequestItemDTO {
+        private Long id;
+        private Long requestNo;
+        private String applicant;
+        private String requestDate;
+        private String requestType;
+        private String letterNumber;
+        private String nationalCode;
+        private String letterNumberSent;
+        private String dateSent;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ExcelOutputInfo")
     public static class ExcelOutputInfo {
         private Long id;

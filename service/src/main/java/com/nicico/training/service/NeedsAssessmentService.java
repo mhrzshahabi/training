@@ -157,7 +157,8 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     public List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode) {
         List<NeedsAssessmentDTO.CourseDetail> courseDetailDistinctList = new ArrayList<>();
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", trainingPostCode, null);
-        List<NeedsAssessmentDTO.CourseDetail> courseDetailList = needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList);
+        List<NeedsAssessmentDTO.CourseDetail> courseDetailList = needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList).stream()
+                .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
         for (NeedsAssessmentDTO.CourseDetail courseDetail : courseDetailList) {
             if (!courseDetailDistinctList.stream().map(NeedsAssessmentDTO.CourseDetail::getCourseCode).collect(Collectors.toList()).contains(courseDetail.getCourseCode()))
                 courseDetailDistinctList.add(courseDetail);
@@ -171,7 +172,8 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     public List<NeedsAssessmentDTO.PlanningExpertsExcel> findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem) {
         List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesDistinctList = new ArrayList<>();
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", requestItem.getPost(), null);
-        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesList = needAssessmentBeanMapper.toNeedsAssessmentPlanningExpertsExcelDTOList(needsAssessmentList);
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesList = needAssessmentBeanMapper.toNeedsAssessmentPlanningExpertsExcelDTOList(needsAssessmentList).stream()
+                .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());;
         for (NeedsAssessmentDTO.PlanningExpertsExcel course : coursesList) {
             if (!coursesDistinctList.stream().map(NeedsAssessmentDTO.PlanningExpertsExcel::getCourseCode).collect(Collectors.toList()).contains(course.getCourseCode()))
                 coursesDistinctList.add(course);

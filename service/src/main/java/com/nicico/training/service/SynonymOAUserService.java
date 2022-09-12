@@ -21,6 +21,12 @@ public class SynonymOAUserService implements ISynonymOAUserService {
     }
 
     @Override
+    public String getFullNameByNationalCode(String nationalCode) {
+        Optional<SynonymOAUser> optionalSynonymOAUser = synonymOAUserDAO.findByNationalCode(nationalCode);
+        return optionalSynonymOAUser.map(synonymOAUser -> synonymOAUser.getFirstName() + " " + synonymOAUser.getLastName()).orElse(nationalCode);
+    }
+
+    @Override
     public String getFullNameByUserId(Long userId) {
         Optional<SynonymOAUser> optionalSynonymOAUser = synonymOAUserDAO.findById(userId);
 

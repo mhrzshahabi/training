@@ -972,7 +972,7 @@
             isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/planning-chief-opinion/" + record.requestItemId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200) {
                     let opinion = JSON.parse(resp.httpResponseText);
-                    DynamicForm_RequestItem_Determine_Status.setValue("chiefOpinion", opinion.finalOpinion);
+                    DynamicForm_RequestItem_Determine_Status.setValue("chiefOpinion", opinion.finalOpinionId);
                     Window_RequestItem_Determine_Status_Completion.show();
                 }
             }));

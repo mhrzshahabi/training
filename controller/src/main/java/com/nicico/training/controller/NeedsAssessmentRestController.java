@@ -296,8 +296,7 @@ public class NeedsAssessmentRestController {
             else
                 synonymPersonnel = synonymPersonnelByPersonnelNo2;
 
-            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = iNeedsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost()).stream()
-                        .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = iNeedsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost());
 
             List<NeedsAssessmentDTO.CourseDetail> courseNotPassedList = new ArrayList<>();
             List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()

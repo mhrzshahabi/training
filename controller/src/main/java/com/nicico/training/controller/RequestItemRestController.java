@@ -7,10 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.RequestItemCoursesDetailDTO;
-import com.nicico.training.dto.RequestItemDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.RequestItem;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -59,7 +55,7 @@ public class RequestItemRestController {
     @PostMapping
     public ResponseEntity<RequestItemDTO.Info> create(@RequestBody RequestItemDTO.Create request) {
         RequestItem requestItem = requestItemBeanMapper.toRequestItem(request);
-        RequestItem saved = requestItemService.create(requestItem,requestItem.getCompetenceReqId());
+        RequestItem saved = requestItemService.create(requestItem, requestItem.getCompetenceReqId());
         RequestItemDTO.Info res = requestItemBeanMapper.toRequestItemDto(saved);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
@@ -178,6 +174,44 @@ public class RequestItemRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/report-list")
+    public ResponseEntity<ISC<RequestItemDTO.ReportInfo>> reportList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                     @RequestParam(value = "_endRow",defaultValue = "50") Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        searchRq.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        List<RequestItem> resultList = requestItemService.search(searchRq).stream().filter(item -> item.getProcessInstanceId() != null).collect(Collectors.toList());
+        List<RequestItemDTO.ReportInfo> result = requestItemBeanMapper.toRequestItemReportInfoDtoList(resultList);
+
+        ISC.Response<RequestItemDTO.ReportInfo> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + result.size());
+        response.setTotalRows(requestItemService.getTotalStartedProcessCount());
+        response.setData(result);
+        ISC<RequestItemDTO.ReportInfo> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    @Loggable
     @PutMapping(value = "/operational-roles/{id}")
     public ResponseEntity updateOperationalRoles(@PathVariable Long id) {
         requestItemService.updateOperationalRoles(id);
@@ -238,8 +272,8 @@ public class RequestItemRestController {
         String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
         if (requestItemProcessDetail != null) {
-            opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
-                    parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+            ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
+            opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
         }
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
@@ -263,8 +297,8 @@ public class RequestItemRestController {
 
         String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
-        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
-                parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
+        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
         List<RequestItemCoursesDetailDTO.Info> verifiedCoursesByPlanningChief = opinionInfo.getCourses();
 
         for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : verifiedCoursesByPlanningChief) {

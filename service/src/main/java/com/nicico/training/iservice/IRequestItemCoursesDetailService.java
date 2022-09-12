@@ -12,7 +12,7 @@ public interface IRequestItemCoursesDetailService {
 
     List<RequestItemCoursesDetailDTO.Info> findAllByRequestItemProcessDetailId(Long requestItemProcessDetailId);
 
-    RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion);
+    RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion, Long chiefOpinionId);
 
     List<RequestItemCoursesDetailDTO.Info> findAllByRequestItem(Long requestItemId);
 

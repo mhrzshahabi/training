@@ -7,10 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
-import dto.bpms.BPMSReqItemCoursesDetailDto;
-import dto.bpms.BPMSReqItemCoursesDto;
-import dto.bpms.BPMSReqItemSentLetterDto;
-import dto.bpms.BpmsStartParamsDto;
+import dto.bpms.*;
 import response.BaseResponse;
 import response.requestItem.RequestItemDto;
 import response.requestItem.RequestItemWithDiff;
@@ -31,9 +28,13 @@ public interface IRequestItemService {
 
     Integer getTotalCount();
 
+    Integer getTotalStartedProcessCount();
+
     Integer getTotalCountForOneCompetenceReqId(Long id);
 
     List<RequestItem> search(SearchDTO.SearchRq request, Long id);
+
+    List<RequestItem> search(SearchDTO.SearchRq request);
 
     RequestItemDto createList(List<RequestItem> requestItem);
 
@@ -78,6 +79,8 @@ public interface IRequestItemService {
     BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto);
+
+    List<BPMSReqItemProcessHistoryDto> getProcessInstanceHistoryById(String processInstanceId);
 
     String getPlanningChiefNationalCode();
 

@@ -4,6 +4,7 @@ public interface ISynonymOAUserService {
 
     String getNationalCodeByUserId(Long userId);
 
-    String getFullNameByUserId(Long userId);
+    String getFullNameByNationalCode(String nationalCode);
 
+    String getFullNameByUserId(Long userId);
 }

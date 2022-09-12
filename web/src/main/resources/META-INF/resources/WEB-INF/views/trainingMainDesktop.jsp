@@ -1859,9 +1859,13 @@
                     }
                 },
                 </sec:authorize>
-
+                {
+                    title: "<spring:message code="scientific.technical.certification.report"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/certification-level-report"/>");
+                    }
+                },
                 {isSeparator: true},
-
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">
                 {
                     title: "<spring:message code="competence"/>",

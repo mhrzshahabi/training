@@ -45,8 +45,8 @@ public class BpmsRestController {
     private final IBpmsService service;
     private final BpmsClientService client;
     private final BPMSBeanMapper bpmsBeanMapper;
-    private final CompetenceBeanMapper competenceBeanMapper;
     private final CompetenceService competenceService;
+    private final CompetenceBeanMapper competenceBeanMapper;
     private final INeedsAssessmentTempService needsAssessmentTempService;
 
 
