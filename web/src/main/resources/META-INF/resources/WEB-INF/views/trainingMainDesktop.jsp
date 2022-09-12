@@ -1304,6 +1304,7 @@
     const departmentUrl = rootUrl + "/department";
     const operationalChartUrl = rootUrl + "/operationalchart";
     const educationalCalenderReportUrl = rootUrl + "/view-educational-calender-report"
+    const timeInterferenceComprehensiveClassesReportUrl = rootUrl + "/timeInterference-Comprehensive-Classes-report"
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
@@ -2059,6 +2060,13 @@
                         createTab(this.title, "<spring:url value="/educationalCalender/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="educational.calender"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/educationalCalender/show-form"/>");
+                    }
+                },
             ]
         })
     });
@@ -2554,6 +2562,13 @@
                                 title: "گزارش تقویم آموزشی",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/educationalCalenderReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "گزارش تداخل زمانی کلاسهای فراگیر",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/timeInterferenceComprehensiveClassesReport"/>");
                                 }
                             },
                             {isSeparator: true},
