@@ -266,7 +266,7 @@ public class ElsRestController {
             ElsExamRequest request;
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
 
-            if (type.equalsIgnoreCase("test"))
+            if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest"))
                 elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
             else
                 elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()), type);
@@ -661,7 +661,7 @@ public class ElsRestController {
 
     }
 
-    @PostMapping("/final/test/{id}")
+    @PostMapping("/FinalTest/test/{id}")
     public BaseResponse setFinalScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
@@ -722,7 +722,7 @@ public class ElsRestController {
         return baseResponse;
     }
 
-    @PostMapping("/pre/test/{id}")
+    @PostMapping("/PreTest/test/{id}")
     public BaseResponse setPreTestScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);

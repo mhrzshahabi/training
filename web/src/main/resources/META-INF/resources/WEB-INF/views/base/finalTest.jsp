@@ -97,7 +97,9 @@
             {
                 title: "<spring:message code="create"/>",
                 click: function () {
-                    showNewForm_finalTest();
+                    examTypeDF.clearValues();
+                    selectExamTypeWindow.show();
+                    // showNewForm_finalTest();
                 }
             },
             </sec:authorize>
@@ -126,7 +128,7 @@
             <sec:authorize access="hasAuthority('FinalTest_C')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
-                    showNewForm_finalTest();
+                    selectExamTypeWindow.show();
                 }
             }),
             </sec:authorize>
@@ -243,13 +245,14 @@
             },
             { name: "onlineExamDeadLineStatus", hidden: true},
             { name: "classScore", title: "نمره کلاسی"},
+            { name: "testQuestionType", title: "نوع آزمون", autoFitWidth: true},
             { name: "practicalScore",title: "نمره عملی"}
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "testQuestionType", operator: "iContains", value: "FinalTest"}]
+            criteria: [{fieldName: "testQuestionType", operator: "inSet", value: ["FinalTest", "PreTest"]}]
         },
     });
 
@@ -278,9 +281,7 @@
             {name: "workflowStatusCode"},
             {name: "hasGoal"},
             {name: "hasSkill"},
-            {
-                name: "evaluation",
-            },
+            {name: "evaluation"},
             {
                 name: "behavioralLevel",
             }
@@ -319,7 +320,8 @@
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
             {name: "course.theoryDuration"},
-            {name: "scoringMethod"}
+            {name: "scoringMethod"},
+            {name: "evaluation"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -363,6 +365,14 @@
             {name: "duration"},
             {name: "practicalScore"},
             {name: "classScore"},
+            {
+                name: "testQuestionType",
+                valueMap: {
+                    "PreTest": "پیش آزمون",
+                    "FinalTest": "آزمون پایانی",
+                    "Preparation": "آزمون آمادگی"
+                }
+            },
             { name: "onlineFinalExamStatus",canFilter: false, valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
             { name: "sendBtn",canFilter: false, title: "بارم بندی ", width: "145"},
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
@@ -374,13 +384,14 @@
         contextMenu: FinalTestMenu_finalTest,
         sortField: 1,
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-             loadTab(TabSet_finalTest.getSelectedTab().ID);
+            disableResendFinalTestTab();
+            loadTab(TabSet_finalTest.getSelectedTab().ID);
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
                 refreshSelectedTab_class_final(0);
             } else {
@@ -618,7 +629,7 @@
                                             isc.IButtonSave.create({
                     title: "<spring:message code="sendScoreToOnlineExam"/>", width: 300,
                     click: function () {
-                      sendFinalScoreToOnlineExam(Window_result_Finaltest);
+                      sendFinalScoreToOnlineExam(Window_result_Finaltest, recordList);
                     }
                 })
                                             ,
@@ -751,7 +762,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         });
 
             wait.show();
-           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
+        let testQuestionType = record.testQuestionType;
+        isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl + "/" + testQuestionType + "/" + record.tclass.id + "/spec-list", "GET", null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             let result = JSON.parse(resp.httpResponseText).response.data;
                               wait.close();
@@ -760,8 +772,14 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                   examItem : record,
                                   questions: result
                                 };
-                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examQuestions", "POST", JSON.stringify(examData), function (resp) {
-                                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            let questionTypeParam;
+                            if (testQuestionType === "PreTest") {
+                                questionTypeParam = "preExamQuestions"
+                            } else if (testQuestionType === "FinalTest") {
+                                questionTypeParam = "examQuestions"
+                            }
+                            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/" + questionTypeParam, "POST", JSON.stringify(examData), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
                         message: "<spring:message code="msg.operation.successful"/>",
@@ -816,7 +834,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                             item.score = '0';
                                                         return item;
                                                         });
-                                                    let isValid = await hasEvaluation(record.tclass.id);
+                                                    let isValid = await hasEvaluation(record.tclass.id, record.testQuestionType);
                                                     if (!isValid) {
                                                         createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
                                                         return;
@@ -914,11 +932,19 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         ],
                         minWidth: 1024
                     });
-                    totalScore=0;
-                    scoreLabel.setContents("مجموع بارم وارد شده :")
-                   totalTime=0;
-                    timeLabel.setContents("مجموع زمان وارد شده :")
-                    Window_result_Finaltest.show();
+
+                                        if (testQuestionType === "PreTest") {
+                                            ListGrid_Questions_finalTest.getField("time").hidden = true
+                                            timeLabel.setVisibility(false);
+                                        } else if (testQuestionType === "FinalTest") {
+                                            timeLabel.setVisibility(true);
+                                            totalScore = 0;
+                                            scoreLabel.setContents("مجموع بارم وارد شده :")
+                                            totalTime = 0;
+                                            timeLabel.setContents("مجموع زمان وارد شده :")
+                                        }
+
+                                        Window_result_Finaltest.show();
                 } else {
                    let errorResponseMessage = resp.httpResponseText;
                     var ERROR = isc.Dialog.create({
@@ -1265,7 +1291,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
     function loadExamQuestions(record,questionData,dialog, questionsList) {
 
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/" + record.testQuestionType + "/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.httpResponseText);
                     var examData = {
@@ -1401,7 +1427,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 name: "tclassId",
                 title: "<spring:message code="class"/>",
                 required: true,
-                prompt: "<spring:message code="first.select.course"/>",
+                <%--prompt: "<spring:message code="first.select.course"/>",--%>
                 textAlign: "center",
                 autoFetchData: false,
                 width: "*",
@@ -1425,6 +1451,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         title: "<spring:message code='course.title'/>",
                         align: "center",
                         filterOperator: "iContains",
+                        autoFitWidth: true,
                         sortNormalizer: function (record) {
                             return record.course.titleFa;
                         }
@@ -1667,6 +1694,184 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         ]
     });
 
+    let preTestDF = isc.DynamicForm.create({
+        overflow: "hidden",
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "tclassId",
+                title: "<spring:message code="class"/>",
+                required: true,
+                textAlign: "center",
+                autoFetchData: false,
+                width: "*",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: ClassDS_finalTest,
+                sortField: ["id"],
+                filterFields: ["id"],
+                pickListFields: [
+                    {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                    {
+                        name: "code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "course.titleFa",
+                        title: "<spring:message code='course.title'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        sortNormalizer: function (record) {
+                            return record.course.titleFa;
+                        }
+                    },
+                    {
+                        name: "term.titleFa",
+                        title: "term",
+                        align: "center",
+                        filterOperator: "iContains",
+                        hidden: true
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        },
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        },
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "teacher",
+                        title: "<spring:message code='teacher'/>",
+                        displayField: "teacher.personality.lastNameFa",
+                        displayValueFromRecord: false,
+                        type: "TextItem",
+                        sortNormalizer(record) {
+                            return record.teacher.personality.lastNameFa;
+                        },
+
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true,
+                        // sortNormalizer(record) {
+                        //     return record.teacher.personality.lastNameFa;
+                        // }
+                    },
+                    {
+                        name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                        valueMap: {
+                            "1": "برنامه ریزی",
+                            "2": "در حال اجرا",
+                            "3": "پایان یافته",
+                        },
+                        filterEditorProperties: {
+                            pickListProperties: {
+                                showFilterEditor: false
+                            },
+                        },
+                        filterOnKeypress: true,
+                        autoFitWidth: true,
+                    },
+                    {
+                        name: "evaluation",
+                        title: "evaluation",
+                        align: "center",
+                        autoFitWidth: true,
+                        hidden: true
+                    },
+                ],
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListWidth: 800,
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+
+                        }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+                click(form, item) {
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "evaluation", operator: "inSet", value: ["2", "3", "4"]}]
+                    };
+                    item.pickListCriteria = criteria;
+                    item.fetchData();
+                }
+            }
+        ]
+    });
+
+    let examTypeDF = isc.DynamicForm.create({
+        titleAlign: "right",
+        fields: [
+            {
+                name: "examType",
+                title: "<spring:message code="test.question.type"/>",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: false,
+                valueMap: {
+                    "1": "<spring:message code="evaluation.final.test"/>",
+                    "2": "<spring:message code="class.preCourseTest"/>"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                defaultValue: ["1"]
+            }
+        ]
+    });
+
+    let HLayout_Select_Exam_Type_buttons = isc.TrHLayoutButtons.create({
+        alignLayout: "bottom",
+        height: "5%",
+        membersMargin: 10,
+        members: [
+            isc.IButtonSave.create({
+                title: "<spring:message code="verify"/>",
+                click: function () {
+                    showCreateExamConfirmationDialog();
+                }
+            }),
+            isc.IButtonCancel.create({
+                click: function () {
+                    examTypeDF.clearValues();
+                    selectExamTypeWindow.close();
+                }
+            })
+        ]
+    })
+
     let FinalTestWin_finalTest = isc.Window.create({
         width: 500,
         height: 400,
@@ -1690,6 +1895,50 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             ]
         })]
     });
+
+    let preTestWindow = isc.Window.create({
+        title: "<spring:message code="select.pre.test.question.type"/>",
+        width: "20%",
+        height: "15%",
+        //autoCenter: true,
+        overflow: "hidden",
+        showMaximizeButton: false,
+        autoSize: false,
+        canDragResize: false,
+        items: [
+            preTestDF,
+            isc.TrHLayoutButtons.create({
+                members: [
+                    isc.TrSaveBtn.create({
+                        click: function () {
+                            if (!preTestDF.validate()) {
+                                return;
+                            }
+
+                            let classId = preTestDF.getField("tclassId").getValue();
+                            createPreTest(classId);
+                        }
+                    }),
+                    isc.TrCancelBtn.create({
+                        click: function () {
+                            preTestWindow.close();
+                        }
+                    })
+                ]
+            })]
+    });
+
+    let selectExamTypeWindow = isc.Window.create({
+        title: "<spring:message code="select.test.question.type"/>",
+        width: "20%",
+        height: "20%",
+        align: "center",
+        autoSize: false,
+        showMaximizeButton: false,
+        dismissOnEscape: true,
+        items: [examTypeDF, HLayout_Select_Exam_Type_buttons]
+    });
+
     // ------------------------------------------- TabSet -------------------------------------------
     var TabSet_finalTest = isc.TabSet.create({
         enabled: false,
@@ -1897,7 +2146,7 @@ let inValidStudents = [];
 
                 FinalTestDF_finalTest.clearValues();
 
-                FinalTestWin_finalTest.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="evaluation.final.test"/>" + '&nbsp;\'' + record.tclass.course.titleFa + '\'');
+                FinalTestWin_finalTest.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="exam"/>" + '&nbsp;\'' + record.tclass.course.titleFa + '\'');
                 FinalTestDF_finalTest.editRecord(record);
                 isCopyForm = false;
                 FinalTestWin_finalTest.show();
@@ -1979,7 +2228,7 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
     function showRemoveForm_finalTest() {
         let record = FinalTestLG_finalTest.getSelectedRecord();
-        let entityType = '<spring:message code="evaluation.final.test"/>';
+        let entityType = '<spring:message code="exam"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
 
             let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
@@ -2158,7 +2407,8 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                 }
                 case "finalTestQuestionBank": {
                         classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
-                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
+                        let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
+                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl + "/" + testQuestionType + "/" + FinalTestLG_finalTest.getSelectedRecord().tclass.id + "/spec-list";
                         ListGrid_FinalTest.invalidateCache();
                         ListGrid_FinalTest.fetchData(null,(res) => {
                         checkHaveQuestion(res);
@@ -2170,9 +2420,15 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         }
     }
 
-    function sendFinalScoreToOnlineExam(form) {
-               wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/final/test/" +sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
+    function sendFinalScoreToOnlineExam(form, record) {
+        let testQuestionType = record.testQuestionType;
+
+        if (testQuestionType === "PreTest") {
+            sourceExamId = record.tclassId
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/" + testQuestionType + "/test/" + sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
                               let respText = JSON.parse(resp.httpResponseText);
                 if (respText.status === 200 || respText.status === 201) {
                     form.close();
@@ -2289,7 +2545,10 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
     }
 
-    async function hasEvaluation(classId) {
+    async function hasEvaluation(classId, testQuestionType) {
+        if (testQuestionType === "PreTest") {
+            return true;
+        }
         let criteria = {fieldName: "id", operator: "equals", value: classId};
         let resp = await
             fetch(viewClassDetailUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(criteria),
@@ -2317,7 +2576,9 @@ if (data.tclassId !== undefined && data.tclassId !== null){
     return parts.join('\n');
 }
     function callApiForSendExam(data,dialog){
-           isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
+        let testQuestionType = data.examItem.testQuestionType;
+           // isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
+           isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/" + testQuestionType, "POST", JSON.stringify(data), function (resp) {
                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                    refresh_finalTest();
 
@@ -2354,4 +2615,64 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         }
         return value;
     }
+
+    function showCreateExamConfirmationDialog() {
+        let examTypeTitle;
+        let examTypeValue = examTypeDF.getField("examType").getValue()[0];
+
+        if (examTypeValue === "1")
+            examTypeTitle = "<spring:message code="evaluation.final.test"/>"
+        else if (examTypeValue === "2")
+            examTypeTitle = "<spring:message code="class.preCourseTest"/>"
+
+        let dialog_Accept = createDialog(
+            "ask",
+            "شما یک ".concat("<b>").concat(examTypeTitle).concat("</b>").concat(" ایجاد می کنید. آیا مطمئن هستید؟"),
+            "اخطار"
+        );
+        dialog_Accept.addProperties({
+            buttonClick: function (button, index) {
+                examTypeDF.clearValues();
+                this.close();
+                selectExamTypeWindow.close();
+                if (index === 0) {
+                    if (examTypeValue === "1") {
+                        // final test
+                        showNewForm_finalTest();
+                    } else if (examTypeValue === "2") {
+                        // pre test
+                        preTestWindow.show();
+                    }
+                }
+            }
+        });
+    }
+
+    function createPreTest(classId) {
+        let url = testQuestionUrl + "/pre-test/" + classId
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                createDialog("info", "<spring:message code="global.form.request.successful"/>", "<spring:message code="global.form.new"/>");
+            } else {
+                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+            }
+        }));
+        preTestDF.clearValues();
+        preTestWindow.close();
+    }
+
+    function disableResendFinalTestTab() {
+        let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
+
+        if (testQuestionType === "PreTest") {
+            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
+            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+        } else {
+            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
+            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+        }
+    }
+
     //</script>

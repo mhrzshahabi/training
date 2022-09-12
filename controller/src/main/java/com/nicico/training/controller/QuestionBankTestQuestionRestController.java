@@ -107,9 +107,9 @@ public class QuestionBankTestQuestionRestController {
         criteriaRq1.setOperator(EOperator.equals);
         criteriaRq1.setFieldName("testQuestion.testQuestionType");
 
-        if (type.equals("preTest")) {
+        if (type.equals("preTest") || type.equals("PreTest")) {
             criteriaRq1.setValue("PreTest");
-        } else if (type.equals("test")) {
+        } else if (type.equals("test") || type.equals("FinalTest")) {
             criteriaRq1.setValue("FinalTest");
         } else {
             criteriaRq1.setValue("Preparation");
@@ -217,9 +217,9 @@ public class QuestionBankTestQuestionRestController {
         criteriaRq1.setOperator(EOperator.equals);
         criteriaRq1.setFieldName("testQuestion.testQuestionType");
 
-        if (type.equals("preTest")) {
+        if (type.equalsIgnoreCase("preTest")) {
             criteriaRq1.setValue("PreTest");
-        } else if (type.equals("test")) {
+        } else if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest")) {
             criteriaRq1.setValue("FinalTest");
         } else {
             criteriaRq1.setValue("Preparation");

@@ -304,4 +304,23 @@ public class TestQuestionService implements ITestQuestionService {
     public long getPreTestId(long id) {
         return testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(id, "PreTest").getId();
     }
+
+    @Override
+    public TestQuestion createPreTest(Long classId) {
+        String testQuestionType = "PreTest";
+
+        TestQuestion testQuestion = testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(classId, testQuestionType);
+
+        if (testQuestion == null) {
+            testQuestion = new TestQuestion();
+            testQuestion.setTestQuestionType(testQuestionType);
+            testQuestion.setPreTestQuestion(true);
+            testQuestion.setTclassId(classId);
+            testQuestionDAO.save(testQuestion);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.conflict, null, "برای این کلاس، پیش آزمون وجود دارد");
+        }
+
+        return testQuestion;
+    }
 }

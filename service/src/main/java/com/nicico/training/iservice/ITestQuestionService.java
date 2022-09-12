@@ -33,4 +33,6 @@ public interface ITestQuestionService {
 
     TestQuestion findByTestQuestionTypeAndTclassId(String testQuestionType, Long classId);
 
+    TestQuestion createPreTest(Long classId);
+
 }

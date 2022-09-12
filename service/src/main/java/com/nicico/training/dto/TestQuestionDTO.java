@@ -61,6 +61,7 @@ public class TestQuestionDTO {
         private String practicalScore;
         private String classScore;
         private TclassDTO.ExamInfo tclass;
+        private String testQuestionType;
     }
 
     @Getter

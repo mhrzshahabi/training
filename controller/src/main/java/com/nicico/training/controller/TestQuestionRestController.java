@@ -191,4 +191,12 @@ public class TestQuestionRestController {
         return new ResponseEntity<>(testQuestionService.update(id, request,response), HttpStatus.OK);
     }
 
+    @Loggable
+    @PostMapping(value = "/pre-test/{classId}")
+    public ResponseEntity<TestQuestionDTO.Info> createPreTest(@PathVariable Long classId) {
+        TestQuestion preTest = testQuestionService.createPreTest(classId);
+        TestQuestionDTO.Info testQuestionInfo = modelMapper.map(preTest, TestQuestionDTO.Info.class);
+        return new ResponseEntity<>(testQuestionInfo, HttpStatus.CREATED);
+    }
+
 }
