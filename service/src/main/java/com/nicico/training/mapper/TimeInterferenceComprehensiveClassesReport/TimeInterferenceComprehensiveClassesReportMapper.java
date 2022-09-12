@@ -1,0 +1,20 @@
+package com.nicico.training.mapper.TimeInterferenceComprehensiveClassesReport;
+
+import com.nicico.training.dto.TimeInterferenceComprehensiveClassesDTO;
+import com.nicico.training.model.TimeInterferenceComprehensiveClassesView;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+public interface TimeInterferenceComprehensiveClassesReportMapper {
+
+    TimeInterferenceComprehensiveClassesDTO toTimeInterferenceComprehensiveClassesDTO(TimeInterferenceComprehensiveClassesView timeInterferenceComprehensiveClassesView);
+
+    TimeInterferenceComprehensiveClassesView toTimeInterferenceComprehensiveClassesView (TimeInterferenceComprehensiveClassesDTO timeInterferenceComprehensiveClassesDTO);
+
+
+    List<TimeInterferenceComprehensiveClassesDTO> toTimeInterferenceComprehensiveClassesDTOs(List<TimeInterferenceComprehensiveClassesView> timeInterferenceComprehensiveClassesViews);
+    List<TimeInterferenceComprehensiveClassesView> toTimeInterferenceComprehensiveClassesDTO(List<TimeInterferenceComprehensiveClassesDTO> timeInterferenceComprehensiveClassesDTOS);
+}

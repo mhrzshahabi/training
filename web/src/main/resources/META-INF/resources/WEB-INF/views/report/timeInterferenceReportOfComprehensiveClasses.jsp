@@ -9,7 +9,7 @@
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-var DynamicForm_TimeInterference = isc.DynamicForm.create({
+let DynamicForm_TimeInterference = isc.DynamicForm.create({
     numCols: 8,
     padding: 10,
     titleAlign: "left",
@@ -33,7 +33,7 @@ var DynamicForm_TimeInterference = isc.DynamicForm.create({
             }],
             textAlign: "center",
             changed: function (form, item, value) {
-                var dateCheck;
+                let dateCheck;
                 dateCheck = checkDate(value);
                 if (dateCheck === false) {
                     form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
@@ -84,7 +84,7 @@ var DynamicForm_TimeInterference = isc.DynamicForm.create({
                 if (form.hasErrors()) {
                     return
                 }
-                var timeInterference_Report_wait = createDialog("wait");
+                let timeInterference_Report_wait = createDialog("wait");
                 setTimeout(function () {
 
                     url = timeInterferenceComprehensiveClassesReportUrl + "/iscList?"+ form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
@@ -121,7 +121,7 @@ var DynamicForm_TimeInterference = isc.DynamicForm.create({
     ],
 
 });
-var RestDataSource_TimeInterference = isc.TrDS.create({
+let RestDataSource_TimeInterference = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true},
@@ -144,10 +144,10 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_TimeInterference,
-        gridComponents: [DynamicForm_TimeInterference,
-                  , "header", "filterEditor", "body"],
+        gridComponents: [DynamicForm_TimeInterference,"header", "filterEditor", "body"],
         autoFetchData: false,
         showFilterEditor:true,
+        filterOnKeypress: true,
         sortDirection: "descending",
         initialSort: [
             {property: "id", direction: "descending"}
@@ -196,21 +196,21 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 title: "دوره های همزمان",
                 width: "10%",
                 align: "center",
-                canFilter: false
+                filterOperator: "iContains"
             },
             {
                 name: "classCode",
                 title: "کد کلاس",
                 width: "10%",
                 align: "center",
-                canFilter: false
+                filterOperator: "iContains"
             },
             {
                 name: "addingUser",
                 title: "کاربر اضافه کننده",
                 width: "10%",
                 align: "center",
-                canFilter: false
+                filterOperator: "iContains"
             },
             {
                 name: "lastModifiedBy",
@@ -231,14 +231,14 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 title: "ساعت شروع جلسه",
                 width: "10%",
                 align: "center",
-                canFilter: false
+                filterOperator: "iContains"
             },
             {
                 name: "sessionEndHour",
                 title: "ساعت پایان جلسه",
                 width: "10%",
                 align: "center",
-                canFilter: false
+                filterOperator: "iContains"
             }
          ],
 

@@ -2,54 +2,23 @@ package com.nicico.training.service;
 
 import com.nicico.training.dto.TimeInterferenceComprehensiveClassesDTO;
 import com.nicico.training.iservice.ITimeInterferenceComprehensiveClassesReportService;
+import com.nicico.training.mapper.TimeInterferenceComprehensiveClassesReport.TimeInterferenceComprehensiveClassesReportMapper;
+import com.nicico.training.model.TimeInterferenceComprehensiveClassesView;
 import com.nicico.training.repository.TimeInterferenceComprehensiveClassesReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TimeInterferenceComprehensiveClassesReportService implements ITimeInterferenceComprehensiveClassesReportService {
     private  final TimeInterferenceComprehensiveClassesReportDAO timeInterferenceDAO;
+    private  final TimeInterferenceComprehensiveClassesReportMapper mapper;
 
     @Override
     public List<TimeInterferenceComprehensiveClassesDTO> list(String startDate, String endDate) throws Exception {
-        List<Object> objectResult;
-        objectResult = timeInterferenceDAO.list(startDate, endDate);
-
-        return  convertObject(objectResult);
-    }
-
-    private List<TimeInterferenceComprehensiveClassesDTO> convertObject(List<Object> objectResult)
-                                                             {
-        List<TimeInterferenceComprehensiveClassesDTO> result = new ArrayList<>();
-
-        try {
-            if (objectResult.size() > 0) {
-                for (Object o : objectResult) {
-                    Object[] arr = (Object[]) o;
-                    TimeInterferenceComprehensiveClassesDTO timeInterferenceComprehensiveClassesDTO = new TimeInterferenceComprehensiveClassesDTO();
-                    timeInterferenceComprehensiveClassesDTO.setCount_TimeInterference((int) Long.parseLong(arr[0].toString()));
-                    timeInterferenceComprehensiveClassesDTO.setStudentFullName((String) arr[1]);
-                    timeInterferenceComprehensiveClassesDTO.setNationalCode((String) arr[2]);
-                    timeInterferenceComprehensiveClassesDTO.setStudentWorkCode((String) arr[3]);
-                    timeInterferenceComprehensiveClassesDTO.setStudentAffairs((String) arr[4]);
-                    timeInterferenceComprehensiveClassesDTO.setConcurrentCourses((String) arr[5]);
-                    timeInterferenceComprehensiveClassesDTO.setClassCode((String) arr[6]);
-                    timeInterferenceComprehensiveClassesDTO.setAddingUser((String) arr[7]);
-                    timeInterferenceComprehensiveClassesDTO.setLastModifiedBy((String) arr[8]);
-                    timeInterferenceComprehensiveClassesDTO.setSessionDate((String) arr[9]);
-                    timeInterferenceComprehensiveClassesDTO.setSessionStartHour((String) arr[10]);
-                    timeInterferenceComprehensiveClassesDTO.setSessionEndHour((String) arr[11]);
-
-                    result.add(timeInterferenceComprehensiveClassesDTO);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+        List<TimeInterferenceComprehensiveClassesView>  objectResult = timeInterferenceDAO.list(startDate, endDate);
+        return  mapper.toTimeInterferenceComprehensiveClassesDTOs(objectResult);
     }
 
 }

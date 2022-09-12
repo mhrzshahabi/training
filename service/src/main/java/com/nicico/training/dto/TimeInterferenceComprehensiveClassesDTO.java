@@ -14,7 +14,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class TimeInterferenceComprehensiveClassesDTO {
 
-    private Integer count_TimeInterference;
+    private Long id;
+    private Integer countTimeInterference;
     private String studentFullName;
     private String nationalCode;
     private String studentWorkCode;
@@ -26,14 +27,9 @@ public class TimeInterferenceComprehensiveClassesDTO {
     private String sessionDate;
     private String sessionStartHour;
     private String sessionEndHour;
-
     private Long session_id;
     private Long student_id;
     private String class_student_d_created_date;
     private String class_student_d_last_modified_date;
-
-    public TimeInterferenceComprehensiveClassesDTO() {
-
-    }
 
 }
