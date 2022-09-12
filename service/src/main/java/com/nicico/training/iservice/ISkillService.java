@@ -14,6 +14,7 @@ import java.util.List;
 public interface ISkillService {
 
     SkillDTO.Info get(Long id);
+    List<SkillDTO.Info2> getInfoV2(List<Long> ids);
 
     Skill getSkill(Long id);
 

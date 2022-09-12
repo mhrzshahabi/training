@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
+import com.nicico.training.model.PostGradeGroup;
 
 import java.util.List;
 import java.util.Set;
@@ -30,4 +31,7 @@ public interface IPostGradeGroupService {
     void addPostGrades(Long postGradeGroupId, Set<Long> postGradeIds);
 
     void removePostGrades(Long postGradeGroupId, Set<Long> postGradeIds);
+
+    List<PostGradeGroup> getPostGradeGroupsByTrainingPostId(Long objectId);
+
 }

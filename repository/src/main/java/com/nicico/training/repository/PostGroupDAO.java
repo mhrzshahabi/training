@@ -8,11 +8,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface PostGroupDAO extends JpaRepository<PostGroup, Long>, JpaSpecificationExecutor<PostGroup> {
 
     @Modifying
     @Query(value = "update TBL_POST_GROUP set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName,N_VERSION = N_VERSION + 1 where ID = :objectId", nativeQuery = true)
-    public int updateModifications(Long objectId, Date modificationDate, String userName);
+     int updateModifications(Long objectId, Date modificationDate, String userName);
+
+
+    @Modifying
+    @Query(value = "SELECT\n" +
+            "    f_post_group_id FROM tbl_training_post_post_group\n" +
+            "    WHERE\n" +
+            "    f_training_post_id = :id", nativeQuery = true)
+     List<Long> getAllPostGroupIdByTrainingPostId(Long id);
+
 }

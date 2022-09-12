@@ -43,6 +43,13 @@ public class SkillLevelDTO {
         private String titleFa;
         private String titleEn;
     }
+    @Getter
+    @Setter
+    @ApiModel("SkillLevelInfoTuple")
+    public static class SkillLevelInfoTupleV2 {
+        private Long id;
+        private String titleFa;
+    }
 
     @Getter
     @Setter

@@ -10,6 +10,7 @@ import com.nicico.training.iservice.IPostGradeGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.PostGrade;
 import com.nicico.training.model.PostGradeGroup;
+import com.nicico.training.model.PostGroup;
 import com.nicico.training.repository.PostGradeDAO;
 import com.nicico.training.repository.PostGradeGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -138,6 +139,14 @@ public class PostGradeGroupService implements IPostGradeGroupService {
             final PostGrade postGrade = optionalPost.orElseThrow(trainingExceptionSupplier);
             postGradeGroup.getPostGradeSet().remove(postGrade);
         }
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostGradeGroup> getPostGradeGroupsByTrainingPostId(Long id) {
+        List<Long> ids = postGradeGroupDAO.getAllPostGroupIdByPostGradeId(id);
+        return postGradeGroupDAO.findAllById(ids);
     }
 
     @Transactional

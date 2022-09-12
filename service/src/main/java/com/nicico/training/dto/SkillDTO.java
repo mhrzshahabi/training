@@ -62,6 +62,19 @@ public class SkillDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("SkillInfo")
+    public static class Info2 extends SkillDTO {
+        private Long id;
+        private String limitSufficiency;
+        private SkillLevelDTO.SkillLevelInfoTupleV2 skillLevel;
+        private CategoryDTO.CategoryInfoTuple category;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+        private CourseDTO.CourseInfoTupleLite course;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("SkillInfoTupleENA")
     public static class InfoTupleENA extends SkillDTO {
         private Long id;

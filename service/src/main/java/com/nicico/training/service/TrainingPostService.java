@@ -264,4 +264,12 @@ public class TrainingPostService implements ITrainingPostService {
 
         return false;
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrainingPost> getTrainingPostWithPostId(Long id) {
+        List<Long> ids = trainingPostDAO.getAllTrainingPostIdByPostId(id);
+        return trainingPostDAO.findAllById(ids);
+    }
 }

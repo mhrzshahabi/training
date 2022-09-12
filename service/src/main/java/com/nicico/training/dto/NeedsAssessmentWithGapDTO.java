@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -80,10 +82,10 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         private Integer version;
         private String objectName;
         private String objectCode;
-        private CompetenceDTO.Info competence;
-        private SkillDTO.Info skill;
-        private ParameterValueDTO.MinInfo needsAssessmentDomain;
-        private ParameterValueDTO.MinInfo needsAssessmentPriority;
+//        private CompetenceDTO.Info competence;
+//        private SkillDTO.Info skill;
+//        private ParameterValueDTO.MinInfo needsAssessmentDomain;
+//        private ParameterValueDTO.MinInfo needsAssessmentPriority;
         private String workflowStatus;
         private Integer workflowStatusCode;
         private String mainWorkflowStatus;
@@ -205,5 +207,28 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private String objectType;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CreateNeedAssessment - Info")
+    public static class CreateNeedAssessment {
+        private Long objectId;
+        private Long competenceId;
+        private String objectType;
+        private List<CreateNeedAssessmentSkill> createNeedAssessmentSkills;
+
+    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CreateNeedAssessmentSkill - Info")
+    public static class CreateNeedAssessmentSkill {
+        private Long id;
+        private Long courseId;
+        private Float limitSufficiency;
+
     }
 }

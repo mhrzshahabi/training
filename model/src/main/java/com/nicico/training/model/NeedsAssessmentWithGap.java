@@ -23,6 +23,8 @@ public class NeedsAssessmentWithGap<E> extends Auditable {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "needs_assessment_with_gap_seq")
+    @SequenceGenerator(name = "needs_assessment_with_gap_seq", sequenceName = "seq_needs_assessment_with_gap_id", allocationSize = 1)
     private Long id;
 
     @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.LAZY)
@@ -59,7 +61,7 @@ public class NeedsAssessmentWithGap<E> extends Auditable {
     private Long competenceId;
 
     @Column(name = "limit_sufficiency")
-    private Long limitSufficiency;
+    private Float limitSufficiency;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

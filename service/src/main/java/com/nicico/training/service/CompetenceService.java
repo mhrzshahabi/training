@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
@@ -20,6 +21,7 @@ import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -313,6 +315,16 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         }else {
             throw new TrainingException(TrainingException.ErrorType.CompetenceTypeNotFound);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CompetenceDTO.Info> getInfos(List<Long> ids) {
+        return modelMapper.map(getCompetences(ids), new TypeToken<List<CompetenceDTO.Info>>() {
+        }.getType());
+    }
+    public List<Competence> getCompetences(List<Long> ids) {
+        return competenceDAO.findAllById(ids);
     }
 
 }

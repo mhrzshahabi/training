@@ -150,15 +150,12 @@ public class PostGroupService implements IPostGroupService {
     @Override
     public boolean delete(Long id) {
         try {
-            if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id))
-            {
+            if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id)) {
                 postGroupDAO.deleteById(id);
                 return true;
-            }
-            else
+            } else
                 return false;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
 
@@ -319,4 +316,11 @@ public class PostGroupService implements IPostGroupService {
 //        return modelMapper.map(postGroup.getPostSet(), new TypeToken<List<PostDTO.Info>>() {
 //        }.getType());
 //    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostGroup> getPostGroupsByTrainingPostId(Long trainingPost) {
+        List<Long> ids = postGroupDAO.getAllPostGroupIdByTrainingPostId(trainingPost);
+        return postGroupDAO.findAllById(ids);
+    }
 }

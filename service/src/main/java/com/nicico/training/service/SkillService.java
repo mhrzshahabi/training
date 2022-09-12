@@ -52,6 +52,12 @@ public class SkillService implements ISkillService {
     public SkillDTO.Info get(Long id) {
         return modelMapper.map(getSkill(id), SkillDTO.Info.class);
     }
+    @Transactional(readOnly = true)
+    @Override
+    public List<SkillDTO.Info2> getInfoV2(List<Long> ids) {
+        return modelMapper.map(getSkills(ids), new TypeToken<List<SkillDTO.Info2>>() {
+        }.getType());
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -59,6 +65,10 @@ public class SkillService implements ISkillService {
         final Optional<Skill> ssById = skillDAO.findById(id);
         return ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
     }
+    @Transactional(readOnly = true)
+    public List<Skill> getSkills(List<Long> ids) {
+        return skillDAO.findAllById(ids);
+     }
 
     @Transactional
     @Override

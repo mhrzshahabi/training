@@ -25,4 +25,10 @@ public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long> {
     @Modifying
     @Query(value = "UPDATE TBL_TRAINING_POST SET E_DELETED = NULL WHERE ID = :trainingPostId", nativeQuery = true)
     void setNullToDeleted(@Param("trainingPostId") Long trainingPostId);
+
+    @Modifying
+    @Query(value = "SELECT\n" +
+            "    f_training_post_id FROM tbl_post_training_post \n" +
+            "    WHERE f_post_id = :id", nativeQuery = true)
+    List<Long> getAllTrainingPostIdByPostId(Long id);
 }

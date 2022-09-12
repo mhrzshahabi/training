@@ -3907,7 +3907,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="f_competence" type="NUMBER(19, 0)"/>
-            <column name="limit_sufficiency" type="NUMBER(19, 0)"/>
+            <column name="limit_sufficiency" type="FLOAT"/>
             <column name="c_main_workflow_status" type="VARCHAR2(255 CHAR)"/>
             <column name="n_main_workflow_status_code" type="NUMBER(10, 0)"/>
             <column name="f_parameter_value_needs_assessment_domain" type="NUMBER(19, 0)"/>

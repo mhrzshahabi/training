@@ -388,4 +388,8 @@
     <changeSet id="1654668348111-01" author="kasehpour">
         <createSequence sequenceName="seq_operational_chart_id"/>
     </changeSet>
+
+    <changeSet id="1662357723-02" author="namdari">
+        <createSequence sequenceName="seq_needs_assessment_with_gap_id"/>
+    </changeSet>
 </databaseChangeLog>

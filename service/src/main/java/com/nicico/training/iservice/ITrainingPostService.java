@@ -46,4 +46,5 @@ public interface ITrainingPostService {
     Boolean updateTrainingPostDeletionStatus(Long trainingPostId);
 
 
+    List<TrainingPost> getTrainingPostWithPostId(Long objectId);
 }

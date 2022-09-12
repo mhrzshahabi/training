@@ -1236,7 +1236,6 @@
     const downloadFiles = baseUrl + "/anonymous/els/download/";
     const parameterUrl = rootUrl + "/parameter";
     const parameterValueUrl = rootUrl + "/parameter-value";
-    const needAssessmentWithGap = rootUrl + "/needsAssessmentWithGap/";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
@@ -1339,6 +1338,12 @@
     const requestItemBPMSUrl = rootUrl + "/certification-bpms" ;
     const systemStatusUrl = rootUrl + "/system-status";
     const addIndividualPost = rootUrl + "/view-training-post/add";
+    const addNeedAssmentForGaps = rootUrl + "/needsAssessmentWithGap/addSkills";
+    const getSkills = rootUrl + "/needsAssessmentWithGap/iscList/";
+    const CompetencesIscList = rootUrl + "/needsAssessmentWithGap/competence/iscList";
+    const sendToWorkFlow = rootUrl + "/needsAssessmentWithGap/sendToWorkFlow/";
+    const deleteTempDataFromWorkFlow = rootUrl + "/needsAssessmentWithGap/deleteUnCompleteData/";
+    const canChangeData = rootUrl + "/needsAssessmentWithGap/canChangeData/";
     const deleteIndividualPost = rootUrl + "/view-training-post/delete";
     const genericStatisticalIndexReportUrl = rootUrl + "/generic_statistical_index_report";
     const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";

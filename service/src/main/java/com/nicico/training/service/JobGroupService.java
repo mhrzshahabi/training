@@ -16,6 +16,7 @@ import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
+import com.nicico.training.model.PostGradeGroup;
 import com.nicico.training.repository.JobDAO;
 import com.nicico.training.repository.JobGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -171,6 +172,14 @@ public class JobGroupService implements IJobGroupService {
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
         return modelMapper.map(jobGroup.getJobSet().stream().filter(job -> job.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<JobDTO.Info>>() {
         }.getType());
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<JobGroup> getPostGradeGroupsByJobId(Long id) {
+        List<Long> ids = jobGroupDAO.getPostGradeGroupsByJobId(id);
+        return jobGroupDAO.findAllById(ids);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.model.Competence;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,4 +31,7 @@ public interface ICompetenceService {
     SearchDTO.SearchRs<CompetenceDTO.Posts> searchTempPosts(Long id, Integer startRow, Integer endRow);
 
     Competence getCompetence(Long id);
+
+    List<CompetenceDTO.Info> getInfos(List<Long> ids);
+
 }

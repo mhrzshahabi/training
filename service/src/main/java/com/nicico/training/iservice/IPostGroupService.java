@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.model.PostGroup;
 
 import java.util.List;
 import java.util.Set;
@@ -50,4 +51,5 @@ public interface IPostGroupService {
     List<PostDTO.Info> getPosts(Long postGroupID);
 
     List<TrainingPostDTO.Info> getTrainingPosts(Long postGroupID);
+    List<PostGroup> getPostGroupsByTrainingPostId(Long trainingPost);
 }
