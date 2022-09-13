@@ -204,19 +204,23 @@
                                 params.coWorkerGrade = record.coWorkerGrade;
                                 params.trainingGrade = record.trainingGrade;
 
+                                let fileName = null;
+                                let actionUrl = null;
+
                                 if (reportType === "record") {
-                                    print_BehavioralEvaluationResultForRecord(
-                                        behavioralEvaluationClassId,
-                                        params,
-                                        "behavioralEvaluationAnalysisReport.jasper",
-                                        DF_Report_Evaluation_Analysis.getValue("suggestions"),
-                                        DF_Report_Evaluation_Analysis.getValue("opinion")
-                                    )
+                                    fileName = "behavioralEvaluationAnalysisReport.jasper";
+                                    actionUrl = "<spring:url value="evaluationAnalysis/printBehavioralChangeReport/"/>";
                                 } else if (reportType === "all") {
+                                    fileName = "behavioralReport.jasper";
+                                    actionUrl = "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + "pdf";
+                                }
+
+                                if (fileName !== null && actionUrl !== null) {
                                     print_BehavioralEvaluationResult(
+                                        actionUrl,
                                         behavioralEvaluationClassId,
                                         params,
-                                        "behavioralReport.jasper",
+                                        fileName,
                                         DF_Report_Evaluation_Analysis.getValue("suggestions"),
                                         DF_Report_Evaluation_Analysis.getValue("opinion")
                                     );
@@ -232,10 +236,10 @@
         Window_Report_Evaluation_Analysis.show();
     }
 
-    function print_BehavioralEvaluationResult(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
+    function print_BehavioralEvaluationResult(actionUrl, ClassId, params, fileName,suggestions,opinion) {
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
+            action: actionUrl,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -256,28 +260,5 @@
         criteriaForm.submitForm();
     }
 
-    function print_BehavioralEvaluationResultForRecord(ClassId, params, fileName, suggestions, opinion) {
-        let criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="evaluationAnalysis/printBehavioralChangeReport/"/>" ,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "fileName", type: "hidden"},
-                    {name: "ClassId", type: "hidden"},
-                    {name: "params", type: "hidden"},
-                    {name: "suggestions", type: "hidden"},
-                    {name: "opinion", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("ClassId", ClassId);
-        criteriaForm.setValue("fileName", fileName);
-        criteriaForm.setValue("params", JSON.stringify(params));
-        criteriaForm.setValue("suggestions", suggestions);
-        criteriaForm.setValue("opinion", opinion);
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
 
     // </script>
