@@ -4663,7 +4663,7 @@
         trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
     }
 
-    function register_Training_Reaction_Form_JspClass(classRecord) {
+    function register_Training_Reaction_Form_JspClass(classRecord) {  ///////////////////////////////////
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
@@ -4763,6 +4763,8 @@
                             Window_Questions_JspEvaluation.close();
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                 classRecord.id, "GET", null, null));
+
+                            ListGrid_Class_refresh();
                             const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                             setTimeout(() => {
                                 msg.close();
