@@ -127,21 +127,23 @@ public class EvaluationDTO implements Serializable {
         private String returnDate;
         private String evaluatorTypeTitle;
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("BehavioralForms")
-    public static class BehavioralAnalysist {
-        private Long evaluatorTypeId;
-        private String evaluatorName;
-        private String evaluatedName;
-        private Long evaluatedId;
-        private String nationalCode;
-        private Boolean status;
-        private String evaluationRate;
-        private Long id;
-        private Long evaluatorId;
-        private String evaluatorTypeTitle;
+    public static class BehavioralAnalysis {
+
+        private String evaluatedPersonnelNo;
+        private String evaluatedNationalCode;
+        private String evaluatedFullName;
+        private String evaluatedMobile;
+
+        private String studentGrade;
+        private String supervisorGrade;
+        private String servitorGrade;
+        private String coWorkerGrade;
+        private String trainingGrade;
     }
 
     @Getter

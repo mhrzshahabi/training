@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evaluationReport" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92fbd97e-62bb-4c78-bc86-10540d4c7d95">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -94,6 +94,11 @@
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="today" class="java.lang.String"/>
 	<parameter name="course" class="java.lang.String"/>
+	<parameter name="with_code" class="java.lang.String"/>
+	<parameter name="and_class_code" class="java.lang.String"/>
+	<parameter name="class_code" class="java.lang.String"/>
+	<parameter name="course_code" class="java.lang.String"/>
+	<parameter name="report_header" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -130,19 +135,12 @@
 				</textElement>
 				<text><![CDATA[تاریخ :]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="270" y="15" width="100" height="20" uuid="642c6152-780b-4b0b-84f0-8b76ce7314e7"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[گزارش تغییر رفتار دوره ]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="170" y="15" width="100" height="20" uuid="1b01951d-7ed8-47d2-9a15-48640725f667"/>
+				<reportElement x="10" y="15" width="480" height="20" uuid="3fd7ece6-5487-4f13-a8e3-4f7c33c8e23c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{course}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{report_header} + $P{course} +$P{with_code} + $P{course_code} + $P{and_class_code} + $P{class_code}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -321,7 +319,7 @@
 						<font fontName="Shabnam-FD"/>
 					</itemLabel>
 					<categoryAxisFormat labelRotation="360.0">
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" tickLabelMask="" axisLineColor="#000000">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
 							<labelFont>
 								<font fontName="Shabnam-FD"/>
 							</labelFont>
@@ -331,7 +329,7 @@
 						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" tickLabelMask="" axisLineColor="#000000">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
 							<labelFont>
 								<font fontName="Shabnam-FD"/>
 							</labelFont>

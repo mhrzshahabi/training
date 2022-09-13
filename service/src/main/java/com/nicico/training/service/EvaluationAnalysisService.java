@@ -22,8 +22,10 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.utility.PersianCharachtersUnicode;
+import io.netty.util.internal.MathUtil;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.math3.util.MathUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -367,7 +369,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                     Map<String, Object> behavior = new HashMap<>();
                     behavior.put("behaviorVal", result.getIndicesGrade().get("s" + classEvaluationGoals.getSkillId()));
-                    behavior.put("behaviorCat", "ﺺﺧﺎﺷ " + i);
+                    behavior.put("behaviorCat", "شاخص " + i);
                     behavioralChart.add(behavior);
 
                     i++;
@@ -380,7 +382,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                     Map<String, Object> behavior = new HashMap<>();
                     behavior.put("behaviorVal", result.getIndicesGrade().get("g" + classEvaluationGoals.getGoalId()));
-                    behavior.put("behaviorCat", "ﺺﺧﺎﺷ " + i);
+                    behavior.put("behaviorCat", "شاخص " + i);
                     behavioralChart.add(behavior);
 
                     i++;
@@ -395,7 +397,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                 Map<String, Object> behavior = new HashMap<>();
                 behavior.put("behaviorVal", result.getIndicesGrade().get("g" + goal.getId()));
-                behavior.put("behaviorCat", "ﺺﺧﺎﺷ " + i);
+                behavior.put("behaviorCat", "شاخص " + i);
                 behavioralChart.add(behavior);
 
                 i++;
@@ -408,13 +410,18 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                 Map<String, Object> behavior = new HashMap<>();
                 behavior.put("behaviorVal", result.getIndicesGrade().get("s" + skill.getId()));
-                behavior.put("behaviorCat", "ﺺﺧﺎﺷ " + i);
+                behavior.put("behaviorCat", "شاخص " + i);
                 behavioralChart.add(behavior);
 
                 i++;
             }
 
         }
+
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
 
         List<Map> behavioralScoreChart = new ArrayList();
         String[] classStudentsName = result.getClassStudentsName();
@@ -428,13 +435,9 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         Map<String, Object> behavior = new HashMap<>();
         behavior.put("scoreVal", result.getBehavioralGrade());
-        behavior.put("scoreCat", "  ﻩﺭﻭﺩ ﺭﺎﺘﻓﺭ ﺮﯿﯿﻐﺗ ﻦﯿﮕﻧﺎﯿﻣ");
+        behavior.put("scoreCat", "میانگین تغییر رفتار دوره ");
         behavioralScoreChart.add(behavior);
 
-        final Gson gson = new Gson();
-        Type resultType = new TypeToken<HashMap<String, Object>>() {
-        }.getType();
-        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         String data = "";
         data = "{" + "\"courseRegistered\": " + objectMapper.writeValueAsString(studentsList) + "," +
                 "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
@@ -445,7 +448,69 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
         params.put("criticisim", suggestions);
         params.put("comment", opinion);
+        params.put("course_code", tclass.getCourse().getCode());
+        params.put("class_code", tclass.getCode());
+        params.put("report_header", "گزارش تغییر رفتار دوره ");
+        params.put("with_code", " با کد ");
+        params.put("and_class_code", " و کد کلاس ");
         params.put(ConstantVARs.REPORT_TYPE, type);
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+        Tclass tclass = tclassDAO.findById(classId)
+                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+
+        List<Map<String, Object>> studentsEvalResults = new ArrayList<>();
+        Map<String, Object> results = new HashMap<>();
+
+        results.put("supervisorGrade", params.get("supervisorGrade"));
+        results.put("coWorkerGrade", params.get("coWorkerGrade"));
+        results.put("servitorGrade", params.get("servitorGrade"));
+        results.put("trainingGrade", params.get("trainingGrade"));
+        results.put("studentGrade", params.get("studentGrade"));
+        results.put("evaluatedFullName", params.get("evaluatedFullName"));
+        results.put("evaluatedPersonnelNo", params.get("evaluatedPersonnelNo"));
+        results.put("evaluatedNationalCode", params.get("evaluatedNationalCode"));
+
+        double[] grades = {
+                Double.parseDouble(!params.get("studentGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("studentGrade").toString() : String.valueOf(0)),
+                Double.parseDouble(!params.get("supervisorGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("supervisorGrade").toString() : String.valueOf(0)),
+                Double.parseDouble(!params.get("coWorkerGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("coWorkerGrade").toString() : String.valueOf(0)),
+                Double.parseDouble(!params.get("servitorGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("servitorGrade").toString() : String.valueOf(0)),
+                Double.parseDouble(!params.get("trainingGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("trainingGrade").toString() : String.valueOf(0))
+        };
+        double sum = 0;
+        for (double value : grades) {
+            sum += value;
+        }
+        double averageGrade = (sum) / (grades.length);
+
+        params.put("today", DateUtil.todayDate());
+        params.put("course", tclass.getCourse().getTitleFa());
+        params.put("criticisim", suggestions);
+        params.put("comment", opinion);
+        params.put("course_code", tclass.getCourse().getCode());
+        params.put("class_code", tclass.getCode());
+        params.put("report_header", "گزارش تغییر رفتار دوره ");
+        params.put("with_code", " با کد ");
+        params.put("and_class_code", " و کد کلاس ");
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        results.put("no", 1);
+        results.put("average_scores", String.valueOf(averageGrade));
+
+        studentsEvalResults.add(results);
+
+        String data = "{" + "\"studentsEvaluationResult\": " + objectMapper.writeValueAsString(studentsEvalResults) + "}";
+
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);

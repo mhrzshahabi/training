@@ -6,6 +6,7 @@
 // <script>
     var behavioral_chartData1 = null;
     var behavioralEvaluationClassId = null;
+    let selectedRecord = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         height: "75%",
@@ -64,23 +65,17 @@
 
     var RestDataSource_evaluation_behavioral_analysist = isc.TrDS.create({
         fields: [
-            {name: "id"},
-            {name: "evaluatorName"},
-            {name: "evaluatedName"},
-            {name: "evaluatedId"},
-            {name: "nationalCode"},
-            {name: "evaluatorTypeTitle"},
-            {name: "behavioralToOnlineStatus"},
-            {name: "status",
-                valueMap:{
-                    "true": "ثبت شده",
-                    "false" : "ثبت نشده"
-                }},
-            {name: "evaluationRate",
-               },
-
+            {name: "evaluatedPersonnelNo", title: "شماره پرسنلی", filterOperator: "iContains"},
+            {name: "evaluatedNationalCode", title: "کد ملی", filterOperator: "iContains"},
+            {name: "evaluatedFullName", title: "نام", filterOperator: "iContains"},
+            {name: "evaluatedMobile", title: "موبایل", filterOperator: "iContains"},
+            {name: "studentGrade", title: "نمره ارزیابی فراگیر به خودش", filterOperator: "iContains"},
+            {name: "supervisorGrade", title: "نمره ارزیابی سرپرست به فراگیر", filterOperator: "iContains"},
+            {name: "servitorGrade", title: "نمره ارزیابی زیردست به فراگیر", filterOperator: "iContains"},
+            {name: "coWorkerGrade", title: "نمره ارزیابی همکار به فراگیر", filterOperator: "iContains"},
+            {name: "trainingGrade", title: "نمره ارزیابی مسئول آموزش به فراگیر", filterOperator: "iContains"}
         ],
-        fetchDataURL: evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId,
+        fetchDataURL: evaluationUrl + "/getBehavioralInClass/" + behavioralEvaluationClassId,
     });
 
     var ListGrid_evaluation_behavioral_analysist = isc.TrLG.create({
@@ -96,43 +91,43 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         initialSort: [
-            {property: "evaluatedId", direction: "descending", primarySort: true}
+            {property: "evaluatedPersonnelNo", direction: "descending", primarySort: true}
         ],
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "evaluatedId", title: "evaluatedId",  canEdit: false, hidden: true},
+            {name: "evaluatedPersonnelNo"},
+            {name: "evaluatedNationalCode"},
+            {name: "evaluatedFullName"},
+            {name: "evaluatedMobile"},
+            {name: "studentGrade"},
+            {name: "supervisorGrade"},
+            {name: "servitorGrade"},
+            {name: "coWorkerGrade"},
+            {name: "trainingGrade"},
             {
-                name: "evaluatedName",
-                title: "ارزیابی شونده",
-                align: "center",
+                name: "btnResults",
                 canFilter: false,
-            },
-            {
-                name: "evaluatorName",
-                title: "ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "nationalCode",
-                title: "کد ملی ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "evaluatorTypeTitle",
-                title: "نوع ارزیابی کننده",
-                align: "center",
-                canFilter: false,
-            },{
-                name: "status",
-                title: "وضعیت ارزیابی",
-                align: "center",canFilter: false,
-            },{
-                name: "evaluationRate",
-                title: "نمره ارزیابی",
-                align: "center",canFilter: false,
+                title: "گزارش تغییر رفتار ",
+                width: "130"
             },
 
         ],
+        createRecordComponent: function (record, colNum) {
+            selectedRecord = record
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName === "btnResults") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    // disabled: !record.onlineFinalExamStatus,
+                    title: "چاپ گزارش",
+                    margin: 3,
+                    click: function () {
+                        printBehaviorChangeReport(selectedRecord, "record");
+                    }
+                });
+            } else {
+                return null;
+            }
+        },
     });
 
     var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
@@ -142,33 +137,7 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
-            let Window_Report_Evaluation_Analysis  = isc.Window.create({
-                title: "گزارش تغییر رفتار",
-                width: 500,
-                items: [
-                        isc.DynamicForm.create({
-                            ID: "DF_Report_Evaluation_Analysis",
-                            fields: [
-                                {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
-                                {name: "opinion", title: "نظر کارشناس ارزیابی"}
-                            ]
-                        }),
-                    isc.TrHLayoutButtons.create({
-                        members: [
-                        isc.IButton.create({
-                        title: "گزارش گیری",
-                        click: function () {
-                            print_BehavioralEvaluationResult(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
-                                DF_Report_Evaluation_Analysis.getValue("suggestions"),
-                                DF_Report_Evaluation_Analysis.getValue("opinion"));
-                            Window_Report_Evaluation_Analysis.close();
-                        }
-                    })
-                    ],
-                })
-                ]
-            });
-            Window_Report_Evaluation_Analysis.show();
+            printBehaviorChangeReport(selectedRecord, "all");
         }
     });
     var IButton_show_ListGrid = isc.IButton.create({
@@ -206,10 +175,71 @@
         ]
     });
 
-    function print_BehavioralEvaluationResult(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
-        var criteriaForm = isc.DynamicForm.create({
+    function printBehaviorChangeReport(record, reportType) {
+        let Window_Report_Evaluation_Analysis = isc.Window.create({
+            title: "گزارش تغییر رفتار",
+            width: 500,
+            items: [
+                isc.DynamicForm.create({
+                    ID: "DF_Report_Evaluation_Analysis",
+                    fields: [
+                        {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
+                        {name: "opinion", title: "نظر کارشناس ارزیابی"}
+                    ]
+                }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButton.create({
+                            title: "گزارش گیری",
+                            click: function () {
+                                let params = {};
+
+                                params.evaluatedPersonnelNo = record.evaluatedPersonnelNo;
+                                params.evaluatedNationalCode = record.evaluatedNationalCode;
+                                params.evaluatedFullName = record.evaluatedFullName;
+                                params.evaluatedMobile = record.evaluatedMobile;
+                                params.studentGrade = record.studentGrade;
+                                params.supervisorGrade = record.supervisorGrade;
+                                params.servitorGrade = record.servitorGrade;
+                                params.coWorkerGrade = record.coWorkerGrade;
+                                params.trainingGrade = record.trainingGrade;
+
+                                let fileName = null;
+                                let actionUrl = null;
+
+                                if (reportType === "record") {
+                                    fileName = "behavioralEvaluationAnalysisReport.jasper";
+                                    actionUrl = "<spring:url value="evaluationAnalysis/printBehavioralChangeReport/"/>";
+                                } else if (reportType === "all") {
+                                    fileName = "behavioralReport.jasper";
+                                    actionUrl = "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + "pdf";
+                                }
+
+                                if (fileName !== null && actionUrl !== null) {
+                                    print_BehavioralEvaluationResult(
+                                        actionUrl,
+                                        behavioralEvaluationClassId,
+                                        params,
+                                        fileName,
+                                        DF_Report_Evaluation_Analysis.getValue("suggestions"),
+                                        DF_Report_Evaluation_Analysis.getValue("opinion")
+                                    );
+                                }
+
+                                Window_Report_Evaluation_Analysis.close();
+                            }
+                        })
+                    ],
+                })
+            ]
+        });
+        Window_Report_Evaluation_Analysis.show();
+    }
+
+    function print_BehavioralEvaluationResult(actionUrl, ClassId, params, fileName,suggestions,opinion) {
+        let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
+            action: actionUrl,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -230,3 +260,5 @@
         criteriaForm.submitForm();
     }
 
+
+    // </script>
