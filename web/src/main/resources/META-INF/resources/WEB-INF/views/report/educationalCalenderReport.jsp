@@ -72,6 +72,16 @@
 
 
     });
+
+    var RestDataSource_JspCalenderCourses = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "courseCode"},
+                {name: "calenderId"}
+            ],
+
+    });
     //----------------------------------------------------Criteria Form------------------------------------------------
 
 
@@ -177,7 +187,19 @@
             })
         ]
     });
+    courses_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
 
+                click: function () {
+                     makeExcelOutputOfCourses();
+                }
+
+            })
+        ]
+    });
 
     ListGrid_Calender_BasicGoals = isc.ListGrid.create({
         dataSource: RestDataSource_JspCalenderBasicGoals,
@@ -359,7 +381,48 @@
 
 
     });
+    ListGrid_Calender_Courses = isc.ListGrid.create({
+        dataSource: RestDataSource_JspCalenderCourses,
+        sortField: 0,
+        sortDirection: "descending",
+        dataPageSize: 200,
+        autoFetchData: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        canAutoFitFields: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        align: "center",
+        fields: [
+            {
+                name: "course",
+                title: "دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseCode",
+                title: "کد دوره",
+                filterOperator: "iContains"
+            }
 
+        ],
+        gridComponents: [courses_actions, "filterEditor", "header", "body", "summaryRow"],
+
+        filterEditorSubmit: function () {
+            ListGrid_Calender_Courses.invalidateCache();
+        },
+
+        filterEditorSubmit: function () {
+            ListGrid_Calender_Courses.invalidateCache();
+        }
+
+
+
+    });
 
     //----------------------------------------------------Actions --------------------------------------------------
 
@@ -375,6 +438,7 @@
             {name: "TabPane_prerequires", title: "پیشنیازها", pane: ListGrid_Calender_Prerequaires},
             {name: "TabPane_Headlines", title: "سرفصل ها", pane: ListGrid_Calender_Headlines},
             {name: "TabPane_sessions", title: "جلسات", pane: ListGrid_Calender_Sessions},
+            {name: "TabPane_courses", title: "دوره ها", pane: ListGrid_Calender_Courses},
 
         ],
         tabSelected: function () {
@@ -462,6 +526,12 @@
         else
             ExportToFile.downloadExcelRestUrl(null,ListGrid_Calender_Sessions, educationalCalenderReportUrl + "/sessions/iscList", 0, null, '',"گزارش جلسات تقویم"  , mainCriteria, null);
     }
+    function makeExcelOutputOfCourses() {
+        if (ListGrid_Calender_Courses.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null,ListGrid_Calender_Courses, educationalCalenderReportUrl + "/courses/iscList", 0, null, '',"گزارش اهداف اصلی تقویم"  , mainCriteria, null);
+    }
     function createMainCriteriaInCalender(value) {
         let mainCriteria = {};
         mainCriteria._constructor = "AdvancedCriteria";
@@ -482,6 +552,7 @@
             RestDataSource_JspCalenderPrerequisite.fetchDataURL=   educationalCalenderReportUrl +   "/prerequisite/iscList";
             RestDataSource_JspCalenderHeadlines.fetchDataURL=educationalCalenderReportUrl + "/headlines/iscList";
             RestDataSource_JspCalenderSessions.fetchDataURL= educationalCalenderReportUrl +"/sessions/iscList";
+            RestDataSource_JspCalenderCourses.fetchDataURL= educationalCalenderReportUrl +"/courses/iscList";
             let mainCriteria = createMainCriteriaInCalender(value);
             ListGrid_Calender_BasicGoals.invalidateCache();
             ListGrid_Calender_BasicGoals.fetchData(mainCriteria);
@@ -491,6 +562,8 @@
             ListGrid_Calender_Headlines.fetchData(mainCriteria);
             ListGrid_Calender_Sessions.invalidateCache();
             ListGrid_Calender_Sessions.fetchData(mainCriteria);
+            ListGrid_Calender_Courses.invalidateCache();
+            ListGrid_Calender_Courses.fetchData(mainCriteria);
 
         } else {
             createDialog("info", "<spring:message code="msg.select.calender.ask"/>", "<spring:message code="message"/>")
