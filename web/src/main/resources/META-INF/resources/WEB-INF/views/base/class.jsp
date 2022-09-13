@@ -4663,7 +4663,7 @@
         trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
     }
 
-    function register_Training_Reaction_Form_JspClass(classRecord) {  ///////////////////////////////////
+    function register_Training_Reaction_Form_JspClass(classRecord) {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
