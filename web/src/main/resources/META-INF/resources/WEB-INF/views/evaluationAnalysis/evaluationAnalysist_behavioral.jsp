@@ -106,7 +106,7 @@
             {
                 name: "btnResults",
                 canFilter: false,
-                title: "گزارش تغییر رقتار ",
+                title: "گزارش تغییر رفتار ",
                 width: "130"
             },
 
