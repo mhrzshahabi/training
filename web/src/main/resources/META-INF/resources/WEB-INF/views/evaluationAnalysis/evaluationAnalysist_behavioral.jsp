@@ -6,6 +6,7 @@
 // <script>
     var behavioral_chartData1 = null;
     var behavioralEvaluationClassId = null;
+    let selectedRecord = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         height: "75%",
@@ -101,8 +102,32 @@
             {name: "supervisorGrade"},
             {name: "servitorGrade"},
             {name: "coWorkerGrade"},
-            {name: "trainingGrade"}
-        ]
+            {name: "trainingGrade"},
+            {
+                name: "btnResults",
+                canFilter: false,
+                title: "گزارش تغییر رقتار ",
+                width: "130"
+            },
+
+        ],
+        createRecordComponent: function (record, colNum) {
+            selectedRecord = record
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName === "btnResults") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    // disabled: !record.onlineFinalExamStatus,
+                    title: "چاپ گزارش",
+                    margin: 3,
+                    click: function () {
+                        printBehaviorChangeReport(selectedRecord, "record");
+                    }
+                });
+            } else {
+                return null;
+            }
+        },
     });
 
     var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
@@ -112,33 +137,7 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
-            let Window_Report_Evaluation_Analysis  = isc.Window.create({
-                title: "گزارش تغییر رفتار",
-                width: 500,
-                items: [
-                        isc.DynamicForm.create({
-                            ID: "DF_Report_Evaluation_Analysis",
-                            fields: [
-                                {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
-                                {name: "opinion", title: "نظر کارشناس ارزیابی"}
-                            ]
-                        }),
-                    isc.TrHLayoutButtons.create({
-                        members: [
-                        isc.IButton.create({
-                        title: "گزارش گیری",
-                        click: function () {
-                            print_BehavioralEvaluationResult(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
-                                DF_Report_Evaluation_Analysis.getValue("suggestions"),
-                                DF_Report_Evaluation_Analysis.getValue("opinion"));
-                            Window_Report_Evaluation_Analysis.close();
-                        }
-                    })
-                    ],
-                })
-                ]
-            });
-            Window_Report_Evaluation_Analysis.show();
+            printBehaviorChangeReport(selectedRecord, "all");
         }
     });
     var IButton_show_ListGrid = isc.IButton.create({
@@ -176,10 +175,91 @@
         ]
     });
 
+    function printBehaviorChangeReport(record, reportType) {
+        let Window_Report_Evaluation_Analysis = isc.Window.create({
+            title: "گزارش تغییر رفتار",
+            width: 500,
+            items: [
+                isc.DynamicForm.create({
+                    ID: "DF_Report_Evaluation_Analysis",
+                    fields: [
+                        {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
+                        {name: "opinion", title: "نظر کارشناس ارزیابی"}
+                    ]
+                }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButton.create({
+                            title: "گزارش گیری",
+                            click: function () {
+                                let params = {};
+
+                                params.evaluatedPersonnelNo = record.evaluatedPersonnelNo;
+                                params.evaluatedNationalCode = record.evaluatedNationalCode;
+                                params.evaluatedFullName = record.evaluatedFullName;
+                                params.evaluatedMobile = record.evaluatedMobile;
+                                params.studentGrade = record.studentGrade;
+                                params.supervisorGrade = record.supervisorGrade;
+                                params.servitorGrade = record.servitorGrade;
+                                params.coWorkerGrade = record.coWorkerGrade;
+                                params.trainingGrade = record.trainingGrade;
+
+                                if (reportType === "record") {
+                                    print_BehavioralEvaluationResultForRecord(
+                                        behavioralEvaluationClassId,
+                                        params,
+                                        "behavioralEvaluationAnalysisReport.jasper",
+                                        DF_Report_Evaluation_Analysis.getValue("suggestions"),
+                                        DF_Report_Evaluation_Analysis.getValue("opinion")
+                                    )
+                                } else if (reportType === "all") {
+                                    print_BehavioralEvaluationResult(
+                                        behavioralEvaluationClassId,
+                                        params,
+                                        "behavioralReport.jasper",
+                                        DF_Report_Evaluation_Analysis.getValue("suggestions"),
+                                        DF_Report_Evaluation_Analysis.getValue("opinion")
+                                    );
+                                }
+
+                                Window_Report_Evaluation_Analysis.close();
+                            }
+                        })
+                    ],
+                })
+            ]
+        });
+        Window_Report_Evaluation_Analysis.show();
+    }
+
     function print_BehavioralEvaluationResult(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
-        var criteriaForm = isc.DynamicForm.create({
+        let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "ClassId", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                    {name: "suggestions", type: "hidden"},
+                    {name: "opinion", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("ClassId", ClassId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.setValue("suggestions", suggestions);
+        criteriaForm.setValue("opinion", opinion);
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+
+    function print_BehavioralEvaluationResultForRecord(ClassId, params, fileName, suggestions, opinion) {
+        let criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="evaluationAnalysis/printBehavioralChangeReport/"/>" ,
             target: "_Blank",
             canSubmit: true,
             fields:

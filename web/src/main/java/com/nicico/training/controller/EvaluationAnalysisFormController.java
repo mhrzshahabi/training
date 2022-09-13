@@ -278,6 +278,17 @@ public class EvaluationAnalysisFormController {
         evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
     }
 
+    @PostMapping(value = {"/printBehavioralChangeReport"})
+    public void printBehaviorChangeReport(HttpServletResponse response,
+                                          @RequestParam(value = "fileName") String fileName,
+                                          @RequestParam(value = "ClassId") Long ClassId,
+                                          @RequestParam(value = "params") String Params,
+                                          @RequestParam(value = "suggestions") String suggestions,
+                                          @RequestParam(value = "opinion") String opinion
+    ) throws Exception {
+        evaluationAnalysisService.printBehaviorChangeReport(response, "pdf", fileName, ClassId, Params, suggestions, opinion);
+    }
+
     @PostMapping(value = "/evaluaationAnalysist-learningReport")
     public ResponseEntity<?> printLearningEvaluation(final HttpServletRequest request) {
         String token = (String) request.getParameter("token");
