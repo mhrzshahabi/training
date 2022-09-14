@@ -6,7 +6,6 @@
 // <script>
     var behavioral_chartData1 = null;
     var behavioralEvaluationClassId = null;
-    let selectedRecord = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         height: "75%",
@@ -112,7 +111,6 @@
 
         ],
         createRecordComponent: function (record, colNum) {
-            selectedRecord = record
             let fieldName = this.getFieldName(colNum);
             if (fieldName === "btnResults") {
                 return isc.IButton.create({
@@ -121,7 +119,7 @@
                     title: "چاپ گزارش",
                     margin: 3,
                     click: function () {
-                        printBehaviorChangeReport(selectedRecord, "record");
+                        printBehaviorChangeReport(record, "record");
                     }
                 });
             } else {
@@ -137,7 +135,8 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
-            printBehaviorChangeReport(selectedRecord, "all");
+            let allRecords = ListGrid_evaluation_behavioral_analysist.getData();
+            printBehaviorChangeReport(allRecords, "all");
         }
     });
     var IButton_show_ListGrid = isc.IButton.create({
@@ -194,15 +193,18 @@
                             click: function () {
                                 let params = {};
 
-                                params.evaluatedPersonnelNo = record.evaluatedPersonnelNo;
-                                params.evaluatedNationalCode = record.evaluatedNationalCode;
-                                params.evaluatedFullName = record.evaluatedFullName;
-                                params.evaluatedMobile = record.evaluatedMobile;
-                                params.studentGrade = record.studentGrade;
-                                params.supervisorGrade = record.supervisorGrade;
-                                params.servitorGrade = record.servitorGrade;
-                                params.coWorkerGrade = record.coWorkerGrade;
-                                params.trainingGrade = record.trainingGrade;
+                                if (reportType === "record") {
+                                    // single row selected
+                                    params.evaluatedPersonnelNo = record.evaluatedPersonnelNo;
+                                    params.evaluatedNationalCode = record.evaluatedNationalCode;
+                                    params.evaluatedFullName = record.evaluatedFullName;
+                                    params.evaluatedMobile = record.evaluatedMobile;
+                                    params.studentGrade = record.studentGrade;
+                                    params.supervisorGrade = record.supervisorGrade;
+                                    params.servitorGrade = record.servitorGrade;
+                                    params.coWorkerGrade = record.coWorkerGrade;
+                                    params.trainingGrade = record.trainingGrade;
+                                }
 
                                 let fileName = null;
                                 let actionUrl = null;

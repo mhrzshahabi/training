@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.math3.util.MathUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
@@ -369,7 +370,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                     Map<String, Object> behavior = new HashMap<>();
                     behavior.put("behaviorVal", result.getIndicesGrade().get("s" + classEvaluationGoals.getSkillId()));
-                    behavior.put("behaviorCat", "شاخص " + i);
+                    behavior.put("behaviorCat", new StringBuilder("شاخص " + i).reverse().toString());
                     behavioralChart.add(behavior);
 
                     i++;
@@ -397,7 +398,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
                 Map<String, Object> behavior = new HashMap<>();
                 behavior.put("behaviorVal", result.getIndicesGrade().get("g" + goal.getId()));
-                behavior.put("behaviorCat", "شاخص " + i);
+                behavior.put("behaviorCat", new StringBuilder("شاخص " + i).reverse().toString());
                 behavioralChart.add(behavior);
 
                 i++;
@@ -422,6 +423,17 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+        params.put("today", DateUtil.todayDate());
+        params.put("course", tclass.getCourse().getTitleFa());
+        params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
+        params.put("criticisim", suggestions);
+        params.put("comment", opinion);
+        params.put("course_code", tclass.getCourse().getCode());
+        params.put("class_code", tclass.getCode());
+        params.put("report_header", "گزارش تغییر رفتار دوره ");
+        params.put("with_code", " با کد ");
+        params.put("and_class_code", " و کد کلاس ");
+        params.put(ConstantVARs.REPORT_TYPE, type);
 
         List<Map> behavioralScoreChart = new ArrayList();
         String[] classStudentsName = result.getClassStudentsName();
@@ -443,17 +455,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
                 "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
                 "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
-        params.put("today", DateUtil.todayDate());
-        params.put("course", tclass.getCourse().getTitleFa());
-        params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
-        params.put("criticisim", suggestions);
-        params.put("comment", opinion);
-        params.put("course_code", tclass.getCourse().getCode());
-        params.put("class_code", tclass.getCode());
-        params.put("report_header", "گزارش تغییر رفتار دوره ");
-        params.put("with_code", " با کد ");
-        params.put("and_class_code", " و کد کلاس ");
-        params.put(ConstantVARs.REPORT_TYPE, type);
+
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
@@ -489,10 +491,15 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 Double.parseDouble(!params.get("trainingGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("trainingGrade").toString() : String.valueOf(0))
         };
         double sum = 0;
+        int count = 0;
+
         for (double value : grades) {
             sum += value;
+            if (value != 0) {
+                count++;
+            }
         }
-        double averageGrade = (sum) / (grades.length);
+        double averageGrade = (sum) / (count);
 
         params.put("today", DateUtil.todayDate());
         params.put("course", tclass.getCourse().getTitleFa());
