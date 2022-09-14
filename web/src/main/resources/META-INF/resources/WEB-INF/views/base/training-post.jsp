@@ -1222,6 +1222,19 @@
             }
         }
     });
+
+    ToolStripButton_NA_training_Post_all_competece_gap = isc.ToolStripButton.create({
+        title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",
+        click: function () {
+            if (ListGrid_TrainingPost_Jsp.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_all_competence_gap.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
+        }
+    });
+
+
     ToolStripButton_TreeNA_JspTrainingPost = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -1250,6 +1263,9 @@
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_JspGap,
             </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_NA_training_Post_all_competece_gap,
+            </sec:authorize>
         ]
     });
 
@@ -1265,6 +1281,7 @@
 
     defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
     defineWindowsEditNeedsAssessmentForGap(ListGrid_TrainingPost_Jsp);
+    defineWindow_NeedsAssessment_all_competence_gap(ListGrid_TrainingPost_Jsp);
     defineWindowTreeNeedsAssessment();
 
     <sec:authorize access="hasAuthority('Training_Post_U')">

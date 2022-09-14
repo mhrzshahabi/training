@@ -212,6 +212,25 @@ function defineWindowsEditNeedsAssessmentForGap(grid = null) {
     });
 }
 
+function defineWindow_NeedsAssessment_all_competence_gap(grid = null) {
+    const Window_NeedsAssessment_all_competence_gap = isc.Window.create({
+        ID: "Window_NeedsAssessment_all_competence_gap",
+        title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",
+        minWidth: 1024,
+        visibility : "hidden",
+        headerControls: ["headerLabel", "minimizeButton", "maximizeButton", "closeButton"],
+        canDragReposition: true,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/needs-assessment-all-competence-gap/"})],
+        placement: "fillScreen",
+        showUs(record, objectType,isGap) {
+            loadEditNeedsAssessmentAllCompeteceGap(record, objectType);
+            hasChanged = false;
+            this.Super("show", arguments);
+        },
+
+    });
+}
+
 function setColorForListGrid(record) {
     if (record.competenceCount === 0)
         return "color:red";
