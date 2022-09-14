@@ -791,7 +791,14 @@
         }));
     }
     function checkSaveDataGap(data, dataSource, field) {
-            return dataSource.testData.find(f => f[field] === data[field]) == null;
+        console.log("123")
+        console.log(field)
+        console.log(data)
+        console.log(dataSource.testData)
+        if(dataSource.testData.find(f => f[field] === data[field]) != null) {
+            return false;
+        }
+        return true;
     }
     function addCoursesToNeedAssessmentWithGap() {
         let selectedRecords=[]
@@ -1041,21 +1048,20 @@ if (canChange){
         }
     }
     function callApiForLoadLastData() {
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(CompetencesIscList+"/"+gapObjectId+"/"+gapObjectType , "Get",null, function (resp) {
-            wait.show();
+
 
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                wait.close();
+
                 let data = JSON.parse(resp.data).list;
 
-                // if (addData){
+
                     for (let i = 0; i < data.size(); i++) {
                         addGridCompetenceRecords(data[i])
-                        // dataSourceForRemoveData.addData(data[i]);
+
                     }
-                // }else{
-                //     gridForRemoveData.setData(data);
-                // }
+                wait.close();
 
             } else {
                 wait.close();
