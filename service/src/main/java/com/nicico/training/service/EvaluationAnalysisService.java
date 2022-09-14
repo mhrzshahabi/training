@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.math3.util.MathUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
@@ -489,10 +490,15 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 Double.parseDouble(!params.get("trainingGrade").toString().equalsIgnoreCase("عدم تکميل فرم") ? params.get("trainingGrade").toString() : String.valueOf(0))
         };
         double sum = 0;
+        int count = 0;
+
         for (double value : grades) {
             sum += value;
+            if (value != 0) {
+                count++;
+            }
         }
-        double averageGrade = (sum) / (grades.length);
+        double averageGrade = (sum) / (count);
 
         params.put("today", DateUtil.todayDate());
         params.put("course", tclass.getCourse().getTitleFa());
