@@ -62,9 +62,9 @@ public class ViewEducationalCalenderReportController {
     }
 
     @GetMapping(value = "/courses/iscList")
-    public   ResponseEntity<ISC<ViewCalenderMainGoalsDTO.ViewCalenderMainGoalsSpecRs>> iscListCourses(HttpServletRequest iscRq) throws IOException {
+    public   ResponseEntity<ISC<ViewCalenderCoursesDTO.ViewCalenderCoursesSpecRs>> iscListCourses(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs result = iViewCalenderCoursesService.search(searchRq, o -> modelMapper.map(o, ViewCalenderMainGoalsDTO.Info.class));
+        SearchDTO.SearchRs result = iViewCalenderCoursesService.search(searchRq, o -> modelMapper.map(o, ViewCalenderCoursesDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
     }
 

@@ -245,6 +245,7 @@
         },
 
         filterEditorSubmit: function () {
+            debugger
             ListGrid_Calender_BasicGoals.invalidateCache();
         }
 
