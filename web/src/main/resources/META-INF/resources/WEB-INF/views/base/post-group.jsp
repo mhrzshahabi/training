@@ -1645,7 +1645,7 @@
             ToolStripButton_TreeNA_JspPostGroup,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
-            ToolStripButton_EditNA_JspGroupGap
+            ToolStripButton_EditNA_JspGroupGap,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_NA_PostGroup_all_competece_gap

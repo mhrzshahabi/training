@@ -121,9 +121,9 @@
                     110: "نگرشی"
                 }, title: "حیطه", filterOperator: "equals"},
             {name: "competencePriorityId", filterOperator: "equals", valueMap: {
-                    111: "عملکردی توسعه",
+                    113: "عملکردی توسعه",
                     112: "عملکردی بهبود",
-                    113: "ضروری ضمن خدمت",
+                    111: "ضروری ضمن خدمت",
                     574: "ضروری انتصاب سمت"
                 },title: "اولویت"}
         ],
@@ -817,7 +817,13 @@
                 Number( belowCourses[i].limitSufficiency)===0 ||
                 Number( belowCourses[i].limitSufficiency)>100){
                 errorForLimitSufficiency++;
+                if (belowCourses[i].limitSufficiency===undefined ||
+                    belowCourses[i].limitSufficiency===null )
                 message="حد بسندگی را تعیین کنید";
+                else {
+                    message="حد بسندگی  باید بین ۰ تا 100 باشد";
+
+                }
                 break;
             }else {
                 if (belowCourses[i].course=== undefined ||
