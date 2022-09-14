@@ -193,7 +193,7 @@
                             click: function () {
                                 let params = {};
 
-                                if (record.allRows === undefined) {
+                                if (reportType === "record") {
                                     // single row selected
                                     params.evaluatedPersonnelNo = record.evaluatedPersonnelNo;
                                     params.evaluatedNationalCode = record.evaluatedNationalCode;
@@ -204,8 +204,6 @@
                                     params.servitorGrade = record.servitorGrade;
                                     params.coWorkerGrade = record.coWorkerGrade;
                                     params.trainingGrade = record.trainingGrade;
-                                } else {
-                                    // multi rows selected
                                 }
 
                                 let fileName = null;
