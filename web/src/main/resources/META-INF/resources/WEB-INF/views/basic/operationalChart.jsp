@@ -386,6 +386,19 @@
                 let user = record.userName;
                 DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
             }
+
+            RestDataSource_Parent.implicitCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {
+                        fieldName: "complexId",
+                        operator: "iContains",
+                        value:  DynamicForm_JspOperationalChart.getItem("complexId").getValue()
+                    }
+                ]
+            };
+
             RestDataSource_Parent.fetchDataURL = operationalChartUrl + "/parent-list/"+ DynamicForm_JspOperationalChart.getItem("complexId").getValue()
             Window_JspOperationalChart.show();
 
@@ -713,6 +726,7 @@
                 optionDataSource: RestDataSource_Parent,
                 displayField: "userName",
                 autoFetchData: false,
+                // autoFetchData: true,
                 valueField: "id",
                 textAlign: "center",
                 required: false,
