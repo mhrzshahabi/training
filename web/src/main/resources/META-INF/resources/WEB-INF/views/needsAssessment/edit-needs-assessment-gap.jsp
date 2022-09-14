@@ -750,11 +750,11 @@
 
     function priorityColor(record){
         switch (record.competencePriorityId) {
-            case 113:
+            case 111:
                 return "background-color : " + red;
             case 112:
                 return "background-color : " + yellow;
-            case 111:
+            case 113:
                 return "background-color : " + green;
             case 574:
                 return "background-color : " + blue;
