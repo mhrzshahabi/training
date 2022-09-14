@@ -20,7 +20,6 @@
     let ListGrid_AllCompetenceNeedsAssessmentGap = isc.ListGrid.create({
         ID: "ListGrid_AllCompetenceNeedsAssessmentGap",
         dataSource: RestDataSource_AllCompetenceNeedsAssessmentGap,
-        selectionType: "single",
         filterOnKeypress: true,
         autoFetchData: false,
         fields: [
@@ -29,9 +28,7 @@
             {name: "competenceType.title", title: "نوع شایستگی"},
             {name: "competenceLevelId", title: "حیطه" , },
             {name: "competencePriorityId", title: "اولویت" , }
-        ],
-        gridComponents: ["filterEditor", "header", "body"],
-
+        ]
     });
 
     <%--//----------------------------------------- ToolStrips --------------------------------------------------------------%>
@@ -76,6 +73,9 @@
     function loadEditNeedsAssessmentAllCompeteceGap(record, type) {
         gapObjectId = record.id
         gapObjectType = type
+        RestDataSource_AllCompetenceNeedsAssessmentGap.fetchDataURL = CompetencesIscList+"/"+gapObjectId+"/"+gapObjectType;
+        // ListGrid_AllCompetenceNeedsAssessmentGap.invalidateCache();
+        // ListGrid_AllCompetenceNeedsAssessmentGap.fetchData();
         // clearAllGrid()
         // wait.show();
         <%--isc.RPCManager.sendRequest(TrDSRequest(canChangeData+gapObjectId+"/"+gapObjectType , "Get",null, function (resp) {--%>
@@ -89,30 +89,7 @@
     }
 
 
-    function clearAllGrid() {
-        // ListGrid_Knowledge_JspNeedsAssessmentGap.fetchData();
-        // ListGrid_Knowledge_JspNeedsAssessmentGap.invalidateCache();
-        // competenceKnowledgeGapData.length = 0;
-        //
-        //
-        // ListGrid_Ability_JspNeedsAssessmentGap.fetchData();
-        // ListGrid_Ability_JspNeedsAssessmentGap.invalidateCache();
-        // competenceAbilityGapData.length = 0;
-        //
-        //
-        // ListGrid_Attitude_JspNeedsAssessmentGap.fetchData();
-        // ListGrid_Attitude_JspNeedsAssessmentGap.invalidateCache();
-        // competenceAttitudeGapData.length = 0;
-        //
-        // ListGrid_Used_course.fetchData();
-        // ListGrid_Used_course.invalidateCache();
-        // belowCourses.length = 0;
-        //
-        // ListGrid_SkillAll_JspNeedsAssessmentGap.fetchData();
-        // ListGrid_SkillAll_JspNeedsAssessmentGap.invalidateCache();
-        // belowCoursesForMainPage.length = 0;
 
-    }
 
 
 

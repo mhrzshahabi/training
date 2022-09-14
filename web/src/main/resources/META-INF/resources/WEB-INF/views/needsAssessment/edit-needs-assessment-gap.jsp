@@ -337,7 +337,20 @@
         ],
 
     });
-
+    let RestDataSource_category_JspENAGap = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+    let RestDataSource_subCategory_JspENAGap = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
 
     let ListGrid_AllCompetence_JspNeedsAssessmentGap = isc.TrLG.create({
         ID: "ListGrid_AllCompetence_JspNeedsAssessmentGap",
@@ -353,8 +366,8 @@
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
             {name: "competenceType.title", title: "نوع شایستگی"},
-            {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENA, displayField: "titleFa", valueField:"id"},
-            {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENA, displayField: "titleFa", valueField:"id"},
+            {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENAGap, displayField: "titleFa", valueField:"id"},
+            {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENAGap, displayField: "titleFa", valueField:"id"},
             {name: "competenceLevelId", title: "حیطه" , },
             {name: "competencePriorityId", title: "اولویت" , }
         ],
