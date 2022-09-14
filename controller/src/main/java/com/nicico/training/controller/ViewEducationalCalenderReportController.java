@@ -66,6 +66,7 @@ public class ViewEducationalCalenderReportController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs result = iViewCalenderCoursesService.search(searchRq, o -> modelMapper.map(o, ViewCalenderCoursesDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
+
     }
 
 }

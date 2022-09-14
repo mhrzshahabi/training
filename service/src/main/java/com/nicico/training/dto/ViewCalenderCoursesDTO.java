@@ -27,7 +27,7 @@ public class ViewCalenderCoursesDTO implements Serializable {
     private Long  calenderId;
 
     @ApiModelProperty
-    private String codeDoreh;
+    private String courseCode;
 
     @ApiModelProperty
     private String mahalBarghozari;
@@ -42,7 +42,7 @@ public class ViewCalenderCoursesDTO implements Serializable {
     private String nahveBargozari;
 
     @ApiModelProperty
-    private String sharayetSherkatKonandeghan;
+    private String darkhastAmouzeshi;
 
     @ApiModelProperty
     private String tarikhBargozari;

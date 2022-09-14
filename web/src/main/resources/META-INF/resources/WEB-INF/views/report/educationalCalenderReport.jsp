@@ -78,12 +78,12 @@
             [
                 {name: "id", primaryKey: true},
                 {name: "calenderId"},
-                {name: "codeDoreh"},
+                {name: "courseCode"},
                 {name: "mahalBarghozari"},
                 {name: "nomreh"},
                 {name: "hazinehDore"},
                 {name: "nahveBargozari"},
-                {name: "sharayetSherkatKonandeghan"},
+                {name: "darkhastAmouzeshi"},
                 {name: "tarikhBargozari"},
                 {name: "modatDore"},
             ],
@@ -245,7 +245,6 @@
         },
 
         filterEditorSubmit: function () {
-            debugger
             ListGrid_Calender_BasicGoals.invalidateCache();
         }
 
@@ -407,7 +406,7 @@
         align: "center",
         fields: [
             {
-                name: "codeDoreh",
+                name: "courseCode",
                 title: "کد دوره",
                 filterOperator: "iContains"
             },
@@ -432,7 +431,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "sharayetSherkatKonandeghan",
+                name: "darkhastAmouzeshi",
                 title: "شرایط شرکت کنندگان",
                 filterOperator: "iContains"
             },
@@ -452,13 +451,7 @@
 
         filterEditorSubmit: function () {
             ListGrid_Calender_Courses.invalidateCache();
-        },
-
-        filterEditorSubmit: function () {
-            ListGrid_Calender_Courses.invalidateCache();
         }
-
-
 
     });
 

@@ -26,8 +26,8 @@ public class ViewCalenderCourses {
     @Column(name="calendar_id")
     private Long calenderId;
 
-    @Column(name="codeDoreh")
-    private String codeDoreh;
+    @Column(name="COURSECODE")
+    private String courseCode;
 
     @Column(name="MAHALBARGOZARI")
     private String mahalBarghozari;
@@ -41,8 +41,8 @@ public class ViewCalenderCourses {
     @Column(name="NAHVEBARGOZARI")
     private String nahveBargozari;
 
-    @Column(name="SHARAYETSHERKATKONANDEGHAN")
-    private String sharayetSherkatKonandeghan;
+    @Column(name="DARKHASTAMOUZESHI")
+    private String darkhastAmouzeshi;
 
     @Column(name="TARIKHBARGOZARI")
     private String tarikhBargozari;
