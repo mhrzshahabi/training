@@ -51,6 +51,14 @@ public class CompetenceDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CompetenceDTO - Info2")
+    public static class Info2  {
+        private ParameterValueDTO.MinInfo competenceType;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("CompetenceDTO - Posts")
     public static class Posts {
         private Long id;

@@ -1,29 +1,23 @@
 package com.nicico.training.controller;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.NeedsAssessmentWithGapDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.iservice.INeedsAssessmentWithGapService;
-import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.mapper.NeedAssessmentGapBeanMapper.NeedAssessmentGapBeanMapper;
+import com.nicico.training.model.NeedsAssessmentWithGap;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
 
 import java.util.List;
-import java.util.Set;
-
-import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 
 
 @RestController
@@ -31,6 +25,7 @@ import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 @RequestMapping("/api/needsAssessmentWithGap")
 public class NeedsAssessmentWithGapRestController {
     private final INeedsAssessmentWithGapService iNeedsAssessmentService;
+    private final NeedAssessmentGapBeanMapper needAssessmentGapBeanMapper;
 
 
     @Loggable
@@ -60,11 +55,11 @@ public class NeedsAssessmentWithGapRestController {
         BaseResponse baseResponse = new BaseResponse();
         try {
             baseResponse = iNeedsAssessmentService.sendToWorkFlow(objectId, objectType);
-        }catch(Exception e) {
-        baseResponse.setStatus(400);
+        } catch (Exception e) {
+            baseResponse.setStatus(400);
         }
-        return new ResponseEntity<>(baseResponse,HttpStatus.valueOf(baseResponse.getStatus()));
-}
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+    }
 
     @Loggable
     @GetMapping("/deleteUnCompleteData/{objectId}/{objectType}")
@@ -72,16 +67,29 @@ public class NeedsAssessmentWithGapRestController {
         BaseResponse baseResponse = new BaseResponse();
         try {
             baseResponse = iNeedsAssessmentService.deleteUnCompleteData(objectId, objectType);
-        }catch(Exception e) {
+        } catch (Exception e) {
             baseResponse.setStatus(400);
         }
-        return new ResponseEntity<>(baseResponse,HttpStatus.valueOf(baseResponse.getStatus()));
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
     }
+
     @Loggable
     @GetMapping("/canChangeData/{objectId}/{objectType}")
     public ResponseEntity<Boolean> canChangeData(@PathVariable String objectType, @PathVariable Long objectId) {
         return ResponseEntity.ok(iNeedsAssessmentService.canChangeData(objectType, objectId));
 
+    }
+
+    @Loggable
+    @GetMapping("/ISC/competence/iscList/{objectId}/{objectType}")
+    public ResponseEntity<ISC<NeedsAssessmentWithGapDTO.allCompetence>> AllCompetencesIscList(@PathVariable String objectType, @PathVariable Long objectId) {
+        List<NeedsAssessmentWithGap> list = iNeedsAssessmentService.fullSearchForNeedAssessment(objectId, objectType);
+        List<NeedsAssessmentWithGapDTO.allCompetence> naList = needAssessmentGapBeanMapper.toNeedAssessments(list);
+        SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.allCompetence> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) naList.size());
+        rs.setList(naList);
+        ISC<NeedsAssessmentWithGapDTO.allCompetence> res = ISC.convertToIscRs(rs, 0);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

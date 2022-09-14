@@ -96,6 +96,7 @@ public class CompetenceRestController {
 
         if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
             for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                if (criterion.getCriteria()!=null)
                 for (SearchDTO.CriteriaRq c : criterion.getCriteria()) {
                     if (c.getFieldName().equals("competenceLevelId") ) {
                         c.setValue(Long.valueOf(String.valueOf(c.getValue().get(0))));

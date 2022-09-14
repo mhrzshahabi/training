@@ -4,6 +4,7 @@ package com.nicico.training.iservice;
   import com.nicico.training.dto.CompetenceDTO;
   import com.nicico.training.dto.NeedsAssessmentWithGapDTO;
   import com.nicico.training.dto.SkillDTO;
+  import com.nicico.training.model.NeedsAssessmentWithGap;
   import response.BaseResponse;
 
   import java.util.List;
@@ -24,4 +25,5 @@ public interface INeedsAssessmentWithGapService {
     Boolean canChangeData(String objectType, Long objectId);
 
     SearchDTO.SearchRs<CompetenceDTO.Info> fullSearchForCompetences(Long objectId, String objectType);
+    List<NeedsAssessmentWithGap> fullSearchForNeedAssessment(Long objectId, String objectType);
 }
