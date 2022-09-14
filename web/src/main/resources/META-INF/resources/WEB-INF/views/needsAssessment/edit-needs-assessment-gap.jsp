@@ -346,8 +346,6 @@
         selectionType: "single",
         contextMenu: Menu_LG_AllCompetence_JspENAGap,
         filterOnKeypress: true,
-        canDragRecordsOut: true,
-        dragDataAction: "none",
         canAcceptDroppedRecords: true,
         fields: [
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
