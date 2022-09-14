@@ -16,19 +16,39 @@ import javax.persistence.Id;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_calendar_headline")
+@Subselect("select * from view_calendar_course")
 @DiscriminatorValue("ViewCalenderCourses")
 public class ViewCalenderCourses {
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "sarfaslha")
-    private String headline;
-
     @Column(name="calendar_id")
     private Long calenderId;
 
-    @Column(name="c_code")
-    private String classCode;
+    @Column(name="codeDoreh")
+    private String codeDoreh;
+
+    @Column(name="MAHALBARGOZARI")
+    private String mahalBarghozari;
+
+    @Column(name="NOEDORE")
+    private String nomreh;
+
+    @Column(name="HAZINEHDORE")
+    private String hazinehDore;
+
+    @Column(name="NAHVEBARGOZARI")
+    private String nahveBargozari;
+
+    @Column(name="SHARAYETSHERKATKONANDEGHAN")
+    private String sharayetSherkatKonandeghan;
+
+    @Column(name="TARIKHBARGOZARI")
+    private String tarikhBargozari;
+
+    @Column(name="MODATDORE")
+    private String modatDore;
+
+
 }

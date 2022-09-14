@@ -77,8 +77,15 @@
         fields:
             [
                 {name: "id", primaryKey: true},
-                {name: "courseCode"},
-                {name: "calenderId"}
+                {name: "calenderId"},
+                {name: "codeDoreh"},
+                {name: "mahalBarghozari"},
+                {name: "nomreh"},
+                {name: "hazinehDore"},
+                {name: "nahveBargozari"},
+                {name: "sharayetSherkatKonandeghan"},
+                {name: "tarikhBargozari"},
+                {name: "modatDore"},
             ],
 
     });
@@ -399,13 +406,43 @@
         align: "center",
         fields: [
             {
-                name: "course",
-                title: "دوره",
+                name: "codeDoreh",
+                title: "کد دوره",
                 filterOperator: "iContains"
             },
             {
-                name: "courseCode",
-                title: "کد دوره",
+                name: "mahalBarghozari",
+                title: "محل برگزاری",
+                filterOperator: "iContains"
+            },
+            {
+                name: "nomreh",
+                title: "نمره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "hazinehDore",
+                title: "هزینه دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "nahveBargozari",
+                title: "نحوه برگزاری",
+                filterOperator: "iContains"
+            },
+            {
+                name: "sharayetSherkatKonandeghan",
+                title: "شرایط شرکت کنندگان",
+                filterOperator: "iContains"
+            },
+            {
+                name: "tarikhBargozari",
+                title: "تاریخ برگزاری",
+                filterOperator: "iContains"
+            },
+            {
+                name: "modatDore",
+                title: "مدت دوره",
                 filterOperator: "iContains"
             }
 
