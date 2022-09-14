@@ -53,7 +53,7 @@ public class NeedsAssessmentWithGap<E> extends Auditable {
     @Column(name = "c_object_code")
     private String objectCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_competence", nullable = false, insertable = false, updatable = false)
     private Competence competence;
 
@@ -64,21 +64,21 @@ public class NeedsAssessmentWithGap<E> extends Auditable {
     private Float limitSufficiency;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_skill", nullable = false, insertable = false, updatable = false)
     private Skill skill;
 
     @Column(name = "f_skill", nullable = false)
     private Long skillId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_parameter_value_needs_assessment_domain", nullable = false, insertable = false, updatable = false)
     private ParameterValue needsAssessmentDomain;
 
     @Column(name = "f_parameter_value_needs_assessment_domain", nullable = false)
     private Long needsAssessmentDomainId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_parameter_value_needs_assessment_priority", nullable = false, insertable = false, updatable = false)
     private ParameterValue needsAssessmentPriority;
 

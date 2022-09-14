@@ -9,6 +9,9 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
@@ -120,6 +123,15 @@ public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapSer
         rs.setTotalCount((long) naList.size());
         rs.setList(naList);
         return rs;
+    }
+
+    @Override
+    public List<NeedsAssessmentWithGap> fullSearchForNeedAssessment(Long objectId, String objectType) {
+        List<NeedsAssessmentWithGap> list = needsAssessmentDAO.getNeedsAssessmentListForSendToWorkFlow(objectId,
+                objectType);
+        list.addAll(getGroupListForCompetences(objectType,objectId));
+
+     return list;
     }
 
     @Override

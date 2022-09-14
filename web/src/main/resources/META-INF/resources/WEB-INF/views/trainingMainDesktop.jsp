@@ -1342,6 +1342,7 @@
     const addNeedAssmentForGaps = rootUrl + "/needsAssessmentWithGap/addSkills";
     const getSkills = rootUrl + "/needsAssessmentWithGap/iscList/";
     const CompetencesIscList = rootUrl + "/needsAssessmentWithGap/competence/iscList";
+    const allCompetencesIscList = rootUrl + "/needsAssessmentWithGap/ISC/competence/iscList";
     const sendToWorkFlow = rootUrl + "/needsAssessmentWithGap/sendToWorkFlow/";
     const deleteTempDataFromWorkFlow = rootUrl + "/needsAssessmentWithGap/deleteUnCompleteData/";
     const canChangeData = rootUrl + "/needsAssessmentWithGap/canChangeData/";

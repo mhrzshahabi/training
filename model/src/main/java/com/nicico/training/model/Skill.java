@@ -56,7 +56,7 @@ public class Skill extends Auditable {
     @Column(name = "f_sub_category")
     private Long subCategoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_main_objective_course", insertable = false, updatable = false)
     private Course courseMainObjective;
 

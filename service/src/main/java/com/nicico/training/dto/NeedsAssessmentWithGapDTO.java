@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.mapstruct.Mapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotNull;
@@ -27,9 +28,7 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
     @NotNull
     @ApiModelProperty(required = true)
     private Long competenceId;
-
     private String limitSufficiency;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long skillId;
@@ -40,38 +39,7 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long needsAssessmentPriorityId;
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("NeedsAssessmentWithGapDTO - CourseDetail")
-    public static class CourseDetail {
 
-        private String courseCode;
-        private String courseTitle;
-        private String categoryTitle;
-        private String subCategoryTitle;
-        private String priority;
-        private Long requestItemProcessDetailId;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("NeedsAssessmentWithGapDTO - PlanningExpertsExcel")
-    public static class PlanningExpertsExcel {
-
-        private String name;
-        private String lastName;
-        private String personnelNo2;
-        private String nationalCode;
-        private String affairs;
-        private String post;
-        private String postTitle;
-        private String modifiedDate;
-        private String courseCode;
-        private String courseTitle;
-        private String priority;
-    }
 
     @Getter
     @Setter
@@ -82,10 +50,6 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         private Integer version;
         private String objectName;
         private String objectCode;
-//        private CompetenceDTO.Info competence;
-//        private SkillDTO.Info skill;
-//        private ParameterValueDTO.MinInfo needsAssessmentDomain;
-//        private ParameterValueDTO.MinInfo needsAssessmentPriority;
         private String workflowStatus;
         private Integer workflowStatusCode;
         private String mainWorkflowStatus;
@@ -126,28 +90,6 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         private String skillTitle;
         private String skillCourseTitle;
 
-        public boolean equvalentOf(Tree dto) {
-            return this.getParentId().equals(dto.getParentId()) && this.getName().equals(dto.getName());
-        }
-
-        public void setProperty(String property, String value) {
-            try {
-                Field field = Tree.class.getDeclaredField(property);
-                field.set(this, value);
-            } catch (Exception ignored) {
-            }
-        }
-
-        public String getProperty(String property) {
-            String result = null;
-            try {
-                Field field = Tree.class.getDeclaredField(property);
-                result = field.get(this).toString();
-            } catch (Exception ignored) {
-            }
-            return result == null ? "" : result;
-        }
-
         @Override
         public int hashCode() {
             return new HashCodeBuilder(17, 31).
@@ -165,48 +107,6 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
                 return false;
             return (this.getId().equals(((Tree) obj).getId()));
         }
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("NeedsAssessmentWithGapDTO - Create")
-    public static class Create extends NeedsAssessmentWithGapDTO {
-        private Long id;
-        private String objectName;
-        private String objectCode;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("NeedsAssessmentWithGapDTO - Update")
-    public static class Update {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Long objectId;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String objectType;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Long needsAssessmentPriorityId;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("NeedsAssessmentWithGapDTO - Delete")
-    public static class Delete {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Long id;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Long objectId;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String objectType;
     }
 
 
@@ -229,6 +129,22 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         private Long id;
         private Long courseId;
         private Float limitSufficiency;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentWithGapDTO - allCompetence")
+    public static class allCompetence extends NeedsAssessmentWithGapDTO {
+
+        private String code;
+        private String title;
+        private String competenceType;
+        private String needsAssessmentDomain;
+        private String needsAssessmentPriority;
+        private String courseTitleFa;
+        private String courseCode;
 
     }
 }

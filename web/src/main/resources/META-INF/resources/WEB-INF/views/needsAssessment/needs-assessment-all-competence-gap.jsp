@@ -8,11 +8,15 @@
 
     let RestDataSource_AllCompetenceNeedsAssessmentGap = isc.TrDS.create({
         fields: [
+            {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
-            {name: "competenceType.title", title: "نوع شایستگی"},
+            {name: "competenceType", title: "نوع شایستگی"},
             {name: "competenceLevelId", title: "حیطه" , },
-            {name: "competencePriorityId", title: "اولویت" , }
+            {name: "competencePriorityId", title: "اولویت" , },
+            {name: "courseCode", title: "کد دوره" , },
+            {name: "courseTitleFa", title: "نام دوره" , },
+            {name: "limitSufficiency", title: "حد بسندگی" , }
         ],
     });
 
@@ -23,11 +27,15 @@
         filterOnKeypress: true,
         autoFetchData: false,
         fields: [
+            {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
-            {name: "competenceType.title", title: "نوع شایستگی"},
-            {name: "competenceLevelId", title: "حیطه" , },
-            {name: "competencePriorityId", title: "اولویت" , }
+            {name: "competenceType", title: "نوع شایستگی"},
+            {name: "needsAssessmentDomain", title: "حیطه" , },
+            {name: "needsAssessmentPriority", title: "اولویت" , },
+            {name: "courseCode", title: "کد دوره" , },
+            {name: "courseTitleFa", title: "نام دوره" , },
+            {name: "limitSufficiency", title: "حد بسندگی" , }
         ]
     });
 
@@ -73,19 +81,10 @@
     function loadEditNeedsAssessmentAllCompeteceGap(record, type) {
         gapObjectId = record.id
         gapObjectType = type
-        RestDataSource_AllCompetenceNeedsAssessmentGap.fetchDataURL = CompetencesIscList+"/"+gapObjectId+"/"+gapObjectType;
-        // ListGrid_AllCompetenceNeedsAssessmentGap.invalidateCache();
-        // ListGrid_AllCompetenceNeedsAssessmentGap.fetchData();
-        // clearAllGrid()
-        // wait.show();
-        <%--isc.RPCManager.sendRequest(TrDSRequest(canChangeData+gapObjectId+"/"+gapObjectType , "Get",null, function (resp) {--%>
-        <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-        <%--        wait.close();--%>
-        <%--    } else {--%>
-        <%--        wait.close();--%>
-        <%--        createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
-        <%--    }--%>
-        <%--}));--%>
+        RestDataSource_AllCompetenceNeedsAssessmentGap.fetchDataURL = allCompetencesIscList+"/"+gapObjectId+"/"+gapObjectType;
+        ListGrid_AllCompetenceNeedsAssessmentGap.invalidateCache();
+        ListGrid_AllCompetenceNeedsAssessmentGap.fetchData();
+
     }
 
 
