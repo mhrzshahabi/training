@@ -366,6 +366,12 @@ public class MainFormController {
         return "needsAssessment/edit-needs-assessment-gap";
     }
 
+    @GetMapping("/needs-assessment-all-competence-gap")
+    public String showNeedsAssessmentallCompetenceGapForm() {
+        return "needsAssessment/needs-assessment-all-competence-gap";
+    }
+
+
     @GetMapping("/show-other-needs-assessment")
     public String showOtherNeedsAssessmentForm() {
         return "needsAssessment/show-need-assessment";

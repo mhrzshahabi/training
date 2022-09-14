@@ -53,6 +53,16 @@
             Window_NeedsAssessment_Edit_Gap.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",true);
         }
     });
+    ToolStripButton_NA_training_Post_grade_all_competece_gap = isc.ToolStripButton.create({
+        title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",
+        click: function () {
+            if (PostGradeLG_postGrade.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_all_competence_gap.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",true);
+        }
+    });
     ToolStripButton_TreeNA_PostGrade = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -89,6 +99,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_PostGradeGap,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_NA_training_Post_grade_all_competece_gap,
             </sec:authorize>
             <sec:authorize access="hasAuthority('PostGrade_P')">
             ToolStrip_Post_Grade_Export2EXcel
@@ -210,6 +223,7 @@
 
     defineWindowsEditNeedsAssessment(PostGradeLG_postGrade);
     defineWindowsEditNeedsAssessmentForGap(PostGradeLG_postGrade);
+    defineWindow_NeedsAssessment_all_competence_gap(PostGradeLG_postGrade);
     defineWindowTreeNeedsAssessment();
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////

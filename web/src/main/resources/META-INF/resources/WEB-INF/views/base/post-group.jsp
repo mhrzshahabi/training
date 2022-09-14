@@ -287,6 +287,7 @@
 
     defineWindowsEditNeedsAssessment(ListGrid_Post_Group_Jsp);
     defineWindowsEditNeedsAssessmentForGap(ListGrid_Post_Group_Jsp);
+    defineWindow_NeedsAssessment_all_competence_gap(ListGrid_Post_Group_Jsp);
     defineWindowTreeNeedsAssessment();
 
     var method = "POST";
@@ -1605,6 +1606,17 @@
         }
     });
 
+    ToolStripButton_NA_PostGroup_all_competece_gap = isc.ToolStripButton.create({
+        title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",
+        click: function () {
+            if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_all_competence_gap.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
+        }
+    });
+
 
     ToolStripButton_TreeNA_JspPostGroup = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
@@ -1634,6 +1646,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_JspGroupGap
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_NA_PostGroup_all_competece_gap
             </sec:authorize>
         ]
     });
