@@ -132,7 +132,9 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
                 {name: "concurrentCourses"},
                 {name: "classCode"},
                 {name: "addingUser"},
+                {name: "class_student_d_created_date"},
                 {name: "lastModifiedBy"},
+                {name: "class_student_d_last_modified_date"},
                 {name: "sessionDate"},
                 {name: "sessionStartHour"},
                 {name: "sessionEndHour"},
@@ -213,9 +215,24 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
                 filterOperator: "iContains"
             },
             {
+                name: "class_student_d_created_date",
+                title: "تاریخ اضافه کردن فراگیر",
+                width: "12%",
+                align: "center",
+                canFilter: false
+            },
+            {
                 name: "lastModifiedBy",
                 title: "کاربر تغییر دهنده",
                 width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            ,
+            {
+                name: "class_student_d_last_modified_date",
+                title: "تاریخ تغییر دادن فراگیر",
+                width: "12%",
                 align: "center",
                 canFilter: false
             },
