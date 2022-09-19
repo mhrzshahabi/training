@@ -103,7 +103,6 @@
             }
         }
     });
-
     ToolStripButton_NA_Post_all_competece_gap = isc.ToolStripButton.create({
         title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",
         click: function () {
@@ -111,7 +110,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_all_competence_gap.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "Post",true);
+            Window_NeedsAssessment_all_competence_gap.showUs(PostLG_post.getSelectedRecord(), "Post",true);
         }
     });
 

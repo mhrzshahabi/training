@@ -655,12 +655,18 @@
             case "تيمی , گروهی (سازمانی)":
                 code.setValue("G" + cat + subCat);
                 break;
+            case "تخصصی":
+                code.setValue("T" + cat + subCat);
+                break;
+            case "سازمانی":
+                code.setValue("S" + cat + subCat);
+                break;
+            case "مدیریتی":
+                code.setValue("M" + cat + subCat);
+                break;
             case "فردی (پستی)":
                 code.setValue("P" + cat + subCat);
                 break;
-            // case "مدیریتی":
-            //     code.setValue("M00000");
-            //     break;
         }
     }
 

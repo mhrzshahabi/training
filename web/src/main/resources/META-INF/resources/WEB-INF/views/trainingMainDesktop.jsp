@@ -2061,13 +2061,6 @@
                         createTab(this.title, "<spring:url value="/educationalCalender/show-form"/>");
                     }
                 },
-                {isSeparator: true},
-                {
-                    title: "<spring:message code="educational.calender"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/educationalCalender/show-form"/>");
-                    }
-                },
             ]
         })
     });

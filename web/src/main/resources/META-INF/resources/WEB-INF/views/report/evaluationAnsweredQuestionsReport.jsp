@@ -558,7 +558,6 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelAnsweredQuestions() {
-        debugger;
         if (ListGrid_Answered_Questions_Details.getOriginalData().localData.size() === 0)
             createDialog("info", "جدول نتایج خالیست");
         else
