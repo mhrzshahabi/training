@@ -1085,6 +1085,21 @@
                                                                     }));
                                                                 }
                                                             }),
+                                                            isc.IButtonSave.create({
+                                                                layoutAlign: "center",
+                                                                title: "محاسبه اتوماتیک بارم",
+                                                                width: "150",
+                                                                click: function () {
+                                                                    if (ListGrid_Questions_preTest.getData().length > 0) {
+                                                                        for (let i = 0; i < ListGrid_Questions_preTest.getData().length; i++) {
+                                                                            let proposedPointValue = ListGrid_Questions_preTest.getData()[i].proposedPointValue;
+                                                                            if (proposedPointValue !== undefined ) {
+                                                                                ListGrid_Questions_preTest.setEditValue(i, ListGrid_Questions_preTest.getField("score").masterIndex, proposedPointValue);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }),
                                                             isc.IButtonCancel.create({
                                                                 click: function () {
                                                                     Window_result_preTest.close();
