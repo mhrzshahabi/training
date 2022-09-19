@@ -384,14 +384,8 @@ public class ClassStudentService implements IClassStudentService {
             Tclass tclass = tclassService.getTClass(classId);
 //
             elsClassDto.setClassId(classId);
-//            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
-//            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
-//            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
-//            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
-//            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
             elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
-//            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
             elsClassDto.setDuration(arr[7] == null ? null : Integer.valueOf(arr[7].toString()));
             elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
             elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
@@ -405,10 +399,6 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setStartDate(startDate.getTime());
             elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
-//            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
-//            elsClassDto.setSupervisorName(arr[17] == null ? null : arr[17].toString());
-//            elsClassDto.setPlannerName(arr[18] == null ? null : arr[18].toString());
-//            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
             elsClassDto.setEvaluationRate(evaluationAnalysisService.findTeacherGradeByClass(classId));
             result.add(elsClassDto);
         }

@@ -997,7 +997,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     @Override
     public Double findTeacherGradeByClass(Long classId){
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
-        if (evaluationAnalyses.size()>0){
+        if (evaluationAnalyses.size()>0 && evaluationAnalyses.get(0).getTeacherGrade()!=null){
           return Double.valueOf(evaluationAnalyses.get(0).getTeacherGrade());
 
         }else

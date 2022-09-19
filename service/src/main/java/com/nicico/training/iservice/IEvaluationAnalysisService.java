@@ -42,5 +42,6 @@ public interface IEvaluationAnalysisService {
     List<ClassStudentDTO.evaluationAnalysistLearning> getStudentWithOutPreTest(Long id);
 
     EvaluationDTO.EvaluationLearningResult evaluationAnalysistLearningResultTemp(Long classId, String scoringMethod);
+
     Double findTeacherGradeByClass(Long classId);
 }
