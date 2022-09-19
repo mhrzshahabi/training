@@ -785,7 +785,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             resultSet.setFeclpass(FECRPass.toString());
 
         Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
-        if (classHasPreTest != null && classHasPreTest.equals(new Integer(1))) {
+        if (classHasPreTest != null && classHasPreTest.equals(1)) {
             resultSet.setHavePreTest("true");
         } else
             resultSet.setHavePreTest("false");
@@ -795,7 +795,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         if (result[2] != null)
             resultSet.setStudentCount(result[2]);
         else
-            resultSet.setStudentCount(new Float(0));
+            resultSet.setStudentCount((float) 0);
 
         List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
         HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -833,7 +833,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 if (classStudent.getPreTestScore() != null)
                     preScores.add(Double.valueOf(classStudent.getPreTestScore()));
                 else
-                    preScores.add(new Double(0));
+                    preScores.add((double) 0);
                 postScores.add(Double.valueOf(map.get(classStudent.getValence())));
                 studentCount++;
             } else if (scoringMethod.equalsIgnoreCase("2") && classStudent.getScore() != null) {
@@ -841,19 +841,19 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 if (classStudent.getPreTestScore() != null)
                     preScores.add(Double.valueOf(classStudent.getPreTestScore()));
                 else
-                    preScores.add(new Double(0));
+                    preScores.add((double) 0);
                 studentCount++;
             } else if (classStudent.getScore() != null) {
                 postScores.add(Double.valueOf(classStudent.getScore()));
                 if (classStudent.getPreTestScore() != null)
                     preScores.add(Double.valueOf(classStudent.getPreTestScore()));
                 else
-                    preScores.add(new Double(0));
+                    preScores.add((double) 0);
                 studentCount++;
             }
         }
 
-        Map<String, Boolean> tStudentResult = new HashMap<String, Boolean>();
+        Map<String, Boolean> tStudentResult = new HashMap<>();
         if (studentCount != 0)
             tStudentResult = calculateTStudentResult(preScores, postScores, studentCount);
         if (tStudentResult.containsKey("hasDiffer") && tStudentResult.get("hasDiffer")) {
@@ -929,11 +929,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         Double preScores_mean = getMean(preScores, studentCount);
         Double postScores_mean = getMean(postScores, studentCount);
 
-        Double preScores_deviation = getDeviation(preScores, studentCount, preScores_mean);
-        Double postScores_deviation = getDeviation(postScores, studentCount, postScores_mean);
-
         Double difference_sum = getDifference(preScores, postScores, studentCount);
-        Double difference_average = difference_sum / studentCount;
         Double difference_deviation = getDifferenceDeviation(preScores, postScores, studentCount, difference_sum);
         Double t = difference_sum / difference_deviation;
         Double t_table = 0.0;
@@ -997,6 +993,15 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             t1 += dm * dm;
         }
         return Math.sqrt(((n * t1) - (differenceSum * differenceSum)) / (n - 1));
+    }
+    @Override
+    public Double findTeacherGradeByClass(Long classId){
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
+        if (evaluationAnalyses.size()>0){
+          return Double.valueOf(evaluationAnalyses.get(0).getTeacherGrade());
+
+        }else
+            return 0.0;
     }
 
     //------------------------------------------------------------------------------------------------------------------
