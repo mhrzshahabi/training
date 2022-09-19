@@ -920,6 +920,21 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                     }));
                                                 }
                                             }),
+                                            isc.IButtonSave.create({
+                                                layoutAlign: "center",
+                                                title: "محاسبه اتوماتیک بارم",
+                                                width: "150",
+                                                click: function () {
+                                                    if (ListGrid_Questions_finalTest.getData().length > 0) {
+                                                        for (let i = 0; i < ListGrid_Questions_finalTest.getData().length; i++) {
+                                                            let proposedPointValue = ListGrid_Questions_finalTest.getData()[i].proposedPointValue;
+                                                            if (proposedPointValue !== undefined ) {
+                                                                ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, proposedPointValue);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }),
                                             isc.IButtonCancel.create({
                                                 layoutAlign: "center",
                                                 click: function () {
