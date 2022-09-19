@@ -183,7 +183,7 @@
 
                                         if(isScoreDependent_Eval) {
 
-                                            if (rec.evaluationStatusReaction!==1) {
+                                            if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
 
                                                 if (!score_windows_dynamicForm_Eval.validate()) {return;}
                                                 if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
@@ -673,7 +673,7 @@
 
                 if (isScoreDependent_Eval) {
 
-                    if (record.evaluationStatusReaction===1) {
+                    if (record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;
                     } else {
                         if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {

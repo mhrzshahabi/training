@@ -178,7 +178,7 @@
 
                                             if (isScoreDependent) {
 
-                                                if (rec.evaluationStatusReaction!==1) {
+                                                if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
 
                                                     if (!score_windows_dynamicForm.validate()) {return;}
                                                     if (validators_score(score_windows_dynamicForm_value)) {
@@ -720,7 +720,7 @@
 
                 if (isScoreDependent) {
 
-                    if (record.evaluationStatusReaction===1) {
+                    if (record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;
                     } else {
 
