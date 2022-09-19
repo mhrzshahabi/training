@@ -150,7 +150,7 @@ function defineWindowsEditNeedsAssessmentForGap(grid = null) {
         showUs(record, objectType,isGap) {
             loadEditNeedsAssessmentGap(record, objectType,"R&W",isGap);
             // loadDiffNeedsAssessment(record, objectType);
-            hasChanged = false;
+            // hasChanged = false;
             this.Super("show", arguments);
         },
         // close(x = 1){

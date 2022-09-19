@@ -460,7 +460,7 @@
         },
 
         getCellCSSText(record) {
-            return priorityColor(record);
+            return priorityColorV2(record);
         },
 
     });
@@ -502,7 +502,7 @@
         },
 
         getCellCSSText: function (record) {
-            return priorityColor(record);
+            return priorityColorV2(record);
         },
 
     });
@@ -548,7 +548,7 @@
         },
 
         getCellCSSText: function (record) {
-            return priorityColor(record);
+            return priorityColorV2(record);
         },
 
 
@@ -748,7 +748,7 @@
     });
 
 
-    function priorityColor(record){
+    function priorityColorV2(record){
         switch (record.competencePriorityId) {
             case 111:
                 return "background-color : " + red;
@@ -766,7 +766,7 @@
     function loadEditNeedsAssessmentGap(record, type, state = "R&W",isFromGap) {
         gapObjectId = record.id
         gapObjectType = type
-        clearAllGrid()
+        clearAllListGrid()
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(canChangeData+gapObjectId+"/"+gapObjectType , "Get",null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -990,7 +990,7 @@ if (canChange){
 
 
     }
-    function clearAllGrid() {
+    function clearAllListGrid() {
         ListGrid_Knowledge_JspNeedsAssessmentGap.fetchData();
         ListGrid_Knowledge_JspNeedsAssessmentGap.invalidateCache();
         competenceKnowledgeGapData.length = 0;
