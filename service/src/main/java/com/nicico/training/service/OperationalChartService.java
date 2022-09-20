@@ -34,10 +34,16 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException {
+    public SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq,Long complexId) throws NoSuchFieldException, IllegalAccessException {
         if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
             for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                if (criterion.getFieldName().equals("complex")) {
+
+                if (complexId!=null) {
+                    criterion.setFieldName("complex");
+                    String complexTitle = complexDAO.findById(complexId).get().getTitle();
+                    criterion.setValue(complexTitle);
+                }
+                else if (criterion.getFieldName().equals("complex")) {
                     criterion.setFieldName("complex");
                     List<Object> value = criterion.getValue();
                     Object o = value.get(0);

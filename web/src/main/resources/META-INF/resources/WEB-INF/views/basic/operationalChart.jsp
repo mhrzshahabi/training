@@ -243,10 +243,18 @@
                 {name: "nationalCode"},
                 {name: "title"},
             ],
-        transformResponse: function (dsResponse) {
-            return this.Super("transformResponse", arguments);
-        },
-        fetchDataURL: operationalChartUrl + "/spec-list",
+    });
+
+    let RestDataSource_Parent_ListGrid = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "complex"},
+                {name: "userName"},
+                {name: "nationalCode"},
+                {name: "title"},
+            ],
+        fetchDataURL: operationalChartUrl + "/spec-list"
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -268,27 +276,31 @@
                 name: "complex",
                 title: "مجتمع",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "userName",
                 title: "نام کاربری",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "nationalCode",
                 title: "کد ملی",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
 
             {
                 name: "title",
                 title: "عنوان",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "parentId",
                 title: "سطح بالادست",
-                optionDataSource: RestDataSource_Parent,
+                optionDataSource: RestDataSource_Parent_ListGrid,
                 displayField: "userName",
                 autoFetchData: true,
                 valueField: "id",
@@ -296,6 +308,7 @@
                 required: false,
                 validateOnExit: true,
                 length: 255,
+               canFilter: false
             },
             {
                 name: "roleId",
@@ -308,6 +321,7 @@
                 required: false,
                 validateOnExit: true,
                 length: 255,
+                canFilter: false
             },
 
         ],
@@ -332,8 +346,21 @@
     function ListGrid_OperationalChart_Add() {
         methodOperationalChart = "POST";
         saveActionUrlOperationalChart = operationalChartUrl + "/create";
-        DynamicForm_JspOperationalChart.clearValues();
-        Window_JspOperationalChart.show();
+
+        let complexFilter = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+        if (complexFilter === undefined) {
+            createDialog("info", "لطفا فیلتر مجتمع را انتخاب کنید.");
+            return;
+        }else{
+
+            DynamicForm_JspOperationalChart.clearValues();
+            let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+            DynamicForm_JspOperationalChart.getItem("complexId").disable();
+            RestDataSource_Parent.fetchDataURL = operationalChartUrl + "/parent-list/"+ DynamicForm_JspOperationalChart.getItem("complexId").getValue()
+            Window_JspOperationalChart.show();
+        }
+
     }
 
     function ListGrid_OperationalChart_Edit(record) {
@@ -343,11 +370,40 @@
             methodOperationalChart = "PUT";
             saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
 
-            DynamicForm_JspOperationalChart.clearValues();
-            DynamicForm_JspOperationalChart.editRecord(record);
+            let complexFilter = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            if (complexFilter === undefined) {
+                createDialog("info", "لطفا فیلتر مجتمع را انتخاب کنید.");
+                return;
+            }else {
+
+                DynamicForm_JspOperationalChart.clearValues();
+                DynamicForm_JspOperationalChart.editRecord(record);
+
+                let complex = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+                DynamicForm_JspOperationalChart.getItem("complexId").setValue(complex);
+                DynamicForm_JspOperationalChart.getItem("complexId").disable();
+
+                let user = record.userName;
+                DynamicForm_JspOperationalChart.getField("userIds").setValue(user);
+            }
+
+            RestDataSource_Parent.implicitCriteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {
+                        fieldName: "complexId",
+                        operator: "iContains",
+                        value:  DynamicForm_JspOperationalChart.getItem("complexId").getValue()
+                    }
+                ]
+            };
+
+            RestDataSource_Parent.fetchDataURL = operationalChartUrl + "/parent-list/"+ DynamicForm_JspOperationalChart.getItem("complexId").getValue()
+            Window_JspOperationalChart.show();
+
         }
 
-        Window_JspOperationalChart.show();
     }
 
     function OperationalChart_save_result(resp) {
@@ -355,7 +411,7 @@
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            refreshLG(ListGrid_JspOperationalChart);
+            DynamicForm_departmentFilter_Filter.clearValues();
             Window_JspOperationalChart.close();
             setTimeout(function () {
                 OK.close();
@@ -501,11 +557,12 @@
 
                 }
             }
-
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
-                methodOperationalChart,
-                JSON.stringify(data),
-                OperationalChart_save_result));
+            else {
+                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
+                    methodOperationalChart,
+                    JSON.stringify(data),
+                    OperationalChart_save_result));
+            }
         }
     });
 
@@ -674,6 +731,7 @@
                 required: false,
                 validateOnExit: true,
                 length: 255,
+                cachePickListResults: false,
                 pickListFields: [
                     {
                         name: "userName",
