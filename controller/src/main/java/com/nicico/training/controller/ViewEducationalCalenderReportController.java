@@ -2,10 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IViewCalenderHeadlinesService;
-import com.nicico.training.iservice.IViewCalenderOfMainGoalsService;
-import com.nicico.training.iservice.IViewCalenderPrerequisiteService;
-import com.nicico.training.iservice.IViewCalenderSessionsService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.ViewCalenderSessions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +27,8 @@ public class ViewEducationalCalenderReportController {
     private final IViewCalenderPrerequisiteService iViewCalenderPrerequisiteService;
     private final IViewCalenderSessionsService iViewCalenderSessionsService;
     private final IViewCalenderHeadlinesService iViewCalenderHeadlinesService;
+    private final IViewCalenderCoursesService iViewCalenderCoursesService;
+
     private final ModelMapper modelMapper;
 
 
@@ -60,6 +59,14 @@ public class ViewEducationalCalenderReportController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs result = iViewCalenderSessionsService.search(searchRq, o -> modelMapper.map(o, ViewCalenderSessionsDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/courses/iscList")
+    public   ResponseEntity<ISC<ViewCalenderCoursesDTO.ViewCalenderCoursesSpecRs>> iscListCourses(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs result = iViewCalenderCoursesService.search(searchRq, o -> modelMapper.map(o, ViewCalenderCoursesDTO.Info.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
+
     }
 
 }

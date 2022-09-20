@@ -18271,7 +18271,26 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="kasehpour" id="1663132585-02">
+        <createView viewName="VIEW_CALENDAR_COURSE" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                         ID
+                        ,CALENDAR_ID
+                        ,COURSECODE
+                        ,MAHALBARGOZARI
+                        ,NOEDORE
+                        ,HAZINEHDORE
+                        ,NAHVEBARGOZARI
+                        ,DARKHASTAMOUZESHI
+                        ,TARIKHBARGOZARI
+                        ,MODATDORE
 
+               FROM
+                  VIEW_CALENDAR_FINAL_DETAIL
 
+    ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>
