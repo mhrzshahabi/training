@@ -129,13 +129,19 @@ public class EvaluationAnalysisFormController {
             params.add("minScore_ET", object.get("minScore_ET").toString());
         else
             params.add("minScore_ET", "");
-        if(!object.isNull("FERGrade"))
-            params.add("differFER", "" + (Double.parseDouble(object.get("minScore_ER").toString())-Double.parseDouble(object.get("FERGrade").toString())) + "");
-        else
+        if(!object.isNull("FERGrade")) {
+            double ferGrade = Double.parseDouble(object.get("FERGrade").toString());
+            double minScore_er = Double.parseDouble(object.get("minScore_ER").toString());
+            long differFER = Math.round(ferGrade - minScore_er);
+            params.add("differFER", "" + differFER + "");
+        } else
             params.add("differFER", "");
-        if(!object.isNull("FETGrade"))
-            params.add("differFET", "" + (Double.parseDouble(object.get("minScore_ET").toString())-Double.parseDouble(object.get("FETGrade").toString())) + "");
-        else
+        if(!object.isNull("FETGrade")) {
+            double minScoreEt = Double.parseDouble(object.get("minScore_ET").toString());
+            double fetGrade = Double.parseDouble(object.get("FETGrade").toString());
+            long differFET = Math.round(fetGrade - minScoreEt);
+            params.add("differFET", "" + differFET + "");
+        } else
             params.add("differFET",  "");
         if(!object.isNull("teacherGradeToClass"))
             params.add("teacherGradeToClass", object.get("teacherGradeToClass").toString());
