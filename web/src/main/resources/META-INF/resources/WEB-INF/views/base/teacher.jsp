@@ -906,6 +906,23 @@
         }
     });
 
+    let ToolStripButton_DownLoad_Excel_JspTeacher = isc.ToolStripButton.create({
+        title: "دریافت فایل خام اکسل اطلاعات تکمیلی",
+        width: "10%",
+        height: 25,
+        click: function () {
+            window.open("excel/teacher-furtherInfo.xlsx");
+        }
+    });
+    let ToolStripButton_Upload_Excel_JspTeacher = isc.ToolStripButtonAdd.create({
+        title: "افزودن اطلاعات تکمیلی اساتید",
+        width: "10%",
+        height: 30,
+        click: function () {
+            uploadFurtherInfoExcelFile();
+        }
+    });
+
     var ToolStripButton_Print_InfoForm_JspTeacher = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print.teacher.detail'/>",
         click: function () {
@@ -948,6 +965,8 @@
             <sec:authorize access="hasAuthority('Teacher_E')">
             ToolStripButton_Evaluation_JspTeacher,
             </sec:authorize>
+            ToolStripButton_DownLoad_Excel_JspTeacher,
+            ToolStripButton_Upload_Excel_JspTeacher,
             <sec:authorize access="hasAuthority('Teacher_R')">
             isc.ToolStrip.create({
                 width: "100%",
@@ -1775,6 +1794,187 @@
             let termId = JSON.parse(resp.httpResponseText);
             DynamicForm_Term_Filter_JspTeacher.getField("termFilter").setValue(termId);
         }));
+    }
+
+    function uploadFurtherInfoExcelFile() {
+
+        let HLayout_Upload_Excel_FurtherInfo = isc.HLayout.create({
+            width: "100%",
+            members: [
+                isc.DynamicForm.create({
+                    width: "100%",
+                    fields: [
+                        {
+                            ID:"furtherInfoExcelFile",
+                            name: "furtherInfoExcelFile",
+                            type: "file",
+                            title: "",
+                            endRow: false
+                        },
+                        {
+                            name: "import",
+                            title: "وارد کردن اطلاعات تکمیلی اساتید",
+                            type: "ButtonItem",
+                            startRow: false,
+                            click:function () {
+                                addFurtherInfoFromExcelToTeacher(Window_Upload_Excel_FurtherInfo);
+                            }
+                        }
+                    ]
+                })
+            ]
+        });
+        let Window_Upload_Excel_FurtherInfo = isc.Window.create({
+            title: "انتخاب فایل",
+            align: "center",
+            width: "15%",
+            height: "10%",
+            isModal: true,
+            showModalMask: true,
+            dismissOnEscape: true,
+            closeClick: function () {
+                this.destroy()
+            },
+            items: [
+                HLayout_Upload_Excel_FurtherInfo
+            ]
+        });
+        Window_Upload_Excel_FurtherInfo.show();
+    }
+
+    function addFurtherInfoFromExcelToTeacher(window) {
+
+        window.close();
+        let address = furtherInfoExcelFile.getValue();
+        if (address == null) {
+            createDialog("info", "فايل خود را انتخاب نماييد.");
+        } else {
+            let ExcelToJSON = function () {
+
+                this.parseExcel = function (file) {
+                    let reader = new FileReader();
+                    let records = [];
+
+                    reader.onload = function (e) {
+                        let data = e.target.result;
+                        let workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        workbook.SheetNames.forEach(function (sheetName) {
+
+                            let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                            for (let i = 0; i < XL_row_object.length; i++) {
+
+                                let current = {
+                                    teacherNationalCode: XL_row_object[i]["کد ملی مدرس"],
+                                    salaryBase: XL_row_object[i]["پایه"],
+                                    teachingExperience: XL_row_object[i]["سابقه(ماه)"],
+                                    teacherRankTitle: XL_row_object[i]["رتبه"]
+                                };
+                                records.add(current);
+                            }
+                            furtherInfoExcelFile.setValue('');
+                        });
+
+                        if (records.length > 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(agreementFurtherInfoUrl + "/addTeacherFurtherInfo", "POST", JSON.stringify(records), function (resp) {
+                                wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    let result = JSON.parse(resp.httpResponseText);
+                                    ListGrid_teacher_refresh();
+                                    ListGrid_AgreementFurtherInfo_refresh();
+                                    if (result.size() !== 0)
+                                        showReturnTeacherInfo(result);
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                }
+                            }));
+                        } else {
+                            createDialog("info", "پست جدیدی برای اضافه کردن وجود ندارد.");
+                        }
+                    };
+                    reader.onerror = function (ex) {
+                        createDialog("info", "خطا در باز کردن فایل");
+                    };
+                    reader.readAsBinaryString(file);
+                };
+            };
+
+            let split = $('[name = "furtherInfoExcelFile"]')[0].files[0].name.split('.');
+            if (split[split.length - 1] === 'xls' || split[split.length - 1] === 'csv' || split[split.length - 1] === 'xlsx') {
+                let xl2json = new ExcelToJSON();
+                xl2json.parseExcel($('[name="furtherInfoExcelFile"]')[0].files[0]);
+            } else {
+                createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+            }
+        }
+    }
+
+    function showReturnTeacherInfo(result) {
+
+        let RestDataSource_Return_Teacher_Info = isc.TrDS.create({
+            fields: [
+                {name: "teacherNationalCode", title: "کد ملی مدرس", filterOperator: "iContains"},
+                {name: "salaryBase", title: "پایه", filterOperator: "iContains"},
+                {name: "teachingExperience", title: "سابقه (ماه)", filterOperator: "iContains"},
+                {name: "teacherRankTitle", title: "رتبه", filterOperator: "iContains"}
+            ]
+        });
+
+        let ListGrid_Return_Teacher_Info = isc.ListGrid.create({
+            width: "100%",
+            height: "350",
+            autoFetchData: false,
+            showRowNumbers: true,
+            showFilterEditor: false,
+            selectCellTextOnClick: true,
+            dataSource: RestDataSource_Return_Teacher_Info,
+            fields: [
+                {
+                    name: "teacherNationalCode",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "salaryBase",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "teachingExperience",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "teacherRankTitle",
+                    width: "10%",
+                    align: "center"
+                }
+            ]
+        });
+
+        let Window_Return_Teacher_Info = isc.Window.create({
+            width: "25%",
+            height: "300",
+            title: "لیست رکوردهایی که اضافه نشده اند",
+            items: [
+                ListGrid_Return_Teacher_Info,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="close"/>",
+                            click: function () {
+                                Window_Return_Teacher_Info.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+
+        ListGrid_Return_Teacher_Info.setData(result);
+        Window_Return_Teacher_Info.show();
     }
 
     // </script>

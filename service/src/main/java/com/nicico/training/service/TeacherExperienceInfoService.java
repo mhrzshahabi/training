@@ -10,6 +10,7 @@ import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.teacher.TeacherExperienceMapper;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.TeacherExperienceInfo;
+import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.TeacherExperienceInfoDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -28,10 +29,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TeacherExperienceInfoService  implements ITeacherExperienceInfoService {
+
     private final TeacherExperienceInfoDAO teacherExperienceInfoDAO;
     private final ModelMapper modelMapper;
     private final TeacherExperienceMapper teacherExperienceMapper;
     private final ITeacherService teacherService;
+    private final EnumsConverter.ETeacherRankConverter teacherRankConverter = new EnumsConverter.ETeacherRankConverter();
 
     @Transactional(readOnly = true)
     @Override
@@ -83,6 +86,29 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
             }
         }
+    }
+
+    @Transactional
+    @Override
+    public List<TeacherExperienceInfoDTO.Create> addTeacherFurtherInfoList(List<TeacherExperienceInfoDTO.Create> createList) {
+        List<TeacherExperienceInfoDTO.Create> returnTeacherList = new ArrayList<>();
+
+        createList.forEach(create -> {
+            if (create.getTeacherNationalCode() != null && create.getSalaryBase() != null && create.getTeachingExperience() != null && create.getTeacherRankTitle() != null) {
+                Teacher teacher = teacherService.getTeacherByNationalCode(create.getTeacherNationalCode());
+                if (teacher != null) {
+                    TeacherExperienceInfo teacherExperienceInfo = new TeacherExperienceInfo();
+                    teacherExperienceInfo.setSalaryBase(Long.valueOf(create.getSalaryBase()));
+                    teacherExperienceInfo.setTeachingExperience(Long.valueOf(create.getTeachingExperience()));
+                    teacherExperienceInfo.setTeacherRankId(teacherRankConverter.convertToDatabaseColumnByTitle(create.getTeacherRankTitle()));
+                    teacherExperienceInfo.setTeacherId(teacher.getId());
+                    teacher.getTeacherExperienceInfos().add(teacherExperienceInfo);
+                } else
+                    returnTeacherList.add(create);
+            } else
+                returnTeacherList.add(create);
+        });
+        return returnTeacherList;
     }
 
     @Override

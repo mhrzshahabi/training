@@ -277,4 +277,14 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/addPostCodes/{operationalRoleId}")
+    public ResponseEntity<List<CourseDTO.TupleInfo>> addPostCodesToOperationalRole(@PathVariable Long operationalRoleId, @RequestBody List<String> postCodes) {
+        List<CourseDTO.TupleInfo> returnPostCodes = new ArrayList<>();
+        try {
+            returnPostCodes = iOperationalRoleService.addPostCodesToOperationalRole(operationalRoleId, postCodes);
+            return new ResponseEntity<>(returnPostCodes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(returnPostCodes, HttpStatus.NOT_FOUND);
+        }
+    }
 }

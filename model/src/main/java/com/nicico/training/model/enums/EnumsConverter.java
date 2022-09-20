@@ -491,6 +491,14 @@ public abstract class EnumsConverter {
             }
             return null;
         }
+
+        public Integer convertToDatabaseColumnByTitle(String title) {
+            for (TeacherRank entry : TeacherRank.values()) {
+                if (entry.getTitle().equals(title))
+                    return entry.getId();
+            }
+            return null;
+        }
     }
 
 }

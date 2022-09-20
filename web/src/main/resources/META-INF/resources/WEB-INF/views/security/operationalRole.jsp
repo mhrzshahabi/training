@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
     "use strict"
 
     var methodOperationalRole;
@@ -724,7 +724,35 @@
             addPostToOperationalRole();
             refreshLG(ListGrid_Post_OperationalRole);
         }
-    })
+    });
+    let IButton_DownLoad_Excel_Post = isc.ToolStripButton.create({
+        title: "دریافت فایل خام اکسل",
+        width: "10%",
+        height: 30,
+        click: function () {
+            window.open("excel/operationalRole-post-input.xlsx");
+        }
+    });
+    let IButton_Upload_Excel_Post = isc.ToolStripButtonAdd.create({
+        title: "افزودن لیست پست ها",
+        width: "10%",
+        height: 30,
+        click: function () {
+            uploadExcelFile();
+        }
+    });
+
+    let ToolStrip_Actions_Post_JspOperationalRole = isc.ToolStrip.create({
+        width: "35%",
+        membersMargin: 5,
+        align: "center",
+        members:
+            [
+                IButton_Add_Individual_Post,
+                IButton_DownLoad_Excel_Post,
+                IButton_Upload_Excel_Post
+            ]
+    });
 
     let Spacer_Top = isc.LayoutSpacer.create({height: 5});
     let Spacer_Bottom = isc.LayoutSpacer.create({height: 35});
@@ -742,7 +770,12 @@
         items: [isc.TrVLayout.create({
             members: [
                 // ListGrid_Post_OperationalRole , HLayout_AddOrRemove_IndividualPost
-                Section_Stack_Non_Used_posts, Spacer_Top, IButton_Add_Individual_Post, Spacer_Bottom, Section_Stack_Used_Posts, Spacer_Top, IButton_Remove_IndividualPost, Spacer_Bottom
+                Section_Stack_Non_Used_posts, Spacer_Top,
+                ToolStrip_Actions_Post_JspOperationalRole,
+                Spacer_Bottom, Section_Stack_Used_Posts,
+                Spacer_Top,
+                IButton_Remove_IndividualPost,
+                Spacer_Bottom
             ]
         })]
     });
@@ -1031,6 +1064,166 @@
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }));
+    }
+
+    function uploadExcelFile() {
+
+        let HLayout_Upload_Excel_Post = isc.HLayout.create({
+            width: "100%",
+            members: [
+                isc.DynamicForm.create({
+                    width: "100%",
+                    fields: [
+                        {
+                            ID:"postCodesExcelFile",
+                            name: "postCodesExcelFile",
+                            type: "file",
+                            title: "",
+                            endRow: false
+                        },
+                        {
+                            name: "import",
+                            title: "وارد کردن کد پست ها",
+                            type: "ButtonItem",
+                            startRow: false,
+                            click:function () {
+                                addPostsFromExcelToOperationalRole(Window_Upload_Excel_Post);
+                            }
+                        }
+                    ]
+                })
+            ]
+        });
+        let Window_Upload_Excel_Post = isc.Window.create({
+            title: "انتخاب فایل",
+            align: "center",
+            width: "15%",
+            height: "10%",
+            isModal: true,
+            showModalMask: true,
+            dismissOnEscape: true,
+            closeClick: function () {
+                this.destroy()
+            },
+            items: [
+                HLayout_Upload_Excel_Post
+            ]
+        });
+        Window_Upload_Excel_Post.show();
+    }
+
+    function addPostsFromExcelToOperationalRole(window) {
+
+        window.close();
+        let selectedOperationalRoleId = ListGrid_JspOperationalRole.getSelectedRecord().id;
+        let address = postCodesExcelFile.getValue();
+        if (address == null) {
+            createDialog("info", "فايل خود را انتخاب نماييد.");
+        } else {
+            let ExcelToJSON = function () {
+
+                this.parseExcel = function (file) {
+                    let reader = new FileReader();
+                    let records = [];
+
+                    reader.onload = function (e) {
+                        let data = e.target.result;
+                        let workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        workbook.SheetNames.forEach(function (sheetName) {
+
+                            let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                            for (let i = 0; i < XL_row_object.length; i++) {
+
+                                let current = {
+                                    postCode: XL_row_object[i]["کد پست"]
+                                };
+                                records.add(current);
+                            }
+                            postCodesExcelFile.setValue('');
+                        });
+
+                        if (records.length > 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(viewTrainingPostUrl + "/addPostCodes/" + selectedOperationalRoleId, "POST", JSON.stringify(records.map(item => item.postCode)), function (resp) {
+                                wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    let result = JSON.parse(resp.httpResponseText);
+                                    refreshLG(ListGrid_Post_OperationalRole);
+                                    if (result.size() !== 0)
+                                        showReturnPostCodes(result);
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                }
+                            }));
+                        } else {
+                            createDialog("info", "پست جدیدی برای اضافه کردن وجود ندارد.");
+                        }
+                    };
+                    reader.onerror = function (ex) {
+                        createDialog("info", "خطا در باز کردن فایل");
+                    };
+                    reader.readAsBinaryString(file);
+                };
+            };
+
+            let split = $('[name = "postCodesExcelFile"]')[0].files[0].name.split('.');
+            if (split[split.length - 1] === 'xls' || split[split.length - 1] === 'csv' || split[split.length - 1] === 'xlsx') {
+                let xl2json = new ExcelToJSON();
+                xl2json.parseExcel($('[name="postCodesExcelFile"]')[0].files[0]);
+            } else {
+                createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+            }
+        }
+    }
+
+    function showReturnPostCodes(result) {
+
+        let RestDataSource_Return_Post_Codes = isc.TrDS.create({
+            fields: [
+                {name: "code", title: "کد پست", filterOperator: "iContains"},
+            ]
+        });
+
+        let ListGrid_Return_Post_Codes = isc.ListGrid.create({
+            width: "100%",
+            height: "350",
+            autoFetchData: false,
+            showRowNumbers: true,
+            showFilterEditor: false,
+            selectCellTextOnClick: true,
+            dataSource: RestDataSource_Return_Post_Codes,
+            fields: [
+                {
+                    name: "code",
+                    width: "10%",
+                    align: "center"
+                }
+            ]
+        });
+
+        let Window_Return_Post_Codes = isc.Window.create({
+            width: "20%",
+            height: "300",
+            title: "لیست کدپست هایی که اضافه نشده اند",
+            items: [
+                ListGrid_Return_Post_Codes,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="close"/>",
+                            click: function () {
+                                Window_Return_Post_Codes.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+
+        ListGrid_Return_Post_Codes.setData(result);
+        Window_Return_Post_Codes.show();
     }
 
     function deletePostFromOperationalRole() {

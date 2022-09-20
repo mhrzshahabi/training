@@ -91,8 +91,6 @@
         top: 260,
         click: function () {
 
-
-
             if (!DynamicForm_JspAgreementFurtherInfo.validate()) {
                 return;
             }
@@ -217,7 +215,6 @@
             ListGrid_AgreementFurtherInfo_refresh();
         }
     });
-
     ToolStripButton_Edit_JspAgreementFurtherInfo = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_AgreementFurtherInfo_Edit();

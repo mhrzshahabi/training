@@ -22,6 +22,18 @@ public class TeacherExperienceInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    public static class Create {
+        private String salaryBase;
+        private String teachingExperience;
+        private Integer teacherRankId;
+        private String teacherRankTitle;
+        private Long teacherId;
+        private String teacherNationalCode;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     public static class ExcelInfo {
         private Long id;
         private Long teacherRank;
