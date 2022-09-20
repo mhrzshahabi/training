@@ -4763,6 +4763,8 @@
                             Window_Questions_JspEvaluation.close();
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                 classRecord.id, "GET", null, null));
+
+                            ListGrid_Class_refresh();
                             const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                             setTimeout(() => {
                                 msg.close();
