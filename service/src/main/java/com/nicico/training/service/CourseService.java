@@ -608,7 +608,7 @@ public class CourseService implements ICourseService {
         List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
         EducationLevel educationLevel = byTitleFa.get(0);
 //        Long categoryId = course.getCategoryId();
-        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(course.getCategoryId(), educationLevel.getCode(), false);
+        List<Long> teacherIds = teacherDAO.findAllTeacherByConditions(course.getCategoryId(), educationLevel.getCode());
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> sendingList = new ArrayList<>();
         Comparator<Tclass> tclassComparator = Comparator.comparing(Tclass::getEndDate);
 
@@ -617,22 +617,29 @@ public class CourseService implements ICourseService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
 
-        if (!teachers.isEmpty()) {
+        if (!teacherIds.isEmpty()) {
 
-            for (Teacher teacher : teachers) {
-                Map<String, Object> map = teacherService.evaluateTeacher(teacher, category, subCategory, parameterValues);
-                if (map.get("pass_status").equals("رد")) {
-                    continue;
+            for (Long id : teacherIds) {
+                Optional<Teacher> teacherOptional = teacherDAO.findById(id);
+                Teacher teacher=null;
+                if (teacherOptional.isPresent())
+                    teacher=   teacherOptional.get();
+                if (teacher!=null){
+                    Map<String, Object> map = teacherService.evaluateTeacher(teacher, category, subCategory, parameterValues);
+                    if (map.get("pass_status").equals("رد")) {
+                        continue;
+                    }
+                    List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
+                    TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
+                    Optional<Tclass> max = tclassList.stream().max(tclassComparator);
+                    if (max.isPresent()) {
+                        Tclass tclass = max.get();
+                        teacherDTO.setGrade(String.valueOf(tclassService.getStudentsGradeToTeacher(tclass.getClassStudents())));
+                    }
+                    teacherDTO.setHasPhone(checkTeacherPhone(teacher));
+                    sendingList.add(teacherDTO);
                 }
-                List<Tclass> tclassList = tclassDAO.findByCourseAndTeacher(course, teacher);
-                TeacherDTO.TeacherFullNameTupleWithFinalGrade teacherDTO = modelMapper.map(teacher, TeacherDTO.TeacherFullNameTupleWithFinalGrade.class);
-                Optional<Tclass> max = tclassList.stream().max(tclassComparator);
-                if (max.isPresent()) {
-                    Tclass tclass = max.get();
-                    teacherDTO.setGrade(String.valueOf(tclassService.getStudentsGradeToTeacher(tclass.getClassStudents())));
-                }
-                teacherDTO.setHasPhone(checkTeacherPhone(teacher));
-                sendingList.add(teacherDTO);
+
             }
         }
 

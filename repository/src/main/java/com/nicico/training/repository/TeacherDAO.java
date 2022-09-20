@@ -32,9 +32,30 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Query(value = "select count(*) from TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
     Integer getUnAttachedTeachersCountByInstituteId(Long instituteID);
 
+//    @Transactional
+//    @EntityGraph(attributePaths = {"personality","personality.educationLevel","employmentHistories","employmentHistories.categories","employmentHistories.subCategories","teachingHistories","teachingHistories.categories","teachingHistories.subCategories","teacherCertifications","teacherCertifications.categories","teacherCertifications.subCategories","majorCategory","majorSubCategory","publications","publications.categories","publications.subCategories","foreignLangKnowledges"})
+//    List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(Long id, Integer code, Boolean inBlackList);
+
     @Transactional
-    @EntityGraph(attributePaths = {"personality","personality.educationLevel","employmentHistories","employmentHistories.categories","employmentHistories.subCategories","teachingHistories","teachingHistories.categories","teachingHistories.subCategories","teacherCertifications","teacherCertifications.categories","teacherCertifications.subCategories","majorCategory","majorSubCategory","publications","publications.categories","publications.subCategories","foreignLangKnowledges"})
-    List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(Long id, Integer code, Boolean inBlackList);
+    @Query(value = " \n" +
+            "        SELECT\n" +
+            "        distinct\n" +
+            "            tbl_teacher_category.f_teacher\n" +
+            "        FROM\n" +
+            "            tbl_teacher_category\n" +
+            "                left JOIN tbl_teacher ON f_teacher = tbl_teacher.id\n" +
+            "                    left JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "    left JOIN tbl_education_level ON tbl_personal_info.f_edu_level = tbl_education_level.\n" +
+            "    id\n" +
+            "\n" +
+            "        WHERE\n" +
+            "            tbl_teacher_category.f_category = :id \n" +
+            "             and \n" +
+            "    tbl_teacher.b_in_black_list = 0\n" +
+            "    and\n" +
+            "    tbl_education_level.n_code > = :code \n" +
+            " \n ", nativeQuery = true)
+    List<Long> findAllTeacherByConditions(Long id, Integer code);
 
     @EntityGraph(attributePaths = {"subCategories","categories","personality","personality.contactInfo","personality.educationLevel","personality.educationMajor","personality.contactInfo.homeAddress","personality.contactInfo.workAddress"})
     @Override
