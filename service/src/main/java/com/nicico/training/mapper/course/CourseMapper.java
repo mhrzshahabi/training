@@ -8,14 +8,13 @@ import com.nicico.training.model.Course;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.Syllabus;
 import com.nicico.training.repository.CourseDAO;
-import org.checkerframework.checker.units.qual.A;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,4 +59,8 @@ public abstract class CourseMapper {
        elsCourseDTO.setStatus(200);
        return elsCourseDTO;
     }
+
+    @Mapping(source = "postCode", target = "code")
+    public abstract CourseDTO.TupleInfo toPostCodeDTO(String postCode);
+    public abstract List<CourseDTO.TupleInfo> toPostCodeDTOList(List<String> postCodes);
 }

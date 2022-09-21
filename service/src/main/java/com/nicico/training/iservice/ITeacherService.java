@@ -59,6 +59,8 @@ public interface ITeacherService {
 
     Long getTeacherIdByNationalCode(String nationalCode);
 
+    Teacher getTeacherByNationalCode(String nationalCode);
+
     Page<Teacher> getActiveTeachers(int page, int size);
 
     List<TeacherInCourseDto> getTeachersInCourse(Long courseId);

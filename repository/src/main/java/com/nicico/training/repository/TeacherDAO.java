@@ -75,6 +75,9 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode", nativeQuery = true)
     Long getTeacherId(String nationalCode);
 
+    @Query(value = "SELECT * FROM tbl_teacher t LEFT JOIN tbl_personal_info p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode", nativeQuery = true)
+    Teacher getTeacherByNationalCode(String nationalCode);
+
     @Transactional
     @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode AND t.B_ENABLED=1", nativeQuery = true)
     Long getTeacherIdIfTeacherIsActive(String nationalCode);

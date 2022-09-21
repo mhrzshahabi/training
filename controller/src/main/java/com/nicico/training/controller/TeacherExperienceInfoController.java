@@ -3,22 +3,11 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubcategoryDTO;
-import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.dto.TeacherExperienceInfoDTO;
-import com.nicico.training.dto.enums.TeacherRankDTO;
 import com.nicico.training.iservice.ITeacherExperienceInfoService;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.model.enums.TeacherRank;
-import com.nicico.training.repository.TeacherExperienceInfoDAO;
-import com.sun.jdi.LongValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.expr.Instanceof;
-import org.aspectj.apache.bcel.classfile.Unknown;
-import org.exolab.castor.xml.validators.LongValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,7 +28,6 @@ import java.util.List;
 @RequestMapping(value = "/api/teacherExperienceInfo")
 public class TeacherExperienceInfoController {
     private final ITeacherExperienceInfoService teacherExperienceInfoService;
-    private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList/{teacherId}")
     public ResponseEntity<ISC<TeacherExperienceInfoDTO.ExcelInfo>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
@@ -136,6 +124,17 @@ public class TeacherExperienceInfoController {
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @PostMapping("/addTeacherFurtherInfo")
+    public ResponseEntity<List<TeacherExperienceInfoDTO.Create>> addTeacherFurtherInfoToTeacher(@RequestBody List<TeacherExperienceInfoDTO.Create> createList) {
+        List<TeacherExperienceInfoDTO.Create> returnTeacherNationalCodes = new ArrayList<>();
+        try {
+            returnTeacherNationalCodes = teacherExperienceInfoService.addTeacherFurtherInfoList(createList);
+            return new ResponseEntity<>(returnTeacherNationalCodes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(returnTeacherNationalCodes, HttpStatus.NOT_FOUND);
         }
     }
 

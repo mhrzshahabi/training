@@ -230,15 +230,12 @@ public class TrainingPostService implements ITrainingPostService {
     }
 
     public List<String> getAllArea() {
-
-        List<String > area = trainingPostDAO.findAllArea();
-        return area;
+        return trainingPostDAO.findAllArea();
     }
 
     @Override
     public Optional<TrainingPost> isTrainingPostExist(String trainingPostCode) {
         return trainingPostDAO.findByCodeAndDeleted(trainingPostCode, null);
-
     }
 
     @Transactional(readOnly = true)

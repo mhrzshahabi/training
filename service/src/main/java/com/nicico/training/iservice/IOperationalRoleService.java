@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.model.OperationalRole;
@@ -40,6 +41,8 @@ public interface IOperationalRoleService {
     List<Long> getAllUserIdsByComplexAndCategoryAndSubCategory(Long complexId, String objectType, Long categoryId, Long subCategoryId);
 
     OperationalRole addIndividualPost(Long roleId, List<Long> postIds);
+
+    List<CourseDTO.TupleInfo> addPostCodesToOperationalRole(Long roleId, List<String> postCodes);
 
     List<OperationalRole> getOperationalRolesByByPostIdsAndComplexIdAndObjectType(Long postId, String objectType);
 

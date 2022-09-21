@@ -1006,6 +1006,11 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
+    public Teacher getTeacherByNationalCode(String nationalCode) {
+        return teacherDAO.getTeacherByNationalCode(nationalCode);
+    }
+
+    @Override
     public Page<Teacher> getActiveTeachers(int page, int size) {
         Pageable pageable= PageRequest.of(page,size, Sort.by(
                 Sort.Order.asc("id")));

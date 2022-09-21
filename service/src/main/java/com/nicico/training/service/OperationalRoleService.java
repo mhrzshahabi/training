@@ -4,16 +4,16 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.ITrainingPostService;
+import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
-import com.nicico.training.model.Complex;
-import com.nicico.training.model.OperationalRole;
-import com.nicico.training.model.OperationalUnit;
-import com.nicico.training.model.ViewTrainingPost;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +33,13 @@ public class OperationalRoleService implements IOperationalRoleService {
 
     private final ComplexDAO complexDAO;
     private final ModelMapper modelMapper;
+    private final CourseMapper courseMapper;
     private final IPersonnelService personnelService;
     private final IDepartmentService departmentService;
     private final OperationalUnitDAO operationalUnitDAO;
     private final OperationalRoleDAO operationalRoleDAO;
     private final ViewTrainingPostDAO viewTrainingPostDAO;
+    private final ITrainingPostService trainingPostService;
     private final ViewTrainingPostMapper viewTrainingPostMapper;
 
     @Transactional
@@ -236,6 +238,29 @@ public class OperationalRoleService implements IOperationalRoleService {
 
         savedOperationalRole.setPostIds(savedPostIds);
         return save(savedOperationalRole);
+    }
+
+    @Transactional
+    @Override
+    public List<CourseDTO.TupleInfo> addPostCodesToOperationalRole(Long roleId, List<String> postCodes) {
+        List<String> returnPostCodes = new ArrayList<>();
+        try {
+            OperationalRole operationalRole = findById(roleId);
+            Set<Long> postIds = operationalRole.getPostIds();
+
+            postCodes.forEach(postCode -> {
+                Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(postCode);
+                if (optionalTrainingPost.isPresent()) {
+                    postIds.add(optionalTrainingPost.get().getId());
+                } else
+                    returnPostCodes.add(postCode);
+            });
+            operationalRole.setPostIds(postIds);
+            save(operationalRole);
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
+        return courseMapper.toPostCodeDTOList(returnPostCodes);
     }
 
 }

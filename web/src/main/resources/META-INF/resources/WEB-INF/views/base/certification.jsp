@@ -1623,16 +1623,20 @@
     function updateOperationalRoles() {
 
         let record = ListGrid_Competence_Request_Items.getSelectedRecord();
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/operational-roles/" + record.id, "PUT", null, function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                wait.close();
-                refreshRequestItem();
-            } else {
-                wait.close();
-                createDialog("info", "خطایی رخ داده است");
-            }
-        }));
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        } else {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/operational-roles/" + record.id, "PUT", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    refreshRequestItem();
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        }
     }
 
     function selectionUpdated_Competence_Request() {
