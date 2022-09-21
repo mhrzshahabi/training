@@ -18628,4 +18628,383 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="namdari" id="1661077851000-08">
+        <createView viewName="VIEW_CALENDAR_DETAIL" replaceIfExists="true">
+            <![CDATA[
+ SELECT
+    id,
+    coursecode,
+    noedore,
+    nahvebargozari,
+    hazinehdore,
+    tarikhbargozari,
+    mahalbargozari,
+    categorytitle,
+    darkhastamouzeshi,
+    modatdore,
+    ahdafasli,
+    pishniaz,
+    sarfaslha,
+    calendar_id,
+    c_code,
+    c_title_fa as course_name
+FROM
+    (
+        SELECT
+            tbl_class.id,
+            tbl_course.c_code                  AS coursecode,
+            (
+                CASE
+                    WHEN tbl_course.e_run_type = 1  THEN
+                        'داخلی'
+                    WHEN tbl_course.e_run_type = 2  THEN
+                        'اعزام'
+                    WHEN tbl_course.e_run_type = 3  THEN
+                        'سمينار داخلي'
+                    WHEN tbl_course.e_run_type = 4  THEN
+                        'سمینار اعزام'
+                    WHEN tbl_course.e_run_type = 5  THEN
+                        'حین کار'
+                    WHEN tbl_course.e_run_type = 6  THEN
+                        'خارجی'
+                    WHEN tbl_course.e_run_type = 7  THEN
+                        'سمینار خارجی'
+                    WHEN tbl_course.e_run_type = 8  THEN
+                        'مجازی'
+                    WHEN tbl_course.e_run_type = 9  THEN
+                        'بازآموزی'
+                    WHEN tbl_course.e_run_type = 10 THEN
+                        'جعبه ابزار'
+                    ELSE
+                        NULL
+                END
+            )                                  AS noedore,
+            (
+                CASE
+                    WHEN tbl_class.c_teaching_brand = 1 THEN
+                        'تمام وقت'
+                    WHEN tbl_class.c_teaching_brand = 2 THEN
+                        'نیمه وقت'
+                    WHEN tbl_class.c_teaching_brand = 3 THEN
+                        'پاره وقت'
+                    ELSE
+                        NULL
+                END
+            )                                  AS nahvebargozari,
+            tbl_class.c_student_cost
+            || ' '
+            || tbl_parameter_value.c_title     AS hazinehdore,
+            tbl_class.c_start_date
+            || ' لغایت '
+            || tbl_class.c_end_date            AS tarikhbargozari,
+            tbl_institute1.c_title_fa          mahalbargozari,
+            tbl_category.c_title_fa            AS categorytitle,
+            (
+                CASE
+                    WHEN tbl_class.c_reason = 1 THEN
+                        'نیازسنجی'
+                    WHEN tbl_class.c_reason = 2 THEN
+                        'درخواست واحد'
+                    WHEN tbl_class.c_reason = 3 THEN
+                        'نیاز موردی'
+                    ELSE
+                        NULL
+                END
+            )                                  AS darkhastamouzeshi,
+            tbl_class.n_h_duration || ' ساعت ' AS modatdore,
+            tbl_skill.c_title_fa               ahdafasli,
+            tbl_course1.c_title_fa             AS pishniaz,
+            tbl_syllabus.c_title_fa            AS sarfaslha,
+            tbl_class.calendar_id,
+            tbl_class.c_code,
+            tbl_course.c_title_fa
+        FROM
+            tbl_class
+            LEFT JOIN tbl_institute ON tbl_institute.id = tbl_class.f_institute_organizer
+            INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+            LEFT JOIN tbl_institute tbl_institute1 ON tbl_institute1.id = tbl_class.f_institute
+            LEFT JOIN tbl_class_training_place ON tbl_class.id = tbl_class_training_place.f_class_id
+            LEFT JOIN tbl_training_place ON tbl_training_place.id = tbl_class_training_place.f_training_place_id
+            INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+            LEFT JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class.f_student_cost_currency
+            LEFT JOIN tbl_skill ON tbl_course.id = tbl_skill.f_main_objective_course
+            LEFT JOIN tbl_pre_course ON tbl_course.id = tbl_pre_course.f_course_id
+            LEFT JOIN tbl_course    tbl_course1 ON tbl_course1.id = tbl_pre_course.f_pre_course_id
+            LEFT JOIN tbl_course_goal ON tbl_course_goal.f_course_id = tbl_course.id
+            LEFT JOIN tbl_syllabus ON tbl_syllabus.f_goal = tbl_course_goal.f_goal_id
+    )
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-09">
+        <createView viewName="VIEW_CALENDAR_OF_MAIN_GOALS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(ahdafasli, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        ahdafasli
+    ) AS ahdafasli,
+    calendar_id,
+    c_code,
+    course_name,
+    coursecode as course_code
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.ahdafasli,
+            view_calendar_detail.calendar_id,
+            view_calendar_detail.c_code,
+            view_calendar_detail.coursecode,
+            view_calendar_detail.course_name
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,
+    c_code,
+    course_name,
+    coursecode
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-10">
+        <createView viewName="VIEW_CALENDAR_PREREQUISITE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(pishniaz, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        pishniaz
+    ) AS pishniaz,
+    calendar_id,c_code,
+    course_name,
+    coursecode as course_code
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.pishniaz,
+            view_calendar_detail.calendar_id,
+                        view_calendar_detail.c_code,
+            view_calendar_detail.coursecode,
+            view_calendar_detail.course_name
+
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,c_code, course_name,
+    coursecode
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-11">
+        <createView viewName="VIEW_CALENDAR_FINAL_DETAIL" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    view_calendar_detail.id,
+    view_calendar_detail.coursecode,
+    view_calendar_detail.noedore,
+    view_calendar_detail.nahvebargozari,
+    view_calendar_detail.hazinehdore,
+    view_calendar_detail.tarikhbargozari,
+    view_calendar_detail.mahalbargozari,
+    view_calendar_detail.categorytitle,
+    view_calendar_detail.darkhastamouzeshi,
+    view_calendar_detail.modatdore,
+    view_calendar_of_main_goals.ahdafasli,
+    view_calendar_prerequisite.pishniaz,
+    view_calendar_headline.sarfaslha,
+    view_calendar_detail.calendar_id,
+    view_calendar_detail.c_code,
+    view_calendar_of_main_goals.course_name
+FROM
+         view_calendar_detail
+    INNER JOIN view_calendar_of_main_goals ON view_calendar_of_main_goals.id = view_calendar_detail.id
+    INNER JOIN view_calendar_prerequisite ON view_calendar_prerequisite.id = view_calendar_detail.id
+    INNER JOIN view_calendar_headline ON view_calendar_headline.id = view_calendar_detail.id
+            ]]>
+        </createView>
+    </changeSet>
+
+
+
+
+    <changeSet author="kasehpour" id="1663132585-12">
+        <createView viewName="VIEW_CALENDAR_COURSE" replaceIfExists="true">
+            <![CDATA[
+               SELECT
+    view_calendar_final_detail.id,
+    view_calendar_final_detail.calendar_id,
+    view_calendar_final_detail.coursecode,
+    view_calendar_final_detail.mahalbargozari,
+    view_calendar_final_detail.noedore,
+    view_calendar_final_detail.hazinehdore,
+    view_calendar_final_detail.nahvebargozari,
+    view_calendar_final_detail.darkhastamouzeshi,
+    view_calendar_final_detail.tarikhbargozari,
+    view_calendar_final_detail.modatdore,
+    view_calendar_final_detail.course_name
+FROM
+    view_calendar_final_detail
+
+    ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-13">
+        <createView viewName="VIEW_CALENDAR_HEADLINE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(sarfaslha, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        sarfaslha
+    ) AS sarfaslha,
+    calendar_id,
+    c_code,
+    course_name,
+    coursecode
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.sarfaslha,
+            view_calendar_detail.calendar_id,
+            view_calendar_detail.c_code,
+            view_calendar_detail.course_name,
+            view_calendar_detail.coursecode
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,
+    c_code,
+    course_name,
+    coursecode
+            ]]>
+        </createView>
+    </changeSet>
+
+
+
+
+    <changeSet author="namdari" id="1661077851000-14">
+        <createView viewName="VIEW_CALENDAR_SESSIONS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    view_calendar_educational_calendar.id,
+    tbl_session.c_day_name,
+    tbl_session.c_session_date,
+    tbl_session.c_session_start_hour,
+    tbl_session.c_session_end_hour,
+    view_calendar_educational_calendar.calendar_id,
+    view_calendar_educational_calendar.classcode
+FROM
+         view_calendar_educational_calendar
+    INNER JOIN tbl_session ON tbl_session.f_class_id = view_calendar_educational_calendar.id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-15">
+        <createView viewName="VIEW_CALENDAR_EDUCATIONAL_CALENDAR" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    tbl_class.id,
+    tbl_class.c_code                   AS classcode,
+    tbl_course.c_code                  AS coursecode,
+    tbl_class.c_title_class            AS onvanclass,
+    (
+        CASE
+            WHEN tbl_class.c_teaching_brand = 1 THEN
+                'تمام وقت'
+            WHEN tbl_class.c_teaching_brand = 2 THEN
+                'نیمه وقت'
+            WHEN tbl_class.c_teaching_brand = 3 THEN
+                'پاره وقت'
+            ELSE
+                NULL
+        END
+    )                                  AS nahvebargozari,
+    tbl_class.c_student_cost
+    || ' '
+    || tbl_parameter_value.c_title     AS hazinehdore,
+    tbl_class.c_start_date
+    || ' لغایت '
+    || tbl_class.c_end_date            AS tarikhbargozari,
+    tbl_institute1.c_title_fa          mahalbargozari,
+    tbl_course.category_id,
+    tbl_category.c_title_fa            AS categorytitle,
+    (
+        CASE
+            WHEN tbl_class.c_reason = 1 THEN
+                'نیازسنجی'
+            WHEN tbl_class.c_reason = 2 THEN
+                'درخواست واحد'
+            WHEN tbl_class.c_reason = 3 THEN
+                'نیاز موردی'
+            ELSE
+                NULL
+        END
+    )                                  AS darkhastamouzeshi,
+    tbl_class.n_h_duration || ' ساعت ' AS modatdore,
+    tbl_class.c_start_date,
+    tbl_class.c_end_date,
+    'گروه ' || tbl_class.n_group       AS n_group,
+    CASE
+        WHEN tbl_class.c_status = 1 THEN
+            'برنامه ریزی'
+        WHEN tbl_class.c_status = 2 THEN
+            'در حال اجرا'
+        WHEN tbl_class.c_status = 3 THEN
+            'پایان یافته'
+        WHEN tbl_class.c_status = 4 THEN
+            'لغو شده'
+        WHEN tbl_class.c_status = 5 THEN
+            'اختتام'
+    END                                AS class_status,
+    tbl_class.calendar_id,
+    tbl_course.c_title_fa as course_name
+FROM
+    tbl_class
+    LEFT JOIN tbl_institute ON tbl_institute.id = tbl_class.f_institute_organizer
+    INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+    LEFT JOIN tbl_institute tbl_institute1 ON tbl_institute1.id = tbl_class.f_institute
+    LEFT JOIN tbl_class_training_place ON tbl_class.id = tbl_class_training_place.f_class_id
+    LEFT JOIN tbl_training_place ON tbl_training_place.id = tbl_class_training_place.f_training_place_id
+    INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+    LEFT JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class.f_student_cost_currency
+            ]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1661077851000-16">
+        <createView viewName="VIEW_CALENDAR_SESSIONS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    view_calendar_educational_calendar.id,
+    tbl_session.c_day_name,
+    tbl_session.c_session_date,
+    tbl_session.c_session_start_hour,
+    tbl_session.c_session_end_hour,
+    view_calendar_educational_calendar.calendar_id,
+    view_calendar_educational_calendar.classcode,
+    view_calendar_educational_calendar.coursecode,
+     view_calendar_educational_calendar.course_name
+FROM
+         view_calendar_educational_calendar
+    INNER JOIN tbl_session ON tbl_session.f_class_id = view_calendar_educational_calendar.id
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

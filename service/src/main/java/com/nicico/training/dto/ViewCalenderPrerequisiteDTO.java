@@ -30,7 +30,11 @@ public class ViewCalenderPrerequisiteDTO implements Serializable {
     @ApiModelProperty
     private Long  calenderId;
 
+    @ApiModelProperty
+    private String  courseCode;
 
+    @ApiModelProperty
+    private String  courseName;
 
     @Getter
     @Setter

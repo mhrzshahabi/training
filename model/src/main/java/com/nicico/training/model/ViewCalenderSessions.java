@@ -21,7 +21,11 @@ public class ViewCalenderSessions {
     @EmbeddedId
     CalenderSessionsKey id;
 
+    @Column(name = "course_name")
+    private String courseName;
 
+    @Column(name = "COURSECODE")
+    private String courseCode;
     @Column(name = "c_day_name")
     private String sessionDay;
 

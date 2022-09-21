@@ -49,6 +49,9 @@ public class ViewCalenderCourses {
 
     @Column(name="MODATDORE")
     private String modatDore;
+    @Column(name = "course_name")
+    private String courseName;
+
 
 
 }

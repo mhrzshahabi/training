@@ -36,7 +36,11 @@ public class ViewCalenderSessionsDTO implements Serializable {
 
     @ApiModelProperty
     private String sessionEndHour;
+    @ApiModelProperty
+    private String  courseCode;
 
+    @ApiModelProperty
+    private String  courseName;
 
 
 

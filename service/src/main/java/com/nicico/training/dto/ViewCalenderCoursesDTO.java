@@ -29,6 +29,10 @@ public class ViewCalenderCoursesDTO implements Serializable {
     @ApiModelProperty
     private String courseCode;
 
+
+    @ApiModelProperty
+    private String  courseName;
+
     @ApiModelProperty
     private String mahalBarghozari;
 

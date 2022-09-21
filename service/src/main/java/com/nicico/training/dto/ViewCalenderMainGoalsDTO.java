@@ -29,6 +29,12 @@ public class ViewCalenderMainGoalsDTO implements Serializable {
     @ApiModelProperty
     private Long  calenderId;
 
+    @ApiModelProperty
+    private String  courseCode;
+
+    @ApiModelProperty
+    private String  courseName;
+
 
 
     @Getter

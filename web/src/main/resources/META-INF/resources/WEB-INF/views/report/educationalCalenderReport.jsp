@@ -30,6 +30,8 @@
             [
                 {name: "id", primaryKey: true},
                 {name: "mainGoal"},
+                {name: "courseCode"},
+                {name: "courseName"},
                 {name: "classCode"},
                 {name: "calenderId"}
             ],
@@ -43,6 +45,8 @@
                 {name: "id", primaryKey: true},
                 {name: "prerequisite"},
                 {name: "classCode"},
+                {name: "courseCode"},
+                {name: "courseName"},
                 {name: "calenderId"}
             ],
 
@@ -53,6 +57,8 @@
                 {name: "id", primaryKey: true},
                 {name: "headline"},
                 {name: "classCode"},
+                {name: "courseCode"},
+                {name: "courseName"},
                 {name: "calenderId"}
             ],
 
@@ -67,6 +73,8 @@
                 {name : "sessionStartHour"},
                 {name : "sessionEndHour"},
                 {name: "calenderId"},
+                {name: "courseCode"},
+                {name: "courseName"},
                 {name: "classCode"},
             ],
 
@@ -79,6 +87,7 @@
                 {name: "id", primaryKey: true},
                 {name: "calenderId"},
                 {name: "courseCode"},
+                {name: "courseName"},
                 {name: "mahalBarghozari"},
                 {name: "nomreh"},
                 {name: "hazinehDore"},
@@ -232,6 +241,16 @@
                 filterOperator: "iContains"
             },
             {
+                name: "courseCode",
+                title: "کد دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseName",
+                title: "نام دوره",
+                filterOperator: "iContains"
+            },
+            {
                 name: "classCode",
                 title: "کد کلاس",
                 filterOperator: "iContains"
@@ -262,7 +281,6 @@
         canAutoFitFields: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -273,6 +291,16 @@
                 title: "پیشنیازها",
                 filterOperator: "iContains",
                 showHover : true
+            },
+            {
+                name: "courseCode",
+                title: "کد دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseName",
+                title: "نام دوره",
+                filterOperator: "iContains"
             },
             {
                 name: "classCode",
@@ -301,7 +329,6 @@
         canAutoFitFields: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -312,6 +339,16 @@
                 title: "سرفصل ها",
                 filterOperator: "iContains",
                 showHover : true
+            },
+            {
+                name: "courseCode",
+                title: "کد دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseName",
+                title: "نام دوره",
+                filterOperator: "iContains"
             },
             {
                 name: "classCode",
@@ -340,7 +377,6 @@
         canAutoFitFields: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -373,6 +409,16 @@
                 filterOperator: "iContains"
             },
             {
+                name: "courseCode",
+                title: "کد دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseName",
+                title: "نام دوره",
+                filterOperator: "iContains"
+            },
+            {
                 name: "classCode",
                 title: " کد کلاس",
                 filterOperator: "iContains"
@@ -399,7 +445,6 @@
         canAutoFitFields: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -408,6 +453,11 @@
             {
                 name: "courseCode",
                 title: "کد دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "courseName",
+                title: "نام دوره",
                 filterOperator: "iContains"
             },
             {

@@ -27,6 +27,12 @@ public class ViewCalenderOfMainGoals {
     @Column(name = "ahdafasli")
     private String mainGoal;
 
+    @Column(name = "course_name")
+    private String courseName;
+
+    @Column(name = "course_code")
+    private String courseCode;
+
     @Column(name="calendar_id")
     private Long calenderId;
 

@@ -32,5 +32,9 @@ public class ViewCalenderHeadlines {
 
     @Column(name="c_code")
     private String classCode;
+    @Column(name = "course_name")
+    private String courseName;
 
+    @Column(name = "coursecode")
+    private String courseCode;
 }

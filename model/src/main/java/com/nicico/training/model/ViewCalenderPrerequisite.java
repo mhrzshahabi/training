@@ -32,4 +32,10 @@ public class ViewCalenderPrerequisite {
     @Column(name="c_code")
     private String classCode;
 
+    @Column(name = "course_name")
+    private String courseName;
+
+    @Column(name = "course_code")
+    private String courseCode;
+
 }
