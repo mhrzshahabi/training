@@ -13,6 +13,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IMessageContactService;
 import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.iservice.IViewActivePersonnelService;
 import com.nicico.training.model.*;
@@ -64,6 +65,10 @@ public class SendMessageService implements ISendMessageService {
     private final ParameterValueService parameterValueService;
     private final MessageService messageService;
     private final SmsFeignClient smsFeignClient;
+    private final IMessageContactService messageContactService;
+    private final TclassDAO tclassDAO;
+    private final MessageParameterDAO messageParameterDAO;
+
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
 
@@ -87,90 +92,89 @@ public class SendMessageService implements ISendMessageService {
 
     }
 
-//    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
-//    @Transactional
-//    @Override
-//    public void scheduling() {
-//
-//        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
-//        Integer cnt = masterList.size();
-//
-//        for (int i = 0; i < cnt; i++) {
-//
-//            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
-//                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
-//
-//                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
-//                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
-//                }
-//            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
-//                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
-//
-//                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
-//                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
-//                }
-//            }
-//
-//
-//            List<String> numbers = new ArrayList<>();
-//            numbers.add(masterList.get(i).getObjectMobile());
-//
-//            Map<String, String> paramValMap = new HashMap<>();
-//
-//            List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
-//
-//            for (MessageParameter parameter : listParameter) {
-//                paramValMap.put(parameter.getName(), parameter.getValue());
-//            }
-//
-//            try {
-//
-//                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
-//                Long returnMessageId = null;
-//
-//                MessageContactLog log = new MessageContactLog();
-//
-//                log.setMessageContactId(masterList.get(i).getMessageContactId());
-//
-//                if (returnMessage == null) {
-//                    log.setErrorMessage("Error Exception");
-//                    log.setReturnMessageId(null);
-//                    messageContactLogDAO.save(log);
-//                } else {
-//                    try {
-//                        returnMessageId = Long.parseLong(returnMessage.get(0));
-//                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-//
-//                        messageContact.setLastSentDate(new Date());
-//                        messageContact.setCountSent(messageContact.getCountSent() + 1);
-//
-//                        messageContactDAO.save(messageContact);
-//
-//                        log.setErrorMessage("");
-//                        log.setReturnMessageId(returnMessageId.toString());
-//                        messageContactLogDAO.save(log);
-//
-//                    } catch (Exception ex) {
-//                        log.setErrorMessage(ex.getMessage());
-//                        log.setReturnMessageId(null);
-//                        messageContactLogDAO.save(log);
-//                    }
-//                }
-//
-//                MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
-//
-//                if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
-//                    messageContactDAO.deleteById(messageContact.getId());
-//                } else {
-//                    if (log.getReturnMessageId() != null) {
-//                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
-//                    }
-//                }
-//            } catch (Exception ex) {
-//
-//            }
-//        }
-//    }
+    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
+    @Transactional
+    @Override
+    public void scheduling() {
+
+        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
+        Integer cnt = masterList.size();
+
+        for (int i = 0; i < cnt; i++) {
+            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
+                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
+
+                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
+                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
+                }
+            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
+                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+
+                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
+                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
+                }
+            }
+
+
+            List<String> numbers = new ArrayList<>();
+            numbers.add(masterList.get(i).getObjectMobile());
+
+            Map<String, String> paramValMap = new HashMap<>();
+
+            List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
+
+            for (MessageParameter parameter : listParameter) {
+                paramValMap.put(parameter.getName(), parameter.getValue());
+            }
+
+            try {
+
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
+                Long returnMessageId = null;
+
+                MessageContactLog log = new MessageContactLog();
+
+                log.setMessageContactId(masterList.get(i).getMessageContactId());
+
+                if (returnMessage == null) {
+                    log.setErrorMessage("Error Exception");
+                    log.setReturnMessageId(null);
+                    messageContactLogDAO.save(log);
+                } else {
+                    try {
+                        returnMessageId = Long.parseLong(returnMessage.get(0));
+                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+                        messageContact.setLastSentDate(new Date());
+                        messageContact.setCountSent(messageContact.getCountSent() + 1);
+
+                        messageContactDAO.save(messageContact);
+
+                        log.setErrorMessage("");
+                        log.setReturnMessageId(returnMessageId.toString());
+                        messageContactLogDAO.save(log);
+
+                    } catch (Exception ex) {
+                        log.setErrorMessage(ex.getMessage());
+                        log.setReturnMessageId(null);
+                        messageContactLogDAO.save(log);
+                    }
+                }
+
+                MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
+
+                if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
+                    messageContactDAO.deleteById(messageContact.getId());
+                } else {
+                    if (log.getReturnMessageId() != null) {
+                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+                    }
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+    }
 
 
     @Scheduled(cron = "0 30 17 1/1 * ?")
