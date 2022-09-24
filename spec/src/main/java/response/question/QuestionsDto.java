@@ -12,4 +12,5 @@ public class QuestionsDto {
     private String score;
     private String options;
     private Double proposedPointValue;
+    private Double proposedTimeValue;
 }

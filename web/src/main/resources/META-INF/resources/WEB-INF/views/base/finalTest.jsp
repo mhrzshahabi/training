@@ -495,6 +495,7 @@
                 {name: "type", title: 'نوع پاسخ' },
                 { name: "options", title: "گزینه ها"},
                 { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
+                { name: "proposedTimeValue", title: "<spring:message code="question.bank.proposed.time.value"/>"},
                 { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 },
             { name: "time", title: "زمان(دقیقه)",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
@@ -754,6 +755,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                    setScoreValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 },
+                {
+                    name: "proposedTimeValue",
+                    type: "float",
+                    title: "<spring:message code="question.bank.proposed.time.value"/>",
+                    width: "15%"
+                },
                 { name: "time",type: "long", title: "زمان(دقیقه)", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                         setTimeValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click" ,
@@ -950,6 +957,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
                                         if (testQuestionType === "PreTest") {
                                             ListGrid_Questions_finalTest.getField("time").hidden = true
+                                            ListGrid_Questions_finalTest.getField("proposedTimeValue").hidden = true
                                             timeLabel.setVisibility(false);
                                         } else if (testQuestionType === "FinalTest") {
                                             timeLabel.setVisibility(true);

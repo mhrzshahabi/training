@@ -588,6 +588,7 @@ public abstract class EvaluationBeanMapper {
                     question.setTitle(questionData.getQuestionBank().getQuestion());
                     question.setProposedPointValue(questionData.getQuestionBank().getProposedPointValue());
                     questionProtocol.setProposedPointValue(questionData.getQuestionBank().getProposedPointValue());
+                    questionProtocol.setProposedTimeValue(questionData.getQuestionBank().getProposedTimeValue());
                     if (attachments != null && attachments.getFiles() != null)
                         question.setFiles(attachments.getFiles());
                     question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
@@ -1926,6 +1927,7 @@ public abstract class EvaluationBeanMapper {
                 questionsDto.setType(question.getQuestion().getType().getValue());
                 questionsDto.setId(question.getQuestion().getId());
                 questionsDto.setProposedPointValue(question.getProposedPointValue());
+                questionsDto.setProposedTimeValue(question.getProposedTimeValue());
                 StringBuilder listString = new StringBuilder();
 
                 if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
@@ -2217,6 +2219,7 @@ public abstract class EvaluationBeanMapper {
         groupQuestion.setTitle(groupQuestionBank.getQuestion());
         groupQuestion.setProposedPointValue(groupQuestionBank.getProposedPointValue());
         groupQuestionProtocol.setProposedPointValue(groupQuestionBank.getProposedPointValue());
+        groupQuestionProtocol.setProposedTimeValue(groupQuestionBank.getProposedTimeValue());
         if (groupAttachments != null && groupAttachments.getFiles() != null)
             groupQuestion.setFiles(groupAttachments.getFiles());
 

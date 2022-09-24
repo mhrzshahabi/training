@@ -16,6 +16,8 @@ public class ImportedQuestionProtocol {
     @ApiModelProperty
     private Double proposedPointValue;
     @ApiModelProperty
+    private Double proposedTimeValue;
+    @ApiModelProperty
     private Integer time;
     @ApiModelProperty(required = true)
     private String correctAnswerTitle;
