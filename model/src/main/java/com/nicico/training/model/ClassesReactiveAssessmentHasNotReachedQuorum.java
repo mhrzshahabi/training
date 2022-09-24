@@ -55,7 +55,7 @@ public class ClassesReactiveAssessmentHasNotReachedQuorum implements Serializabl
     @Column(name = "class_Duration")
     private Integer classDuration;
 
-    @Column(name = "class_Duration")
+    @Column(name = "supervisor_Name")
     private String supervisorName;
 
 }
