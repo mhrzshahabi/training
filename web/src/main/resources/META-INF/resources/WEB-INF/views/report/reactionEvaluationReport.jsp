@@ -27,7 +27,7 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
     var RestDataSource_SubCategory_RER = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id"}, {name: "titleFa"}, {name: "category.titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
     var RestDataSource_Class_RER = isc.TrDS.create({
@@ -162,7 +162,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_RER', this, 'ymd', '/');
+                        displayDatePicker('startDate2_RER', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -248,7 +248,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_RER', this, 'ymd', '/');
+                        displayDatePicker('endDate2_RER', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -294,6 +294,18 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان گروه",
+                        align: "center"
+                    }
+                ],
                 changed: function () {
                     isCriteriaCategoriesChanged_RER = true;
                     var subCategoryField = DynamicForm_CriteriaForm_RER.getField("courseSubCategory");
@@ -330,9 +342,30 @@
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
+                    canSelectAll: true,
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "عنوان گروه",
+                        align: "center",
+                        sortNormalizer: function (record) {
+                            return record.category.titleFa;
+                        }
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان زیرگروه",
+                        align: "center"
+                    }
+                ],
                 focus: function () {
                     if (isCriteriaCategoriesChanged_RER) {
                         isCriteriaCategoriesChanged_RER = false;
