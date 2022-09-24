@@ -621,4 +621,9 @@ public class MainFormController {
         return "report/timeInterferenceReportOfComprehensiveClasses";
     }
 
+    @RequestMapping("/classesReactiveAssessmentHasNotReachedQuorumReport")
+    public String classesReactiveAssessmentHasNotReachedQuorum() {
+        return "report/classesReactiveAssessmentHasNotReachedQuorum";
+    }
+
 }
