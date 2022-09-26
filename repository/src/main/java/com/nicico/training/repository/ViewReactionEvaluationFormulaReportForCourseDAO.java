@@ -165,6 +165,8 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                                         LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
                                     WHERE
                                         tclass.c_status != '1'
+                                        AND tclass.c_start_date >= :start
+                                        AND tclass.c_end_date <= :end
                                 ) z ON clsstu.class_id = z.class_id
                                 LEFT JOIN tbl_student ON clsstu.student_id = tbl_student.id
                                 LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
