@@ -439,7 +439,7 @@
                                 let practicalScore=(record.practicalScore !==undefined && record.practicalScore !==null)?strToNumber(record.practicalScore):0;
                                 let sum = (+classScore) + (+practicalScore);
                                 classScoreLabel.setContents("مجموع نمرات کلاسی و عملی  وارد شده : "+sum)
-
+                                scoreLabel.setContents("مجموع بارم وارد شده : " + 0)
                                 loadExamForScores(record);
                                 // loadExamQuestions(record)
                             }
@@ -495,6 +495,7 @@
                 {name: "type", title: 'نوع پاسخ' },
                 { name: "options", title: "گزینه ها"},
                 { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
+                { name: "proposedTimeValue", title: "<spring:message code="question.bank.proposed.time.value"/>"},
                 { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 },
             { name: "time", title: "زمان(دقیقه)",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
@@ -754,6 +755,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                    setScoreValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 },
+                {
+                    name: "proposedTimeValue",
+                    type: "float",
+                    title: "<spring:message code="question.bank.proposed.time.value"/>",
+                    width: "15%"
+                },
                 { name: "time",type: "long", title: "زمان(دقیقه)", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                         setTimeValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click" ,
@@ -925,13 +932,19 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                 title: "محاسبه اتوماتیک بارم",
                                                 width: "150",
                                                 click: function () {
+                                                    let sum = 0;
                                                     if (ListGrid_Questions_finalTest.getData().length > 0) {
                                                         for (let i = 0; i < ListGrid_Questions_finalTest.getData().length; i++) {
                                                             let proposedPointValue = ListGrid_Questions_finalTest.getData()[i].proposedPointValue;
                                                             if (proposedPointValue !== undefined ) {
                                                                 ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, proposedPointValue);
+                                                                sum += proposedPointValue;
+                                                            } else {
+                                                                ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, 0);
                                                             }
+                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
                                                         }
+                                                        scoreLabel.setContents("مجموع بارم وارد شده : " + sum)
                                                     }
                                                 }
                                             }),
@@ -950,6 +963,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
                                         if (testQuestionType === "PreTest") {
                                             ListGrid_Questions_finalTest.getField("time").hidden = true
+                                            ListGrid_Questions_finalTest.getField("proposedTimeValue").hidden = true
                                             timeLabel.setVisibility(false);
                                         } else if (testQuestionType === "FinalTest") {
                                             timeLabel.setVisibility(true);

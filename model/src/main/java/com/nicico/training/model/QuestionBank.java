@@ -121,6 +121,9 @@ public class QuestionBank extends Auditable {
     @Column(name = "c_proposed_point_value")
     private Double proposedPointValue;
 
+    @Column(name = "c_proposed_time_value")
+    private Double proposedTimeValue;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tbl_question_bank_target", joinColumns = @JoinColumn(name = "f_question"))
     @Column(name = "targets")

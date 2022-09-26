@@ -1643,9 +1643,23 @@
                 }
             },
             {
+                name: "proposedPointValue",
+                title: "<spring:message code="question.bank.proposed.point.value"/>",
+                type: 'text',
+                keyPressFilter: /^([1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|\\.[0-9]{1,2})$/,
+                length: "10"
+            },
+            {
+                name: "proposedTimeValue",
+                title: "<spring:message code="question.bank.proposed.time.value"/>",
+                type: 'text',
+                keyPressFilter: /^([1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|\\.[0-9]{1,2})$/,
+                length: "3"
+            },
+            {
                 name: "groupQuestionIds",
                 title: "انتخاب شمابرای سوالات گروهی",
-                 type: "SelectItem",
+                type: "SelectItem",
                 multiple: true,
                 hidden: false,
                 disabled: true,
@@ -1677,13 +1691,6 @@
                 pickListProperties: {
                     showFilterEditor: true
                 },
-            },
-            {
-                name: "proposedPointValue",
-                title: "<spring:message code="question.bank.proposed.point.value"/>",
-                type: 'text',
-                keyPressFilter: /^([1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|\\.[0-9]{1,2})$/,
-                length: "10"
             },
             {
                 name: "lines",
@@ -2174,7 +2181,6 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
     }
 
     function saveQuestionBank_questionBank() {
-
         if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
@@ -2296,7 +2302,6 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
         data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
         data.groupQuestionIds = QuestionBankDF_questionBank.getField("groupQuestionIds").getValue();
-
         wait.show();
         isc.RPCManager.sendRequest(
             TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {

@@ -12,6 +12,7 @@ public class QuestionBankData {
     private String childPriority;
     private Boolean isChild;
     private Double proposedPointValue;
+    private Double proposedTimeValue;
     private Long questionBankId;
     private Long id;
     private QuestionTypeData questionType;
