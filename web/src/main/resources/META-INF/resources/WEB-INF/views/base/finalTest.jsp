@@ -439,7 +439,7 @@
                                 let practicalScore=(record.practicalScore !==undefined && record.practicalScore !==null)?strToNumber(record.practicalScore):0;
                                 let sum = (+classScore) + (+practicalScore);
                                 classScoreLabel.setContents("مجموع نمرات کلاسی و عملی  وارد شده : "+sum)
-
+                                scoreLabel.setContents("مجموع بارم وارد شده : " + 0)
                                 loadExamForScores(record);
                                 // loadExamQuestions(record)
                             }
@@ -932,13 +932,19 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                 title: "محاسبه اتوماتیک بارم",
                                                 width: "150",
                                                 click: function () {
+                                                    let sum = 0;
                                                     if (ListGrid_Questions_finalTest.getData().length > 0) {
                                                         for (let i = 0; i < ListGrid_Questions_finalTest.getData().length; i++) {
                                                             let proposedPointValue = ListGrid_Questions_finalTest.getData()[i].proposedPointValue;
                                                             if (proposedPointValue !== undefined ) {
                                                                 ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, proposedPointValue);
+                                                                sum += proposedPointValue;
+                                                            } else {
+                                                                ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, 0);
                                                             }
+                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
                                                         }
+                                                        scoreLabel.setContents("مجموع بارم وارد شده : " + sum)
                                                     }
                                                 }
                                             }),
