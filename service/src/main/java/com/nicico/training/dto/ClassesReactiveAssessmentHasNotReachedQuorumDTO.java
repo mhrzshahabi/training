@@ -22,7 +22,7 @@ public class ClassesReactiveAssessmentHasNotReachedQuorumDTO  implements Seriali
     private Integer reactionPercent;
 
     @ApiModelProperty
-    private Integer hadebesabVakoneshi;
+    private Integer reactiveLimit;
 
     @ApiModelProperty
     private String mojtameTitle;

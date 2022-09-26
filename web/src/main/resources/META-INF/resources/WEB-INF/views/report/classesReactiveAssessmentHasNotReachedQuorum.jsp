@@ -9,10 +9,10 @@
 // <script>
 
     var complex = [];
-    // var assistance = [];
-    // var affairs = [];
-    // var section = [];
-    // var unit = [];
+    var assistance = [];
+    var affairs = [];
+    var section = [];
+    var unit = [];
 
     let reportCriteria_AssessmentHasNotReachedQuorum;
 
@@ -31,7 +31,7 @@
             {name: "classDuration"},
              {name: "supervisorName"},
              {name: "reactionPercent"},
-             {name: "hadebesabVakoneshi"},
+             {name: "reactiveLimit"},
          ],
         fetchDataURL: classesReactiveAssessmentHasNotReachedQuorumReportUrl + "/iscList?_endRow=10000"
     });
@@ -168,10 +168,10 @@
             }
 
             complex = [];
-            // assistance = [];
-            // affairs = [];
-            // section = [];
-            // unit = [];
+            assistance = [];
+            affairs = [];
+            section = [];
+            unit = [];
 
             if (organSegmentFilter_AssessmentHasNotReachedQuorum.getCriteria() !== undefined) {
 
@@ -189,23 +189,23 @@
                         complex.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
                     }
 
-                    // else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "assistant") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "assistance";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     assistance.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "affairs") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "affairs";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     affairs.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "section") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "section";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     section.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "unit") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "unit";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     unit.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // }
+                    else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "assistant") {
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "assistance";
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                        assistance.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "affairs") {
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "affairs";
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                        affairs.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "section") {
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "section";
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                        section.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "unit") {
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "unit";
+                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                        unit.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    }
                 }
 
                 data_values = DynamicForm_AssessmentHasNotReachedQuorum.getValuesAsAdvancedCriteria();
@@ -214,7 +214,7 @@
                     if (data_values.criteria[i].fieldName === "startDate") {
                         reportCriteria_AssessmentHasNotReachedQuorum.criteria.add(
                             {
-                                fieldName: "updateAt",
+                                fieldName: "classStartDate",
                                 operator: "greaterOrEqual",
                                 value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
                             }
@@ -222,7 +222,7 @@
                     } else if (data_values.criteria[i].fieldName === "endDate") {
                         reportCriteria_AssessmentHasNotReachedQuorum.criteria.add(
                             {
-                                fieldName: "updateAt",
+                                fieldName: "classStartDate",
                                 operator: "lessOrEqual",
                                 value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
                             }
@@ -247,7 +247,7 @@
                     if (data_values.criteria[i].fieldName === "startDate") {
                         reportCriteria_AssessmentHasNotReachedQuorum.criteria.add(
                             {
-                                fieldName: "updateAt",
+                                fieldName: "classStartDate",
                                 operator: "greaterOrEqual",
                                 value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
                             }
@@ -255,7 +255,7 @@
                     } else if (data_values.criteria[i].fieldName === "endDate") {
                         reportCriteria_AssessmentHasNotReachedQuorum.criteria.add(
                             {
-                                fieldName: "updateAt",
+                                fieldName: "classStartDate",
                                 operator: "lessOrEqual",
                                 value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
                             }
@@ -330,7 +330,7 @@
             {name: "classDuration", title: "مدت" ,autoFitWidth: true},
             {name: "supervisorName", title: "مسئول اجرا" ,autoFitWidth: true},
             {name: "reactionPercent", title: "نمره ارزیابی واکنشی" ,autoFitWidth: true},
-            {name: "hadebesabVakoneshi", title: "حد نصاب ارزیابی واکنشی" ,autoFitWidth: true},
+            {name: "reactiveLimit", title: "حد نصاب ارزیابی واکنشی" ,autoFitWidth: true},
         ]
     });
 

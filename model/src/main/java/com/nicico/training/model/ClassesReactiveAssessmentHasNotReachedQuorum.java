@@ -4,11 +4,10 @@ package com.nicico.training.model;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -28,8 +27,8 @@ public class ClassesReactiveAssessmentHasNotReachedQuorum implements Serializabl
     @Column(name = "answered_reaction_eval_percent")
     private Integer reactionPercent;
 
-    @Column(name = "hadebesab_vakoneshi")
-    private Integer hadebesabVakoneshi;
+    @Column(name = "reactive_limit")
+    private Integer reactiveLimit;
 
     @Column(name = "mojtame_title")
     private String mojtameTitle;
@@ -43,19 +42,19 @@ public class ClassesReactiveAssessmentHasNotReachedQuorum implements Serializabl
     @Column(name = "course_title")
     private String courseTitle;
 
-    @Column(name = "teacher_Name")
+    @Column(name = "teacher_name")
     private String teacherName;
 
-    @Column(name = "class_StartDate")
-    private String classStartDate;
+    @Column(name = "class_start_date")
+    private Date classStartDate;
 
-    @Column(name = "class_EndDate")
-    private String classEndDate;
+    @Column(name = "class_end_date")
+    private Date classEndDate;
 
-    @Column(name = "class_Duration")
+    @Column(name = "class_duration")
     private Integer classDuration;
 
-    @Column(name = "supervisor_Name")
+    @Column(name = "supervisor_name")
     private String supervisorName;
 
 }
