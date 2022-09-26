@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,10 +41,10 @@ public class ClassesReactiveAssessmentHasNotReachedQuorumDTO  implements Seriali
     private String teacherName;
 
     @ApiModelProperty
-    private String classStartDate;
+    private Date classStartDate;
 
     @ApiModelProperty
-    private String classEndDate;
+    private Date classEndDate;
 
     @ApiModelProperty
     private Integer classDuration;

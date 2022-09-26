@@ -21,7 +21,6 @@
     RestDataSource_Class_JspAssessmentHasNotReachedQuorum = isc.TrDS.create({
         fields: [
             {name: "mojtameTitle"},
-
             {name: "classCode"},
             {name: "courseCode"},
             {name: "courseTitle"},
@@ -69,6 +68,10 @@
     });
 
     var organSegmentFilter_AssessmentHasNotReachedQuorum = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit");
+
+    for (let i = 2; i < organSegmentFilter_AssessmentHasNotReachedQuorum.getFields().length; i++) {
+        organSegmentFilter_AssessmentHasNotReachedQuorum.getFields()[i].hide();
+    }
 
     var DynamicForm_AssessmentHasNotReachedQuorum = isc.DynamicForm.create({
         numCols: 8,
@@ -189,23 +192,23 @@
                         complex.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
                     }
 
-                    else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "assistant") {
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "assistance";
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                        assistance.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "affairs") {
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "affairs";
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                        affairs.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "section") {
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "section";
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                        section.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "unit") {
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "unit";
-                        reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                        unit.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    }
+                    // else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "assistant") {
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "assistance";
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                    //     assistance.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "affairs") {
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "affairs";
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                    //     affairs.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "section") {
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "section";
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                    //     section.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "unit") {
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "unit";
+                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
+                    //     unit.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
+                    // }
                 }
 
                 data_values = DynamicForm_AssessmentHasNotReachedQuorum.getValuesAsAdvancedCriteria();
@@ -299,38 +302,23 @@
 
     var ListGrid_AssessmentHasNotReachedQuorum = isc.TrLG.create({
         ID: "AssessmentHasNotReachedQuorumGrid",
+        autoFitWidth: true,
         filterOnKeypress: false,
         showFilterEditor: true,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_Class_JspAssessmentHasNotReachedQuorum,
         fields: [
-            {name: "mojtameTitle", title: "مجتمع"},
-            // {name: "assistance", title: "معاونت"},
-            // {name: "affairs", title: "امور"},
-            // {name: "section", title: "قسمت"},
-            // {name: "unit", title: "واحد"},
-            // {name: "updateBy", title: "ویرایش توسط"},
-            // {
-            //     name: "updateAt",
-            //     title: "ویرایش در تاریخ",
-            //     canFilter: false,
-            //     formatCellValue: function (value) {
-            //         if (value) {
-            //             let d = new Date(value);
-            //             return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
-            //         }
-            //     }
-            // },
-            {name: "classCode", title: "کد کلاس" ,autoFitWidth: true},
-            {name: "courseCode", title: "کد دوره" ,autoFitWidth: true},
-            {name: "courseTitle", title: "عنوان دوره" ,autoFitWidth: true},
-            {name: "teacherName", title: "نام استاد", hidden:true},
-            {name: "classStartDate", title: "تاریخ شروع" ,autoFitWidth: true},
-            {name: "classEndDate", title: "تاریخ پایان" ,autoFitWidth: true},
-            {name: "classDuration", title: "مدت" ,autoFitWidth: true},
-            {name: "supervisorName", title: "مسئول اجرا" ,autoFitWidth: true},
-            {name: "reactionPercent", title: "نمره ارزیابی واکنشی" ,autoFitWidth: true},
-            {name: "reactiveLimit", title: "حد نصاب ارزیابی واکنشی" ,autoFitWidth: true},
+            {name: "mojtameTitle", title: "مجتمع" },
+            {name: "classCode", title: "کد کلاس" },
+            {name: "courseCode", title: "کد دوره" },
+            {name: "courseTitle", title: "عنوان دوره" },
+            {name: "teacherName", title: "نام استاد"},
+            {name: "classStartDate", title: "تاریخ شروع" },
+            {name: "classEndDate", title: "تاریخ پایان" },
+            {name: "classDuration", title: "مدت" },
+            {name: "supervisorName", title: "مسئول اجرا" },
+            {name: "reactionPercent", title: "نمره ارزیابی واکنشی" },
+            {name: "reactiveLimit", title: "حد نصاب ارزیابی واکنشی" },
         ]
     });
 

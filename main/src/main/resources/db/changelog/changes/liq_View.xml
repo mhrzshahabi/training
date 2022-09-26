@@ -18272,7 +18272,7 @@ WHERE
     </changeSet>
 
 
-    <changeSet author="kasehpour" id="1664016382-05">
+    <changeSet author="kasehpour" id="1664016382-07">
         <createView viewName="VIEW_CLASSES_REACTIVEASSESSMENT_HASNOTREACHED_QUORUM_REPORT" replaceIfExists="true">
             <![CDATA[
 
@@ -18333,8 +18333,8 @@ select
        ,course.C_TITLE_FA                      AS course_title
        ,teacher_p.FIRST_NAME || ' '||
                          teacher_p.LAST_NAME  AS teacher_name
-       ,TO_DATE(class.C_START_DATE , 'YYYY/MM/DD','nls_calendar=persian' ) AS class_start_date
-       ,TO_DATE(class.C_END_DATE , 'YYYY/MM/DD','nls_calendar=persian')    AS class_end_date
+     ,TO_DATE(class.C_START_DATE , 'YYYY/MM/DD','nls_calendar=persian' ) AS class_start_date
+     ,TO_DATE(class.C_END_DATE , 'YYYY/MM/DD','nls_calendar=persian')    AS class_end_date
        ,class.N_H_DURATION                     AS class_duration
        ,supervisor.FIRST_NAME || ' '||
                          supervisor.LAST_NAME  AS supervisor_name
