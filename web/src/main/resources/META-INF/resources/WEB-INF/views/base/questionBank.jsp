@@ -2181,7 +2181,6 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
     }
 
     function saveQuestionBank_questionBank() {
-        debugger
         if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
@@ -2303,7 +2302,6 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
         data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
         data.groupQuestionIds = QuestionBankDF_questionBank.getField("groupQuestionIds").getValue();
-debugger
         wait.show();
         isc.RPCManager.sendRequest(
             TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {
