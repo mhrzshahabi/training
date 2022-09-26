@@ -579,7 +579,7 @@
                 let item = {};
                 item.name = "title";
                 item.title = "عنوان گزارش";
-                item.defaultValue = "'گزارش ارزیابی واکنشی دوره ها در سال "+DynamicForm_CriteriaForm_RER.getField("tclassYear").getValue();
+                item.defaultValue = "گزارش ارزیابی واکنشی دوره ها در سال "+DynamicForm_CriteriaForm_RER.getField("tclassYear").getValue();
                 item.required = true;
                 itemList.add(item);
                 item = {};

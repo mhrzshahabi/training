@@ -461,8 +461,8 @@ public class EvaluationAnalysisRestController {
             if(list != null && list.size() != 0){
                 List<ChartData> chartData = new ArrayList<>();
                 int index = 1;
-                if (list.size()>10){
-                    int  totalPage = (list.size() / 15)+1;
+                if (list.size()>5){
+                    int  totalPage = (list.size() / 5)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
 
                     for (int m=0 ; m<subLists.size();m++){
