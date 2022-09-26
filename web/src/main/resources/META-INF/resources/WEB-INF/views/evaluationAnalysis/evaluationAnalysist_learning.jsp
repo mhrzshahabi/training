@@ -74,6 +74,12 @@
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
+            {
+                name: "limitNerkh",
+                title: "حد قابل قبول نرخ یادگیری",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
             // {
             //     name: "havePreTest",
             //     title:"پیش آزمون",
@@ -118,8 +124,8 @@
                 canEdit: false
             },
             {
-                name: "Limit",
-                title:"حد قابل قبول",
+                name: "limitNomre",
+                title:"حد قابل قبول نمره ارزیابی یادگیری",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -166,6 +172,8 @@
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('postTestMeanScore').titleStyle = 'evaluation-code-title';
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('learningRate').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('learningRate').titleStyle = 'evaluation-code-title';
+    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('limitNerkh').setCellStyle('evaluation-code-label');
+    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('limitNerkh').titleStyle = 'evaluation-code-title';
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').setCellStyle('evaluation-code-label');
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').titleStyle = 'evaluation-code-title';
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').setCellStyle('evaluation-code-label');
@@ -173,8 +181,8 @@
 
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELGrade').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELGrade').titleStyle = 'evaluation-code-title';
-    DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('Limit').setCellStyle('evaluation-code-label');
-    DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('Limit').titleStyle = 'evaluation-code-title';
+    DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('limitNomre').setCellStyle('evaluation-code-label');
+    DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('limitNomre').titleStyle = 'evaluation-code-title';
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELPass').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELPass').titleStyle = 'evaluation-code-title';
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FECLGrade').setCellStyle('evaluation-code-label');
@@ -202,12 +210,15 @@
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("learningRate").setValue(record.learningRate);
+        DynamicForm_Learning_EvaluationAnalysis_Header.getField("limitNerkh").setValue(record.limit);
+        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("limitNomre").setValue(record.limitNomre);
+
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePostTest").setValue(record.havePostTest);
 
         if(record.felgrade == undefined || record.felgrade == null){
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELGrade").setValue("");
-            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("Limit").setValue("");
+            // DynamicForm_Learning_EvaluationAnalysis_Footer.getField("limitNomre").setValue("");
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue("");
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);
@@ -215,7 +226,6 @@
         }
         else{
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELGrade").setValue(record.felgrade);
-            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("Limit").setValue(record.limit);
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue(record.felpass);
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
             DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);

@@ -136,7 +136,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     boolean existsByTermId(Long termId);
 
-    @Query(value = "select pre_course_test from tbl_class where ID = :classId", nativeQuery = true)
+    @Query(value = "select COUNT(*) from tbl_class_student where class_id = :classId \n" +
+            "and\n" +
+            "pre_test_score is not null", nativeQuery = true)
     Integer checkIfClassHasPreTest(Long classId);
 
     @Modifying

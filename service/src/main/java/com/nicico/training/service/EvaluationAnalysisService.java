@@ -763,10 +763,6 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         else
             resultSet.setFelgrade(null);
 
-        if (felGrade != null && felGrade >= minScoreEL)
-            resultSet.setFelpass("true");
-        else
-            resultSet.setFelpass("false");
         resultSet.setLimit(minScoreEL + "");
 
         if (postTestMeanGrade != null)
@@ -785,10 +781,24 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             resultSet.setFeclpass(FECRPass.toString());
 
         Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
-        if (classHasPreTest != null && classHasPreTest.equals(1)) {
+        if (classHasPreTest != null && classHasPreTest>0) {
             resultSet.setHavePreTest("true");
-        } else
+            resultSet.setLimitNomre( minPreTestEL.toString());
+
+            if (felGrade != null && felGrade >= minPreTestEL)
+                resultSet.setFelpass("true");
+            else
+                resultSet.setFelpass("false");
+
+        } else{
+            resultSet.setLimitNomre( minPasTestEL.toString());
             resultSet.setHavePreTest("false");
+
+            if (felGrade != null && felGrade >= minPasTestEL)
+                resultSet.setFelpass("true");
+            else
+                resultSet.setFelpass("false");
+        }
 
         resultSet.setHavePostTest("false");
 

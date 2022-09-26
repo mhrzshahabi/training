@@ -101,6 +101,7 @@ public class EvaluationDTO implements Serializable {
         private String havePostTest;
         private String felgrade;
         private String limit;
+        private String limitNomre;
         private String felpass;
         private String feclgrade;
         private String feclpass;
