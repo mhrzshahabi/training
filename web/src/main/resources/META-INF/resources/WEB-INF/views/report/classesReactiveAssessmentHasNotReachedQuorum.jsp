@@ -244,7 +244,7 @@
                             {
                                 fieldName: "classStartDate",
                                 operator: "lessOrEqual",
-                                value: form.getValue("startDate")
+                                value: form.getValue("endDate")
                             }
                         );
                     }
