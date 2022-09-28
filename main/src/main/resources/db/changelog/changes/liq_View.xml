@@ -19007,4 +19007,33 @@ FROM
         </createView>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1664340706-001">
+        <createView viewName="VIEW_ACTIVE_PERSONNEL_FOR_REGISTER_IN_CLASS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    course.id           AS course_id,
+    course.c_code       AS course_code,
+    course.c_title_fa   AS course_title_fa,
+    nvl2(na.na_priority_id, 1, 0) AS is_in_na,
+    passed.class_student_scores_state_id,
+    prs."PERSONNEL_NO",prs."ADDRESS",prs."AGE",prs."BIRTH_CERTIFICATE_NO",prs."BIRTH_DATE",prs."BIRTH_PLACE",prs."CCP_AFFAIRS",prs."CCP_AREA",prs."CCP_ASSISTANT",prs."CCP_CODE",prs."CCP_SECTION",prs."CCP_TITLE",prs."CCP_UNIT",prs."COMPANY_NAME",prs."COMPLEX_TITLE",prs."CONTRACT_DESCRIPTION",prs."CONTRACT_NO",prs."DELETED",prs."DEPARTMENT_CODE",prs."DEPARTMENT_TITLE",prs."EDUCATION_LEVEL_TITLE",prs."EDUCATION_LICENSE_TYPE_TITLE",prs."EDUCATION_FIELD_TITLE",prs."EMAIL",prs."EMPLOYMENT_DATE",prs."EMPLOYMENT_STATUS_TITLE",prs."EMPLOYMENT_STATUS_ID",prs."EMPLOYMENT_TYPE_TITLE",prs."FATHER_NAME",prs."FIRST_NAME",prs."GENDER_TITLE",prs."ID",prs."INSURANCE_CODE",prs."JOB_NO",prs."JOB_TITLE",prs."LAST_NAME",prs."MARITAL_STATUS_TITLE",prs."MILITARY_STATUS_TITLE",prs."MOBILE",prs."NATIONAL_CODE",prs."OPERATIONAL_UNIT_TITLE",prs."EMP_NO",prs."PHONE",prs."POST_ASSIGNMENT_DATE",prs."POST_CODE",prs."POST_GRADE_CODE",prs."POST_GRADE_TITLE",prs."POST_TITLE",prs."F_POST_ID",prs."WORK_DAYS",prs."WORK_MONTHS",prs."WORK_PLACE_TITLE",prs."WORK_TURN_TITLE",prs."WORK_YEARS",prs."F_DEPARTMENT_ID"
+FROM
+    tbl_course                        course
+    CROSS JOIN view_active_personnel             prs
+    LEFT JOIN view_personnel_course_na_report   na ON na.course_id = course.id
+                                                    AND na.personnel_id = prs.id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            view_student_classstudent_class_term_course
+        WHERE
+            class_student_scores_state_id IN (400, 401, 410)
+    ) passed ON passed.student_NATIONAL_CODE = prs.NATIONAL_CODE
+                AND passed.course_id = course.id
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
