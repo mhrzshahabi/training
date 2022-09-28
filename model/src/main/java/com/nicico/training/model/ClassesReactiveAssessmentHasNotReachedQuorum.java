@@ -46,10 +46,10 @@ public class ClassesReactiveAssessmentHasNotReachedQuorum implements Serializabl
     private String teacherName;
 
     @Column(name = "class_start_date")
-    private Date classStartDate;
+    private String classStartDate;
 
     @Column(name = "class_end_date")
-    private Date classEndDate;
+    private String classEndDate;
 
     @Column(name = "class_duration")
     private Integer classDuration;

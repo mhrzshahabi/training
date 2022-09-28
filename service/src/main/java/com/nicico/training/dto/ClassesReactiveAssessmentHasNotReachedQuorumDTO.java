@@ -41,10 +41,10 @@ public class ClassesReactiveAssessmentHasNotReachedQuorumDTO  implements Seriali
     private String teacherName;
 
     @ApiModelProperty
-    private Date classStartDate;
+    private String classStartDate;
 
     @ApiModelProperty
-    private Date classEndDate;
+    private String classEndDate;
 
     @ApiModelProperty
     private Integer classDuration;

@@ -192,23 +192,6 @@
                         complex.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
                     }
 
-                    // else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "assistant") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "assistance";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     assistance.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "affairs") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "affairs";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     affairs.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "section") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "section";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     section.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // } else if (reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName === "unit") {
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].fieldName = "unit";
-                    //     reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].operator = "inSet";
-                    //     unit.add(reportCriteria_AssessmentHasNotReachedQuorum.criteria[i].value);
-                    // }
                 }
 
                 data_values = DynamicForm_AssessmentHasNotReachedQuorum.getValuesAsAdvancedCriteria();
@@ -219,15 +202,16 @@
                             {
                                 fieldName: "classStartDate",
                                 operator: "greaterOrEqual",
-                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                                 value: form.getValue("startDate")
                             }
                         );
-                    } else if (data_values.criteria[i].fieldName === "endDate") {
+                    }
+                    else if (data_values.criteria[i].fieldName === "endDate") {
                         reportCriteria_AssessmentHasNotReachedQuorum.criteria.add(
                             {
-                                fieldName: "classStartDate",
+                                fieldName: "classEndDate",
                                 operator: "lessOrEqual",
-                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                                value: form.getValue("endDate")
                             }
                         );
                     }
@@ -252,7 +236,7 @@
                             {
                                 fieldName: "classStartDate",
                                 operator: "greaterOrEqual",
-                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                                value:  form.getValue("startDate")
                             }
                         );
                     } else if (data_values.criteria[i].fieldName === "endDate") {
@@ -260,7 +244,7 @@
                             {
                                 fieldName: "classStartDate",
                                 operator: "lessOrEqual",
-                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                                value: form.getValue("startDate")
                             }
                         );
                     }
@@ -334,11 +318,6 @@
             ListGrid_AssessmentHasNotReachedQuorum
         ]
     });
-
-    function gregorianDate(date) {
-        let dates = date.split("/");
-        return JalaliDate.jalaliToGregorian(dates[0],dates[1],dates[2]).join("-");
-    }
 
     function makeExcelOutput() {
 

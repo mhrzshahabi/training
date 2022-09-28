@@ -44,16 +44,6 @@ public class ClassesReactiveAssessmentHasNotReachedQuorumReportController {
     public ResponseEntity<ISC<ClassesReactiveAssessmentHasNotReachedQuorumDTO.ClassesReactiveAssessmentHasNotReachedQuorumDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
 
-        Long endDateValue = (Long) searchRq.getCriteria().getCriteria().stream().filter(a -> a.getOperator().equals(EOperator.lessOrEqual)).collect(Collectors.toList()).get(0).getValue().get(0);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(endDateValue);
-        calendar.set(Calendar.HOUR, 11);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 59);
-        calendar.set(Calendar.AM_PM, Calendar.PM);
-        searchRq.getCriteria().getCriteria().stream().filter(a -> a.getOperator().equals(EOperator.lessOrEqual)).collect(Collectors.toList()).get(0).setValue(calendar.getTimeInMillis());
-
         SearchDTO.SearchRs result = notReachedQuorumService.search(searchRq, o -> modelMapper.map(o, ClassesReactiveAssessmentHasNotReachedQuorumDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -73,11 +63,11 @@ public class ClassesReactiveAssessmentHasNotReachedQuorumReportController {
             Timestamp secondDate = new Timestamp(parsedDate2.getTime());
 
             listOfCriteria.add(
-                    createCriteria(EOperator.greaterOrEqual, "updateAt", new Date(firstTime.getTime()))
+                    createCriteria(EOperator.greaterOrEqual, "startDate", new Date(firstTime.getTime()))
             );
 
             listOfCriteria.add(
-                    createCriteria(EOperator.lessOrEqual, "updateAt", new Date(secondDate.getTime()))
+                    createCriteria(EOperator.lessOrEqual, "startDate", new Date(secondDate.getTime()))
             );
         } catch(Exception e) {
         }
