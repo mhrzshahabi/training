@@ -468,7 +468,7 @@ public class EvaluationAnalysisRestController {
                     for (int m=0 ; m<subLists.size();m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
-                        for (int z=0 ; z<subV2.size();z++) {
+                        for (int z=0 ; z<3;z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
                             chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder("زز") + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
@@ -501,6 +501,7 @@ public class EvaluationAnalysisRestController {
                             tableData.add(tableData1);
                         }
                     }
+                    if (allchartData.size()<5)
                     allchartData.add(chartData);
                     catCount++;
                 }
