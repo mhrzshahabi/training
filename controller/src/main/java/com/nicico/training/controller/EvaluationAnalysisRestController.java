@@ -468,10 +468,10 @@ public class EvaluationAnalysisRestController {
                     for (int m=0 ; m<subLists.size();m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
-                        for (int z=0 ; z<3;z++) {
+                        for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
-                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder("زز") + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
+                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
                                     Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
 
@@ -491,7 +491,7 @@ public class EvaluationAnalysisRestController {
 
                 }else {
                     for (ViewEvaluationStaticalReportDTO.Info info : list) {
-                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder("زز") + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , index + "",
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , index + "",
                                 Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                 Double.parseDouble(minFerGrade.getValue())));
 
@@ -501,7 +501,6 @@ public class EvaluationAnalysisRestController {
                             tableData.add(tableData1);
                         }
                     }
-                    if (allchartData.size()<5)
                     allchartData.add(chartData);
                     catCount++;
                 }
