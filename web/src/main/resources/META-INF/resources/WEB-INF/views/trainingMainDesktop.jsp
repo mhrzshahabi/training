@@ -1305,6 +1305,7 @@
     const operationalChartUrl = rootUrl + "/operationalchart";
     const educationalCalenderReportUrl = rootUrl + "/view-educational-calender-report"
     const timeInterferenceComprehensiveClassesReportUrl = rootUrl + "/timeInterference-Comprehensive-Classes-report"
+    const classesReactiveAssessmentHasNotReachedQuorumReportUrl = rootUrl + "/classesReactiveAssessment-HasNotReached-Quorum-report"
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
@@ -2563,6 +2564,13 @@
                                 title: "گزارش تداخل زمانی کلاسهای فراگیر",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/timeInterferenceComprehensiveClassesReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "گزارش کلاسهایی که ارزیابی واکنشی آنها به حدنصاب نرسیده",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classesReactiveAssessmentHasNotReachedQuorumReport"/>");
                                 }
                             },
                             {isSeparator: true},
