@@ -15,6 +15,7 @@ import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Coordinate;
 import com.nicico.training.service.*;
+import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -379,6 +380,47 @@ public class EvaluationAnalysisRestController {
     public void printReactionEvaluationReport(HttpServletResponse response, @RequestParam(value = "CriteriaStr") String criteriaStr,
                                               @RequestParam(value = "object") String object) throws Exception {
 
+        //////////////////// word ////////////////////
+//        String sourceFileName ="C:\\Users\\razmnoosh\\IdeaProjects\\training\\main\\src\\main\\resources\\reports\\reactionEvaluationReport.jasper";
+//        Map<String, Object> params = new HashMap();
+//        List<List<ChartData>> allchartData = new ArrayList<>();
+//
+//        List<ChartData> chartData = null;
+//        chartData = new ArrayList<>();
+//        chartData.add(new ChartData(1, "شاخص 1", 30.0,"table1"));
+//        chartData.add(new ChartData(2, "شاخص 2", 40.0,"table1"));
+//        chartData.add(new ChartData(3, "شاخص 3", 50.0,"table1"));
+//
+//        allchartData.add(chartData);
+//        chartData = new ArrayList<>();
+//        chartData.add(new ChartData(1, "شاخص 1", 25.0,"table2"));
+//        chartData.add(new ChartData(2, "شاخص 2", 60.0,"table2"));
+//        chartData.add(new ChartData(3, "شاخص 3", 80.0,"table2"));
+//
+//        allchartData.add(chartData);
+//
+//        params.put("XYChartDataSource", allchartData);
+//        params.put("reportTime","تیر ماه");
+//        params.put("todayDate",DateUtil.todayDate());
+//        params.put("minFerGrade","75");
+//
+//        List<TableData> tableData = new ArrayList<>();
+//        TableData tableData1 = new TableData("20","دوره 1");
+//        TableData tableData2 = new TableData("30","دوره 2");
+//        tableData.add(tableData1);
+//        tableData.add(tableData2);
+//
+//        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(tableData);
+//
+//        JasperPrint jasperPrint = JasperFillManager.fillReport(sourceFileName, params, beanColDataSource);
+//        JRDocxExporter exporter = new JRDocxExporter();
+//        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+//        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
+//        response.setHeader("Content-Disposition", "attachment;filename=jasperfile.docx");
+//        response.setContentType("application/octet-stream");
+//        exporter.exportReport();
+        //////////////////// word ////////////////////
+
         JSONObject reportComments = new JSONObject(object);
 
         final SearchDTO.CriteriaRq criteriaRq;
@@ -429,7 +471,7 @@ public class EvaluationAnalysisRestController {
                         for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
-                            chartData.add(new ChartData(info.getCourseTitleFa()+ "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
+                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
                                     Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
 
@@ -449,7 +491,7 @@ public class EvaluationAnalysisRestController {
 
                 }else {
                     for (ViewEvaluationStaticalReportDTO.Info info : list) {
-                        chartData.add(new ChartData(info.getCourseTitleFa() + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , index + "",
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , index + "",
                                 Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                 Double.parseDouble(minFerGrade.getValue())));
 
