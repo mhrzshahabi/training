@@ -18804,56 +18804,6 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="kasehpour" id="1664016382-01">
-        <createView viewName="VIEW_CLASSES_REACTIVEASSESSMENT_HASNOTREACHED_QUORUM_REPORT" replaceIfExists="true">
-            <![CDATA[
-
-with pr as (
-        SELECT
-            class_id AS class_id,
-            CASE
-                WHEN all_reaction_eval = 0 THEN
-                    0
-                ELSE
-                    CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
-            END AS percent_reaction
-        FROM
-            (
-                SELECT DISTINCT
-                    cs.class_id AS class_id,
-                    (
-                        SELECT
-                            COUNT(DISTINCT cs.id)
-                        FROM
-                            tbl_class_student   cs
-                            INNER JOIN tbl_class           c ON cs.class_id = c.id
-                        WHERE
-                            c.id = classx.id
-                            AND cs.evaluation_status_reaction IN (
-                                2,
-                                3
-                            )
-                    ) AS filled_reaction_eval,
-                    (
-                        SELECT
-                            COUNT(DISTINCT cs.id)
-                        FROM
-                            tbl_class_student   cs
-                            INNER JOIN tbl_class           c ON cs.class_id = c.id
-                        WHERE
-                            c.id = classx.id
-                            AND cs.evaluation_status_reaction IN (
-                                0,
-                                1,
-                                2,
-                                3
-                            )
-                    ) AS all_reaction_eval
-                FROM
-                    tbl_class_student   cs
-                    INNER JOIN tbl_class           classx ON cs.class_id = classx.id
-            )
-)
     <changeSet author="namdari" id="1661077851000-11">
         <createView viewName="VIEW_CALENDAR_FINAL_DETAIL" replaceIfExists="true">
             <![CDATA[
@@ -19057,6 +19007,57 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="kasehpour" id="1664016382-01">
+        <createView viewName="VIEW_CLASSES_REACTIVEASSESSMENT_HASNOTREACHED_QUORUM_REPORT" replaceIfExists="true">
+            <![CDATA[
+
+with pr as (
+        SELECT
+            class_id AS class_id,
+            CASE
+                WHEN all_reaction_eval = 0 THEN
+                    0
+                ELSE
+                    CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+            END AS percent_reaction
+        FROM
+            (
+                SELECT DISTINCT
+                    cs.class_id AS class_id,
+                    (
+                        SELECT
+                            COUNT(DISTINCT cs.id)
+                        FROM
+                            tbl_class_student   cs
+                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                        WHERE
+                            c.id = classx.id
+                            AND cs.evaluation_status_reaction IN (
+                                2,
+                                3
+                            )
+                    ) AS filled_reaction_eval,
+                    (
+                        SELECT
+                            COUNT(DISTINCT cs.id)
+                        FROM
+                            tbl_class_student   cs
+                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                        WHERE
+                            c.id = classx.id
+                            AND cs.evaluation_status_reaction IN (
+                                0,
+                                1,
+                                2,
+                                3
+                            )
+                    ) AS all_reaction_eval
+                FROM
+                    tbl_class_student   cs
+                    INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+            )
+)
+
 select
        class.id                                as id
        ,pr.percent_reaction                    AS answered_reaction_eval_percent
@@ -19093,5 +19094,6 @@ where 1=1
     ]]>
         </createView>
     </changeSet>
+
 
 </databaseChangeLog>
