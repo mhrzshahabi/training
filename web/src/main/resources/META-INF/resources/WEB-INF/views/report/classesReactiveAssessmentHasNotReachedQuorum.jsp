@@ -266,6 +266,7 @@
             DynamicForm_AssessmentHasNotReachedQuorum.clearValues();
             DynamicForm_AssessmentHasNotReachedQuorum.clearErrors();
             organSegmentFilter_AssessmentHasNotReachedQuorum.clearValues();
+            ListGrid_AssessmentHasNotReachedQuorum.clearFilterValues();
             ListGrid_AssessmentHasNotReachedQuorum.setData([]);
         }
     });
