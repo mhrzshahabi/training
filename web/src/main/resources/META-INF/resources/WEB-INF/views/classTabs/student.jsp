@@ -2846,7 +2846,11 @@
                                 wait.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                                    let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
+                                    let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).filter(function(x){return (x.scoreStateId === 400 ||
+                                        x.scoreStateId === 401 ||
+                                        x.scoreStateId === 410
+                                    )}).map(q => q.courseId);
+
                                     if (preCourseIds.every(pq => personnelCourses.includes(pq))) {
 
                                         if (equalCourseIds.some(eq => personnelCourses.includes(eq))) {
