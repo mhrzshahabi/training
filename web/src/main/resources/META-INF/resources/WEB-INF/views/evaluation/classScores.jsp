@@ -180,7 +180,7 @@
                                 isc.IButton.create({
                                     title: "تایید",
                                     click: function () {
-
+                                        debugger
                                         if(isScoreDependent_Eval) {
 
                                             if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
@@ -670,10 +670,10 @@
             }
 
             if (fieldName === "score") {
-
+debugger
                 if (isScoreDependent_Eval) {
 
-                    if (record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
+                    if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;
                     } else {
                         if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
