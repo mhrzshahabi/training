@@ -347,6 +347,8 @@ public class EvaluationAnalysisRestController {
         else
             params.put("resultEffective", "تایید نیست");
 
+        params.put("minScoreLearningLimit", result.getLimitNomre() != null ? result.getLimitNomre() : "");
+
         List<?> list=evaluationAnalysisService.getStudentWithOutPreTest(Long.parseLong(recordId));
         String data = "{" + "\"studentWithOutPreTest\": " + objectMapper.writeValueAsString(list) + "}";
         params.put(ConstantVARs.REPORT_TYPE, "pdf");

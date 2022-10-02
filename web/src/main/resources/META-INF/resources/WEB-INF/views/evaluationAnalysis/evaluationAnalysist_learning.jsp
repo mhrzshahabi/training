@@ -118,14 +118,14 @@
         fields: [
             {
                 name: "FELGrade",
-                title: "نمره ارزیابی یادگیری",
+                title: "میزان پیشرفت یادگیری",
                 baseStyle: "evaluation-code",
                 fillHorizontalSpace: true,
                 canEdit: false
             },
             {
                 name: "limitNomre",
-                title:"حد قابل قبول نمره ارزیابی یادگیری",
+                title:"حد قابل قبول میزان پیشرفت یادگیری",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -195,7 +195,7 @@
         width: "300",
         height: "25",
         margin: 2,
-        title: "چاپ خلاصه نتیجه ارزیابی یادگیری",
+        title: "چاپ خلاصه پیشرفت یادگیری",
         click: function () {
             printEvaluationAnalysistLearning(minscoreValue);
         }
@@ -390,3 +390,5 @@
         }
 
     }
+
+    // </script>
