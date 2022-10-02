@@ -69,4 +69,5 @@ public interface IPersonnelService {
     Long getDepartmentIdByNationalCode(String nationalCode);
 
     boolean changeEmploymentDate(Long id);
+
 }
