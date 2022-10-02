@@ -250,6 +250,24 @@ public class PersonnelService implements IPersonnelService {
         return personnelDAO.getDepartmentIdByNationalCode(nationalCode);
     }
 
+    @Override
+    @Transactional
+    public boolean changeEmploymentDate(Long id) {
+        try {
+            Optional<Personnel>optionalPersonnel=personnelDAO.findById(id);
+            if (optionalPersonnel.isPresent()){
+                Personnel personnel=optionalPersonnel.get();
+                personnel.setEmploymentDate(null);
+                personnelDAO.save(personnel);
+                return true;
+            }else
+                return false;
+        }catch ( Exception e){
+            return false;
+
+        }
+    }
+
     //Unused
     @Override
     @Transactional

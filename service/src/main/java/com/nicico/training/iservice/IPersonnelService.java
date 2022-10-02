@@ -67,4 +67,6 @@ public interface IPersonnelService {
     boolean changeComplex(Long id,String complex);
 
     Long getDepartmentIdByNationalCode(String nationalCode);
+
+    boolean changeEmploymentDate(Long id);
 }

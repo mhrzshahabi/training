@@ -180,7 +180,6 @@
                                 isc.IButton.create({
                                     title: "تایید",
                                     click: function () {
-                                        debugger
                                         if(isScoreDependent_Eval) {
 
                                             if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
@@ -670,7 +669,6 @@
             }
 
             if (fieldName === "score") {
-debugger
                 if (isScoreDependent_Eval) {
 
                     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {

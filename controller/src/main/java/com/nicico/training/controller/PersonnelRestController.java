@@ -279,5 +279,10 @@ public class PersonnelRestController {
     public boolean changeComplex(@RequestParam Long id,@RequestParam String complex) {
         return iPersonnelService.changeComplex(id,complex);
     }
+    @Loggable
+    @PutMapping(value = "/change-employment-date")
+    public boolean changeEmploymentDate(@RequestParam Long id) {
+        return iPersonnelService.changeEmploymentDate(id);
+    }
 
 }
