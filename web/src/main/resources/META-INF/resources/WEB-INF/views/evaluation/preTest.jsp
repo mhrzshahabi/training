@@ -1090,13 +1090,20 @@
                                                                 title: "محاسبه اتوماتیک بارم",
                                                                 width: "150",
                                                                 click: function () {
+                                                                    let sum = 0;
                                                                     if (ListGrid_Questions_preTest.getData().length > 0) {
                                                                         for (let i = 0; i < ListGrid_Questions_preTest.getData().length; i++) {
+                                                                            ListGrid_Questions_preTest.endEditing();
                                                                             let proposedPointValue = ListGrid_Questions_preTest.getData()[i].proposedPointValue;
-                                                                            if (proposedPointValue !== undefined ) {
+                                                                            if (proposedPointValue !== undefined) {
                                                                                 ListGrid_Questions_preTest.setEditValue(i, ListGrid_Questions_preTest.getField("score").masterIndex, proposedPointValue);
+                                                                                sum += proposedPointValue;
+                                                                            } else {
+                                                                                ListGrid_Questions_preTest.setEditValue(i, ListGrid_Questions_preTest.getField("score").masterIndex, 0);
                                                                             }
+                                                                            ListGrid_Questions_preTest.getData()[i].score = 0;
                                                                         }
+                                                                        scoreLabel.setContents("مجموع بارم وارد شده : " + sum)
                                                                     }
                                                                 }
                                                             }),
@@ -1272,11 +1279,28 @@
         let index = questionData.findIndex(f => f.id === form.values.id);
         questionData[index].score = value;
         totalScore = 0;
-        form.grid.data.forEach(q=> {
-            if (q.score!== null && q.score !== undefined) {
-                totalScore = totalScore + q.score;
+
+        let sumEditedValues = 0
+        let sumRealValues = 0
+
+        let listGrid = form.grid;
+
+        for (let i = 0; i < listGrid.data.length; i++) {
+            let editedValue = listGrid.getEditValue(i, listGrid.getField("score").masterIndex);
+            let insertedScore = listGrid.data[i].score;
+
+            if (editedValue !== undefined && i !== index) { // has edited value
+                sumEditedValues += Number(editedValue)
             }
-        });
+            if (insertedScore !== undefined) { // has manually inserted value
+                sumRealValues += Number(insertedScore)
+            }
+        }
+
+        if (!isNaN(sumEditedValues) && !isNaN(sumRealValues)) {
+            totalScore = sumEditedValues + sumRealValues
+        }
+
         scoreLabel.setContents("مجموع بارم وارد شده : " + totalScore)
     }
 
