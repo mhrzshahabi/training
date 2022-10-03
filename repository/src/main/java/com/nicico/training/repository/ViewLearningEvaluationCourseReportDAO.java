@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface ViewLearningEvaluationCourseReportDAO extends JpaRepository<ViewLearningEvaluationCourseReport, Long>, JpaSpecificationExecutor<ViewLearningEvaluationCourseReport> {
 
-    List<ViewLearningEvaluationCourseReport>   findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(String endDate, String startDate);
 
     @Query(value = """
                     SELECT
@@ -21,7 +20,7 @@ public interface ViewLearningEvaluationCourseReportDAO extends JpaRepository<Vie
                     FROM
                         view_learning_evaluation_course_report
                     WHERE
-                    :complexNullCheck = 1 OR complex IN :complexlist
+                   ( :complexNullCheck = 1 OR complex IN :complexlist )
                     AND (:moavenatNullCheck = 1 OR moavenat IN :moavenatlist)
                     AND (:omorNullCheck = 1 OR omor IN :omorlist)
                     AND (:classCodeNullCheck = 1 OR class_code IN :classcodelist)

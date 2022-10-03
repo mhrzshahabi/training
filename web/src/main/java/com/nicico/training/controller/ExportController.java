@@ -1330,44 +1330,7 @@ public class ExportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        String start="";
-//        String end="";
-//        List<Object> categoryList=new ArrayList<>();
-//        List<Object> subCategoryList=new ArrayList<>();
-//        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
-//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
-//                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
-//                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
-//                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
-//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
-//                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
-//            }
-//
-//        }
-//
-//        List<ViewLearningEvaluationCourseReport>    firstData=  courseReportDAO.findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(end,start);
-//        List<Object> finalCategoryList = categoryList;
-//        List<Object> finalSubCategoryList = subCategoryList;
-//        List<ViewLearningEvaluationCourseReport> secondData;
-//        List<ViewLearningEvaluationCourseReport> data;
-//        if (categoryList.size()>0){
-//            secondData  =firstData.stream()
-//                    .filter(first -> finalCategoryList.stream()
-//                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
-//                    .collect(Collectors.toList());
-//        }else{
-//            secondData=firstData;
-//        }
-//        if (subCategoryList.size()>0){
-//            data =secondData.stream()
-//                    .filter(sec -> finalSubCategoryList.stream()
-//                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
-//                    .collect(Collectors.toList());
-//        }else {
-//            data=secondData;
-//        }
+
         String startFrom = null;
         String startTo = null;
         String endFrom = null;
