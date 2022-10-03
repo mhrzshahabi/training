@@ -686,14 +686,6 @@
         questionData[index].score = value;
         totalScore = 0;
 
-        // form.grid.data.forEach(
-        //     q => {
-        //         if (q.score !== null && q.score !== undefined) {
-        //             totalScore = totalScore + q.score
-        //         }
-        //     }
-        // )
-
         let sumEditedValues = 0
         let sumRealValues = 0
 
@@ -957,7 +949,6 @@
                                                     let sum = 0;
                                                     if (ListGrid_Questions_finalTest.getData().length > 0) {
                                                         for (let i = 0; i < ListGrid_Questions_finalTest.getData().length; i++) {
-                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
                                                             ListGrid_Questions_finalTest.endEditing();
                                                             let proposedPointValue = ListGrid_Questions_finalTest.getData()[i].proposedPointValue;
                                                             if (proposedPointValue !== undefined ) {
@@ -966,6 +957,7 @@
                                                             } else {
                                                                 ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, 0);
                                                             }
+                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
                                                         }
                                                         scoreLabel.setContents("مجموع بارم وارد شده : " + sum)
                                                     }
