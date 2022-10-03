@@ -1,10 +1,10 @@
 package com.nicico.training.iservice;
 
-import com.nicico.training.dto.TimeInterferenceComprehensiveClassesDTO;
-import java.util.List;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import java.util.function.Function;
 
 
 public interface ITimeInterferenceComprehensiveClassesReportService {
 
-    List<TimeInterferenceComprehensiveClassesDTO> list(String startDate, String endDate) throws Exception;
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 }

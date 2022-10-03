@@ -1,24 +1,24 @@
 package com.nicico.training.service;
 
-import com.nicico.training.dto.TimeInterferenceComprehensiveClassesDTO;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.iservice.ITimeInterferenceComprehensiveClassesReportService;
-import com.nicico.training.mapper.TimeInterferenceComprehensiveClassesReport.TimeInterferenceComprehensiveClassesReportMapper;
-import com.nicico.training.model.TimeInterferenceComprehensiveClassesView;
 import com.nicico.training.repository.TimeInterferenceComprehensiveClassesReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.function.Function;
+
 
 @Service
 @RequiredArgsConstructor
 public class TimeInterferenceComprehensiveClassesReportService implements ITimeInterferenceComprehensiveClassesReportService {
     private  final TimeInterferenceComprehensiveClassesReportDAO timeInterferenceDAO;
-    private  final TimeInterferenceComprehensiveClassesReportMapper mapper;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<TimeInterferenceComprehensiveClassesDTO> list(String startDate, String endDate) throws Exception {
-        List<TimeInterferenceComprehensiveClassesView>  objectResult = timeInterferenceDAO.list(startDate, endDate);
-        return  mapper.toTimeInterferenceComprehensiveClassesDTOs(objectResult);
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(timeInterferenceDAO, request, converter);
     }
 
 }
