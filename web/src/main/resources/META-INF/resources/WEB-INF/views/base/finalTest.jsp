@@ -684,18 +684,40 @@
     function setScoreValue(value, form) {
         let index = questionData.findIndex(f => f.id === form.values.id)
         questionData[index].score = value;
-         totalScore=0;
-          form.grid.data.forEach(
-    q=>{ if (q.score!== null && q.score !== undefined)
-{
-totalScore=totalScore+q.score
-}
-    }
-)
+        totalScore = 0;
 
-scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
+        // form.grid.data.forEach(
+        //     q => {
+        //         if (q.score !== null && q.score !== undefined) {
+        //             totalScore = totalScore + q.score
+        //         }
+        //     }
+        // )
 
+        let sumEditedValues = 0
+        let sumRealValues = 0
+
+        let listGrid = form.grid;
+
+        for (let i = 0; i < listGrid.data.length; i++) {
+            let editedValue = listGrid.getEditValue(i, listGrid.getField("score").masterIndex);
+            let insertedScore = listGrid.data[i].score;
+
+            if (editedValue !== undefined && i !== index) { // has edited value
+                sumEditedValues += Number(editedValue)
+            }
+            if (insertedScore !== undefined) { // has manually inserted value
+                sumRealValues += Number(insertedScore)
+            }
         }
+
+        if (!isNaN(sumEditedValues) && !isNaN(sumRealValues)) {
+            totalScore = sumEditedValues + sumRealValues
+        }
+
+        scoreLabel.setContents("مجموع بارم وارد شده : " + totalScore)
+
+    }
     function setTimeValue(value, form) {
         let index = questionData.findIndex(f => f.id === form.values.id)
         questionData[index].time = value;
@@ -935,6 +957,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                     let sum = 0;
                                                     if (ListGrid_Questions_finalTest.getData().length > 0) {
                                                         for (let i = 0; i < ListGrid_Questions_finalTest.getData().length; i++) {
+                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
+                                                            ListGrid_Questions_finalTest.endEditing();
                                                             let proposedPointValue = ListGrid_Questions_finalTest.getData()[i].proposedPointValue;
                                                             if (proposedPointValue !== undefined ) {
                                                                 ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, proposedPointValue);
@@ -942,7 +966,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                             } else {
                                                                 ListGrid_Questions_finalTest.setEditValue(i, ListGrid_Questions_finalTest.getField("score").masterIndex, 0);
                                                             }
-                                                            ListGrid_Questions_finalTest.getData()[i].score = 0;
                                                         }
                                                         scoreLabel.setContents("مجموع بارم وارد شده : " + sum)
                                                     }
