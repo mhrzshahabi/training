@@ -2682,12 +2682,14 @@
     async function sendNeedsAssessmentForSaving() {
         let data = DataSource_Skill_JspNeedsAssessment.cacheData;
         if (data.length == 0) {
+            wait.close();
             createDialog("info", "<spring:message code="msg.error.list.cant.be.empty"/>")
             return [false ,false];
         }
         let f = await fetch(needsAssessmentUrl+"/createOrUpdateList", {headers: apiHeader, method: "POST", body: JSON.stringify(data)});
         let hasAlreadySentToWorkFlow = await f.json();
         if(f.status === 500) {
+            wait.close();
             createDialog("info", hasAlreadySentToWorkFlow.errors[0].field);
             return [false ,false];
         }
@@ -2695,6 +2697,7 @@
             return [true ,(hasAlreadySentToWorkFlow == false)];
         }
         else {
+            wait.close();
             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             return [false ,false];
         }
@@ -2750,6 +2753,7 @@
                 return;
             sendNeedsAssessmentToWorkflow(mustSent);
         } else {
+            wait.close();
             canSendToWorkFlowNA = false;
             let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
             if (!isSaved)
