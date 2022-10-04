@@ -318,8 +318,18 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
     function makeExcelOutputOfTimeInterference() {
         if (ListGrid_TimeInterference.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا تهیه گزارش را انتخاب کنید");
-        else
-           ExportToFile.downloadExcelRestUrl(null, ListGrid_TimeInterference, timeInterferenceComprehensiveClassesReportUrl + "/iscList", 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"   , reportCriteria_TimeInterference, null);
+        else{
+            let criteria = ListGrid_TimeInterference.getCriteria();
+
+            if(ListGrid_TimeInterference.getCriteria().criteria){
+                for (let i = 0; i < criteria.criteria.length ; i++) {
+                    reportCriteria_TimeInterference.criteria.push(criteria.criteria[i]);
+                }
+            }
+
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_TimeInterference, timeInterferenceComprehensiveClassesReportUrl + "/iscList", 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"   , criteria, null);
+
+        }
     }
 
 // </script>
