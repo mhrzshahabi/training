@@ -85,9 +85,8 @@
             {name: "subCategoryId", hidden: true,filterOperator: "equals"},
             {name: "classPlanner", hidden: true, filterOperator: "equals"},
             {name: "classSupervisor", hidden: true, filterOperator: "equals"},
-            {name: "answeredReactionEvalPercent", title: "فرم های تکمیلی ارزیابی واکنشی(%)", filterOperator: "iContains", autoFitWidth: true},
-            {name: "answeredBehavioralEvalPercent", title: "فرم های تکمیلی ارزیابی رفتاری(%)", filterOperator: "iContains", autoFitWidth: true},
-
+            {name: "answeredReactionEvalPercent", title: "فرم های تکمیلی ارزیابی واکنشی(%)", filterOperator: "iContains"},
+            {name: "answeredBehavioralEvalPercent", title: "فرم های تکمیلی ارزیابی رفتاری(%)", filterOperator: "iContains"},
         ],
         fetchDataURL: statisticsUnitReportUrl
     });
@@ -1286,4 +1285,4 @@
     //----------------------------------------------------End-----------------------------------------------------------
     Window_JspUnitReport.hide();
 
-//<script>
+    //</script>
