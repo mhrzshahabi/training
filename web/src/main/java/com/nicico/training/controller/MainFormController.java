@@ -90,6 +90,11 @@ public class MainFormController {
         return "report/needsAssessmentReports";
     }
 
+    @RequestMapping("/needsAssessmentReportsWithGap-reports")
+    public String showNeedsAssessmentReportsWithGapForm() {
+        return "report/needsAssessmentReportsWithGap";
+    }
+
     @RequestMapping("/needsAssessment-reports-pi")
     public String showNeedsAssessmentReportsPIForm() {
         return "report/needsAssessmentReportsPI";
