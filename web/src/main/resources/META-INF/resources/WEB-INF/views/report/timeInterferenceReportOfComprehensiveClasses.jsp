@@ -5,9 +5,9 @@
 // <script>
 
     let url;
+    let reportCriteria_TimeInterference;
 
-
-//-----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 
 let DynamicForm_TimeInterference = isc.DynamicForm.create({
     numCols: 8,
@@ -87,19 +87,20 @@ let DynamicForm_TimeInterference = isc.DynamicForm.create({
                 let timeInterference_Report_wait = createDialog("wait");
                 setTimeout(function () {
 
-                    url = timeInterferenceComprehensiveClassesReportUrl + "/iscList?"+ form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
+                    url = timeInterferenceComprehensiveClassesReportUrl + "/iscList";
                     RestDataSource_TimeInterference.fetchDataURL = url;
 
-                    ListGrid_TimeInterference.setImplicitCriteria({
+                    reportCriteria_TimeInterference = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [
-                            {fieldName: "startDate", operator: "greaterOrEqual", value: form.getValue("startDate")},
-                            {fieldName: "endDate", operator: "lessOrEqual", value: form.getValue("endDate")},
+                            {fieldName: "sessionDate", operator: "greaterOrEqual", value: form.getValue("startDate")},
+                            {fieldName: "sessionDate", operator: "lessOrEqual", value: form.getValue("endDate")},
                         ]
-                    });
+                    };
+
                     ListGrid_TimeInterference.invalidateCache();
-                    ListGrid_TimeInterference.fetchData();
+                    ListGrid_TimeInterference.fetchData(reportCriteria_TimeInterference);
                     timeInterference_Report_wait.close();
 
                 }, 100);
@@ -149,7 +150,7 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
         gridComponents: [DynamicForm_TimeInterference,"header", "filterEditor", "body"],
         autoFetchData: false,
         showFilterEditor:true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortDirection: "descending",
         initialSort: [
             {property: "id", direction: "descending"}
@@ -260,7 +261,7 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
          ],
 
     });
-//----------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
     timeInterference_actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -279,6 +280,7 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
     ToolStripButton_Refresh_TimeInterference = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_TimeInterference.invalidateCache();
+            ListGrid_TimeInterference.clearFilterValues();
         }
     });
 
@@ -312,12 +314,22 @@ let RestDataSource_TimeInterference = isc.TrDS.create({
             VLayout_Body_TimeInterference,
             ]
     });
-//--------------------------------------------functions ---------------------------------------------------------------------
+//--------------------------------------------functions ------------------------------
     function makeExcelOutputOfTimeInterference() {
         if (ListGrid_TimeInterference.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_TimeInterference , url , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , ListGrid_TimeInterference.implicitCriteria, null);
+            createDialog("info", "ابتدا تهیه گزارش را انتخاب کنید");
+        else{
+            let criteria = ListGrid_TimeInterference.getCriteria();
+
+            if(ListGrid_TimeInterference.getCriteria().criteria){
+                for (let i = 0; i < criteria.criteria.length ; i++) {
+                    reportCriteria_TimeInterference.criteria.push(criteria.criteria[i]);
+                }
+            }
+
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_TimeInterference, timeInterferenceComprehensiveClassesReportUrl + "/iscList", 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"   , criteria, null);
+
+        }
     }
 
 // </script>
