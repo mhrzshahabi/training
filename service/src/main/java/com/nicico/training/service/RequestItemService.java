@@ -1,5 +1,8 @@
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstanceHistory;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
@@ -20,12 +23,13 @@ import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.mapper.requestItem.RequestItemCoursesDetailBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.RequestItemState;
-import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
 import dto.bpms.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,14 +47,13 @@ import java.util.stream.Collectors;
 public class RequestItemService implements IRequestItemService {
 
     private final ModelMapper modelMapper;
-    private final PersonnelDAO personnelDAO;
-    private final IBpmsService iBpmsService;
+    private final ObjectMapper objectMapper;
     private final ITclassService classService;
     private final RequestItemDAO requestItemDAO;
+    private ITrainingPostService trainingPostService;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
     private final IDepartmentService departmentService;
-    private final ITrainingPostService trainingPostService;
     private final ISynonymOAUserService synonymOAUserService;
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
@@ -62,6 +65,11 @@ public class RequestItemService implements IRequestItemService {
     private final IRequestItemProcessDetailService requestItemProcessDetailService;
     private final IRequestItemCoursesDetailService requestItemCoursesDetailService;
     private final RequestItemCoursesDetailBeanMapper requestItemCoursesDetailBeanMapper;
+
+    @Autowired
+    public void setTrainingPostService(@Lazy ITrainingPostService trainingPostService) {
+        this.trainingPostService = trainingPostService;
+    }
 
     @Override
     @Transactional
@@ -235,22 +243,46 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public BaseResponse getDefinitionKey(String definitionKey, String TenantId, int page, int size) {
+        ProcessDefinitionRequestDTO processDefinitionRequestDTO = new ProcessDefinitionRequestDTO();
+        processDefinitionRequestDTO.setTenantId(TenantId);
+        Object object = bpmsClientService.searchProcess(processDefinitionRequestDTO, page, size);
+        BpmsDefinitionDto bpmsDefinitionDto = objectMapper.convertValue(object, new TypeReference<>() {
+        });
+        Optional<BpmsContent> bPMSContent = bpmsDefinitionDto.getContent().stream().filter(x -> x.getName().trim().equals(definitionKey.trim())).findFirst();
+        BaseResponse response = new BaseResponse();
+        if (bPMSContent.isPresent()) {
+            response.setStatus(200);
+            response.setMessage(bPMSContent.get().getProcessDefinitionKey());
+        } else {
+            response.setStatus(409);
+            response.setMessage("فرایند یافت نشد");
+        }
+        return response;
+    }
+
+    @Override
     public StartProcessWithDataDTO getRequestItemStartProcessDto(Long requestItemId, BpmsStartParamsDto params, String tenantId) {
         Map<String, Object> map = new HashMap<>();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
         if (optionalRequestItem.isPresent()) {
-            map.put("assignTo", getPlanningChiefNationalCode());
-            map.put("userId", SecurityUtil.getUserId());
-            map.put("assignFrom", SecurityUtil.getNationalCode());
-            map.put("tenantId", tenantId);
-            map.put("title", params.getData().get("title").toString());
-            map.put("createBy", SecurityUtil.getFullName());
-            map.put("requestItemId", params.getData().get("requestItemId").toString());
-            map.put("requestNo", params.getData().get("requestNo").toString());
-            StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
-            startProcessDto.setProcessDefinitionKey(iBpmsService.getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
-            startProcessDto.setVariables(map);
-            return startProcessDto;
+
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            if (planningChiefResponse.getStatus() == 200) {
+                map.put("assignTo", planningChiefResponse.getMessage());
+                map.put("userId", SecurityUtil.getUserId());
+                map.put("assignFrom", SecurityUtil.getNationalCode());
+                map.put("tenantId", tenantId);
+                map.put("title", params.getData().get("title").toString());
+                map.put("createBy", SecurityUtil.getFullName());
+                map.put("requestItemId", params.getData().get("requestItemId").toString());
+                map.put("requestNo", params.getData().get("requestNo").toString());
+                StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
+                startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
+                startProcessDto.setVariables(map);
+                return startProcessDto;
+            } else
+                throw new TrainingException(TrainingException.ErrorType.Forbidden);
         } else
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
@@ -281,21 +313,30 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public void reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest) {
+    public BaseResponse reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest) {
 
+        BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
-        Map<String, Object> map = reviewTaskRequest.getVariables();
 
-        map.put("assignTo", getPlanningChiefNationalCode());
-        map.put("approved", true);
+        BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+        if (planningChiefResponse.getStatus() == 200) {
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", planningChiefResponse.getMessage());
+            map.put("approved", true);
 
-        if (optionalRequestItem.isPresent()) {
-            RequestItem requestItem = optionalRequestItem.get();
-            requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChief"));
-            requestItemDAO.saveAndFlush(requestItem);
+            if (optionalRequestItem.isPresent()) {
+                RequestItem requestItem = optionalRequestItem.get();
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChief"));
+                requestItemDAO.saveAndFlush(requestItem);
+            }
+            bpmsClientService.reviewTask(reviewTaskRequest);
+            response.setStatus(planningChiefResponse.getStatus());
+            response.setMessage("عملیات با موفقیت انجام شد.");
+        } else {
+            response.setStatus(planningChiefResponse.getStatus());
+            response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         }
-
-        bpmsClientService.reviewTask(reviewTaskRequest);
+        return response;
     }
 
     @Override
@@ -346,47 +387,56 @@ public class RequestItemService implements IRequestItemService {
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(bpmsReqItemCoursesDto.getReviewTaskRequest().getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
-            RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
 
-            if (requestItemProcessDetail == null) {
-                Long count = bpmsReqItemCoursesDto.getCourses().stream().filter(item -> item.getPriority().contains("انتصاب")).count();
-                RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
-                requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                requestItemProcessDetailDTO.setExpertsOpinionId(count > 0 ? parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
-                requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
-                requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
-            }
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            if (planningChiefResponse.getStatus() == 200) {
 
-            if (bpmsReqItemCoursesDto.getCourses().size() != 0) {
-                for (BPMSReqItemCoursesDetailDto reqItemCoursesDetailDto : bpmsReqItemCoursesDto.getCourses()) {
-                    reqItemCoursesDetailDto.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
-                    RequestItemCoursesDetailDTO.Create create = modelMapper.map(reqItemCoursesDetailDto, RequestItemCoursesDetailDTO.Create.class);
-                    requestItemCoursesDetailService.create(create);
-                }
-            }
+                RequestItem requestItem = optionalRequestItem.get();
+                Map<String, Object> map = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables();
+                RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
 
-            List<RequestItemProcessDetail> requestItemProcessDetailList = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId());
-            List<Long> expertsOpinionId = requestItemProcessDetailList.stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
-            Object assigneeObject = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assigneeList");
-            if (assigneeObject != null) {
-
-                List<String> assigneeList = (List<String>) assigneeObject;
-                if (assigneeList.size() == requestItemProcessDetailList.size()) {
+                if (requestItemProcessDetail == null) {
+                    Long count = bpmsReqItemCoursesDto.getCourses().stream().filter(item -> item.getPriority().contains("انتصاب")).count();
                     RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
                     requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                    requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
-                            parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
-                    requestItemProcessDetailDTO.setExpertNationalCode(getPlanningChiefNationalCode());
-                    requestItemProcessDetailService.create(requestItemProcessDetailDTO);
-
-                    requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChiefToDetermineStatus"));
-                    requestItemDAO.saveAndFlush(requestItem);
+                    requestItemProcessDetailDTO.setExpertsOpinionId(count > 0 ? parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
+                    requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
+                    requestItemProcessDetailDTO.setRoleName("planningExpert");
+                    requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
                 }
-                response.setStatus(200);
-            } else {
-                response.setStatus(404);
-            }
+
+                if (bpmsReqItemCoursesDto.getCourses().size() != 0) {
+                    for (BPMSReqItemCoursesDetailDto reqItemCoursesDetailDto : bpmsReqItemCoursesDto.getCourses()) {
+                        reqItemCoursesDetailDto.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
+                        RequestItemCoursesDetailDTO.Create create = modelMapper.map(reqItemCoursesDetailDto, RequestItemCoursesDetailDTO.Create.class);
+                        requestItemCoursesDetailService.create(create);
+                    }
+                }
+
+                List<RequestItemProcessDetail> requestItemProcessDetailList = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId());
+                List<Long> expertsOpinionId = requestItemProcessDetailList.stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
+                map.put("assignTo", planningChiefResponse.getMessage());
+                Object assigneeObject = map.get("assigneeList");
+                if (assigneeObject != null) {
+
+                    List<String> assigneeList = (List<String>) assigneeObject;
+                    if (assigneeList.size() == requestItemProcessDetailList.size()) {
+                        RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
+                        requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
+                        requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
+                                parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
+                        requestItemProcessDetailDTO.setExpertNationalCode(planningChiefResponse.getMessage());
+                        requestItemProcessDetailDTO.setRoleName("planningChief");
+                        requestItemProcessDetailService.create(requestItemProcessDetailDTO);
+                        requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChiefToDetermineStatus"));
+                        requestItemDAO.saveAndFlush(requestItem);
+                    }
+                    response.setStatus(200);
+                } else {
+                    response.setStatus(404);
+                }
+            } else
+                response.setStatus(planningChiefResponse.getStatus());
         } else {
             response.setStatus(404);
         }
@@ -399,6 +449,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 403) {
+            response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -414,57 +466,57 @@ public class RequestItemService implements IRequestItemService {
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
-            RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
-            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
 
-            if (chiefOpinionId != null) {
-                requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
-            }
+            BaseResponse runChiefResponse = getRunChiefNationalCode();
+            if (runChiefResponse.getStatus() == 200) {
+                String mainRunChief = runChiefResponse.getMessage();
 
-            if (courses.size() != 0) {
-                for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : courses) {
-                    RequestItemCoursesDetailDTO.Create create = modelMapper.map(requestItemCoursesDetailDTO, RequestItemCoursesDetailDTO.Create.class);
-                    create.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
-                    requestItemCoursesDetailService.create(create);
+                RequestItem requestItem = optionalRequestItem.get();
+                RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
+                List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
+
+                if (chiefOpinionId != null) {
+                    requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
                 }
-            }
 
-            Map<String, Object> variables = reviewTaskRequest.getVariables();
-            String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-            // String mainRunChief = "ابراهیم نژاد";
-            String mainRunChief = "0938091972";
-            if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-                // mainRunChief = "hajizadeh_mh";
-                mainRunChief = "3140008635";
-            }
+                if (courses.size() != 0) {
+                    for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : courses) {
+                        RequestItemCoursesDetailDTO.Create create = modelMapper.map(requestItemCoursesDetailDTO, RequestItemCoursesDetailDTO.Create.class);
+                        create.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
+                        requestItemCoursesDetailService.create(create);
+                    }
+                }
 
-            if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse"))) {
-                //  مانع
-                // رییس اجرا
-                variables.put("finalOpinion", "needToPassCourse");
-                variables.put("assignTo", mainRunChief);
-            } else {
-                // بلامانع
-                if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
-                    // دارای ضمن خدمت
-                    // رییس اجرا و کارشناس انتصاب سمت
-                    variables.put("finalOpinion", "noObjection");
-                    variables.put("haveWhileServing", true);
+                Map<String, Object> variables = reviewTaskRequest.getVariables();
+                if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse"))) {
+                    //  مانع
+                    // رییس اجرا
+                    variables.put("finalOpinion", "needToPassCourse");
                     variables.put("assignTo", mainRunChief);
-                    variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
                 } else {
-                    // بدون ضمن خدمت
-                    // کارشناس انتصاب سمت
-                    variables.put("finalOpinion", "noObjection");
-                    variables.put("haveWhileServing", false);
-                    variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                    // بلامانع
+                    if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
+                        // دارای ضمن خدمت
+                        // رییس اجرا و کارشناس انتصاب سمت
+                        variables.put("finalOpinion", "noObjection");
+                        variables.put("haveWhileServing", true);
+                        variables.put("assignTo", mainRunChief);
+                        variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                    } else {
+                        // بدون ضمن خدمت
+                        // کارشناس انتصاب سمت
+                        variables.put("finalOpinion", "noObjection");
+                        variables.put("haveWhileServing", false);
+                        variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                    }
                 }
+                requestItem.setProcessStatusId(parameterValueService.getId("finalApprovalByPlanningChief"));
+                requestItemDAO.saveAndFlush(requestItem);
+                response.setStatus(200);
+            } else {
+                response.setStatus(runChiefResponse.getStatus());
             }
 
-            requestItem.setProcessStatusId(parameterValueService.getId("finalApprovalByPlanningChief"));
-            requestItemDAO.saveAndFlush(requestItem);
-            response.setStatus(200);
         } else {
             response.setStatus(404);
         }
@@ -477,6 +529,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 403) {
+            response.setMessage("رئیس اجرا تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -494,7 +548,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -539,7 +593,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -584,7 +638,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -628,16 +682,15 @@ public class RequestItemService implements IRequestItemService {
 
         if (optionalRequestItem.isPresent()) {
 
-            String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-            // String mainRunChief = "ابراهیم نژاد";
-            String mainRunChief = "0938091972";
-            if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-                // mainRunChief = "hajizadeh_mh";
-                mainRunChief = "3140008635";
+            BaseResponse runChiefResponse = getRunChiefNationalCode();
+            if (runChiefResponse.getStatus() == 200) {
+                String mainRunChief = runChiefResponse.getMessage();
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("assignTo", mainRunChief);
+                response.setStatus(200);
+            } else {
+                response.setStatus(runChiefResponse.getStatus());
             }
-            Map<String, Object> map = reviewTaskRequest.getVariables();
-            map.put("assignTo", mainRunChief);
-            response.setStatus(200);
         } else {
             response.setStatus(404);
         }
@@ -650,6 +703,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 403) {
+            response.setMessage("رئیس اجرا تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -666,12 +721,16 @@ public class RequestItemService implements IRequestItemService {
 
         if (optionalRequestItem.isPresent()) {
 
-            RequestItem requestItem = optionalRequestItem.get();
-            Map<String, Object> map = reviewTaskRequest.getVariables();
-            map.put("assignTo", getPlanningChiefNationalCode());
-            requestItem.setProcessStatusId(parameterValueService.getId("waitingFinalApprovalByPlanningChief(AfterRun)"));
-            requestItemDAO.saveAndFlush(requestItem);
-            response.setStatus(200);
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            if (planningChiefResponse.getStatus() == 200) {
+                RequestItem requestItem = optionalRequestItem.get();
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("assignTo", planningChiefResponse.getMessage());
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingFinalApprovalByPlanningChief(AfterRun)"));
+                requestItemDAO.saveAndFlush(requestItem);
+                response.setStatus(200);
+            } else
+                response.setStatus(planningChiefResponse.getStatus());
         } else {
             response.setStatus(404);
         }
@@ -684,6 +743,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 403) {
+            response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -701,7 +762,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
             Map<String, Object> map = reviewTaskRequest.getVariables();
             map.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
@@ -740,7 +801,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
             requestItem.setLetterNumberSent(bpmsReqItemSentLetterDto.getLetterNumberSent());
             requestItem.setDateSent(bpmsReqItemSentLetterDto.getDateSent());
@@ -777,22 +838,38 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public String getPlanningChiefNationalCode() {
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//        String mainConfirmBoss = "ahmadi_z";
-        String mainConfirmBoss = "3621296476";
-        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "3140008635";
-//            mainConfirmBoss = "hajizadeh_mh";
-        } else if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
-            mainConfirmBoss = "6049618348";
+    public BaseResponse getPlanningChiefNationalCode() {
+
+        BaseResponse response = new BaseResponse();
+        List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByComplexIdAndObjectType("HEAD_OF_PLANNING");
+        Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList()));
+        if (userIds.size() != 1)
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+        else {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage(synonymOAUserService.getNationalCodeByUserId(userIds.stream().findFirst().get()));
         }
-        return mainConfirmBoss;
+        return response;
+    }
+
+    @Override
+    public BaseResponse getRunChiefNationalCode() {
+
+        BaseResponse response = new BaseResponse();
+        List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByComplexIdAndObjectType("CHIEF_EXECUTIVE_OFFICER");
+        Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList()));
+        if (userIds.size() != 1)
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+        else {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage(synonymOAUserService.getNationalCodeByUserId(userIds.stream().findFirst().get()));
+        }
+        return response;
     }
 
     @Override
     public List<String> getPlanningExpertsAssigneeList(String post) {
+
         List<String> assigneeList = new ArrayList<>();
         Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(post);
         List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByPostIdsAndComplexIdAndObjectType(optionalTrainingPost.get().getId(), "MASTER_OF_PLANNING");

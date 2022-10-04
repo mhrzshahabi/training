@@ -2649,7 +2649,6 @@
                         }];
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
-                        // isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
                     } else {
                         let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
                             .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
@@ -2707,6 +2706,8 @@
             Window_NeedsAssessment_Edit.close(0);
         } else if (resp.httpResponseCode === 404) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
+        } else if (resp.httpResponseCode === 403) {
+            simpleDialog("<spring:message code="message"/>", JSON.parse(resp.httpResponseText).message, 3000, "stop");
         } else {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
         }

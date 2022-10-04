@@ -71,14 +71,20 @@ public abstract class RequestItemBeanMapper {
 
     @Named("idToPlanningChiefOpinion")
     protected String idToPlanningChiefOpinion(Long id) {
-        String chiefNationalCode = getPlanningChiefNationalCode();
-        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(id, chiefNationalCode);
+
+        RequestItemProcessDetail requestItemProcessDetail;
+        requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(id, "planningChief");
+        if (requestItemProcessDetail == null) {
+            String chiefNationalCode = getOldPlanningChiefNationalCode();
+            requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(id, chiefNationalCode);
+        }
+
         if (requestItemProcessDetail != null)
             return parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle();
         else return "";
     }
 
-    private String getPlanningChiefNationalCode() {
+    private String getOldPlanningChiefNationalCode() {
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 //        String mainConfirmBoss = "ahmadi_z";
         String mainConfirmBoss = "3621296476";

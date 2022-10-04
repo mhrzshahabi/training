@@ -50,6 +50,8 @@ public interface IRequestItemService {
 
     void updateStartedRequestItemProcess(Long id, String processInstanceId);
 
+    BaseResponse getDefinitionKey(String definitionKey, String TenantId,int page,int size);
+
     StartProcessWithDataDTO getRequestItemStartProcessDto(Long requestItemId, BpmsStartParamsDto params, String tenantId);
 
     ProcessInstance startRequestItemProcessWithData(StartProcessWithDataDTO startProcessDto);
@@ -58,7 +60,7 @@ public interface IRequestItemService {
 
     void cancelRequestItemProcess(ReviewTaskRequest reviewTaskRequest, String reason);
 
-    void reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest);
+    BaseResponse reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTask(ReviewTaskRequest reviewTaskRequestDto);
 
@@ -82,7 +84,9 @@ public interface IRequestItemService {
 
     List<BPMSReqItemProcessHistoryDto> getProcessInstanceHistoryById(String processInstanceId);
 
-    String getPlanningChiefNationalCode();
+    BaseResponse getPlanningChiefNationalCode();
+
+    BaseResponse getRunChiefNationalCode();
 
     List<String> getPlanningExpertsAssigneeList(String post);
 

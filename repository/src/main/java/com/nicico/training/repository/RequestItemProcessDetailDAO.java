@@ -14,4 +14,6 @@ public interface RequestItemProcessDetailDAO extends JpaRepository<RequestItemPr
     List<RequestItemProcessDetail> findAllByRequestItemId(Long requestItemId);
 
     Optional<RequestItemProcessDetail> findFirstByRequestItemIdAndExpertNationalCode(Long requestItemId, String expertNationalCode);
+
+    Optional<RequestItemProcessDetail> findFirstByRequestItemIdAndRoleName(Long requestItemId, String roleName);
 }

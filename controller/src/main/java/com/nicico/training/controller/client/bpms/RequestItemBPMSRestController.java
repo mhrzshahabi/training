@@ -3,6 +3,7 @@ package com.nicico.training.controller.client.bpms;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.copper.common.Loggable;
+import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.AppUtils;
 import com.nicico.training.iservice.IRequestItemService;
 import dto.bpms.*;
@@ -26,16 +27,22 @@ public class RequestItemBPMSRestController {
     @Loggable
     @PostMapping({"/processes/request-item/start-data-validation"})
     public ResponseEntity<BaseResponse> startRequestItemProcessWithData(@RequestBody BpmsStartParamsDto params) {
-        BaseResponse res = new BaseResponse();
+        BaseResponse response = new BaseResponse();
         Long requestItemId = Long.valueOf(params.getData().get("requestItemId").toString());
         try {
             ProcessInstance processInstance = requestItemService.startRequestItemProcessWithData(requestItemService.getRequestItemStartProcessDto(requestItemId, params, AppUtils.getTenantId()));
             requestItemService.updateStartedRequestItemProcess(requestItemId, processInstance.getId());
-            res.setStatus(200);
-        } catch (Exception e) {
-            res.setStatus(406);
+            response.setStatus(200);
+        } catch (TrainingException trainingException) {
+            if (trainingException.getHttpStatusCode().equals(403)) {
+                response.setStatus(403);
+                response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+            } else
+                response.setStatus(406);
+        } catch (Exception exception) {
+            response.setStatus(406);
         }
-        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     @Loggable
@@ -68,8 +75,8 @@ public class RequestItemBPMSRestController {
 
     @Loggable
     @PostMapping({"/processes/request-item/reAssign-process"})
-    public void reAssignRequestItemProcess(@RequestBody BpmsCancelTaskDto value) {
-        requestItemService.reAssignRequestItemProcess(value.getReviewTaskRequest());
+    public BaseResponse reAssignRequestItemProcess(@RequestBody BpmsCancelTaskDto value) {
+        return requestItemService.reAssignRequestItemProcess(value.getReviewTaskRequest());
     }
 
     @Loggable

@@ -5544,6 +5544,11 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-096">
+        <addColumn tableName="tbl_request_item_process_detail">
+            <column name="c_role_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 

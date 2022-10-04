@@ -1564,8 +1564,8 @@
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 createDialog("info", "<spring:message code='course.set.on.workflow.engine'/>");
                                 refreshRequestItem();
-                            } else if (resp.httpResponseCode === 404) {
-                                createDialog("info", "<spring:message code='workflow.bpmn.not.uploaded'/>");
+                            } else if (resp.httpResponseCode === 403) {
+                                createDialog("info", JSON.parse(resp.httpResponseText).message);
                             } else {
                                 createDialog("info", "<spring:message code='msg.send.to.workflow.problem'/>");
                             }

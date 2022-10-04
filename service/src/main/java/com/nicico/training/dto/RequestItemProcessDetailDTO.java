@@ -15,6 +15,7 @@ public class RequestItemProcessDetailDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String expertNationalCode;
+    private String roleName;
     private Long requestItemId;
     private Long expertsOpinionId;
 

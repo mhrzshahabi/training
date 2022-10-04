@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +37,17 @@ public class OperationalRoleService implements IOperationalRoleService {
     private final ModelMapper modelMapper;
     private final CourseMapper courseMapper;
     private final IPersonnelService personnelService;
+    private ITrainingPostService trainingPostService;
     private final IDepartmentService departmentService;
     private final OperationalUnitDAO operationalUnitDAO;
     private final OperationalRoleDAO operationalRoleDAO;
     private final ViewTrainingPostDAO viewTrainingPostDAO;
-    private final ITrainingPostService trainingPostService;
     private final ViewTrainingPostMapper viewTrainingPostMapper;
+
+    @Autowired
+    public void setTrainingPostService(@Lazy ITrainingPostService trainingPostService) {
+        this.trainingPostService = trainingPostService;
+    }
 
     @Transactional
     @Override
@@ -134,6 +141,28 @@ public class OperationalRoleService implements IOperationalRoleService {
         complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
         List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIdsAndComplexIdAndObjectType(postId, complexId, objectType);
+        if (operationalRoles.size() != 0)
+            return operationalRoles;
+        else return new ArrayList<>();
+    }
+
+    @Override
+    public List<OperationalRole> getOperationalRolesByByComplexIdAndObjectType(String objectType) {
+
+        String complexTitle;
+        Long complexId;
+        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+        if (departmentId != null) {
+            complexTitle = departmentService.getComplexTitleById(departmentId);
+            if (complexTitle == null) {
+                complexTitle = "مدیر مجتمع مس سرچشمه";
+            }
+        } else {
+            complexTitle = "مدیر مجتمع مس سرچشمه";
+        }
+        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
+
+        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByComplexIdAndObjectType(complexId, objectType);
         if (operationalRoles.size() != 0)
             return operationalRoles;
         else return new ArrayList<>();
