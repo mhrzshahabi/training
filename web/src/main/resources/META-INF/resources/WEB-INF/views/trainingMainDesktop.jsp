@@ -1855,6 +1855,12 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: " مدیریت درخواست آموزشی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/trainingRequestManagement"/>");
+                    }
+                },
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_CompetenceRequest')">
                 {
                     title: "<spring:message code="scientific.technical.certification"/>",

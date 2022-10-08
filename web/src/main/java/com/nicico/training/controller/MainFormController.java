@@ -170,6 +170,11 @@ public class MainFormController {
         return "base/certification";
     }
 
+    @RequestMapping("/trainingRequestManagement")
+    public String showTrainingRequestManagementForm() {
+        return "base/trainingRequestManagement";
+    }
+
     @RequestMapping("/certification-level-report")
     public String showCertificationReportForm() {
         return "base/certificationLevelReport";
