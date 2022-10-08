@@ -8,9 +8,8 @@ import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.core.SecurityUtil;
-import com.nicico.training.iservice.IBpmsService;
-import com.nicico.training.iservice.INeedsAssessmentTempService;
-import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.iservice.*;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
@@ -20,18 +19,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class BpmsService implements IBpmsService {
 
-    private final BpmsClientService client;
     private final ObjectMapper mapper;
-    private final PersonnelDAO personnelDAO;
+    private final BpmsClientService client;
     private final CompetenceService competenceService;
+    private final IRequestItemService requestItemService;
     private final INeedsAssessmentTempService iNeedsAssessmentTempService;
 
 
@@ -69,32 +66,26 @@ public class BpmsService implements IBpmsService {
 
     @Override
     public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId, String process) {
-        Map<String, Object> map = new HashMap<>();
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//        String mainConfirmBoss = "ahmadi_z";
-        String mainConfirmBoss = "3621296476";
-        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "3140008635";
-//            mainConfirmBoss = "hajizadeh_mh";
-        }else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
-            mainConfirmBoss = "6049618348";
-        }
 
-        map.put("assignTo", mainConfirmBoss);
-        map.put("userId", SecurityUtil.getUserId());
-        map.put("assignFrom", SecurityUtil.getNationalCode());
-        map.put("tenantId", tenantId);
-        map.put("title", params.getData().get("title").toString());
-        if (process.equals("needAssessment")) {
-            map.put("objectType", params.getRq().getType());
-            map.put("objectId", params.getRq().getId());
-        }
-        map.put("createBy", SecurityUtil.getFullName());
-        StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
-        startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
-        startProcessDto.setVariables(map);
-        return startProcessDto;
+        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
+        if (planningChiefResponse.getStatus() == 200) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("assignTo", planningChiefResponse.getMessage());
+            map.put("userId", SecurityUtil.getUserId());
+            map.put("assignFrom", SecurityUtil.getNationalCode());
+            map.put("tenantId", tenantId);
+            map.put("title", params.getData().get("title").toString());
+            if (process.equals("needAssessment")) {
+                map.put("objectType", params.getRq().getType());
+                map.put("objectId", params.getRq().getId());
+            }
+            map.put("createBy", SecurityUtil.getFullName());
+            StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
+            startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
+            startProcessDto.setVariables(map);
+            return startProcessDto;
+        } else
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
     }
 
     @Override
@@ -151,24 +142,22 @@ public class BpmsService implements IBpmsService {
     }
 
     @Override
-    public void reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
+    public BaseResponse reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
 
-        iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی",data.getReason());
-         Map<String, Object> map=reviewTaskRequest.getVariables();
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//        String mainConfirmBoss = "ahmadi_z";
-        String mainConfirmBoss = "3621296476";
-        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "3140008635";
-//            mainConfirmBoss = "hajizadeh_mh";
-        }else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
-            mainConfirmBoss = "6049618348";
+        BaseResponse response = new BaseResponse();
+        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
+        if (planningChiefResponse.getStatus() == 200) {
+            iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی",data.getReason());
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", planningChiefResponse.getMessage());
+            map.put("approved", true);
+            client.reviewTask(reviewTaskRequest);
+            response.setStatus(planningChiefResponse.getStatus());
+            response.setMessage("عملیات با موفقیت انجام شد.");
+        } else {
+            response.setStatus(planningChiefResponse.getStatus());
+            response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         }
-        map.put("assignTo", mainConfirmBoss);
-        map.put("approved", true);
-
-
-        client.reviewTask(reviewTaskRequest);
+        return response;
     }
 }

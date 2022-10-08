@@ -269,7 +269,7 @@ public class RequestItemRestController {
     @GetMapping(value = "/planning-chief-opinion/{requestItemId}")
     public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getPlanningChiefOpinion(@PathVariable Long requestItemId) {
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = new RequestItemCoursesDetailDTO.OpinionInfo();
-        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode().getMessage();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
         if (requestItemProcessDetail != null) {
             ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
@@ -295,7 +295,7 @@ public class RequestItemRestController {
         BaseService.setCriteria(request, catAndSubCatCriteria);
         List<String> userAccessCourses = courseService.search(request).getList().stream().map(CourseDTO::getCode).collect(Collectors.toList());
 
-        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode().getMessage();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
         ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());

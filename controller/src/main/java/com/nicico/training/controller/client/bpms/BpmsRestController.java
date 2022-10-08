@@ -12,6 +12,7 @@ import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
@@ -112,6 +113,12 @@ public class BpmsRestController {
                 return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
             }
             res.setStatus(200);
+        } catch (TrainingException trainingException) {
+            if (trainingException.getHttpStatusCode().equals(403)) {
+                res.setStatus(403);
+                res.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+            } else
+                res.setStatus(406);
         } catch (Exception e) {
             res.setStatus(406);
         }
@@ -129,6 +136,12 @@ public class BpmsRestController {
             update.setId(params.getRq().getId());
             competenceService.checkAndUpdate(params.getRq().getId(), update, response);
             res.setStatus(200);
+        } catch (TrainingException trainingException) {
+            if (trainingException.getHttpStatusCode().equals(403)) {
+                res.setStatus(403);
+                res.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+            } else
+                res.setStatus(406);
         } catch (Exception e) {
             res.setStatus(406);
         }
@@ -206,8 +219,8 @@ public class BpmsRestController {
 
     @Loggable
     @PostMapping({"/needAssessment/processes/reAssign-process"})
-    public void reAssignNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {
-        service.reAssignNeedAssessmentProcessInstance(value.getReviewTaskRequest(), value);
+    public BaseResponse reAssignNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {
+        return service.reAssignNeedAssessmentProcessInstance(value.getReviewTaskRequest(), value);
     }
 
 }

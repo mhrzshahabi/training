@@ -13,6 +13,8 @@ public interface IRequestItemProcessDetailService {
 
     RequestItemProcessDetail findByRequestItemIdAndExpertNationalCode(Long requestItemId, String expertNationalCode);
 
+    RequestItemProcessDetail findByRequestItemIdAndRoleName(Long requestItemId, String roleName);
+
     RequestItemProcessDetail create(RequestItemProcessDetailDTO.Create create);
 
     void updateOpinion(Long id, Long opinionId);

@@ -25,6 +25,9 @@ public class RequestItemProcessDetail extends Auditable implements Serializable 
     @Column(name = "c_expert_national_code")
     private String expertNationalCode;
 
+    @Column(name = "c_role_name")
+    private String roleName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_request_item_id", nullable = false, insertable = false, updatable = false)
     private RequestItem requestItem;

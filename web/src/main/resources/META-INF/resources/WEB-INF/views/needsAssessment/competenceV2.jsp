@@ -697,7 +697,7 @@
                 CompetenceWin_competenceV2.close();
                 refreshLG(CompetenceLG_competenceV2);
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
-            } else if (resp.httpResponseCode === 404 || resp.httpResponseCode === 405 || resp.httpResponseCode === 406) {
+            } else if (resp.httpResponseCode === 404 || resp.httpResponseCode === 405 || resp.httpResponseCode === 406 || resp.httpResponseCode === 403) {
                 simpleDialog("<spring:message code="message"/>", JSON.parse(resp.httpResponseText).message, 3000, "stop");
             } else {
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");

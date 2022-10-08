@@ -2225,13 +2225,14 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
             wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            let response = JSON.parse(resp.httpResponseText);
+            if (response.status === 200) {
                 window.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
                 ToolStripButton_Refresh_Processes_UserPortfolio.click();
             } else {
                 window.close();
-                createDialog("info", "عملیات انجام نشد");
+                createDialog("info", response.message);
             }
         }));
     }
@@ -2253,10 +2254,14 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + chiefOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            let response = JSON.parse(resp.httpResponseText);
+            if (response.status === 200) {
                 window.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
                 ToolStripButton_Refresh_Processes_UserPortfolio.click();
+            } else if (response.status === 403) {
+                window.close();
+                createDialog("info", JSON.parse(resp.httpResponseText).message);
             } else {
                 window.close();
                 createDialog("info", "عملیات انجام نشد");
@@ -2654,14 +2659,9 @@
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
                 wait.close();
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    window.close();
-                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                    ToolStripButton_Refresh_Processes_UserPortfolio.click();
-                } else {
-                    window.close();
-                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                }
+                let response = JSON.parse(resp.httpResponseText);
+                createDialog("info", response.message);
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
             }));
         }
     }

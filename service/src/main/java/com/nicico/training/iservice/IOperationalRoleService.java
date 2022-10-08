@@ -46,6 +46,8 @@ public interface IOperationalRoleService {
 
     List<OperationalRole> getOperationalRolesByByPostIdsAndComplexIdAndObjectType(Long postId, String objectType);
 
+    List<OperationalRole> getOperationalRolesByByComplexIdAndObjectType(String objectType);
+
     List<String> getOperationalRoleTitlesByIds(List<Long> ids);
 
     List<Long> getOperationalRoleUserIdsByIds(List<Long> ids);

@@ -34,6 +34,11 @@ public class RequestItemProcessDetailService implements IRequestItemProcessDetai
     }
 
     @Override
+    public RequestItemProcessDetail findByRequestItemIdAndRoleName(Long requestItemId, String roleName) {
+        return requestItemProcessDetailDAO.findFirstByRequestItemIdAndRoleName(requestItemId, roleName).orElse(null);
+    }
+
+    @Override
     @Transactional
     public RequestItemProcessDetail create(RequestItemProcessDetailDTO.Create create) {
         RequestItemProcessDetail requestItemProcessDetail = modelMapper.map(create, RequestItemProcessDetail.class);

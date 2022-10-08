@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
@@ -89,6 +88,12 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             baseResponse.setStatus(404);
             baseResponse.setMessage("مشکلی در ایجاد شایستگی وجود دارد");
+        }  catch (TrainingException trainingException) {
+            if (trainingException.getHttpStatusCode().equals(403)) {
+                baseResponse.setStatus(403);
+                baseResponse.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+            } else
+                baseResponse.setStatus(406);
         } catch (Exception e) {
             baseResponse.setStatus(406);
             baseResponse.setMessage("ارسال به گردش کار انجام نشد، لطفا دوباره تلاش کنيد");

@@ -22,5 +22,6 @@ public interface IBpmsService {
     BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto);
 
     void cancelNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
-    void reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
+
+    BaseResponse reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
 }
