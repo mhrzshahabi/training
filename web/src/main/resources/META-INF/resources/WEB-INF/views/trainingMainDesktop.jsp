@@ -1263,6 +1263,7 @@
     const getFmsConfig = rootUrl + "/fms/config";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const needsAssessmentReportsWithGapUrl = rootUrl + "/needsAssessment-reports/gap";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const needsAssessmentsPerformedUrl = rootUrl + "/needAssessmentInRange";
@@ -2584,6 +2585,15 @@
                     title: "<spring:message code="reports.needs.assessment"/>",
                     submenu:
                         [
+<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">--%>
+                            {
+                                title: "پایش شایستگی فرد",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/needsAssessmentReportsWithGap-reports"/>");
+                                }
+                            },
+                            {isSeparator: true},
+<%--                            </sec:authorize>--%>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
                             {
                                 title: "<spring:message code="reports.need.assessment"/>",

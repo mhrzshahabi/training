@@ -37,4 +37,5 @@ public interface INeedsAssessmentReportsService {
 
     SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq searchRq, Long courseId, Boolean passedReport);
     SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId);
+    SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchForGap(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId);
 }

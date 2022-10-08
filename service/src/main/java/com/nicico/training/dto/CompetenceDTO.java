@@ -81,6 +81,19 @@ public class CompetenceDTO implements Serializable {
         @ApiModelProperty(required = true)
         private Long competenceTypeId;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CompetenceDTO - NeedsAssessmentReportInfo2")
+    public static class NeedsAssessmentReportInfo2 {
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String title;
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long competenceTypeId;
+        private ParameterValueDTO.MinInfo competenceType;
+    }
 
     @Getter
     @Setter
