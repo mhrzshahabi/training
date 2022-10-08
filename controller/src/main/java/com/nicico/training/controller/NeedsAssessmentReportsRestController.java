@@ -10,6 +10,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.minio.MinIoClient;
 import com.nicico.training.dto.NeedAssessmentGroupJobPromotionResponse;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
+import com.nicico.training.dto.NeedsAssessmentWithGapDTO;
 import com.nicico.training.iservice.IExportToFileService;
 import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.model.NeedAssessmentGroupResult;
@@ -57,6 +58,23 @@ public class NeedsAssessmentReportsRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
             SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = iNeedsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+        } catch (TrainingException e) {
+            Locale locale = LocaleContextHolder.getLocale();
+            String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found", null, locale) : e.getMessage();
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(value = "/gap")
+    public ResponseEntity fullListForGap(HttpServletRequest iscRq,
+                                   @RequestParam Long objectId,
+                                   @RequestParam String objectType,
+                                   @RequestParam(required = false) Long personnelId,
+                                   HttpServletResponse response) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        try {
+            SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchRs = iNeedsAssessmentReportsService.searchForGap(searchRq, objectId, objectType, personnelId);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();

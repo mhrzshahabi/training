@@ -704,46 +704,46 @@
     //*courses form*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    <%--PriorityDS_NABOP = isc.TrDS.create({--%>
-    <%--    fields:--%>
-    <%--        [--%>
-    <%--            {name: "id", primaryKey: true, hidden: true},--%>
-    <%--            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
-    <%--            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}--%>
-    <%--        ],--%>
-    <%--    autoFetchData: false,--%>
-    <%--    autoCacheAllData: true,--%>
-    <%--    fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"--%>
-    <%--});--%>
+    PriorityDS_NAGap = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
 
-    <%--ScoresStateDS_NABOP = isc.TrDS.create({--%>
+    ScoresStateDS_NAGap = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
+    });
+
+    DomainDS_NAGap = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"
+    });
+
+    <%--CompetenceTypeDS_NAGap = isc.TrDS.create({--%>
     <%--    fields: [--%>
     <%--        {name: "id", primaryKey: true, hidden: true},--%>
     <%--        {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
     <%--        {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}--%>
     <%--    ],--%>
     <%--    autoCacheAllData: true,--%>
-    <%--    fetchDataURL: parameterUrl + "/iscList/PassedStatus"--%>
-    <%--});--%>
-
-    <%--DomainDS_NABOP = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
-    <%--        {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}--%>
-    <%--    ],--%>
-    <%--    autoCacheAllData: true,--%>
-    <%--    fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentDomain"--%>
-    <%--});--%>
-
-    <%--CompetenceTypeDS_NABOP = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},--%>
-    <%--        {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}--%>
-    <%--    ],--%>
-    <%--    autoCacheAllData: true,--%>
-    <%--    fetchDataURL: parameterUrl + "/iscList/competenceType"--%>
+    <%--    fetchDataURL: parameterUrl + "/iscList/gapCompetenceType"--%>
     <%--});--%>
 
     CourseDS_NAGap = isc.TrDS.create({
@@ -751,8 +751,9 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "needsAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "needsAssessmentDomainId", title: "<spring:message code='domain'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "limitSufficiency", title: "حد بسندگی", filterOperator: "equals", autoFitWidth: true},
             {name: "competence.title", title: "<spring:message code="competence"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competence.competenceTypeId", title: "<spring:message code="competence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "competence.competenceType.title", title: "<spring:message code="competence.type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "equals", autoFitWidth: true,
@@ -764,6 +765,8 @@
             {name: "skill.course.scoresStatus", title: "<spring:message code='score.state'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "committeeScore", title: "نمره داده شده توسط کمیته", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceStatus", title: "وضعیت شایستگی", filterOperator: "iContains", autoFitWidth: true}
         ],
         cacheAllData: true,
         fetchDataURL: null
@@ -878,7 +881,7 @@
         ]
     });
 
-    <%--let fullSummaryFunc_NABOP = [--%>
+    <%--let fullSummaryFunc_NAGap = [--%>
     <%--    function (records) {--%>
     <%--        let recWithoutDuplicate1 = [];--%>
     <%--        let total = 0;--%>
@@ -945,129 +948,135 @@
         gridComponents: [
             ReportTypeDF_NAGap,
             DynamicForm_Title_NAGap, "header", "filterEditor", "body"],
-        // dataSource: CourseDS_NABOP,
+        dataSource: CourseDS_NAGap,
         // contextMenu: Menu_Courses_NABOP,
         selectionType: "single",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
-        // groupByField: "needsAssessmentPriorityId",
+        groupByField: "needsAssessmentPriorityId",
         groupStartOpen: "all",
         showGroupSummary: true,
         useClientFiltering: true,
         fields: [
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     hidden: true,
-            //     filterOnKeypress: true,
-            //     editorType: "SelectItem",
-            //     displayField: "title",
-            //     valueField: "id",
-            //     optionDataSource: PriorityDS_NABOP,
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     },
-            //     pickListFields: [
-            //         {name: "title", width: "30%"}
-            //     ],
-            //     sortNormalizer(record){
-            //         switch (record.needsAssessmentPriorityId) {
-            //             case 574:
-            //                 return 0;
-            //             case 111:
-            //                 return 1;
-            //             case 112:
-            //                 return 2;
-            //             case 113:
-            //                 return 3;
-            //             default:
-            //                 return record.needsAssessmentPriorityId;
-            //         }
-            //     }
-            // },
-            // {
-            //     name: "competence.title",
-            //     // hidden: true
-            // },
-            // {
-            //     name: "competence.competenceTypeId",
-            //     // hidden: true,
-            //     type: "SelectItem",
-            //     filterOnKeypress: true,
-            //     displayField: "title",
-            //     valueField: "id",
-            //     optionDataSource: CompetenceTypeDS_NABOP,
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     },
-            //     pickListFields: [
-            //         {name: "title", width: "30%"}
-            //     ],
-            // },
-            // {
-            //     name: "needsAssessmentDomainId",
-            //     // hidden: true,
-            //     // type: "IntegerItem",
-            //     filterOnKeypress: true,
-            //     editorType: "SelectItem",
-            //     displayField: "title",
-            //     valueField: "id",
-            //     optionDataSource: DomainDS_NABOP,
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     },
-            //     pickListFields: [
-            //         {name: "title", width: "30%"}
-            //     ],
-            // },
-            // {
-            //     name: "skill.code",
-            //     // hidden: true
-            // },
-            // {
-            //     name: "skill.titleFa",
-            //     // hidden: true
-            // },
-            //
-            // {name: "skill.course.code"},
-            // {name: "skill.course.titleFa"},
+            {
+                name: "needsAssessmentPriorityId",
+                hidden: true,
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: PriorityDS_NAGap,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+                sortNormalizer(record){
+                    switch (record.needsAssessmentPriorityId) {
+                        case 574:
+                            return 0;
+                        case 111:
+                            return 1;
+                        case 112:
+                            return 2;
+                        case 113:
+                            return 3;
+                        default:
+                            return record.needsAssessmentPriorityId;
+                    }
+                }
+            },
+            {
+                name: "competence.title",
+                // hidden: true
+            },
+            {
+                name: "competence.competenceType.title",
+                // hidden: true,
+                // type: "SelectItem",
+                filterOnKeypress: true,
+                // displayField: "title",
+                // valueField: "id",
+                // optionDataSource: CompetenceTypeDS_NAGap,
+                // pickListProperties: {
+                //     showFilterEditor: false
+                // },
+                // pickListFields: [
+                //     {name: "title", width: "30%"}
+                // ],
+            },
+            {
+                name: "needsAssessmentDomainId",
+                // hidden: true,
+                // type: "IntegerItem",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: DomainDS_NAGap,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "skill.code",
+                // hidden: true
+            },
+            {
+                name: "limitSufficiency",
+                // hidden: true
+            },
+            {
+                name: "skill.titleFa",
+                // hidden: true
+            },
+
+            {name: "skill.course.code"},
+            {name: "skill.course.titleFa"},
             // {
             //     name: "skill.course.theoryDuration",
             //     showGroupSummary: true,
-            //     summaryFunction: fullSummaryFunc_NABOP
+            //     summaryFunction: fullSummaryFunc_NAGap
             // },
-            // {
-            //     name: "skill.course.scoresState",
-            //     // type: "IntegerItem",
-            //     filterOnKeypress: true,
-            //     editorType: "SelectItem",
-            //     displayField: "title",
-            //     valueField: "id",
-            //     optionDataSource: ScoresStateDS_NABOP,
-            //     addUnknownValues: false,
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     },
-            //     pickListFields: [
-            //         {name: "title", width: "30%"}
-            //     ],
-            // },
-            // {
-            //     name: "skill.course.scoresStatus"
-            // },
+            {
+                name: "skill.course.scoresState",
+                // type: "IntegerItem",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: ScoresStateDS_NAGap,
+                addUnknownValues: false,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                pickListFields: [
+                    {name: "title", width: "30%"}
+                ],
+            },
+            {
+                name: "skill.course.scoresStatus"
+            },
+            {name: "committeeScore"},
+            {name: "competenceStatus"}
         ],
-        // sortField: "needsAssessmentPriorityId",
-        <%--dataArrived: function () {--%>
-        <%--    priorities_NABOP.forEach(p => {--%>
-        <%--        if (this.originalData.localData.filter(d => d.needsAssessmentPriorityId === p.id).isEmpty()) {--%>
-        <%--            chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='total'/>"}).duration = 0;--%>
-        <%--            chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='passed'/>"}).duration = 0;--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--},--%>
-        <%--filterEditorSubmit: function () {--%>
-        <%--    return CourseDS_NABOP.fetchDataURL != null;--%>
-        <%--}--%>
+        sortField: "needsAssessmentPriorityId",
+        dataArrived: function () {
+            <%--priorities_NABOP.forEach(p => {--%>
+            <%--    if (this.originalData.localData.filter(d => d.needsAssessmentPriorityId === p.id).isEmpty()) {--%>
+            <%--        chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='total'/>"}).duration = 0;--%>
+            <%--        chartData_NABOP.find({title: priorities_NABOP[getIndexById_NABOP(p.id)].title, type: "<spring:message code='passed'/>"}).duration = 0;--%>
+            <%--    }--%>
+            <%--});--%>
+        },
+        filterEditorSubmit: function () {
+            return CourseDS_NAGap.fetchDataURL != null;
+        }
     });
 
     ToolStripButton_Refresh_NAGap = isc.ToolStripButtonRefresh.create({
@@ -1392,7 +1401,7 @@
                 <%--    " <spring:message code='area'/> " + selectedPerson_NABOP.ccpArea +--%>
                 <%--    " <spring:message code='affairs'/> " + selectedPerson_NABOP.ccpAffairs--%>
 
-                CourseDS_NAGap.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NAGap.id + "&personnelId=" + selectedPerson_NAGap.id + "&objectType=Post";
+                CourseDS_NAGap.fetchDataURL = needsAssessmentReportsWithGapUrl + "?objectId=" + selectedObject_NAGap.id + "&personnelId=" + selectedPerson_NAGap.id + "&objectType=Post";
                 DynamicForm_Title_NAGap.getItem("Title_NASBGap").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NAGap.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NAGap.lastName, 2, "red", "b") +
                     " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NAGap.nationalCode, 2, "red", "b") +
@@ -1413,7 +1422,7 @@
             <%--    break;--%>
             case "2":
                 if (selectedPerson_NAGap != null && selectedObject_NAGap != null) {
-                    CourseDS_NAGap.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NAGap.id + "&personnelId=" + selectedPerson_NAGap.id + "&objectType=TrainingPost";
+                    CourseDS_NAGap.fetchDataURL = needsAssessmentReportsWithGapUrl + "?objectId=" + selectedObject_NAGap.id + "&personnelId=" + selectedPerson_NAGap.id + "&objectType=TrainingPost";
                     refreshLG_NAGap(CourseDS_NAGap);
                 }
                 let personName = selectedPerson_NAGap != null ? getFormulaMessage(selectedPerson_NAGap.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NAGap.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");

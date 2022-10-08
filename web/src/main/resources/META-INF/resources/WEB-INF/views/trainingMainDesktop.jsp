@@ -1263,6 +1263,7 @@
     const getFmsConfig = rootUrl + "/fms/config";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const needsAssessmentReportsWithGapUrl = rootUrl + "/needsAssessment-reports/gap";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const needsAssessmentsPerformedUrl = rootUrl + "/needAssessmentInRange";

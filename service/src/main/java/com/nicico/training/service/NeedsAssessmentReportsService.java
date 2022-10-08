@@ -47,6 +47,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final JobGroupDAO jobGroupDAO;
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final NeedsAssessmentDAO needsAssessmentDAO;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
     private final NeedsAssessmentTempDAO needsAssessmentTempDAO;
     private final PersonnelDAO personnelDAO;
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
@@ -73,6 +74,17 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         return rs;
     }
 
+
+    @Transactional(readOnly = true)
+//    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchForGap(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
+        List<NeedsAssessmentWithGapDTO.ReportInfo> needsAssessmentReportList = getCourseListForGap(objectId, objectType, personnelId);
+        SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) needsAssessmentReportList.size());
+        rs.setList(needsAssessmentReportList);
+        return rs;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId) {
@@ -84,20 +96,6 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
         List<NeedsAssessmentReportsDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentReportsDTO.ReportInfo>>() {
         }.getType());
-//        for (int i = 1; i < mustPass.size(); i++) {
-//            for (int j = 0; j < i; j++) {
-//                if (mustPass.get(i).getSkill().getCourse().getId().equals(mustPass.get(j).getSkill().getCourse().getId())) {
-//                    if (mustPass.get(i).getNeedsAssessmentPriorityId().equals(mustPass.get(j).getNeedsAssessmentPriorityId())) {
-//                        mustPass.remove(i--);
-//                        break;
-//                    }
-//                    CourseDTO.NeedsAssessmentReportInfo newCourse = new CourseDTO.NeedsAssessmentReportInfo();
-//                    modelMapper.map(mustPass.get(i).getSkill().getCourse(), newCourse);
-//                    mustPass.get(i).getSkill().setCourse(newCourse);
-//                    break;
-//                }
-//            }
-//        }
         if (personnelId != null && !mustPass.isEmpty()) {
             PersonnelDTO.Info student = personnelService.get(personnelId);
             if (student == null) {
@@ -113,27 +111,88 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
                 if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                     mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
+                    String courseStatus="";
                     if (personClasses.size() > 0) {
-                        String courseStatus = personClasses.get(0).getScoreState();
+                        courseStatus   = personClasses.get(0).getScoreState();
+                    }else {
+                        courseStatus="";
+                    }
+
                         if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
                                 isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
                                 && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
-                            courseStatus += " - دوره معادل گذرانده شده است.";
+                            //                            courseStatus += " - دوره معادل گذرانده شده است.";
                             Course course = needsAssessmentList.get(i).getSkill().getCourse().getEqualCourses().get(0).getEqualAndList().get(0);
                             List<EqualCourse> equalCourses = course.getEqualCourses();
                             if (equalCourses.size() > 0) {
                                 for (EqualCourse equalCourse : equalCourses) {
-                                    if (passedCourseIds.contains(equalCourse.getEqualAndList().get(0).getId())) {
-                                        courseStatus += "(";
-                                        courseStatus += equalCourse.getEqualAndList().get(0).getTitleFa();
-                                        courseStatus += ")";
+                                    if (passedCourseIds.contains(equalCourse.getCourseId())) {
+                                        courseStatus +="(  معادل دوره "+ equalCourse.getCourse().getCode()+"  )";
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
+
+                } else {
+                    mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
+                    if (personClasses.size() > 0) {
+                        mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
+                    }
+                }
+            }
+        }
+        return mustPass;
+    }
+    @Transactional(readOnly = true)
+    public List<NeedsAssessmentWithGapDTO.ReportInfo> getCourseListForGap(Long objectId, String objectType, Long personnelId) {
+
+        Long passedCodeId = parameterValueService.getId("Passed");
+        Long notPassedCodeId = parameterValueService.getId("false");
+
+        List<NeedsAssessmentWithGap> needsAssessmentList = getNeedsAssessmentListForGap(objectId, objectType);
+        needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
+        List<NeedsAssessmentWithGapDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentWithGapDTO.ReportInfo>>() {
+        }.getType());
+        if (personnelId != null && !mustPass.isEmpty()) {
+            PersonnelDTO.Info student = personnelService.get(personnelId);
+            if (student == null) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+            Set<Long> passedCourseIds = classStudentReportService.getPassedCoursesIdsOfStudentByNationalCode(student.getNationalCode());
+            Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+
+            for (int i = 0; i < mustPass.size(); i++) {
+//                 makeNewCriteria("tclassId", needsAssessmentList.get(i).getC, EOperator.equals, null);
+
+                List<TclassDTO.PersonnelClassInfo> personClasses = tClassService.findPersonnelClassByCourseId(student.getNationalCode(), student.getPersonnelNo(), needsAssessmentList.get(i).getSkill().getCourse().getId());
+
+                if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
+                    mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
+                    String courseStatus="";
+                    if (personClasses.size() > 0) {
+                        courseStatus  = personClasses.get(0).getScoreState();
+                    }else {
+                        courseStatus="";
+                    }
+                        if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
+                                isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
+                                && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
+//                            courseStatus += " - دوره معادل گذرانده شده است.";
+                            Course course = needsAssessmentList.get(i).getSkill().getCourse().getEqualCourses().get(0).getEqualAndList().get(0);
+                            List<EqualCourse> equalCourses = course.getEqualCourses();
+                            if (equalCourses.size() > 0) {
+                                for (EqualCourse equalCourse : equalCourses) {
+                                    if (passedCourseIds.contains(equalCourse.getCourseId())) {
+                                        courseStatus +="(  معادل دوره "+ equalCourse.getCourse().getCode()+"  )";
                                         break;
                                     }
                                 }
                             }
                         }
                         mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
-                    }
+
                 } else {
                     mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
                     if (personClasses.size() > 0) {
@@ -158,6 +217,20 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         return removeDuplicateNAs(needsAssessmentList);
     }
 
+
+    @Transactional(readOnly = true)
+//    @Override
+    public List<NeedsAssessmentWithGap> getNeedsAssessmentListForGap(Long objectId, String objectType) {
+        List<NeedsAssessmentWithGap> needsAssessmentList = new ArrayList<>();
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, true, true);
+        if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
+            needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+        return removeDuplicateNAsForGap(needsAssessmentList);
+    }
+
     @Transactional(readOnly = true)
     public List<NeedsAssessment> getUnverifiedNeedsAssessmentList(Long objectId, String objectType) {
         List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
@@ -178,6 +251,15 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private List<NeedsAssessment> removeDuplicateNAs(List<NeedsAssessment> needsAssessmentList) {
         needsAssessmentList.sort(Comparator.comparingInt(a -> NeedsAssessment.priorityList.indexOf(a.getObjectType())));
         List<NeedsAssessment> withoutDuplicate = new ArrayList<>();
+        needsAssessmentList.forEach(needsAssessment -> {
+            if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
+                withoutDuplicate.add(needsAssessment);
+        });
+        return withoutDuplicate;
+    }
+    private List<NeedsAssessmentWithGap> removeDuplicateNAsForGap(List<NeedsAssessmentWithGap> needsAssessmentList) {
+        needsAssessmentList.sort(Comparator.comparingInt(a -> NeedsAssessment.priorityList.indexOf(a.getObjectType())));
+        List<NeedsAssessmentWithGap> withoutDuplicate = new ArrayList<>();
         needsAssessmentList.forEach(needsAssessment -> {
             if (withoutDuplicate.stream().noneMatch(wd -> wd.getSkill().equals(needsAssessment.getSkill())))
                 withoutDuplicate.add(needsAssessment);
@@ -742,15 +824,30 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
                     if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                         mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
+                        String courseStatus="";
                         if (personClasses.size() > 0) {
-                            String courseStatus = personClasses.get(0).getScoreState();
-                            if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
+                            courseStatus   = personClasses.get(0).getScoreState();
+                        }else {
+                            courseStatus="";
+                        }
+
+                             if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
                                     isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
                                     && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
-                                courseStatus += " - دوره معادل گذرانده شده است ";
-                            }
-                            mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
-                        }
+                                 //                            courseStatus += " - دوره معادل گذرانده شده است.";
+                                 Course course = needsAssessmentList.get(i).getSkill().getCourse().getEqualCourses().get(0).getEqualAndList().get(0);
+                                 List<EqualCourse> equalCourses = course.getEqualCourses();
+                                 if (equalCourses.size() > 0) {
+                                     for (EqualCourse equalCourse : equalCourses) {
+                                         if (passedCourseIds.contains(equalCourse.getCourseId())) {
+                                             courseStatus +="(  معادل دوره "+ equalCourse.getCourse().getCode()+"  )";
+                                             break;
+                                         }
+                                     }
+                                 }
+                             }
+                        mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
+
                     } else {
                         mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
                         if (personClasses.size() > 0) {

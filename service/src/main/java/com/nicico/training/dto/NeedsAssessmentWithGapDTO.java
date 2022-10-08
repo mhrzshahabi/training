@@ -59,6 +59,19 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentWithGapDTO - ReportInfo")
+    public static class ReportInfo {
+        private Long id;
+        private CompetenceDTO.NeedsAssessmentReportInfo2 competence;
+        private SkillDTO.NeedsAssessmentReportInfo skill;
+        private Long needsAssessmentDomainId;
+        private Long needsAssessmentPriorityId;
+        private Long limitSufficiency;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("NeedsAssessmentWithGapDTO - verify")
     public static class verify extends NeedsAssessmentWithGapDTO {
         private Long id;
