@@ -621,7 +621,7 @@
             {name: "id", hidden: true},
             {
                 name: "userIds",
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 autoFetchData: true,

@@ -1326,6 +1326,7 @@
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
+    const trainingRequestManagementUrl = rootUrl + "/training-request-management";
     const educationalDecisionHeaderRequestUrl = rootUrl + "/header";
     const committeeRequestUrl = rootUrl + "/CommitteeOfExperts";
     const educationalDecisionRequestUrl = rootUrl + "/decision";

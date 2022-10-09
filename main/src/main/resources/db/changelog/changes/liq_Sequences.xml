@@ -392,4 +392,8 @@
     <changeSet id="1662357723-02" author="namdari">
         <createSequence sequenceName="seq_needs_assessment_with_gap_id"/>
     </changeSet>
+
+    <changeSet id="1633842708000-04" author="namdari">
+        <createSequence sequenceName="seq_training_request_management_id"/>
+    </changeSet>
 </databaseChangeLog>

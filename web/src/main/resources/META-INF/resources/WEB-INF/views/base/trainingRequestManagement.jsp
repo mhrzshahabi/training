@@ -11,21 +11,60 @@
     let saveMethodInManagement = null;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
-    // RestDataSource_Competence_Request = isc.TrDS.create({
-    //     fields: [
-    //         {name: "id", primaryKey: true, hidden: true},
-    //         {name: "applicant", title: "درخواست دهنده", filterOperator: "iContains"},
-    //         {name: "requestDate", title: "تاریخ درخواست", filterOperator: "iContains"},
-    //         {name: "requestType", title: "نوع درخواست", filterOperator: "iContains",
-    //             valueMap: {
-    //                 1 : "انتصاب سمت",
-    //                 2 : "تغییر وضعیت"
-    //             }
-    //         },
-    //         {name: "letterNumber", title: "شماره نامه کارگزینی", filterOperator: "iContains"}
-    //     ],
-    //     fetchDataURL: competenceRequestUrl + "/spec-list"
-    // });
+    RestDataSource_Competence_Management = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "applicant", title: "درخواست دهنده", filterOperator: "iContains"},
+            {name: "requestDate", title: "تاریخ درخواست", filterOperator: "iContains"},
+            {name: "letterDate", title: "تاریخ نامه", filterOperator: "iContains"},
+            {name: "letterNumber", title: "شماره نامه کارگزینی", filterOperator: "iContains"},
+            {name: "complex", title: "مجتمع", filterOperator: "iContains"},
+            {name: "title", title: "عنوان", filterOperator: "iContains"},
+            {name: "acceptor", title: "تایید کننده", filterOperator: "iContains"},
+            {name: "description", title: "توضیحات", filterOperator: "iContains"}
+        ],
+        fetchDataURL: trainingRequestManagementUrl + "/spec-list"
+    });
+
+    let RestDataSource_complex_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
+
+    UserDS_JspTrainingRequest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "username",
+                title: "<spring:message code="username"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "version", hidden: true}
+        ],
+        fetchDataURL: oauthUserUrl + "/spec-list"
+    });
+
+
     // RestDataSource_Competence_Request_Item = isc.TrDS.create({
     //     fields: [
     //         {name: "id", primaryKey: true, hidden: true},
@@ -146,22 +185,20 @@
 
     //--------------------------------------------------------Actions---------------------------------------------------
 
-    ToolStripButton_Add_Competence_Managment = isc.ToolStripButtonCreate.create({
+    ToolStripButton_Add_training_Managment = isc.ToolStripButtonCreate.create({
         title: "افزودن درخواست",
         click: function () {
-            saveMethodInManagement = "POST";
-            // addCompetenceRequest();
+            addTrainingRequestManagement();
         }
     });
-    <%--ToolStripButton_Edit_Competence_Request = isc.ToolStripButtonEdit.create({--%>
-    <%--    click: function () {--%>
-    <%--        saveMethod = "PUT";--%>
-    <%--        editCompetenceRequest();--%>
-    <%--    }--%>
-    <%--});--%>
-    ToolStripButton_Delete_Competence_Managment = isc.ToolStripButtonRemove.create({
+    ToolStripButton_Edit_training_Request = isc.ToolStripButtonEdit.create({
         click: function () {
-            // deleteCompetenceRequest();
+            editTrainingRequestRequest();
+        }
+    });
+    ToolStripButton_Delete_training_Managment = isc.ToolStripButtonRemove.create({
+        click: function () {
+            deleteTrainingManagementRequest();
         }
     });
     ToolStripButton_Excel_Competence_Managment = isc.ToolStripButton.create({
@@ -174,7 +211,7 @@
     });
     ToolStripButton_Refresh_Competence_Managment = isc.ToolStripButtonRefresh.create({
         click: function () {
-            // ListGrid_Competence_Request.invalidateCache();
+            ListGrid_training_Managment.invalidateCache();
         }
     });
 
@@ -183,9 +220,10 @@
         border: '0px',
         membersMargin: 5,
         members: [
-            ToolStripButton_Add_Competence_Managment,
-            ToolStripButton_Delete_Competence_Managment,
-            ToolStripButton_Excel_Competence_Managment,
+            ToolStripButton_Add_training_Managment,
+            ToolStripButton_Edit_training_Request,
+            ToolStripButton_Delete_training_Managment,
+            // ToolStripButton_Excel_Competence_Managment,
             isc.ToolStrip.create({
                 align: "left",
                 border: '0px',
@@ -215,106 +253,188 @@
 
     //----------------------------------------------------Request Window------------------------------------------------
 
-    <%--DynamicForm_Competence_Request = isc.DynamicForm.create({--%>
-    <%--    width: 400,--%>
-    <%--    height: "100%",--%>
-    <%--    numCols: 2,--%>
-    <%--    fields: [--%>
-    <%--        {--%>
-    <%--            name: "id",--%>
-    <%--            title: "id",--%>
-    <%--            primaryKey: true,--%>
-    <%--            canEdit: false,--%>
-    <%--            hidden: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "applicant",--%>
-    <%--            title: "درخواست دهنده",--%>
-    <%--            required: true,--%>
-    <%--            canEdit: false--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "requestDate",--%>
-    <%--            ID: "date_requestDate",--%>
-    <%--            title: "تاریخ درخواست",--%>
-    <%--            required: true,--%>
-    <%--            defaultValue: todayDate,--%>
-    <%--            keyPressFilter: "[0-9/]",--%>
-    <%--            length: 10,--%>
-    <%--            icons: [{--%>
-    <%--                src: "<spring:url value="calendar.png"/>",--%>
-    <%--                click: function () {--%>
-    <%--                    closeCalendarWindow();--%>
-    <%--                    displayDatePicker('date_requestDate', this, 'ymd', '/');--%>
-    <%--                }--%>
-    <%--            }],--%>
-    <%--            changed: function (form, item, value) {--%>
-    <%--                if (value == null || value === "" || checkDate(value))--%>
-    <%--                    item.clearErrors();--%>
-    <%--                else--%>
-    <%--                    item.setErrors("<spring:message code='msg.correct.date'/>");--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "requestType",--%>
-    <%--            title: "نوع درخواست",--%>
-    <%--            required: true,--%>
-    <%--            valueMap: {--%>
-    <%--                1 : "انتصاب سمت",--%>
-    <%--                2 : "تغییر وضعیت"--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "letterNumber",--%>
-    <%--            title: "شماره نامه کارگزینی",--%>
-    <%--            required: true--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+    DynamicForm_training_Request = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "applicant",
+                title: "درخواست دهنده",
+                required: true,
+                canEdit: false
+            },
+            {
+                name: "requestDate",
+                ID: "date_requestDate_training",
+                title: "تاریخ درخواست",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_requestDate_training', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "letterDate",
+                ID: "letter_requestDate_training",
+                title: "تاریخ نامه",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('letter_requestDate_training', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "letterNumber",
+                length: 10,
+                title: "شماره نامه کارگزینی",
+                required: true
+            },
+            {
+                name: "complex",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="complex"/>:",
+                // pickListWidth: 200,
+                optionDataSource: RestDataSource_complex_Department_Filter,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "title",
+                textAlign: "center",
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                required: true
+            },
+            {
+                name: "title",
+                length: 50,
+                title: "عنوان",
+                required: true
+            },
+            {
+                name: "acceptor",
+                title: "تایید کننده",
+                optionDataSource: UserDS_JspTrainingRequest,
+                valueField: "nationalCode",
+                displayField: "lastName",
+                filterOnKeypress: true,
+                type: "SelectItem",
+                multiple: false,
+                comboBoxProperties: {
+                    hint: "",
+                    filterFields: ["firstName", "lastName", "username", "nationalCode"],
+                    textMatchStyle: "substring",
+                    pickListWidth: 335,
+                    pickListProperties: {
+                        autoFitWidthApproach: "both",
+                        gridComponents: [
+                            isc.ToolStrip.create({
+                                autoDraw:false,
+                                height:30,
+                                width: "100%",
+                                members: [
+                                ]
+                            }),
+                            "header","body"
+                        ]
+                    },
+                    pickListFields: [
+                        {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+                        {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                },
+                required: true
+            },
+            {
+                name: "description",
+                title: "توضیحات",
+                length: 100,
+                required: false
+            }
+        ]
+    });
 
-    <%--Save_Button_Add_Requests = isc.IButtonSave.create({--%>
-    <%--    top: 260,--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    membersMargin: 5,--%>
-    <%--    click: function () {--%>
-    <%--        saveCompetenceRequest();--%>
-    <%--    }--%>
-    <%--});--%>
-    <%--Cancel_Button_Add_Requests = isc.IButtonCancel.create({--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    membersMargin: 5,--%>
-    <%--    width: 120,--%>
-    <%--    click: function () {--%>
-    <%--        Window_Competence_Request.close();--%>
-    <%--    }--%>
-    <%--});--%>
-    <%--HLayout_IButtons_Competence_Request = isc.HLayout.create({--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    membersMargin: 15,--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    align: "center",--%>
-    <%--    members: [--%>
-    <%--        Save_Button_Add_Requests,--%>
-    <%--        Cancel_Button_Add_Requests--%>
-    <%--    ]--%>
-    <%--});--%>
+    Save_Button_Add_training_req = isc.IButtonSave.create({
+        top: 260,
+        layoutMargin: 5,
+        membersMargin: 5,
+        click: function () {
+            saveTrainingRequestManagement();
+        }
+    });
+    Cancel_Button_Add_trainingRequest = isc.IButtonCancel.create({
+        layoutMargin: 5,
+        membersMargin: 5,
+        width: 120,
+        click: function () {
+            Window_training_Request.close();
+        }
+    });
+    HLayout_IButtons_training_Request = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            Save_Button_Add_training_req,
+            Cancel_Button_Add_trainingRequest
+        ]
+    });
 
-    <%--Window_Competence_Request = isc.Window.create({--%>
-    <%--    title: "افزودن درخواست",--%>
-    <%--    width: 450,--%>
-    <%--    autoSize: true,--%>
-    <%--    autoCenter: true,--%>
-    <%--    isModal: true,--%>
-    <%--    showModalMask: true,--%>
-    <%--    align: "center",--%>
-    <%--    autoDraw: false,--%>
-    <%--    dismissOnEscape: true,--%>
-    <%--    items: [--%>
-    <%--        DynamicForm_Competence_Request,--%>
-    <%--        HLayout_IButtons_Competence_Request--%>
-    <%--    ]--%>
-    <%--});--%>
+    Window_training_Request = isc.Window.create({
+        title: "افزودن درخواست",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_training_Request,
+            HLayout_IButtons_training_Request
+        ]
+    });
 
     //------------------------------------------------------List Grids--------------------------------------------------
 
@@ -329,285 +449,310 @@
     <%--    ]--%>
     <%--});--%>
 
-    <%--ListGrid_Competence_Request = isc.TrLG.create({--%>
-    <%--    showFilterEditor: true,--%>
-    <%--    canAutoFitFields: true,--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    <sec:authorize access="hasAuthority('CompetenceRequest_R')">--%>
-    <%--    dataSource: RestDataSource_Competence_Request,--%>
-    <%--    contextMenu: Menu_Requests_Certification,--%>
-    <%--    </sec:authorize>--%>
-    <%--    autoFetchData: true,--%>
-    <%--    styleName: 'expandList',--%>
-    <%--    alternateRecordStyles: true,--%>
-    <%--    canExpandRecords: true,--%>
-    <%--    canExpandMultipleRecords: false,--%>
-    <%--    wrapCells: false,--%>
-    <%--    showRollOver: false,--%>
-    <%--    showRecordComponents: true,--%>
-    <%--    showRecordComponentsByCell: true,--%>
-    <%--    autoFitExpandField: true,--%>
-    <%--    virtualScrolling: true,--%>
-    <%--    loadOnExpand: true,--%>
-    <%--    loaded: false,--%>
-    <%--    initialSort: [--%>
-    <%--        {property: "id", direction: "descending"}--%>
-    <%--    ],--%>
-    <%--    fields: [--%>
-    <%--        {--%>
-    <%--            name: "id",--%>
-    <%--            title: "شماره درخواست",--%>
-    <%--            primaryKey: true,--%>
-    <%--            canEdit: false,--%>
-    <%--            width: "10%",--%>
-    <%--            align: "center"--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "applicant",--%>
-    <%--            title: "درخواست دهنده",--%>
-    <%--            width: "10%",--%>
-    <%--            align: "center"--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "requestDate",--%>
-    <%--            title: "تاریخ درخواست",--%>
-    <%--            width: "10%",--%>
-    <%--            align: "center",--%>
-    <%--            canFilter: false,--%>
-    <%--            formatCellValue: function (value) {--%>
-    <%--                if (value) {--%>
-    <%--                    let date = new Date (value);--%>
-    <%--                    return date.toLocaleDateString('fa-IR');--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "requestType",--%>
-    <%--            title: "نوع درخواست",--%>
-    <%--            width: "10%",--%>
-    <%--            align: "center",--%>
-    <%--            valueMap: {--%>
-    <%--                1 : "انتصاب سمت",--%>
-    <%--                2 : "تغییر وضعیت"--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "letterNumber",--%>
-    <%--            title: "شماره نامه کارگزینی",--%>
-    <%--            width: "10%",--%>
-    <%--            align: "center"--%>
-    <%--        }--%>
-    <%--    ],--%>
-    <%--    getExpansionComponent: function (record) {--%>
+    ListGrid_training_Managment = isc.TrLG.create({
+        showFilterEditor: true,
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+<%--        <sec:authorize access="hasAuthority('CompetenceRequest_R')">--%>
+        dataSource: RestDataSource_Competence_Management,
+        // contextMenu: Menu_Requests_Certification,
+<%--        </sec:authorize>--%>
+        autoFetchData: true,
+        alternateRecordStyles: true,
+        wrapCells: false,
+        showRollOver: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        autoFitExpandField: true,
+        virtualScrolling: true,
+        loadOnExpand: true,
+        loaded: false,
+        initialSort: [
+            {property: "id", direction: "descending"}
+        ],
+        fields: [
+            {
+                name: "id",
+                title: "شماره درخواست",
+                primaryKey: true,
+                canEdit: false,
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "applicant",
+                title: "درخواست دهنده",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "title",
+                title: "عنوان",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "requestDate",
+                title: "تاریخ درخواست",
+                width: "10%",
+                align: "center",
+                canFilter: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleDateString('fa-IR');
+                    }
+                }
+            },
 
-    <%--        let criteriaReq = {--%>
-    <%--            _constructor: "AdvancedCriteria",--%>
-    <%--            operator: "and",--%>
-    <%--            criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]--%>
-    <%--        };--%>
-    <%--        ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {--%>
-    <%--            if (data.length == 0) {--%>
-    <%--                ListGrid_Competence_Request_Items.setData([]);--%>
-    <%--                ListGrid_Competence_Request_Items.show();--%>
-    <%--            } else {--%>
-    <%--                ListGrid_Competence_Request_Items.setData(data);--%>
-    <%--                ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);--%>
-    <%--                ListGrid_Competence_Request_Items.show();--%>
-    <%--            }--%>
-    <%--        }, {operationId: "00"});--%>
+            {
+                name: "letterDate",
+                title: "تاریخ نامه",
+                width: "10%",
+                align: "center",
+                canFilter: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleDateString('fa-IR');
+                    }
+                }
+            },
+            {
+                name: "letterNumber",
+                title: "شماره نامه کارگزینی",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "complex",
+                title: "مجتمع",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "description",
+                title: "توضیحات",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "acceptor",
+                title: "کد ملی تایید کننده",
+                width: "10%",
+                align: "center"
+            }
+        ],
+        <%--getExpansionComponent: function (record) {--%>
 
-    <%--        let ToolStrip_Actions_Import_Data = isc.HLayout.create({--%>
-    <%--            width: "100%",--%>
-    <%--            members: [--%>
-    <%--                isc.DynamicForm.create({--%>
-    <%--                    width: "20%",--%>
-    <%--                    numCols: 8,--%>
-    <%--                    fields: [--%>
-    <%--                        <sec:authorize access="hasAuthority('CompetenceRequest_C')">--%>
-    <%--                        {--%>
-    <%--                            ID:"certificationExcelFile",--%>
-    <%--                            name: "certificationExcelFile",--%>
-    <%--                            type: "file",--%>
-    <%--                            title: "انتخاب فایل",--%>
-    <%--                            endRow: false,--%>
-    <%--                            colSpan: 1,--%>
-    <%--                            titleColSpan: 1--%>
-    <%--                        },--%>
-    <%--                        </sec:authorize>--%>
-    <%--                        <sec:authorize access="hasAuthority('CompetenceRequest_C')">--%>
-    <%--                        {--%>
-    <%--                            name: "import",--%>
-    <%--                            title: "وارد کردن اطلاعات",--%>
-    <%--                            type: "ButtonItem",--%>
-    <%--                            width: 120,--%>
-    <%--                            startRow: false,--%>
-    <%--                            colSpan: 1,--%>
-    <%--                            click:function () {--%>
-    <%--                                let address=certificationExcelFile.getValue();--%>
-    <%--                                if(address==null) {--%>
-    <%--                                    createDialog("info", "فايل خود را انتخاب نماييد.");--%>
-    <%--                                } else {--%>
-    <%--                                    let ExcelToJSON = function() {--%>
+        <%--    let criteriaReq = {--%>
+        <%--        _constructor: "AdvancedCriteria",--%>
+        <%--        operator: "and",--%>
+        <%--        criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]--%>
+        <%--    };--%>
+        <%--    ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {--%>
+        <%--        if (data.length == 0) {--%>
+        <%--            ListGrid_Competence_Request_Items.setData([]);--%>
+        <%--            ListGrid_Competence_Request_Items.show();--%>
+        <%--        } else {--%>
+        <%--            ListGrid_Competence_Request_Items.setData(data);--%>
+        <%--            ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);--%>
+        <%--            ListGrid_Competence_Request_Items.show();--%>
+        <%--        }--%>
+        <%--    }, {operationId: "00"});--%>
 
-    <%--                                        this.parseExcel = function(file) {--%>
-    <%--                                            let reader = new FileReader();--%>
-    <%--                                            let records = [];--%>
+        <%--    let ToolStrip_Actions_Import_Data = isc.HLayout.create({--%>
+        <%--        width: "100%",--%>
+        <%--        members: [--%>
+        <%--            isc.DynamicForm.create({--%>
+        <%--                width: "20%",--%>
+        <%--                numCols: 8,--%>
+        <%--                fields: [--%>
+        <%--                    <sec:authorize access="hasAuthority('CompetenceRequest_C')">--%>
+        <%--                    {--%>
+        <%--                        ID:"certificationExcelFile",--%>
+        <%--                        name: "certificationExcelFile",--%>
+        <%--                        type: "file",--%>
+        <%--                        title: "انتخاب فایل",--%>
+        <%--                        endRow: false,--%>
+        <%--                        colSpan: 1,--%>
+        <%--                        titleColSpan: 1--%>
+        <%--                    },--%>
+        <%--                    </sec:authorize>--%>
+        <%--                    <sec:authorize access="hasAuthority('CompetenceRequest_C')">--%>
+        <%--                    {--%>
+        <%--                        name: "import",--%>
+        <%--                        title: "وارد کردن اطلاعات",--%>
+        <%--                        type: "ButtonItem",--%>
+        <%--                        width: 120,--%>
+        <%--                        startRow: false,--%>
+        <%--                        colSpan: 1,--%>
+        <%--                        click:function () {--%>
+        <%--                            let address=certificationExcelFile.getValue();--%>
+        <%--                            if(address==null) {--%>
+        <%--                                createDialog("info", "فايل خود را انتخاب نماييد.");--%>
+        <%--                            } else {--%>
+        <%--                                let ExcelToJSON = function() {--%>
 
-    <%--                                            reader.onload = function(e) {--%>
-    <%--                                                let data = e.target.result;--%>
-    <%--                                                let workbook = XLSX.read(data, {--%>
-    <%--                                                    type: 'binary'--%>
-    <%--                                                });--%>
-    <%--                                                let isEmpty = true;--%>
-    <%--                                                workbook.SheetNames.forEach(function(sheetName) {--%>
-    <%--                                                    let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);--%>
-    <%--                                                    for (let i=0;i<XL_row_object.length;i++) {--%>
-    <%--                                                        if(ListGrid_Competence_Request_Items.getData().filter(c =>--%>
-    <%--                                                            c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {--%>
-    <%--                                                            let current = {--%>
-    <%--                                                                nationalCode: XL_row_object[i]["کدملی"],--%>
-    <%--                                                                personnelNo2: XL_row_object[i]["شماره پرسنلی قدیم"],--%>
-    <%--                                                                personnelNumber: XL_row_object[i]["شماره پرسنلی جدید"],--%>
-    <%--                                                                name: XL_row_object[i]["نام"],--%>
-    <%--                                                                lastName: XL_row_object[i]["نام خانوادگی"],--%>
-    <%--                                                                educationLevel: XL_row_object[i]["مدرک تحصیلی"],--%>
-    <%--                                                                educationMajor: XL_row_object[i]["رشته"],--%>
-    <%--                                                                currentPostTitle: XL_row_object[i]["پست فعلی"],--%>
-    <%--                                                                postTitle: XL_row_object[i]["پست پیشنهادی"],--%>
-    <%--                                                                affairs: XL_row_object[i]["امور"],--%>
-    <%--                                                                post: XL_row_object[i]["کدپست پیشنهادی"],--%>
-    <%--                                                                competenceReqId:ListGrid_Competence_Request.getSelectedRecord().id--%>
-    <%--                                                            };--%>
-    <%--                                                            records.add(current);--%>
-    <%--                                                            isEmpty=false;--%>
-    <%--                                                            continue;--%>
-    <%--                                                        }--%>
-    <%--                                                        else{--%>
-    <%--                                                            isEmpty=false;--%>
-    <%--                                                            continue;--%>
-    <%--                                                        }--%>
-    <%--                                                    }--%>
-    <%--                                                    certificationExcelFile.setValue('');--%>
-    <%--                                                });--%>
+        <%--                                    this.parseExcel = function(file) {--%>
+        <%--                                        let reader = new FileReader();--%>
+        <%--                                        let records = [];--%>
 
-    <%--                                                if(records.length > 0) {--%>
+        <%--                                        reader.onload = function(e) {--%>
+        <%--                                            let data = e.target.result;--%>
+        <%--                                            let workbook = XLSX.read(data, {--%>
+        <%--                                                type: 'binary'--%>
+        <%--                                            });--%>
+        <%--                                            let isEmpty = true;--%>
+        <%--                                            workbook.SheetNames.forEach(function(sheetName) {--%>
+        <%--                                                let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);--%>
+        <%--                                                for (let i=0;i<XL_row_object.length;i++) {--%>
+        <%--                                                    if(ListGrid_Competence_Request_Items.getData().filter(c =>--%>
+        <%--                                                        c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {--%>
+        <%--                                                        let current = {--%>
+        <%--                                                            nationalCode: XL_row_object[i]["کدملی"],--%>
+        <%--                                                            personnelNo2: XL_row_object[i]["شماره پرسنلی قدیم"],--%>
+        <%--                                                            personnelNumber: XL_row_object[i]["شماره پرسنلی جدید"],--%>
+        <%--                                                            name: XL_row_object[i]["نام"],--%>
+        <%--                                                            lastName: XL_row_object[i]["نام خانوادگی"],--%>
+        <%--                                                            educationLevel: XL_row_object[i]["مدرک تحصیلی"],--%>
+        <%--                                                            educationMajor: XL_row_object[i]["رشته"],--%>
+        <%--                                                            currentPostTitle: XL_row_object[i]["پست فعلی"],--%>
+        <%--                                                            postTitle: XL_row_object[i]["پست پیشنهادی"],--%>
+        <%--                                                            affairs: XL_row_object[i]["امور"],--%>
+        <%--                                                            post: XL_row_object[i]["کدپست پیشنهادی"],--%>
+        <%--                                                            competenceReqId:ListGrid_Competence_Request.getSelectedRecord().id--%>
+        <%--                                                        };--%>
+        <%--                                                        records.add(current);--%>
+        <%--                                                        isEmpty=false;--%>
+        <%--                                                        continue;--%>
+        <%--                                                    }--%>
+        <%--                                                    else{--%>
+        <%--                                                        isEmpty=false;--%>
+        <%--                                                        continue;--%>
+        <%--                                                    }--%>
+        <%--                                                }--%>
+        <%--                                                certificationExcelFile.setValue('');--%>
+        <%--                                            });--%>
 
-    <%--                                                    // let uniqueRecords = [];--%>
-    <%--                                                    // for (let i=0; i < records.length; i++) {--%>
-    <%--                                                    //     if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {--%>
-    <%--                                                    //         uniqueRecords.push(records[i]);--%>
-    <%--                                                    //     }--%>
-    <%--                                                    // }--%>
-    <%--                                                    wait.show();--%>
-    <%--                                                    isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/list", "POST", JSON.stringify(records), function (resp) {--%>
-    <%--                                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                                                            wait.close();--%>
-    <%--                                                            let result = JSON.parse(resp.data);--%>
-    <%--                                                            setRequestItemData(result);--%>
-    <%--                                                        } else {--%>
-    <%--                                                            wait.close();--%>
-    <%--                                                            createDialog("info", "خطایی رخ داده است");--%>
-    <%--                                                        }--%>
-    <%--                                                    }));--%>
+        <%--                                            if(records.length > 0) {--%>
 
-    <%--                                                } else {--%>
+        <%--                                                // let uniqueRecords = [];--%>
+        <%--                                                // for (let i=0; i < records.length; i++) {--%>
+        <%--                                                //     if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {--%>
+        <%--                                                //         uniqueRecords.push(records[i]);--%>
+        <%--                                                //     }--%>
+        <%--                                                // }--%>
+        <%--                                                wait.show();--%>
+        <%--                                                isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/list", "POST", JSON.stringify(records), function (resp) {--%>
+        <%--                                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+        <%--                                                        wait.close();--%>
+        <%--                                                        let result = JSON.parse(resp.data);--%>
+        <%--                                                        setRequestItemData(result);--%>
+        <%--                                                    } else {--%>
+        <%--                                                        wait.close();--%>
+        <%--                                                        createDialog("info", "خطایی رخ داده است");--%>
+        <%--                                                    }--%>
+        <%--                                                }));--%>
 
-    <%--                                                    if(isEmpty) {--%>
-    <%--                                                        createDialog("info", "خطا در محتویات فایل");--%>
-    <%--                                                    } else {--%>
-    <%--                                                        createDialog("info", "فرد جدیدی برای اضافه کردن وجود ندارد.");--%>
-    <%--                                                    }--%>
-    <%--                                                }--%>
-    <%--                                            };--%>
-    <%--                                            reader.onerror = function(ex) {--%>
-    <%--                                                createDialog("info", "خطا در باز کردن فایل");--%>
-    <%--                                            };--%>
-    <%--                                            reader.readAsBinaryString(file);--%>
-    <%--                                        };--%>
-    <%--                                    };--%>
+        <%--                                            } else {--%>
 
-    <%--                                    let split=$('[name="certificationExcelFile"]')[0].files[0].name.split('.');--%>
-    <%--                                    if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){--%>
-    <%--                                        let xl2json = new ExcelToJSON();--%>
-    <%--                                        xl2json.parseExcel($('[name="certificationExcelFile"]')[0].files[0]);--%>
-    <%--                                    }else{--%>
-    <%--                                        createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");--%>
-    <%--                                    }--%>
-    <%--                                }--%>
-    <%--                            }--%>
-    <%--                        },--%>
-    <%--                        </sec:authorize>--%>
-    <%--                    ]--%>
-    <%--                }),--%>
-    <%--                isc.DynamicForm.create({--%>
-    <%--                    ID:"trainingPostNeedAssessmentStatus",--%>
-    <%--                    width: "20%",--%>
-    <%--                    numCols: 4,--%>
-    <%--                    fields: [--%>
-    <%--                        {--%>
-    <%--                            name: "statusTitle",--%>
-    <%--                            title: "وضعیت نیازسنجی پست پیشنهادی",--%>
-    <%--                            type: "staticText",--%>
-    <%--                            colSpan: 4--%>
-    <%--                        },--%>
-    <%--                        {--%>
-    <%--                            name: "modifiedDate",--%>
-    <%--                            title: "تاریخ بروزرسانی:",--%>
-    <%--                            type: "staticText",--%>
-    <%--                            colSpan: 1--%>
-    <%--                        },--%>
-    <%--                        {--%>
-    <%--                            name: "modifiedBy",--%>
-    <%--                            title: "بروزرسانی کننده:",--%>
-    <%--                            type: "staticText",--%>
-    <%--                            colSpan: 1--%>
-    <%--                        }--%>
-    <%--                    ]--%>
-    <%--                }),--%>
-    <%--                isc.DynamicForm.create({--%>
-    <%--                    ID:"processStatus",--%>
-    <%--                    width: "10%",--%>
-    <%--                    numCols: 2,--%>
-    <%--                    fields: [--%>
-    <%--                        {--%>
-    <%--                            name: "processStatusTitle",--%>
-    <%--                            title: "وضعیت فرایند در گردش کار:",--%>
-    <%--                            type: "staticText",--%>
-    <%--                            colSpan: 2--%>
-    <%--                        }--%>
-    <%--                    ]--%>
-    <%--                }),--%>
-    <%--                isc.Button.create({--%>
-    <%--                    title: "ارسال گروهی به گردش کار",--%>
-    <%--                    width: "150",--%>
-    <%--                    click: function () {--%>
-    <%--                        let records = ListGrid_Competence_Request_Items.getData();--%>
-    <%--                        sendGroupRequestItemProcess(records);--%>
-    <%--                    }--%>
-    <%--                }),--%>
-    <%--                <sec:authorize access="hasAuthority('CompetenceRequest_P')">--%>
-    <%--                isc.ToolStripButtonExcel.create({--%>
-    <%--                    align: "left",--%>
-    <%--                    click: function () {--%>
-    <%--                        exportToExcelRequestItems();--%>
-    <%--                    }--%>
-    <%--                }),--%>
-    <%--                </sec:authorize>--%>
-    <%--            ]--%>
-    <%--        });--%>
+        <%--                                                if(isEmpty) {--%>
+        <%--                                                    createDialog("info", "خطا در محتویات فایل");--%>
+        <%--                                                } else {--%>
+        <%--                                                    createDialog("info", "فرد جدیدی برای اضافه کردن وجود ندارد.");--%>
+        <%--                                                }--%>
+        <%--                                            }--%>
+        <%--                                        };--%>
+        <%--                                        reader.onerror = function(ex) {--%>
+        <%--                                            createDialog("info", "خطا در باز کردن فایل");--%>
+        <%--                                        };--%>
+        <%--                                        reader.readAsBinaryString(file);--%>
+        <%--                                    };--%>
+        <%--                                };--%>
 
-    <%--        let layoutCompetenceRequest = isc.VLayout.create({--%>
-    <%--            styleName: "expand-layout",--%>
-    <%--            padding: 5,--%>
-    <%--            members: [--%>
-    <%--                ListGrid_Competence_Request_Items,--%>
-    <%--                ToolStrip_Actions_Import_Data--%>
-    <%--            ]--%>
-    <%--        });--%>
-    <%--        return layoutCompetenceRequest;--%>
-    <%--    }--%>
-    <%--});--%>
+        <%--                                let split=$('[name="certificationExcelFile"]')[0].files[0].name.split('.');--%>
+        <%--                                if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){--%>
+        <%--                                    let xl2json = new ExcelToJSON();--%>
+        <%--                                    xl2json.parseExcel($('[name="certificationExcelFile"]')[0].files[0]);--%>
+        <%--                                }else{--%>
+        <%--                                    createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");--%>
+        <%--                                }--%>
+        <%--                            }--%>
+        <%--                        }--%>
+        <%--                    },--%>
+        <%--                    </sec:authorize>--%>
+        <%--                ]--%>
+        <%--            }),--%>
+        <%--            isc.DynamicForm.create({--%>
+        <%--                ID:"trainingPostNeedAssessmentStatus",--%>
+        <%--                width: "20%",--%>
+        <%--                numCols: 4,--%>
+        <%--                fields: [--%>
+        <%--                    {--%>
+        <%--                        name: "statusTitle",--%>
+        <%--                        title: "وضعیت نیازسنجی پست پیشنهادی",--%>
+        <%--                        type: "staticText",--%>
+        <%--                        colSpan: 4--%>
+        <%--                    },--%>
+        <%--                    {--%>
+        <%--                        name: "modifiedDate",--%>
+        <%--                        title: "تاریخ بروزرسانی:",--%>
+        <%--                        type: "staticText",--%>
+        <%--                        colSpan: 1--%>
+        <%--                    },--%>
+        <%--                    {--%>
+        <%--                        name: "modifiedBy",--%>
+        <%--                        title: "بروزرسانی کننده:",--%>
+        <%--                        type: "staticText",--%>
+        <%--                        colSpan: 1--%>
+        <%--                    }--%>
+        <%--                ]--%>
+        <%--            }),--%>
+        <%--            isc.DynamicForm.create({--%>
+        <%--                ID:"processStatus",--%>
+        <%--                width: "10%",--%>
+        <%--                numCols: 2,--%>
+        <%--                fields: [--%>
+        <%--                    {--%>
+        <%--                        name: "processStatusTitle",--%>
+        <%--                        title: "وضعیت فرایند در گردش کار:",--%>
+        <%--                        type: "staticText",--%>
+        <%--                        colSpan: 2--%>
+        <%--                    }--%>
+        <%--                ]--%>
+        <%--            }),--%>
+        <%--            isc.Button.create({--%>
+        <%--                title: "ارسال گروهی به گردش کار",--%>
+        <%--                width: "150",--%>
+        <%--                click: function () {--%>
+        <%--                    let records = ListGrid_Competence_Request_Items.getData();--%>
+        <%--                    sendGroupRequestItemProcess(records);--%>
+        <%--                }--%>
+        <%--            }),--%>
+        <%--            <sec:authorize access="hasAuthority('CompetenceRequest_P')">--%>
+        <%--            isc.ToolStripButtonExcel.create({--%>
+        <%--                align: "left",--%>
+        <%--                click: function () {--%>
+        <%--                    exportToExcelRequestItems();--%>
+        <%--                }--%>
+        <%--            }),--%>
+        <%--            </sec:authorize>--%>
+        <%--        ]--%>
+        <%--    });--%>
+
+        <%--    let layoutCompetenceRequest = isc.VLayout.create({--%>
+        <%--        styleName: "expand-layout",--%>
+        <%--        padding: 5,--%>
+        <%--        members: [--%>
+        <%--            ListGrid_Competence_Request_Items,--%>
+        <%--            ToolStrip_Actions_Import_Data--%>
+        <%--        ]--%>
+        <%--    });--%>
+        <%--    return layoutCompetenceRequest;--%>
+        <%--}--%>
+    });
     <%--ListGrid_Competence_Request_Items = isc.TrLG.create({--%>
     <%--    showFilterEditor: true,--%>
     <%--    canAutoFitFields: true,--%>
@@ -1134,166 +1279,182 @@
     <%--    gridComponents: [ToolStrip_Personnel_Training_Actions, "filterEditor", "header", "body", "summaryRow"]--%>
     <%--});--%>
 
-    <%--Requests_Detail_Tabs = isc.TabSet.create({--%>
-    <%--    tabBarPosition: "top",--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    tabs: [--%>
-    <%--        {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History},--%>
-    <%--        {name: "TabPane_Personnel_Job_History", title: "سوابق شغلی پرسنل", pane: ListGrid_Personnel_Job_History},--%>
-    <%--        // {name: "TabPane_Post_History", title: "سوابق پست پیشنهادی", pane: ListGrid_Post_History},--%>
-    <%--    ],--%>
-    <%--    tabSelected: function () {--%>
-    <%--        selectionUpdated_Competence_Request();--%>
-    <%--    }--%>
-    <%--});--%>
+    Managment_Detail_Tabs = isc.TabSet.create({
+        tabBarPosition: "top",
+        width: "100%",
+        height: "100%",
+        tabs: [
+            {name: "TabPane_position_appointment", title: "انتصاب سمت"
+                // , pane: ListGrid_Personnel_Training_History
+            },
+            {name: "TabPane_switching", title: " تغییر وضعیت"
+                // , pane: ListGrid_Personnel_Training_History
+            },
+            {name: "TabPane_ojt", title: "درخواست دوره OJT"
+                // , pane: ListGrid_Personnel_Training_History
+            },
+            {name: "TabPane_sps", title: "درخواست دوره SPS"
+                // , pane: ListGrid_Personnel_Training_History
+            },
+         ],
+        tabSelected: function () {
+            selectionUpdated_Management();
+        }
+    });
 
     //------------------------------------------------------Main Layout-------------------------------------------------
 
-    VLayout_Requests_Certification = isc.VLayout.create({
+    VLayout_Requests_Managment = isc.VLayout.create({
         width: "100%",
         height: "1%",
         members: [
             ToolStrip_Actions_Requests_Managment,
-            // ListGrid_Competence_Request
+            ListGrid_training_Managment
         ]
     });
-    // VLayout_Requests_Detail_Certification = isc.VLayout.create({
-    //     width: "100%",
-    //     members: [
-    //         ListGrid_Competence_Request_Items
-    //     ]
-    // });
-    // HLayout_Body_Certification_Jsp = isc.HLayout.create({
-    //     minWidth: "100%",
-    //     width: "100%",
-    //     members: [
-    //         isc.SectionStack.create({
-    //             sections: [
-    //                 {
-    //                     title: "درخواست های تاییدیه",
-    //                     items: VLayout_Requests_Certification,
-    //                     showHeader: false,
-    //                     expanded: true
-    //                 },
-    //                 {
-    //                     title: "جزئیات درخواست",
-    //                     hidden: true,
-    //                     items: VLayout_Requests_Detail_Certification,
-    //                     expanded: false
-    //                 }
-    //             ]
-    //         })
-    //     ]
-    // });
-    //
-    // HLayout_Tabs_Certification = isc.HLayout.create({
-    //     minWidth: "100%",
-    //     width: "100%",
-    //     height: "39%",
-    //     members: [Requests_Detail_Tabs]
-    // });
-    //
-    // VLayout_Body_Certification_Jsp = isc.VLayout.create({
-    //     width: "100%",
-    //     height: "100%",
-    //     members: [
-    //         HLayout_Body_Certification_Jsp,
-    //         HLayout_Tabs_Certification
-    //     ]
-    // });
+    VLayout_Requests_Detail_Managment = isc.VLayout.create({
+        width: "100%",
+        members: [
+            // ListGrid_Competence_Request_Items
+        ]
+    });
+    HLayout_Body_Managment_Jsp = isc.HLayout.create({
+        minWidth: "100%",
+        width: "100%",
+        members: [
+            isc.SectionStack.create({
+                sections: [
+                    {
+                        title: "درخواست های تاییدیه",
+                        items: VLayout_Requests_Managment,
+                        showHeader: false,
+                        expanded: true
+                    },
+                    {
+                        title: "جزئیات درخواست",
+                        hidden: true,
+                        // items: VLayout_Requests_Detail_Managment,
+                        expanded: false
+                    }
+                ]
+            })
+        ]
+    });
+
+    HLayout_Tabs_Managment = isc.HLayout.create({
+        minWidth: "100%",
+        width: "100%",
+        height: "39%",
+        members: [Managment_Detail_Tabs]
+    });
+
+    VLayout_Body_Managment_Jsp = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            HLayout_Body_Managment_Jsp,
+            HLayout_Tabs_Managment
+        ]
+    });
 
     //-------------------------------------------------------Functions--------------------------------------------------
 
-    <%--function addCompetenceRequest() {--%>
+    function addTrainingRequestManagement() {
+        saveMethodInManagement = "POST";
+        DynamicForm_training_Request.clearValues();
+        DynamicForm_training_Request.clearErrors();
+        DynamicForm_training_Request.setValue("applicant", userUserName);
+        Window_training_Request.show();
+    }
+    function editTrainingRequestRequest() {
 
-    <%--    DynamicForm_Competence_Request.clearValues();--%>
-    <%--    DynamicForm_Competence_Request.clearErrors();--%>
-    <%--    DynamicForm_Competence_Request.setValue("applicant", userUserName);--%>
-    <%--    Window_Competence_Request.show();--%>
-    <%--}--%>
-    <%--function editCompetenceRequest() {--%>
+        let rec = ListGrid_training_Managment.getSelectedRecord();
+        if (rec == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            saveMethodInManagement = "PUT";
+            rec.requestDate = new Date(ListGrid_training_Managment.getSelectedRecord().requestDate).toLocaleDateString('fa-IR');
+            rec.letterDate = new Date(ListGrid_training_Managment.getSelectedRecord().letterDate).toLocaleDateString('fa-IR');
+            DynamicForm_training_Request.editRecord(rec);
+            Window_training_Request.show();
+        }
+    }
+    function saveTrainingRequestManagement() {
 
-    <%--    let record = ListGrid_Competence_Request.getSelectedRecord();--%>
-    <%--    if (record == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        record.requestDate = new Date(record.requestDate).toLocaleDateString('fa-IR');--%>
-    <%--        DynamicForm_Competence_Request.editRecord(record);--%>
-    <%--        Window_Competence_Request.show();--%>
-    <%--    }--%>
-    <%--}--%>
-    <%--function saveCompetenceRequest() {--%>
+        if (!DynamicForm_training_Request.validate())
+            return;
 
-    <%--    if (!DynamicForm_Competence_Request.validate())--%>
-    <%--        return;--%>
+        if (saveMethodInManagement === "POST") {
 
-    <%--    if (saveMethod === "POST") {--%>
+            let data = DynamicForm_training_Request.getValues();
+            data.requestDate = JalaliDate.jalaliToGregori(data.requestDate);
+            data.letterDate = JalaliDate.jalaliToGregori(data.letterDate);
 
-    <%--        let data = DynamicForm_Competence_Request.getValues();--%>
-    <%--        data.requestDate = JalaliDate.jalaliToGregori(data.requestDate);--%>
-
-    <%--        wait.show();--%>
-    <%--        isc.RPCManager.sendRequest(TrDSRequest(competenceRequestUrl, "POST", JSON.stringify(data), function (resp) {--%>
-    <%--            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                wait.close();--%>
-    <%--                createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-    <%--                Window_Competence_Request.close();--%>
-    <%--                ListGrid_Competence_Request.invalidateCache();--%>
-    <%--            } else {--%>
-    <%--                wait.close();--%>
-    <%--                createDialog("info", "خطایی رخ داده است");--%>
-    <%--            }--%>
-    <%--        }));--%>
-    <%--    } else {--%>
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(trainingRequestManagementUrl, "POST", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_training_Request.close();
+                    ListGrid_training_Managment.invalidateCache();
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        } else {
 
 
-    <%--        let record = ListGrid_Competence_Request.getSelectedRecord();--%>
+            let record = ListGrid_training_Managment.getSelectedRecord();
 
-    <%--        wait.show();--%>
-    <%--        isc.RPCManager.sendRequest(TrDSRequest(competenceRequestUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {--%>
-    <%--            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                wait.close();--%>
-    <%--                createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-    <%--                Window_Competence_Request.close();--%>
-    <%--                ListGrid_Competence_Request.invalidateCache();--%>
-    <%--            } else {--%>
-    <%--                wait.close();--%>
-    <%--                createDialog("info", "خطایی رخ داده است");--%>
-    <%--            }--%>
-    <%--        }));--%>
-    <%--    }--%>
+            let data = DynamicForm_training_Request.getValues();
+            data.requestDate = JalaliDate.jalaliToGregori(data.requestDate.toEnglishDigit());
+            data.letterDate = JalaliDate.jalaliToGregori(data.letterDate.toEnglishDigit());
 
-    <%--}--%>
-    <%--function deleteCompetenceRequest() {--%>
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(trainingRequestManagementUrl + "/" + record.id, "PUT", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_training_Request.close();
+                    ListGrid_training_Managment.invalidateCache();
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        }
 
-    <%--    let record = ListGrid_Competence_Request.getSelectedRecord();--%>
-    <%--    if (record == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        let Dialog_Competence_Request_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",--%>
-    <%--            "<spring:message code="verify.delete"/>");--%>
-    <%--        Dialog_Competence_Request_remove.addProperties({--%>
-    <%--            buttonClick: function (button, index) {--%>
-    <%--                this.close();--%>
-    <%--                if (index === 0) {--%>
-    <%--                    wait.show();--%>
-    <%--                    isc.RPCManager.sendRequest(TrDSRequest(competenceRequestUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
-    <%--                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                            wait.close();--%>
-    <%--                            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-    <%--                            ListGrid_Competence_Request.invalidateCache();--%>
+    }
+    function deleteTrainingManagementRequest() {
 
-    <%--                        } else {--%>
-    <%--                            wait.close();--%>
-    <%--                            createDialog("info", "خطایی رخ داده است");--%>
-    <%--                        }--%>
-    <%--                    }));--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    }--%>
-    <%--}--%>
+        let record = ListGrid_training_Managment.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Competence_Request_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_Request_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(trainingRequestManagementUrl + "/" + record.id, "DELETE", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                wait.close();
+                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                ListGrid_training_Managment.invalidateCache();
+
+                            } else {
+                                wait.close();
+                                createDialog("info", "خطایی رخ داده است");
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
 
     <%--function validRequestItemData(requestItemId) {--%>
 
@@ -1626,62 +1787,62 @@
     <%--    }--%>
     <%--}--%>
 
-    <%--function selectionUpdated_Competence_Request() {--%>
-
-    <%--    let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();--%>
-    <%--    let tab = Requests_Detail_Tabs.getSelectedTab();--%>
-
-    <%--    if (requestItem == null && tab.pane != null) {--%>
-    <%--        tab.pane.setData([]);--%>
-    <%--        return;--%>
-    <%--    }--%>
-
-    <%--    processStatus.setValue("processStatusTitle", requestItem.processStatusTitle === "" ? "به گردش کار ارسال نشده" : requestItem.processStatusTitle);--%>
-
-    <%--    isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo?trainingPostCode=" + requestItem.post, "GET", null, function (resp) {--%>
-    <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--            let data = JSON.parse(resp.httpResponseText);--%>
-    <%--            trainingPostNeedAssessmentStatus.setValue("modifiedDate", data.lastModifiedDateNA);--%>
-    <%--            trainingPostNeedAssessmentStatus.setValue("modifiedBy", data.modifiedByNA);--%>
-    <%--        } else {--%>
-    <%--            trainingPostNeedAssessmentStatus.setValue("modifiedDate", "پست وجود ندارد");--%>
-    <%--            trainingPostNeedAssessmentStatus.setValue("modifiedBy", "پست وجود ندارد");--%>
-    <%--        }--%>
-    <%--    }));--%>
-
-    <%--    switch (tab.name) {--%>
-    <%--        case "TabPane_Personnel_Training_History": {--%>
-    <%--            RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;--%>
-    <%--            ListGrid_Personnel_Training_History.invalidateCache();--%>
-    <%--            ListGrid_Personnel_Training_History.fetchData();--%>
-    <%--            break;--%>
-    <%--        }--%>
-    <%--        case "TabPane_Personnel_Job_History": {--%>
-    <%--            RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;--%>
-    <%--            ListGrid_Personnel_Job_History.fetchData();--%>
-    <%--            ListGrid_Personnel_Job_History.invalidateCache();--%>
-    <%--            break;--%>
-    <%--        }--%>
-    <%--        case "TabPane_Post_History": {--%>
-    <%--            RestDataSource_Competence_Request_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + requestItem.post;--%>
-    <%--            ListGrid_Post_History.fetchData();--%>
-    <%--            ListGrid_Post_History.invalidateCache();--%>
-
-    <%--            postStatus.setContents("وضعیت پست :");--%>
-    <%--            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessmentInfo?postCode=" + requestItem.post, "GET", null, function (resp) {--%>
-    <%--                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                    let data = JSON.parse(resp.httpResponseText);--%>
-    <%--                    needADate.setValue(data.lastModifiedDateNA);--%>
-    <%--                    needABy.setValue(data.modifiedByNA);--%>
-    <%--                } else {--%>
-    <%--                    needADate.setValue("پست وجود ندارد");--%>
-    <%--                    needABy.setValue("پست وجود ندارد");--%>
-    <%--                }--%>
-    <%--            }));--%>
-    <%--            break;--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--}--%>
+    function selectionUpdated_Management() {
+        //
+        // let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
+        // let tab = Requests_Detail_Tabs.getSelectedTab();
+        //
+        // if (requestItem == null && tab.pane != null) {
+        //     tab.pane.setData([]);
+        //     return;
+        // }
+        //
+        // processStatus.setValue("processStatusTitle", requestItem.processStatusTitle === "" ? "به گردش کار ارسال نشده" : requestItem.processStatusTitle);
+        //
+        // isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo?trainingPostCode=" + requestItem.post, "GET", null, function (resp) {
+        //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        //         let data = JSON.parse(resp.httpResponseText);
+        //         trainingPostNeedAssessmentStatus.setValue("modifiedDate", data.lastModifiedDateNA);
+        //         trainingPostNeedAssessmentStatus.setValue("modifiedBy", data.modifiedByNA);
+        //     } else {
+        //         trainingPostNeedAssessmentStatus.setValue("modifiedDate", "پست وجود ندارد");
+        //         trainingPostNeedAssessmentStatus.setValue("modifiedBy", "پست وجود ندارد");
+        //     }
+        // }));
+        //
+        // switch (tab.name) {
+        //     case "TabPane_Personnel_Training_History": {
+        //         RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
+        //         ListGrid_Personnel_Training_History.invalidateCache();
+        //         ListGrid_Personnel_Training_History.fetchData();
+        //         break;
+        //     }
+        //     case "TabPane_Personnel_Job_History": {
+        //         RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;
+        //         ListGrid_Personnel_Job_History.fetchData();
+        //         ListGrid_Personnel_Job_History.invalidateCache();
+        //         break;
+        //     }
+        //     case "TabPane_Post_History": {
+        //         RestDataSource_Competence_Request_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + requestItem.post;
+        //         ListGrid_Post_History.fetchData();
+        //         ListGrid_Post_History.invalidateCache();
+        //
+        //         postStatus.setContents("وضعیت پست :");
+        //         isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessmentInfo?postCode=" + requestItem.post, "GET", null, function (resp) {
+        //             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        //                 let data = JSON.parse(resp.httpResponseText);
+        //                 needADate.setValue(data.lastModifiedDateNA);
+        //                 needABy.setValue(data.modifiedByNA);
+        //             } else {
+        //                 needADate.setValue("پست وجود ندارد");
+        //                 needABy.setValue("پست وجود ندارد");
+        //             }
+        //         }));
+        //         break;
+        //     }
+        // }
+    }
     <%--function showRequestItemsAudit(competenceId) {--%>
 
     <%--    let ListGrid_Request_Item_Show_Audit = isc.TrLG.create({--%>
