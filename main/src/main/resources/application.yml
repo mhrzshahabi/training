@@ -45,7 +45,7 @@ copper:
        filePath: classpath://abac-config/default-policy.json
 
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: /training
     session:

@@ -631,7 +631,6 @@
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
                                 createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
                             } else {
-                                zaza
                                 isc.Dialog.create({
                                     message: "<spring:message code="select.audience.ask"/>",
                                     icon: "[SKIN]ask.png",
