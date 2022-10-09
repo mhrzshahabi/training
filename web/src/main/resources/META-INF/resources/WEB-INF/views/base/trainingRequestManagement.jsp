@@ -1364,18 +1364,21 @@
         DynamicForm_training_Request.clearValues();
         DynamicForm_training_Request.clearErrors();
         DynamicForm_training_Request.setValue("applicant", userUserName);
+        DynamicForm_training_Request.getItem("requestDate").setDisabled(false);
+        DynamicForm_training_Request.getItem("letterDate").setDisabled(false);
         Window_training_Request.show();
     }
     function editTrainingRequestRequest() {
 
-        let rec = ListGrid_training_Managment.getSelectedRecord();
+        let rec = JSON.parse(JSON.stringify(ListGrid_training_Managment.getSelectedRecord()));
+
         if (rec == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             saveMethodInManagement = "PUT";
-            rec.requestDate = new Date(ListGrid_training_Managment.getSelectedRecord().requestDate).toLocaleDateString('fa-IR');
-            rec.letterDate = new Date(ListGrid_training_Managment.getSelectedRecord().letterDate).toLocaleDateString('fa-IR');
             DynamicForm_training_Request.editRecord(rec);
+            DynamicForm_training_Request.getItem("requestDate").setDisabled(true);
+            DynamicForm_training_Request.getItem("letterDate").setDisabled(true);
             Window_training_Request.show();
         }
     }
@@ -1383,6 +1386,8 @@
 
         if (!DynamicForm_training_Request.validate())
             return;
+
+
 
         if (saveMethodInManagement === "POST") {
 
@@ -1408,9 +1413,6 @@
             let record = ListGrid_training_Managment.getSelectedRecord();
 
             let data = DynamicForm_training_Request.getValues();
-            data.requestDate = JalaliDate.jalaliToGregori(data.requestDate.toEnglishDigit());
-            data.letterDate = JalaliDate.jalaliToGregori(data.letterDate.toEnglishDigit());
-
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(trainingRequestManagementUrl + "/" + record.id, "PUT", JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {

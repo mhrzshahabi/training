@@ -30,11 +30,9 @@ public class TrainingRequestManagementService implements ITrainingRequestManagem
         TrainingRequestManagement trainingRequestManagement=get(id);
         trainingRequestManagement.setApplicant(newTrainingRequestManagement.getApplicant());
         trainingRequestManagement.setLetterNumber(newTrainingRequestManagement.getLetterNumber());
-        trainingRequestManagement.setRequestDate(newTrainingRequestManagement.getRequestDate());
         trainingRequestManagement.setAcceptor(newTrainingRequestManagement.getAcceptor());
         trainingRequestManagement.setComplex(newTrainingRequestManagement.getComplex());
         trainingRequestManagement.setDescription(newTrainingRequestManagement.getDescription());
-        trainingRequestManagement.setLetterDate(newTrainingRequestManagement.getLetterDate());
         trainingRequestManagement.setTitle(newTrainingRequestManagement.getTitle());
         return create(trainingRequestManagement);
     }
