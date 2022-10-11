@@ -2973,18 +2973,16 @@ if (pageQuestionDto.getPageQuestion()!=null){
                 Tclass tclass = tclassService.getTClass(classId);
                 ClassCreateDTO classCreateDTO = tclassBeanMapper.toClassCreateDTO(tclass);
 
-                if (tclass != null) {
-                    classCreateDTO.setQuestionCount(0);
+                classCreateDTO.setQuestionCount(0);
 
-                    if (tclass.getScoringMethod().equals("2")) {
-                        classCreateDTO.setScore(100d);
-                    } else if (tclass.getScoringMethod().equals("3")) {
-                        classCreateDTO.setScore(20d);
-                    } else {
-                        elsClassResponse.setStatus(400);
-                        elsClassResponse.setMessage("روش نمره دهی ثبت نشده است.");
-                        return elsClassResponse;
-                    }
+                if (tclass.getScoringMethod().equals("2")) {
+                    classCreateDTO.setScore(100d);
+                } else if (tclass.getScoringMethod().equals("3")) {
+                    classCreateDTO.setScore(20d);
+                } else {
+                    elsClassResponse.setStatus(400);
+                    elsClassResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
+                    return elsClassResponse;
                 }
 
                 elsClassResponse.setStatus(200);
