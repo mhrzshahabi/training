@@ -4,6 +4,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
+import dto.exam.ClassCreateDTO;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
@@ -52,6 +53,8 @@ public interface TclassBeanMapper {
             @Mapping(target = "supervisorName", source = "supervisor", ignore = false, qualifiedByName = "getSupervisorName")
     })
     TclassDTO.TClassDataService getTClassDataService(Tclass tclass);
+
+    ClassCreateDTO toClassCreateDTO(Tclass tclass);
 
     @Named("getStudentsCount")
     default Long getStudentsCount(Set<ClassStudent> classStudents){
