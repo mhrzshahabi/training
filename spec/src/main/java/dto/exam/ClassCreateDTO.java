@@ -13,7 +13,7 @@ public class ClassCreateDTO {
     private String code;
     private String titleClass;
     private Double score;
-    private Double acceptancelimit;
+    private Double acceptanceLimit;
     private Integer questionCount;
     private Long courseId;
     private String courseCode;

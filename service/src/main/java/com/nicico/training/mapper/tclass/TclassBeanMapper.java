@@ -54,6 +54,9 @@ public interface TclassBeanMapper {
     })
     TclassDTO.TClassDataService getTClassDataService(Tclass tclass);
 
+    @Mappings({
+            @Mapping(target = "acceptanceLimit", source = "acceptancelimit")
+    })
     ClassCreateDTO toClassCreateDTO(Tclass tclass);
 
     @Named("getStudentsCount")
