@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.RequestType;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -48,6 +47,6 @@ public class TrainingRequestManagement extends Auditable {
     @Column(name = "acceptor")
     private String acceptor;
 
-//    @OneToMany(mappedBy = "competenceReq", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<RequestItem> requestItems;
+    @OneToMany(mappedBy = "trainingRequestManagement", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrainingRequestItem> items;
 }

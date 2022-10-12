@@ -35,9 +35,42 @@ public class TrainingRequestManagementDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("TrainingPositionAppointmentInfo-BankInfo")
+    public static class PositionAppointmentInfo  {
+        private Long id;
+        private Long personnelId;
+        private Long postId;
+        private String name;
+        private String lastName;
+        private String nationalCode;
+        private String personnelNo2;
+        private String personnelNo;
+        private String currentPostTitle;
+        private String currentPostCode;
+        private String nextPostTitle;
+        private String nextPostCode;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("TrainingRequestManagementDTO")
     public static class Create extends TrainingRequestManagementDTO {
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CreatePositionAppointment")
+    public static class CreatePositionAppointment  {
+        private Long postId;
+        private Long reqId;
+        private Long personnelId;
+        private String ref;
+
+    }
+
+
 
     @Getter
     @Setter
@@ -47,6 +80,14 @@ public class TrainingRequestManagementDTO {
     public static class TrainingRequestManagementSpecRs {
         private SpecRs response;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TrainingRequestManagementDTO-CompetenceRequestSpecRs")
+    public static class PASpecRs {
+        private SpecRsPA response;
+    }
 
     @Getter
     @Setter
@@ -54,6 +95,18 @@ public class TrainingRequestManagementDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsPA {
+        private List<PositionAppointmentInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

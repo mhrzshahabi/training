@@ -8,8 +8,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.TrainingRequestManagementDTO;
+import com.nicico.training.iservice.ITrainingReqItemService;
 import com.nicico.training.iservice.ITrainingRequestManagementService;
 import com.nicico.training.mapper.trainingRequestManagement.TrainingRequestManagementBeanMapper;
+import com.nicico.training.model.TrainingRequestItem;
 import com.nicico.training.model.TrainingRequestManagement;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,12 +32,10 @@ import java.util.List;
 public class TrainingRequestManagementRestController {
 
     private final TrainingRequestManagementBeanMapper trainingRequestManagementBeanMapper;
-//    private final RequestItemBeanMapper requestItemBeanMapper;
     private final ITrainingRequestManagementService trainingRequestManagementService;
-//    private final IRequestItemService requestItemService;
+    private final ITrainingReqItemService trainingReqItemService;
     private final ObjectMapper objectMapper;
-//
-//
+
     @Loggable
     @PostMapping
     public ResponseEntity<TrainingRequestManagementDTO.Info> create(@RequestBody TrainingRequestManagementDTO.Create request) {
@@ -124,14 +125,68 @@ public class TrainingRequestManagementRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-//
-//
-//    @Loggable
-//    @GetMapping(value = "/request-item-list")
-//    public ResponseEntity<List<RequestItemDTO.Info>> getRequestItemList(@RequestParam Long id) {
-//        List<RequestItem> competenceRequestResponses=  requestItemService.getListWithCompetenceRequest(id);
-//        List<RequestItemDTO.Info> res=requestItemBeanMapper.toRequestItemDTODtos(competenceRequestResponses);
-//        return new ResponseEntity<>(res, HttpStatus.OK); }
+
+    @Loggable
+    @GetMapping(value = "/list-items/{id}/{ref}")
+    public ResponseEntity<TrainingRequestManagementDTO.PASpecRs> listOfItem(
+            @PathVariable(value = "id") Long id,
+            @PathVariable(value = "ref") String ref,
+            @RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                             @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        List<TrainingRequestItem> response = trainingRequestManagementService.searchPositionAppointment(request);
+        List<TrainingRequestManagementDTO.PositionAppointmentInfo> res=trainingRequestManagementBeanMapper.toTrainingReqPositionAppointmentDtos(response);
+
+        final TrainingRequestManagementDTO.SpecRsPA specResponse = new TrainingRequestManagementDTO.SpecRsPA();
+        final TrainingRequestManagementDTO.PASpecRs specRs = new TrainingRequestManagementDTO.PASpecRs();
+        specResponse.setData(res)
+                .setStartRow(startRow)
+                .setEndRow(startRow + res.size())
+                .setTotalRows(trainingReqItemService.getTotalCount(id,ref));
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping(value = "/add")
+    public ResponseEntity<BaseResponse> addItem(@RequestBody TrainingRequestManagementDTO.CreatePositionAppointment request) {
+        BaseResponse baseResponse=  trainingRequestManagementService.addChild(request);
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/delete/{requestTrainingId}/{positionAppointmentId}")
+    public ResponseEntity<BaseResponse> deleteItem(@PathVariable Long requestTrainingId,@PathVariable Long positionAppointmentId) {
+        BaseResponse baseResponse=  trainingRequestManagementService.deleteChild(requestTrainingId,positionAppointmentId);
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+    }
+
 
 
 }

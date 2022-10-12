@@ -396,4 +396,8 @@
     <changeSet id="1633842708000-04" author="namdari">
         <createSequence sequenceName="seq_training_request_management_id"/>
     </changeSet>
+
+    <changeSet id="1633842708000-06" author="namdari">
+        <createSequence sequenceName="seq_item_id"/>
+    </changeSet>
 </databaseChangeLog>
