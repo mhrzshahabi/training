@@ -15,5 +15,6 @@ public class ClassCreateDTO {
     private Double score;
     private Double acceptancelimit;
     private Integer questionCount;
-
+    private Long courseId;
+    private String courseCode;
 }
