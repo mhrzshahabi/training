@@ -2975,6 +2975,9 @@ if (pageQuestionDto.getPageQuestion()!=null){
 
                 classCreateDTO.setQuestionCount(0);
 
+                String courseCode = courseService.getCourse(classCreateDTO.getCourseId()).getCode();
+                classCreateDTO.setCourseCode(courseCode);
+
                 if (tclass.getScoringMethod().equals("2")) {
                     classCreateDTO.setScore(100d);
                 } else if (tclass.getScoringMethod().equals("3")) {
