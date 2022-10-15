@@ -48,7 +48,7 @@ public class TrainingRequestManagementRestController {
 //
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TrainingRequestManagementDTO.Info> update(@PathVariable Long id, @RequestBody TrainingRequestManagementDTO.Create request) {
+    public ResponseEntity<TrainingRequestManagementDTO.Info> update(@PathVariable Long id, @RequestBody TrainingRequestManagementDTO.Update request) {
         TrainingRequestManagement competenceRequest=trainingRequestManagementBeanMapper.toTrainingRequestManagement(request);
         TrainingRequestManagement competenceRequestResponse=  trainingRequestManagementService.update(competenceRequest,id);
         TrainingRequestManagementDTO.Info res=trainingRequestManagementBeanMapper.toTrainingRequestManagementDto(competenceRequestResponse);

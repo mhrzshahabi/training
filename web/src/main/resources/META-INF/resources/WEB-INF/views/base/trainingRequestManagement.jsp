@@ -1235,9 +1235,11 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             saveMethodInManagement = "PUT";
+            rec.requestDate = new Date(rec.requestDate).toLocaleDateString('fa-IR');
+            rec.letterDate = new Date(rec.letterDate).toLocaleDateString('fa-IR');
             DynamicForm_training_Request.editRecord(rec);
             DynamicForm_training_Request.getItem("requestDate").setDisabled(true);
-            DynamicForm_training_Request.getItem("letterDate").setDisabled(true);
+            DynamicForm_training_Request.getItem("letterDate").setDisabled(true)
             Window_training_Request.show();
         }
     }
@@ -1520,7 +1522,7 @@
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 wait.close();
                                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                listGrid.invalidateCache();
+                                ListGrid_req_item.invalidateCache();
 
                             } else {
                                 wait.close();

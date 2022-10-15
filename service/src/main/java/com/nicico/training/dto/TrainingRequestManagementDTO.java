@@ -18,11 +18,9 @@ public class TrainingRequestManagementDTO {
     private String applicant;
     private String letterNumber;
     private String complex;
-    private Date requestDate;
     private String title;
     private String description;
     private String acceptor;
-    private Date letterDate;
 
     @Getter
     @Setter
@@ -30,6 +28,8 @@ public class TrainingRequestManagementDTO {
     @ApiModel("TrainingRequestManagementDTO-BankInfo")
     public static class Info extends TrainingRequestManagementDTO {
         private Long id;
+        private Date requestDate;
+        private Date letterDate;
     }
 
     @Getter
@@ -57,7 +57,18 @@ public class TrainingRequestManagementDTO {
     @Accessors(chain = true)
     @ApiModel("TrainingRequestManagementDTO")
     public static class Create extends TrainingRequestManagementDTO {
+        private Date requestDate;
+        private Date letterDate;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TrainingRequestManagementDTOUpdate")
+    public static class Update extends TrainingRequestManagementDTO {
+    }
+
+
     @Getter
     @Setter
     @Accessors(chain = true)

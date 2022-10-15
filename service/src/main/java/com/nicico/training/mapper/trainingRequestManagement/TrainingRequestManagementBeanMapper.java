@@ -16,6 +16,8 @@ public interface TrainingRequestManagementBeanMapper {
 
     TrainingRequestManagement toTrainingRequestManagement (TrainingRequestManagementDTO.Create request);
 
+    TrainingRequestManagement toTrainingRequestManagement (TrainingRequestManagementDTO.Update request);
+
     TrainingRequestManagementDTO.Info toTrainingRequestManagementDto(TrainingRequestManagement trainingRequestManagement);
 
     @Mapping(target = "name",source = "personnel.firstName")
