@@ -5550,6 +5550,15 @@ FROM
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1799887766557-097">
+        <sql>
+            <![CDATA[
+            UPDATE tbl_personnel SET employment_date = null WHERE employment_date is not null
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
