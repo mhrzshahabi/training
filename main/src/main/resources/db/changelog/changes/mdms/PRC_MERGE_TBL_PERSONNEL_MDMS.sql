@@ -1,4 +1,5 @@
 create or replace PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
+
 BEGIN------------UPDATE-------------------------------------------------------
 
 MERGE INTO TBL_PERSONNEL T

@@ -1,4 +1,5 @@
 create PROCEDURE PRC_MERGE_TBL_GEO_WORK_MDMS AS
+
 BEGIN
     ------------UPDATE-------------------------------------------------------
 MERGE INTO TBL_GEO_WORK T

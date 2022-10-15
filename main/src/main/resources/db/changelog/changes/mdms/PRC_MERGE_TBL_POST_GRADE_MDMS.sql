@@ -1,4 +1,5 @@
 create PROCEDURE PRC_MERGE_TBL_POST_GRADE_MDMS AS
+
 BEGIN
     ------------UPDATE-------------------------------------------------------
 MERGE INTO TBL_POST_GRADE T

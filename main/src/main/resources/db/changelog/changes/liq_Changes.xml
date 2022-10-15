@@ -5559,6 +5559,1779 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet id="namdari-hr-PRC_DUPLICATED_ROW_CHECK_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_DUPLICATED_ROW_CHECK_MDMS AS
+            BEGIN
+    DECLARE
+            DUPLICATED_ROWS VARCHAR2(300);
+            BEGIN
+            SELECT CASE
+                       WHEN EXISTS(
+                               SELECT C_CODE, C_PEOPLE_TYPE
+                               FROM (SELECT * FROM TBL_MD_JOB_MDMS)
+                               GROUP BY C_CODE, C_PEOPLE_TYPE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TBL_MD_JOB'
+                       WHEN EXISTS(
+                               SELECT C_CODE, C_PEOPLE_TYPE
+                               FROM (SELECT * FROM TBL_MD_POST_GRADE_MDMS)
+                               GROUP BY C_CODE, C_PEOPLE_TYPE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TBL_MD_POST_GRADE'
+                       WHEN EXISTS(
+                               SELECT C_CODE, C_PEOPLE_TYPE
+                               FROM (SELECT * FROM TBL_MD_GEO_WORK_MDMS)
+                               GROUP BY C_CODE, C_PEOPLE_TYPE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TBL_MD_GEO_WORK'
+                       WHEN EXISTS(
+                               SELECT C_CODE
+                               FROM (SELECT * FROM VW_DEPARTMENT)
+                               GROUP BY C_CODE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TBL_MD_DEPARTMENT'
+                       WHEN EXISTS(
+                               SELECT C_CODE
+                               FROM (SELECT * FROM TBL_MD_POST_MDMS)
+                               GROUP BY C_CODE , C_PEOPLE_TYPE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TBL_MD_POST'
+                       WHEN EXISTS(
+                               SELECT C_NATIONAL_CODE FROM (
+                                                               SELECT * FROM (
+                                                                                 SELECT E.*, ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID ORDER BY C_ID DESC) AS INX FROM TBL_MD_EMPLOYEE_MDMS E
+                                                                             )    WHERE INX = 1
+                                                           ) GROUP BY C_NATIONAL_CODE HAVING COUNT(*) > 1
+                           ) THEN 'VIW_EMPLOYEE'
+                       WHEN EXISTS(
+                               SELECT NATIONAL_CODE
+                               FROM (SELECT * FROM TBL_PERSONNEL where DELETED = 0 and active = 1)
+                               GROUP BY NATIONAL_CODE
+                               HAVING COUNT(*) > 1
+                           ) THEN 'TRAINING.TBL_PERSONNEL'
+                       ELSE NULL
+                       END
+            INTO DUPLICATED_ROWS
+            FROM DUAL;
+            IF DUPLICATED_ROWS IS NOT NULL
+        THEN
+            RAISE_APPLICATION_ERROR(-20001, DUPLICATED_ROWS || ' HAS DUPLICATED ROWS');
+            END IF;
+            END;
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MDMS_ALL_MERGES-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MDMS_ALL_MERGES AS
+
+            BEGIN
+    DECLARE
+            err_code VARCHAR2(30);
+        err_msg  VARCHAR2(500);
+            BEGIN
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_DUPLICATED_ROW_CHECK_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg);
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_DEPARTMENT_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_DEPARTMENT');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_GEO_WORK_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_GEO_WORK');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_JOB_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_JOB_WORK');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_POST_GRADE_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_POST_GRADE');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_PERSONNEL_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_PERSONNEL');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_POST_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_POST');
+            commit;
+            raise;
+            END;
+        ----------------------------------------------------------------------------------------------------------------
+            BEGIN
+            PRC_MERGE_TBL_CONTACT_INFO_MDMS();
+            EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+            insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+            values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_CONTACT_INFO');
+            commit;
+            raise;
+            END;
+            END;
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_CONTACT_INFO_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_CONTACT_INFO_MDMS AS
+            BEGIN
+-------------------------- NEW CONTACT-INFOS ---------------------------------------------------------------------------
+
+    DECLARE
+            CURSOR NEW_PERSONNELS IS SELECT ID, F_CONTACT_INFO
+                                     FROM TBL_PERSONNEL
+                                     WHERE F_CONTACT_INFO IS NULL FOR UPDATE OF F_CONTACT_INFO;
+            NEXT_ID NUMBER;
+            BEGIN
+            FOR P IN NEW_PERSONNELS
+            LOOP
+            SELECT SEQ_CONTACT_INFO_ID.nextval INTO NEXT_ID FROM DUAL;
+            INSERT INTO TBL_CONTACT_INFO(ID, C_CREATED_BY, D_CREATED_DATE, N_VERSION)
+            VALUES (NEXT_ID, 'PRC_MERGE(NEW PERSONNEL)', SYSDATE, 0);
+            UPDATE TBL_PERSONNEL SET F_CONTACT_INFO = NEXT_ID WHERE CURRENT OF NEW_PERSONNELS;
+            END LOOP;
+            END;
+
+    DECLARE
+            CURSOR NEW_PERSONNELS IS SELECT ID, F_CONTACT_INFO
+                                     FROM TBL_PERSONNEL_REGISTERED
+                                     WHERE F_CONTACT_INFO IS NULL FOR UPDATE OF F_CONTACT_INFO;
+            NEXT_ID NUMBER;
+            BEGIN
+            FOR P IN NEW_PERSONNELS
+            LOOP
+            SELECT SEQ_CONTACT_INFO_ID.nextval INTO NEXT_ID FROM DUAL;
+            INSERT INTO TBL_CONTACT_INFO(ID, C_CREATED_BY, D_CREATED_DATE, N_VERSION)
+            VALUES (NEXT_ID, 'PRC_MERGE(NEW PERSONNEL_REGISTERED)', SYSDATE, 0);
+            UPDATE TBL_PERSONNEL_REGISTERED SET F_CONTACT_INFO = NEXT_ID WHERE CURRENT OF NEW_PERSONNELS;
+            END LOOP;
+            END;
+
+
+--------------------------- TBL_PERSONNEL ------------------------------------------------------------------------------
+            MERGE INTO TBL_CONTACT_INFO TR_CONTACT_INFO USING (
+                SELECT TR_PRS.F_CONTACT_INFO,C_NATIONAL_CODE,
+                       MDMS_CONTACT_INFO.C_MOBILE,
+                       MDMS_CONTACT_INFO.C_EMAIL
+                FROM (
+                         SELECT NVL(E.C_MOBILE, P.C_MOBILE) AS C_MOBILE,
+                                NVL(E.C_EMAIL, P.C_EMAIL) AS C_EMAIL,
+                                P.C_NATIONAL_CODE
+                         FROM TBL_MD_PEOPLE_MDMS     P
+                                  FULL OUTER JOIN (SELECT C_EMAIL,C_MOBILE,C_NATIONAL_CODE
+                                                   FROM (
+                                                            SELECT E.*,
+                                                                   ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID
+                                          ORDER BY C_ID DESC) AS INX
+                                                            FROM   TBL_MD_EMPLOYEE_MDMS E
+                                                        )
+                                                   WHERE INX = 1
+                         ) E ON E.C_NATIONAL_CODE = P.C_NATIONAL_CODE
+                     ) MDMS_CONTACT_INFO
+                         INNER JOIN (SELECT F_CONTACT_INFO,NATIONAL_CODE FROM TBL_PERSONNEL WHERE DELETED = 0 AND NATIONAL_CODE IS NOT NULL)TR_PRS  ON  TR_PRS.NATIONAL_CODE = MDMS_CONTACT_INFO.C_NATIONAL_CODE) MDMS_CONTACT_INFO
+                ON(MDMS_CONTACT_INFO.F_CONTACT_INFO = TR_CONTACT_INFO.ID)
+                WHEN MATCHED THEN UPDATE SET C_MDMS_MOBILE = MDMS_CONTACT_INFO.C_MOBILE, C_EMAIL = MDMS_CONTACT_INFO.C_EMAIL , D_LAST_MODIFIED_DATE = SYSDATE , C_LAST_MODIFIED_BY = 'HR';
+
+--------------------------- TBL_PERSONNEL_REGISTERED -------------------------------------------------------------------
+            MERGE INTO TBL_CONTACT_INFO TR_CONTACT_INFO USING (
+                SELECT TR_PRS.F_CONTACT_INFO,C_NATIONAL_CODE,
+                       MDMS_CONTACT_INFO.C_MOBILE,
+                       MDMS_CONTACT_INFO.C_EMAIL
+                FROM (
+                         SELECT NVL(E.C_MOBILE, P.C_MOBILE) AS C_MOBILE,
+                                NVL(E.C_EMAIL, P.C_EMAIL) AS C_EMAIL,
+                                P.C_NATIONAL_CODE
+                         FROM TBL_MD_PEOPLE_MDMS     P
+                                  FULL OUTER JOIN (SELECT C_EMAIL,C_MOBILE,C_NATIONAL_CODE
+                                                   FROM (
+                                                            SELECT E.*,
+                                                                   ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID
+                                          ORDER BY C_ID DESC) AS INX
+                                                            FROM   TBL_MD_EMPLOYEE_MDMS E
+                                                        )
+                                                   WHERE INX = 1
+                         ) E ON E.C_NATIONAL_CODE = P.C_NATIONAL_CODE
+                     ) MDMS_CONTACT_INFO
+                         INNER JOIN (SELECT F_CONTACT_INFO,NATIONAL_CODE FROM TBL_PERSONNEL_REGISTERED WHERE NATIONAL_CODE IS NOT NULL)TR_PRS  ON  TR_PRS.NATIONAL_CODE = MDMS_CONTACT_INFO.C_NATIONAL_CODE) MDMS_CONTACT_INFO
+                ON(MDMS_CONTACT_INFO.F_CONTACT_INFO = TR_CONTACT_INFO.ID)
+                WHEN MATCHED THEN UPDATE SET C_MDMS_MOBILE = MDMS_CONTACT_INFO.C_MOBILE, C_EMAIL = MDMS_CONTACT_INFO.C_EMAIL , D_LAST_MODIFIED_DATE = SYSDATE , C_LAST_MODIFIED_BY = 'HR';
+
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_DEPARTMENT_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_DEPARTMENT_MDMS AS
+
+            BEGIN
+    ------------UPDATE-------------------------------------------------------
+            MERGE INTO TBL_DEPARTMENT T
+                USING
+                    (SELECT MDMS_DEPARTMENT.C_CODE               AS MDMS_C_CODE,
+                            MDMS_DEPARTMENT.C_PEOPLE_TYPE        AS MDMS_C_PEOPLE_TYPE,
+                            MDMS_DEPARTMENT.E_ENABLED            AS MDMS_E_ENABLED,
+                            MDMS_DEPARTMENT.E_DELETED            AS MDMS_E_DELETED,
+                            MDMS_DEPARTMENT.C_CORRECTION         AS MDMS_C_CORRECTION,
+                            MDMS_DEPARTMENT.C_ALIGNMENT          AS MDMS_C_ALIGNMENT,
+                            MDMS_DEPARTMENT.C_END_DATE           AS MDMS_C_END_DATE,
+                            MDMS_DEPARTMENT.C_GHESMAT_CODE       AS MDMS_C_GHESMAT_CODE,
+                            MDMS_DEPARTMENT.C_GHESMAT_TITLE      AS MDMS_C_GHESMAT_TITLE,
+                            MDMS_DEPARTMENT.C_HOZE_CODE          AS MDMS_C_HOZE_CODE,
+                            MDMS_DEPARTMENT.C_HOZE_TITLE         AS MDMS_C_HOZE_TITLE,
+                            MDMS_DEPARTMENT.C_ISSUABLE           AS MDMS_C_ISSUABLE,
+                            MDMS_DEPARTMENT.C_LEGACY_CHANGE_DATE AS MDMS_C_LEGACY_CHANGE_DATE,
+                            MDMS_DEPARTMENT.C_LEGACY_CREATE_DATE AS MDMS_C_LEGACY_CREATE_DATE,
+                            MDMS_DEPARTMENT.C_MOAVENAT_CODE      AS MDMS_C_MOAVENAT_CODE,
+                            MDMS_DEPARTMENT.C_MOAVENAT_TITLE     AS MDMS_C_MOAVENAT_TITLE,
+                            MDMS_DEPARTMENT.C_NATURE             AS MDMS_C_NATURE,
+                            MDMS_DEPARTMENT.C_NEW_CODE           AS MDMS_C_NEW_CODE,
+                            MDMS_DEPARTMENT.C_OLD_CODE           AS MDMS_C_OLD_CODE,
+                            MDMS_DEPARTMENT.C_OMOR_CODE          AS MDMS_C_OMOR_CODE,
+                            MDMS_DEPARTMENT.C_OMOR_TITLE         AS MDMS_C_OMOR_TITLE,
+                            TR_PARENT.C_CODE                     AS MDMS_C_PARENT_CODE,
+                            MDMS_DEPARTMENT.C_START_DATE         AS MDMS_C_START_DATE,
+                            MDMS_DEPARTMENT.C_TITLE_DESC              AS MDMS_C_TITLE,
+                            MDMS_DEPARTMENT.C_TITLE_L            AS MDMS_C_TITLE_L,
+                            MDMS_DEPARTMENT.C_TYPE               AS MDMS_C_TYPE,
+                            MDMS_DEPARTMENT.C_USER               AS MDMS_C_USER,
+                            MDMS_DEPARTMENT.C_VAHED_CODE         AS MDMS_C_VAHED_CODE,
+                            MDMS_DEPARTMENT.C_VAHED_TITLE        AS MDMS_C_VAHED_TITLE,
+                            TR_PARENT.ID                         AS MDMS_C_PARENT,
+                            MDMS_DEPARTMENT.C_MOJTAME_CODE       AS MDMS_C_MOJTAME_CODE,
+                            MDMS_DEPARTMENT.C_MOJTAME_TITLE      AS MDMS_C_MOJTAME_TITLE,
+                            TR_DEPARTMENT.C_CODE                 AS TR_C_CODE,
+                            TR_DEPARTMENT.C_PEOPLE_TYPE          AS TR_C_PEOPLE_TYPE,
+                            TR_DEPARTMENT.E_ENABLED              AS TR_E_ENABLED,
+                            TR_DEPARTMENT.E_DELETED              AS TR_E_DELETED,
+                            TR_DEPARTMENT.C_CORRECTION           AS TR_C_CORRECTION,
+                            TR_DEPARTMENT.C_END_DATE             AS TR_C_END_DATE,
+                            TR_DEPARTMENT.C_GHESMAT_CODE         AS TR_C_GHESMAT_CODE,
+                            TR_DEPARTMENT.C_GHESMAT_TITLE        AS TR_C_GHESMAT_TITLE,
+                            TR_DEPARTMENT.C_HOZE_CODE            AS TR_C_HOZE_CODE,
+                            TR_DEPARTMENT.C_HOZE_TITLE           AS TR_C_HOZE_TITLE,
+                            TR_DEPARTMENT.C_ISSUABLE             AS TR_C_ISSUABLE,
+                            TR_DEPARTMENT.C_LEGACY_CHANGE_DATE   AS TR_C_LEGACY_CHANGE_DATE,
+                            TR_DEPARTMENT.C_LEGACY_CREATE_DATE   AS TR_C_LEGACY_CREATE_DATE,
+                            TR_DEPARTMENT.C_MOAVENAT_CODE        AS TR_C_MOAVENAT_CODE,
+                            TR_DEPARTMENT.C_MOAVENAT_TITLE       AS TR_C_MOAVENAT_TITLE,
+                            TR_DEPARTMENT.C_NATURE               AS TR_C_NATURE,
+                            TR_DEPARTMENT.C_NEW_CODE             AS TR_C_NEW_CODE,
+                            TR_DEPARTMENT.C_OLD_CODE             AS TR_C_OLD_CODE,
+                            TR_DEPARTMENT.C_OMOR_CODE            AS TR_C_OMOR_CODE,
+                            TR_DEPARTMENT.C_OMOR_TITLE           AS TR_C_OMOR_TITLE,
+                            TR_DEPARTMENT.C_PARENT_CODE          AS TR_C_PARENT_CODE,
+                            TR_DEPARTMENT.C_START_DATE           AS TR_C_START_DATE,
+                            TR_DEPARTMENT.C_TITLE                AS TR_C_TITLE,
+                            TR_DEPARTMENT.C_TITLE_L              AS TR_C_TITLE_L,
+                            TR_DEPARTMENT.C_TYPE                 AS TR_C_TYPE,
+                            TR_DEPARTMENT.C_USER                 AS TR_C_USER,
+                            TR_DEPARTMENT.C_VAHED_CODE           AS TR_C_VAHED_CODE,
+                            TR_DEPARTMENT.C_VAHED_TITLE          AS TR_C_VAHED_TITLE,
+                            TR_DEPARTMENT.C_MOJTAME_CODE         AS TR_C_MOJTAME_CODE,
+                            TR_DEPARTMENT.C_MOJTAME_TITLE        AS TR_C_MOJTAME_TITLE
+                     FROM (SELECT DP.*,
+                                  CASE
+                                      WHEN C_ACTIVE = 1
+                                          OR C_ACTIVE IS NULL THEN
+                                          NULL
+                                      WHEN C_ACTIVE = 0 THEN
+                                          74
+                                      END AS E_ENABLED,
+                                  CASE
+                                      WHEN C_DELETED = 0
+                                          OR C_DELETED IS NULL THEN
+                                          NULL
+                                      ELSE
+                                          75
+                                      END AS E_DELETED
+                           FROM vw_department DP) MDMS_DEPARTMENT
+                              INNER JOIN TBL_DEPARTMENT TR_DEPARTMENT
+                                         ON (MDMS_DEPARTMENT.C_CODE = TR_DEPARTMENT.C_CODE AND
+                                             MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEPARTMENT.C_PEOPLE_TYPE)
+                              LEFT JOIN vw_department mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                              LEFT JOIN TBL_DEPARTMENT TR_PARENT
+                                        ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
+                                            mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
+
+                     WHERE TR_DEPARTMENT.C_TITLE <> MDMS_DEPARTMENT.C_TITLE_DESC
+                        OR TR_DEPARTMENT.C_ALIGNMENT <> MDMS_DEPARTMENT.C_ALIGNMENT
+                        OR (TR_DEPARTMENT.C_ALIGNMENT IS NULL
+                         AND MDMS_DEPARTMENT.C_ALIGNMENT IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_ALIGNMENT IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_ALIGNMENT IS NULL)
+                        OR TR_DEPARTMENT.C_CORRECTION <> MDMS_DEPARTMENT.C_CORRECTION
+                        OR (TR_DEPARTMENT.C_CORRECTION IS NULL
+                         AND MDMS_DEPARTMENT.C_CORRECTION IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_CORRECTION IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_CORRECTION IS NULL)
+                        OR TR_DEPARTMENT.C_END_DATE <> MDMS_DEPARTMENT.C_END_DATE
+                        OR (TR_DEPARTMENT.C_END_DATE IS NULL
+                         AND MDMS_DEPARTMENT.C_END_DATE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_END_DATE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_END_DATE IS NULL)
+                        OR TR_DEPARTMENT.C_GHESMAT_CODE <> MDMS_DEPARTMENT.C_GHESMAT_CODE
+                        OR (TR_DEPARTMENT.C_GHESMAT_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_GHESMAT_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_GHESMAT_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_GHESMAT_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_GHESMAT_TITLE <> MDMS_DEPARTMENT.C_GHESMAT_TITLE
+                        OR (TR_DEPARTMENT.C_GHESMAT_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_GHESMAT_TITLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_GHESMAT_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_GHESMAT_TITLE IS NULL)
+                        OR TR_DEPARTMENT.C_HOZE_CODE <> MDMS_DEPARTMENT.C_HOZE_CODE
+                        OR (TR_DEPARTMENT.C_HOZE_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_HOZE_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_HOZE_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_HOZE_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_HOZE_TITLE <> MDMS_DEPARTMENT.C_HOZE_TITLE
+                        OR (TR_DEPARTMENT.C_HOZE_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_HOZE_TITLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_HOZE_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_HOZE_TITLE IS NULL)
+                        OR TR_DEPARTMENT.C_ISSUABLE <> MDMS_DEPARTMENT.C_ISSUABLE
+                        OR (TR_DEPARTMENT.C_ISSUABLE IS NULL
+                         AND MDMS_DEPARTMENT.C_ISSUABLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_ISSUABLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_ISSUABLE IS NULL)
+                        OR TR_DEPARTMENT.C_LEGACY_CHANGE_DATE <> MDMS_DEPARTMENT.C_LEGACY_CHANGE_DATE
+                        OR (TR_DEPARTMENT.C_LEGACY_CHANGE_DATE IS NULL
+                         AND MDMS_DEPARTMENT.C_LEGACY_CHANGE_DATE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_LEGACY_CHANGE_DATE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_LEGACY_CHANGE_DATE IS NULL)
+                        OR TR_DEPARTMENT.C_LEGACY_CREATE_DATE <> MDMS_DEPARTMENT.C_LEGACY_CREATE_DATE
+                        OR (TR_DEPARTMENT.C_LEGACY_CREATE_DATE IS NULL
+                         AND MDMS_DEPARTMENT.C_LEGACY_CREATE_DATE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_LEGACY_CREATE_DATE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_LEGACY_CREATE_DATE IS NULL)
+                        OR TR_DEPARTMENT.C_MOAVENAT_CODE <> MDMS_DEPARTMENT.C_MOAVENAT_CODE
+                        OR (TR_DEPARTMENT.C_MOAVENAT_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_MOAVENAT_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_MOAVENAT_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_MOAVENAT_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_NATURE <> MDMS_DEPARTMENT.C_NATURE
+                        OR (TR_DEPARTMENT.C_NATURE IS NULL
+                         AND MDMS_DEPARTMENT.C_NATURE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_NATURE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_NATURE IS NULL)
+                        OR TR_DEPARTMENT.C_NEW_CODE <> MDMS_DEPARTMENT.C_NEW_CODE
+                        OR (TR_DEPARTMENT.C_NEW_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_NEW_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_NEW_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_NEW_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_OLD_CODE <> MDMS_DEPARTMENT.C_OLD_CODE
+                        OR (TR_DEPARTMENT.C_OLD_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_OLD_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_OLD_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_OLD_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_OMOR_CODE <> MDMS_DEPARTMENT.C_OMOR_CODE
+                        OR (TR_DEPARTMENT.C_OMOR_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_OMOR_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_OMOR_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_OMOR_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_OMOR_TITLE <> MDMS_DEPARTMENT.C_OMOR_TITLE
+                        OR (TR_DEPARTMENT.C_OMOR_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_OMOR_TITLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_OMOR_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_OMOR_TITLE IS NULL)
+                        OR TR_DEPARTMENT.C_PARENT_CODE <> MDMS_DEPARTMENT.C_PARENT_CODE
+                        OR (TR_DEPARTMENT.C_PARENT_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_PARENT_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_PARENT_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_PARENT_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_START_DATE <> MDMS_DEPARTMENT.C_START_DATE
+                        OR (TR_DEPARTMENT.C_START_DATE IS NULL
+                         AND MDMS_DEPARTMENT.C_START_DATE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_START_DATE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_START_DATE IS NULL)
+                        OR TR_DEPARTMENT.C_TITLE <> MDMS_DEPARTMENT.C_TITLE_DESC
+                        OR (TR_DEPARTMENT.C_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_TITLE_DESC IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_TITLE_DESC IS NULL)
+                        OR TR_DEPARTMENT.C_TITLE_L <> MDMS_DEPARTMENT.C_TITLE_L
+                        OR (TR_DEPARTMENT.C_TITLE_L IS NULL
+                         AND MDMS_DEPARTMENT.C_TITLE_L IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_TITLE_L IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_TITLE_L IS NULL)
+                        OR TR_DEPARTMENT.C_TYPE <> MDMS_DEPARTMENT.C_TYPE
+                        OR (TR_DEPARTMENT.C_TYPE IS NULL
+                         AND MDMS_DEPARTMENT.C_TYPE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_TYPE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_TYPE IS NULL)
+                        OR TR_DEPARTMENT.C_USER <> MDMS_DEPARTMENT.C_USER
+                        OR (TR_DEPARTMENT.C_USER IS NULL
+                         AND MDMS_DEPARTMENT.C_USER IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_USER IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_USER IS NULL)
+                        OR TR_DEPARTMENT.C_VAHED_CODE <> MDMS_DEPARTMENT.C_VAHED_CODE
+                        OR (TR_DEPARTMENT.C_VAHED_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_VAHED_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_VAHED_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_VAHED_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_VAHED_TITLE <> MDMS_DEPARTMENT.C_VAHED_TITLE
+                        OR (TR_DEPARTMENT.C_VAHED_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_VAHED_TITLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_VAHED_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_VAHED_TITLE IS NULL)
+                        OR TR_DEPARTMENT.E_DELETED <> MDMS_DEPARTMENT.E_DELETED
+                        OR (TR_DEPARTMENT.E_DELETED IS NULL
+                         AND MDMS_DEPARTMENT.E_DELETED IS NOT NULL)
+                        OR (TR_DEPARTMENT.E_DELETED IS NOT NULL
+                         AND MDMS_DEPARTMENT.E_DELETED IS NULL)
+                        OR TR_DEPARTMENT.E_ENABLED <> MDMS_DEPARTMENT.E_ENABLED
+                        OR (TR_DEPARTMENT.E_ENABLED IS NULL
+                         AND MDMS_DEPARTMENT.E_ENABLED IS NOT NULL)
+                        OR (TR_DEPARTMENT.E_ENABLED IS NOT NULL
+                         AND MDMS_DEPARTMENT.E_ENABLED IS NULL)
+                        OR TR_DEPARTMENT.F_PARENT <> MDMS_DEPARTMENT.C_PARENT
+                        OR (TR_DEPARTMENT.F_PARENT IS NULL
+                         AND MDMS_DEPARTMENT.C_PARENT IS NOT NULL)
+                        OR (TR_DEPARTMENT.F_PARENT IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_PARENT IS NULL)
+                        OR TR_DEPARTMENT.C_MOJTAME_CODE <> MDMS_DEPARTMENT.C_MOJTAME_CODE
+                        OR (TR_DEPARTMENT.C_MOJTAME_CODE IS NULL
+                         AND MDMS_DEPARTMENT.C_MOJTAME_CODE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_MOJTAME_CODE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_MOJTAME_CODE IS NULL)
+                        OR TR_DEPARTMENT.C_MOJTAME_TITLE <> MDMS_DEPARTMENT.C_MOJTAME_TITLE
+                        OR (TR_DEPARTMENT.C_MOJTAME_TITLE IS NULL
+                         AND MDMS_DEPARTMENT.C_MOJTAME_TITLE IS NOT NULL)
+                        OR (TR_DEPARTMENT.C_MOJTAME_TITLE IS NOT NULL
+                         AND MDMS_DEPARTMENT.C_MOJTAME_TITLE IS NULL)
+                    )
+                        CHANGES_
+                ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET T.N_VERSION            = T.N_VERSION + 1,
+                            T.C_ALIGNMENT          = CHANGES_.MDMS_C_ALIGNMENT,
+                            T.C_CORRECTION         = CHANGES_.MDMS_C_CORRECTION,
+                            T.C_END_DATE           = MDMS_C_END_DATE,
+                            T.C_GHESMAT_CODE       = MDMS_C_GHESMAT_CODE,
+                            T.C_GHESMAT_TITLE      = MDMS_C_GHESMAT_TITLE,
+                            T.C_HOZE_CODE          = MDMS_C_HOZE_CODE,
+                            T.C_HOZE_TITLE         = MDMS_C_HOZE_TITLE,
+                            T.C_ISSUABLE           = MDMS_C_ISSUABLE,
+                            T.C_LAST_MODIFIED_BY   = 'HR',
+                            T.C_LEGACY_CHANGE_DATE = MDMS_C_LEGACY_CHANGE_DATE,
+                            T.C_LEGACY_CREATE_DATE = MDMS_C_LEGACY_CREATE_DATE,
+                            T.C_MOAVENAT_CODE      = MDMS_C_MOAVENAT_CODE,
+                            T.C_MOAVENAT_TITLE     = MDMS_C_MOAVENAT_TITLE,
+                            T.C_NATURE             = MDMS_C_NATURE,
+                            T.C_NEW_CODE           = MDMS_C_NEW_CODE,
+                            T.C_OLD_CODE           = MDMS_C_OLD_CODE,
+                            T.C_OMOR_CODE          = MDMS_C_OMOR_CODE,
+                            T.C_OMOR_TITLE         = MDMS_C_OMOR_TITLE,
+                            T.C_PARENT_CODE        = MDMS_C_PARENT_CODE,
+                            T.C_START_DATE         = MDMS_C_START_DATE,
+                            T.C_TITLE              = MDMS_C_TITLE,
+                            T.C_TITLE_L            = MDMS_C_TITLE_L,
+                            T.C_TYPE               = MDMS_C_TYPE,
+                            T.C_USER               = MDMS_C_USER,
+                            T.C_VAHED_CODE         = MDMS_C_VAHED_CODE,
+                            T.C_VAHED_TITLE        = MDMS_C_VAHED_TITLE,
+                            T.D_LAST_MODIFIED_DATE = SYSDATE,
+                            T.E_DELETED            = MDMS_E_DELETED,
+                            T.E_ENABLED            = MDMS_E_ENABLED,
+                            T.F_PARENT             = MDMS_C_PARENT,
+                            T.C_MOJTAME_CODE       = MDMS_C_MOJTAME_CODE,
+                            T.C_MOJTAME_TITLE      = MDMS_C_MOJTAME_TITLE;
+
+--------------INSERT-----------------------------------------------------
+            MERGE INTO TBL_DEPARTMENT T
+                USING (
+                    SELECT MDMS_DEPARTMENT.C_CODE               AS MDMS_C_CODE,
+                           MDMS_DEPARTMENT.C_PEOPLE_TYPE        AS MDMS_C_PEOPLE_TYPE,
+                           MDMS_DEPARTMENT.E_ENABLED            AS MDMS_E_ENABLED,
+                           MDMS_DEPARTMENT.E_DELETED            AS MDMS_E_DELETED,
+                           MDMS_DEPARTMENT.C_CORRECTION         AS MDMS_C_CORRECTION,
+                           MDMS_DEPARTMENT.C_ALIGNMENT          AS MDMS_C_ALIGNMENT,
+                           MDMS_DEPARTMENT.C_END_DATE           AS MDMS_C_END_DATE,
+                           MDMS_DEPARTMENT.C_GHESMAT_CODE       AS MDMS_C_GHESMAT_CODE,
+                           MDMS_DEPARTMENT.C_GHESMAT_TITLE      AS MDMS_C_GHESMAT_TITLE,
+                           MDMS_DEPARTMENT.C_HOZE_CODE          AS MDMS_C_HOZE_CODE,
+                           MDMS_DEPARTMENT.C_HOZE_TITLE         AS MDMS_C_HOZE_TITLE,
+                           MDMS_DEPARTMENT.C_ISSUABLE           AS MDMS_C_ISSUABLE,
+                           MDMS_DEPARTMENT.C_LEGACY_CHANGE_DATE AS MDMS_C_LEGACY_CHANGE_DATE,
+                           MDMS_DEPARTMENT.C_LEGACY_CREATE_DATE AS MDMS_C_LEGACY_CREATE_DATE,
+                           MDMS_DEPARTMENT.C_MOAVENAT_CODE      AS MDMS_C_MOAVENAT_CODE,
+                           MDMS_DEPARTMENT.C_MOAVENAT_TITLE     AS MDMS_C_MOAVENAT_TITLE,
+                           MDMS_DEPARTMENT.C_NATURE             AS MDMS_C_NATURE,
+                           MDMS_DEPARTMENT.C_NEW_CODE           AS MDMS_C_NEW_CODE,
+                           MDMS_DEPARTMENT.C_OLD_CODE           AS MDMS_C_OLD_CODE,
+                           MDMS_DEPARTMENT.C_OMOR_CODE          AS MDMS_C_OMOR_CODE,
+                           MDMS_DEPARTMENT.C_OMOR_TITLE         AS MDMS_C_OMOR_TITLE,
+                           TR_PARENT.C_CODE                     AS MDMS_C_PARENT_CODE,
+                           MDMS_DEPARTMENT.C_START_DATE         AS MDMS_C_START_DATE,
+                           MDMS_DEPARTMENT.C_TITLE_DESC              AS MDMS_C_TITLE,
+                           MDMS_DEPARTMENT.C_TITLE_L            AS MDMS_C_TITLE_L,
+                           MDMS_DEPARTMENT.C_TYPE               AS MDMS_C_TYPE,
+                           MDMS_DEPARTMENT.C_USER               AS MDMS_C_USER,
+                           MDMS_DEPARTMENT.C_VAHED_CODE         AS MDMS_C_VAHED_CODE,
+                           MDMS_DEPARTMENT.C_VAHED_TITLE        AS MDMS_C_VAHED_TITLE,
+                           TR_PARENT.ID                         AS MDMS_C_PARENT,
+                           MDMS_DEPARTMENT.C_MOJTAME_CODE       AS MDMS_C_MOJTAME_CODE,
+                           MDMS_DEPARTMENT.C_MOJTAME_TITLE      AS MDMS_C_MOJTAME_TITLE
+                    FROM (
+                             SELECT DP.*,
+                                    CASE
+                                        WHEN C_ACTIVE = 1
+                                            OR C_ACTIVE IS NULL THEN
+                                            NULL
+                                        WHEN C_ACTIVE = 0 THEN
+                                            74
+                                        END AS E_ENABLED,
+                                    CASE
+                                        WHEN C_DELETED = 0
+                                            OR C_DELETED IS NULL THEN
+                                            NULL
+                                        ELSE
+                                            75
+                                        END AS E_DELETED
+                             FROM vw_department DP) MDMS_DEPARTMENT
+                             LEFT JOIN TBL_DEPARTMENT TR_DEP
+                                       ON (MDMS_DEPARTMENT.C_CODE = TR_DEP.C_CODE AND
+                                           MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEP.C_PEOPLE_TYPE)
+                             LEFT JOIN vw_department mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                             LEFT JOIN TBL_DEPARTMENT TR_PARENT
+                                       ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
+                                           mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
+
+                    WHERE TR_DEP.ID IS NULL) NEW_
+                ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN NOT MATCHED THEN
+                    INSERT (ID,
+                            C_CODE,
+                            N_VERSION,
+                            C_ALIGNMENT,
+                            C_CORRECTION,
+                            C_CREATED_BY,
+                            C_END_DATE,
+                            C_GHESMAT_CODE,
+                            C_GHESMAT_TITLE,
+                            C_HOZE_CODE,
+                            C_HOZE_TITLE,
+                            C_ISSUABLE,
+                            C_LAST_MODIFIED_BY,
+                            C_LEGACY_CHANGE_DATE,
+                            C_LEGACY_CREATE_DATE,
+                            C_MOAVENAT_CODE,
+                            C_MOAVENAT_TITLE,
+                            C_NATURE,
+                            C_NEW_CODE,
+                            C_OLD_CODE,
+                            C_OMOR_CODE,
+                            C_OMOR_TITLE,
+                            C_PARENT_CODE,
+                            C_PEOPLE_TYPE,
+                            C_START_DATE,
+                            C_TITLE,
+                            C_TITLE_L,
+                            C_TYPE,
+                            C_USER,
+                            C_VAHED_CODE,
+                            C_VAHED_TITLE,
+                            D_CREATED_DATE,
+                            D_LAST_MODIFIED_DATE,
+                            E_DELETED,
+                            E_ENABLED,
+                            F_PARENT,
+                            C_MOJTAME_CODE,
+                            C_MOJTAME_TITLE)
+                        VALUES (SEQ_DEPARTMENT_ID.NEXTVAL,
+                                NEW_.MDMS_C_CODE,
+                                0,
+                                NEW_.MDMS_C_ALIGNMENT,
+                                NEW_.MDMS_C_CORRECTION,
+                                'HR',
+                                NEW_.MDMS_C_END_DATE,
+                                NEW_.MDMS_C_GHESMAT_CODE,
+                                NEW_.MDMS_C_GHESMAT_TITLE,
+                                NEW_.MDMS_C_HOZE_CODE,
+                                NEW_.MDMS_C_HOZE_TITLE,
+                                NEW_.MDMS_C_ISSUABLE,
+                                NULL,
+                                NEW_.MDMS_C_LEGACY_CHANGE_DATE,
+                                NEW_.MDMS_C_LEGACY_CREATE_DATE,
+                                NEW_.MDMS_C_MOAVENAT_CODE,
+                                NEW_.MDMS_C_MOAVENAT_TITLE,
+                                NEW_.MDMS_C_NATURE,
+                                NEW_.MDMS_C_NEW_CODE,
+                                NEW_.MDMS_C_OLD_CODE,
+                                NEW_.MDMS_C_OMOR_CODE,
+                                NEW_.MDMS_C_OMOR_TITLE,
+                                NEW_.MDMS_C_PARENT_CODE,
+                                NEW_.MDMS_C_PEOPLE_TYPE,
+                                NEW_.MDMS_C_START_DATE,
+                                NEW_.MDMS_C_TITLE,
+                                NEW_.MDMS_C_TITLE_L,
+                                NEW_.MDMS_C_TYPE,
+                                NEW_.MDMS_C_USER,
+                                NEW_.MDMS_C_VAHED_CODE,
+                                NEW_.MDMS_C_VAHED_TITLE,
+                                SYSDATE,
+                                NULL,
+                                NEW_.MDMS_E_DELETED,
+                                NEW_.MDMS_E_ENABLED,
+                                NEW_.MDMS_C_PARENT,
+                                NEW_.MDMS_C_MOJTAME_CODE,
+                                NEW_.MDMS_C_MOJTAME_TITLE);
+
+
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_GEO_WORK_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_GEO_WORK_MDMS AS
+
+            BEGIN
+    ------------UPDATE-------------------------------------------------------
+            MERGE INTO TBL_GEO_WORK T
+                USING (
+                    SELECT MDMS_GEO_WORK.C_CODE        AS MDMS_C_CODE,
+                           MDMS_GEO_WORK.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                           MDMS_GEO_WORK.C_TITLE    AS MDMS_C_TITLE_FA,
+                           TR_GEO_WORK.C_CODE          AS TR_C_CODE,
+                           TR_GEO_WORK.C_PEOPLE_TYPE   AS TR_C_PEOPLE_TYPE,
+                           TR_GEO_WORK.C_TITLE         AS TR_C_TITLE_FA
+                    FROM (SELECT C_CODE,
+                                 C_PEOPLE_TYPE,
+                                 NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE
+                          FROM TBL_MD_GEO_WORK_MDMS) MDMS_GEO_WORK
+                             INNER JOIN TBL_GEO_WORK TR_GEO_WORK
+                                        ON (MDMS_GEO_WORK.C_CODE = TR_GEO_WORK.C_CODE AND
+                                            MDMS_GEO_WORK.C_PEOPLE_TYPE = TR_GEO_WORK.C_PEOPLE_TYPE)
+                    WHERE TR_GEO_WORK.C_TITLE <> MDMS_GEO_WORK.C_TITLE
+                ) CHANGES_
+                ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET T.C_TITLE         = MDMS_C_TITLE_FA;
+            --------------INSERT-----------------------------------------------------
+            MERGE INTO TBL_GEO_WORK T
+                USING (
+                    SELECT MDMS_GEO_WORK.C_CODE        AS MDMS_C_CODE,
+                           MDMS_GEO_WORK.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                           MDMS_GEO_WORK.C_TITLE_FA    AS MDMS_C_TITLE_FA
+                    FROM (
+                             SELECT C_CODE,
+                                    C_PEOPLE_TYPE,
+                                    NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
+                             FROM TBL_MD_GEO_WORK_MDMS
+                             where c_code is not null
+                         ) MDMS_GEO_WORK
+                             LEFT JOIN TBL_GEO_WORK TR_GEO_WORK
+                                       ON (MDMS_GEO_WORK.C_CODE = TR_GEO_WORK.C_CODE AND
+                                           MDMS_GEO_WORK.C_PEOPLE_TYPE = TR_GEO_WORK.C_PEOPLE_TYPE)
+                    WHERE TR_GEO_WORK.ID IS NULL
+
+                ) NEW_
+                ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN NOT MATCHED THEN
+                    INSERT (ID,
+                            C_CODE,
+                            C_TITLE,
+                            C_PEOPLE_TYPE)
+                        VALUES (SEQ_POST_GRADE_ID.NEXTVAL,
+                                NEW_.MDMS_C_CODE,
+                                NEW_.MDMS_C_TITLE_FA,
+                                NEW_.MDMS_C_PEOPLE_TYPE);
+            END;
+            /
+
+
+
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_JOB_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_JOB_MDMS AS
+
+            BEGIN
+    ------------UPDATE-------------------------------------------------------
+            MERGE INTO TBL_JOB T
+                USING
+                    (SELECT MDMS_JOB.C_CODE        AS MDMS_C_CODE,
+                            MDMS_JOB.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                            MDMS_JOB.C_TITLE_FA    AS MDMS_C_TITLE_FA,
+                            TR_JOB.C_CODE          AS TR_C_CODE,
+                            TR_JOB.C_PEOPLE_TYPE   AS TR_C_PEOPLE_TYPE,
+                            TR_JOB.C_TITLE_FA      AS TR_C_TITLE_FA
+                     FROM (
+                              SELECT C_CODE,
+                                     C_PEOPLE_TYPE,
+                                     NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
+                              FROM TBL_MD_JOB_MDMS) MDMS_JOB
+                              INNER JOIN TBL_JOB TR_JOB
+                                         ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
+                     WHERE TR_JOB.C_TITLE_FA <> MDMS_JOB.C_TITLE_FA)
+                        CHANGES_
+                ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET T.C_TITLE_FA         = MDMS_C_TITLE_FA,
+                            T.E_ENABLED          = null,
+                            T.E_DELETED          = null,
+                            C_LAST_MODIFIED_BY   = 'HR',
+                            D_LAST_MODIFIED_DATE = SYSDATE,
+                            N_VERSION            = T.N_VERSION + 1;
+            --------------INSERT-----------------------------------------------------
+            MERGE INTO TBL_JOB T
+                USING (
+                    SELECT MDMS_JOB.C_CODE        AS MDMS_C_CODE,
+                           MDMS_JOB.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                           MDMS_JOB.C_TITLE_FA    AS MDMS_C_TITLE_FA
+                    FROM (
+                             SELECT C_CODE,
+                                    C_PEOPLE_TYPE,
+                                    NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
+
+
+                             FROM TBL_MD_JOB_MDMS
+                             WHERE
+                                 c_code is not null) MDMS_JOB
+                             LEFT JOIN TBL_JOB TR_JOB
+                                       ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
+                    WHERE TR_JOB.ID IS NULL) NEW_
+                ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN NOT MATCHED THEN
+                    INSERT (ID,
+                            C_CREATED_BY,
+                            D_CREATED_DATE,
+                            E_ENABLED,
+                            E_DELETED,
+                            N_VERSION,
+                            C_CODE,
+                            C_TITLE_FA,
+                            C_PEOPLE_TYPE)
+                        VALUES (SEQ_JOB_ID.NEXTVAL,
+                                'HR',
+                                SYSDATE,
+                                null,
+                                null,
+                                0,
+                                NEW_.MDMS_C_CODE,
+                                NEW_.MDMS_C_TITLE_FA,
+                                NEW_.MDMS_C_PEOPLE_TYPE);
+
+            END;
+            /
+
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_PERSONNEL_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
+
+            BEGIN------------UPDATE-------------------------------------------------------
+
+            MERGE INTO TBL_PERSONNEL T
+                USING (
+                    SELECT to_char(emp.c_em_number_10) AS personnel_no,
+                           emp.c_address               AS address,
+                           emp.c_ssn                   AS birth_certificate_no,
+                           emp.c_birthdate             AS birth_date,
+                           emp.c_birth_city            AS birth_place,
+                           emp.c_inc_dep_code          AS department_code,
+                           emp.c_inc_dep_title         AS department_title,
+                           emp.c_edu_lvl_title         AS education_level_title,
+                           emp.c_area_of_study         AS education_field_title,
+                           emp.c_emp_date              AS employment_date,
+                           emp.c_emp_status_id         AS employment_status_id,
+                           emp.c_father_name           AS father_name,
+                           emp.c_first_name            AS first_name,
+                           emp.c_last_name             AS last_name,
+                           emp.c_national_code         AS national_code,
+                           to_char(emp.c_em_number)    AS emp_no,
+                           emp.c_home_phone            AS phone,
+                           emp.post_code               AS post_code,
+                           emp.jobgrade             AS post_grade_code,
+                           emp.post_title              AS post_title,
+                           emp.p_type                  AS p_type,
+                           emp.f_department_id         AS f_department_id,
+                           emp.f_geo_id                AS f_geo_id,
+                           emp.f_post_id               AS f_post_id,
+                           emp.work_place_title        AS work_place_title,
+                           emp.c_username              AS c_username,
+                           0                           AS deleted,
+                           emp.ccp_affairs             AS ccp_affairs,
+                           emp.ccp_area                AS ccp_area,
+                           emp.ccp_assistant           AS ccp_assistant,
+                           emp.marital_status_title    AS marital_status_title,
+                           emp.gender_title            AS gender_title,
+                           emp.EMPLOYMENT_STATUS_TITLE AS EMPLOYMENT_STATUS_TITLE,
+                           emp.EMPLOYMENT_TYPE_TITLE   AS EMPLOYMENT_TYPE_TITLE,
+                           emp.ccp_code                AS ccp_code,
+                           emp.ccp_section             AS ccp_section,
+                           emp.ccp_title               AS ccp_title,
+                           emp.ccp_unit                AS ccp_unit,
+                           emp.company_name            AS company_name
+                    FROM (SELECT emp.*,
+                                 emp.c_official_post_pure_title AS post_title,
+                                 CASE
+                                     WHEN emp.p_type = 'ContractorPersonal' THEN
+                                         geo.c_title
+                                     ELSE
+                                         'شرکت ملي صنايع مس ايران'
+                                     END                        AS company_name,
+                                 CASE
+                                     WHEN emp.c_gender = 'MALE' THEN
+                                         'مرد'
+                                     WHEN emp.c_gender = 'FEMALE' THEN
+                                         'زن'
+                                     END                        AS gender_title,
+                                 CASE
+                                     WHEN emp.c_martial_status = 'SINGLE' THEN
+                                         'مجرد'
+                                     WHEN emp.c_martial_status = 'MARRIED' THEN
+                                         'متاهل'
+                                     END                        AS marital_status_title,
+                                 geo.c_title                    AS work_place_title,
+                                 stat.c_title                   AS EMPLOYMENT_STATUS_TITLE,
+                                 type.c_title                   AS EMPLOYMENT_TYPE_TITLE,
+                                 dep.c_omor_title               AS ccp_affairs,
+                                 dep.c_hoze_title               AS ccp_area,
+                                 dep.c_moavenat_title           AS ccp_assistant,
+                                 dep.c_code                     AS ccp_code,
+                                 dep.c_ghesmat_title            AS ccp_section,
+                                 dep.c_title                    AS ccp_title,
+                                 dep.id                         AS f_department_id,
+                                 geo.id                         AS f_geo_id,
+                                 post.id                        AS f_post_id,
+                                 dep.c_vahed_title              AS ccp_unit,
+                                 post.C_CODE                    AS post_code
+                                 --emp.p_type                   AS p_type
+                          FROM (select po.c_username,
+                                       po.C_BIRTH_CITY,
+                                       po.C_BIRTHDATE,
+                                       po.C_FATHER_NAME,
+                                       po.C_FIRST_NAME,
+                                       po.C_GENDER,
+                                       po.C_LAST_NAME,
+                                       po.C_MARTIAL_STATUS,
+                                       po.C_NATIONAL_CODE,
+                                       po.C_SSN,
+                                       e.C_ID,
+                                       e.C_EM_NUMBER,
+                                       e.C_EM_NUMBER_10,
+                                       e.C_LICENCE,
+                                       e.C_LICENCE_TITLE,
+                                       e.C_EDU_LVL_TITLE,
+                                       e.C_AREA_OF_STUDY,
+                                       e.C_LICENCE_ID,
+                                       e.C_FIELD_ID,
+                                       e.C_DEP_ID,
+                                       e.C_DEP_CODE,
+                                       e.C_DEP_TITLE,
+                                       e.C_INC_DEP_ID,
+                                       e.C_INC_DEP_TITLE,
+                                       e.C_INC_DEP_CODE,
+                                       e.C_JOB_CODE,
+                                       e.C_OFFICIAL_POST_PURE_TITLE,
+                                       e.jobgrade,
+                                       e.C_POST_ID,
+                                       e.C_ADDRESS,
+                                       e.P_TYPE,
+                                       e.C_PEOPLE_ID,
+                                       e.C_HOME_PHONE,
+                                       e.C_EMP_DATE,
+                                       e.C_GEO_ID,
+                                       e.C_EMP_TYPE_ID,
+                                       e.C_EMP_STATUS_ID,
+                                       e.C_WORK_TURN_ID,
+                                       e.C_WORK_EXPERIENCE_YEAR,
+                                       e.C_WORK_EXPERIENCE_MONTH,
+                                       e.C_WORK_EXPERIENCE_DAY,
+                                       e.C_LICENCE_CODE,
+                                       e.C_FIELD_CODE,
+                                       e.c_post_code
+                                FROM (select *
+                                      from (
+                                               select e.*,
+                                                      row_number() over (partition by e.c_people_id
+                                          order by c_id desc) as inx
+                                               from   tbl_md_employee_MDMS e
+                                           )
+                                      where inx = 1
+                                     ) e
+                                         inner join  tbl_md_people_MDMS po on po.c_id = e.c_people_id
+                               ) emp
+                                   LEFT JOIN   vw_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                                   LEFT JOIN tbl_department dep ON (mdms_dep.c_code = dep.c_code)
+                                   LEFT JOIN   tbl_md_geo_work_MDMS mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                                   LEFT JOIN TBL_GEO_WORK geo
+                                             on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
+                                   LEFT JOIN   tbl_md_employee_STATUS_MDMS stat ON emp.c_emp_status_id = stat.c_id
+                                   LEFT JOIN   TBL_MD_EMPLOYMENT_TYPE_MDMS type ON emp.c_emp_type_id = type.c_id
+                                   LEFT JOIN   TBL_MD_POST_MDMS mdms_post on mdms_post.c_id = emp.c_post_id
+                                   LEFT JOIN TBL_POST post
+                                             on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
+                         ) emp
+                             INNER JOIN (select * from TBL_PERSONNEL where DELETED = 0 and active = 1) TR_PERS
+                                        ON (emp.C_NATIONAL_CODE = TR_PERS.NATIONAL_CODE)
+                    where TR_PERS.personnel_no <> to_char(emp.c_em_number_10)
+                       OR (TR_PERS.personnel_no IS NULL
+                        AND to_char(emp.c_em_number_10) IS NOT NULL)
+                       OR (TR_PERS.personnel_no IS NOT NULL
+                        AND to_char(emp.c_em_number_10) IS NULL)
+                       OR TR_PERS.address <> address
+                       OR (TR_PERS.address IS NULL
+                        AND address IS NOT NULL)
+                       OR (TR_PERS.address IS NOT NULL
+                        AND address IS NULL)
+                       OR TR_PERS.birth_certificate_no <> birth_certificate_no
+                       OR (TR_PERS.birth_certificate_no IS NULL
+                        AND birth_certificate_no IS NOT NULL)
+                       OR (TR_PERS.birth_certificate_no IS NOT NULL
+                        AND birth_certificate_no IS NULL)
+                       OR TR_PERS.birth_date <> birth_date
+                       OR (TR_PERS.birth_date IS NULL
+                        AND birth_date IS NOT NULL)
+                       OR (TR_PERS.birth_date IS NOT NULL
+                        AND birth_date IS NULL)
+                       OR TR_PERS.birth_place <> birth_place
+                       OR (TR_PERS.birth_place IS NULL
+                        AND birth_place IS NOT NULL)
+                       OR (TR_PERS.birth_place IS NOT NULL
+                        AND birth_place IS NULL)
+                       OR TR_PERS.ccp_affairs <> emp.ccp_affairs
+                       OR (TR_PERS.ccp_affairs IS NULL
+                        AND emp.ccp_affairs IS NOT NULL)
+                       OR (TR_PERS.ccp_affairs IS NOT NULL
+                        AND emp.ccp_affairs IS NULL)
+                       OR TR_PERS.ccp_area <> emp.ccp_area
+                       OR (TR_PERS.ccp_area IS NULL
+                        AND emp.ccp_area IS NOT NULL)
+                       OR (TR_PERS.ccp_area IS NOT NULL
+                        AND emp.ccp_area IS NULL)
+                       OR TR_PERS.ccp_assistant <> emp.ccp_assistant
+                       OR (TR_PERS.ccp_assistant IS NULL
+                        AND emp.ccp_assistant IS NOT NULL)
+                       OR (TR_PERS.ccp_assistant IS NOT NULL
+                        AND emp.ccp_assistant IS NULL)
+                       OR TR_PERS.ccp_code <> emp.ccp_code
+                       OR (TR_PERS.ccp_code IS NULL
+                        AND emp.ccp_code IS NOT NULL)
+                       OR (TR_PERS.ccp_code IS NOT NULL
+                        AND emp.ccp_code IS NULL)
+                       OR TR_PERS.ccp_section <> emp.ccp_section
+                       OR (TR_PERS.ccp_section IS NULL
+                        AND emp.ccp_section IS NOT NULL)
+                       OR (TR_PERS.ccp_section IS NOT NULL
+                        AND emp.ccp_section IS NULL)
+                       OR TR_PERS.ccp_title <> emp.ccp_title
+                       OR (TR_PERS.ccp_title IS NULL
+                        AND emp.ccp_title IS NOT NULL)
+                       OR (TR_PERS.ccp_title IS NOT NULL
+                        AND emp.ccp_title IS NULL)
+                       OR TR_PERS.ccp_unit <> emp.ccp_unit
+                       OR (TR_PERS.ccp_unit IS NULL
+                        AND emp.ccp_unit IS NOT NULL)
+                       OR (TR_PERS.ccp_unit IS NOT NULL
+                        AND emp.ccp_unit IS NULL)
+                       OR TR_PERS.company_name <> emp.company_name
+                       OR (TR_PERS.company_name IS NULL
+                        AND emp.company_name IS NOT NULL)
+                       OR (TR_PERS.company_name IS NOT NULL
+                        AND emp.company_name IS NULL)
+                       OR TR_PERS.department_code <> department_code
+                       OR (TR_PERS.department_code IS NULL
+                        AND department_code IS NOT NULL)
+                       OR (TR_PERS.department_code IS NOT NULL
+                        AND department_code IS NULL)
+                       OR TR_PERS.department_title <> department_title
+                       OR (TR_PERS.department_title IS NULL
+                        AND department_title IS NOT NULL)
+                       OR (TR_PERS.department_title IS NOT NULL
+                        AND department_title IS NULL)
+                       OR TR_PERS.education_level_title <> emp.c_edu_lvl_title
+                       OR (TR_PERS.education_level_title IS NULL
+                        AND emp.c_edu_lvl_title IS NOT NULL)
+                       OR (TR_PERS.education_level_title IS NOT NULL
+                        AND emp.c_edu_lvl_title IS NULL)
+                       OR TR_PERS.education_field_title <> emp.c_area_of_study
+                       OR (TR_PERS.education_field_title IS NULL
+                        AND emp.c_area_of_study IS NOT NULL)
+                       OR (TR_PERS.education_field_title IS NOT NULL
+                        AND emp.c_area_of_study IS NULL)
+                       OR TR_PERS.employment_date <> emp.c_emp_date
+                       OR (TR_PERS.employment_date IS NULL
+                        AND emp.c_emp_date IS NOT NULL)
+                       OR (TR_PERS.employment_date IS NOT NULL
+                        AND emp.c_emp_date IS NULL)
+                       OR TR_PERS.employment_status_id <> emp.c_emp_status_id
+                       OR (TR_PERS.employment_status_id IS NULL
+                        AND emp.c_emp_status_id IS NOT NULL)
+                       OR (TR_PERS.employment_status_id IS NOT NULL
+                        AND emp.c_emp_status_id IS NULL)
+                       OR TR_PERS.EMPLOYMENT_STATUS_TITLE <> emp.EMPLOYMENT_STATUS_TITLE
+                       OR (TR_PERS.EMPLOYMENT_STATUS_TITLE IS NULL
+                        AND emp.EMPLOYMENT_STATUS_TITLE IS NOT NULL)
+                       OR (TR_PERS.EMPLOYMENT_STATUS_TITLE IS NOT NULL
+                        AND emp.EMPLOYMENT_STATUS_TITLE IS NULL)
+                       OR TR_PERS.EMPLOYMENT_TYPE_TITLE <> emp.EMPLOYMENT_TYPE_TITLE
+                       OR (TR_PERS.EMPLOYMENT_TYPE_TITLE IS NULL
+                        AND emp.EMPLOYMENT_TYPE_TITLE IS NOT NULL)
+                       OR (TR_PERS.EMPLOYMENT_TYPE_TITLE IS NOT NULL
+                        AND emp.EMPLOYMENT_TYPE_TITLE IS NULL)
+                       OR TR_PERS.father_name <> emp.c_father_name
+                       OR (TR_PERS.father_name IS NULL
+                        AND emp.c_father_name IS NOT NULL)
+                       OR (TR_PERS.father_name IS NOT NULL
+                        AND emp.c_father_name IS NULL)
+                       OR TR_PERS.first_name <> emp.c_first_name
+                       OR (TR_PERS.first_name IS NULL
+                        AND emp.c_first_name IS NOT NULL)
+                       OR (TR_PERS.first_name IS NOT NULL
+                        AND emp.c_first_name IS NULL)
+                       OR TR_PERS.gender_title <> emp.gender_title
+                       OR (TR_PERS.gender_title IS NULL
+                        AND emp.gender_title IS NOT NULL)
+                       OR (TR_PERS.gender_title IS NOT NULL
+                        AND emp.gender_title IS NULL)
+                       OR TR_PERS.last_name <> emp.c_last_name
+                       OR (TR_PERS.last_name IS NULL
+                        AND emp.c_last_name IS NOT NULL)
+                       OR (TR_PERS.last_name IS NOT NULL
+                        AND emp.c_last_name IS NULL)
+                       OR TR_PERS.marital_status_title <> emp.marital_status_title
+                       OR (TR_PERS.marital_status_title IS NULL
+                        AND emp.marital_status_title IS NOT NULL)
+                       OR (TR_PERS.marital_status_title IS NOT NULL
+                        AND emp.marital_status_title IS NULL)
+                       OR TR_PERS.national_code <> emp.c_national_code
+                       OR (TR_PERS.national_code IS NULL
+                        AND emp.c_national_code IS NOT NULL)
+                       OR (TR_PERS.national_code IS NOT NULL
+                        AND emp.c_national_code IS NULL)
+                       OR TR_PERS.emp_no <> to_char(emp.c_em_number)
+                       OR (TR_PERS.emp_no IS NULL
+                        AND to_char(emp.c_em_number) IS NOT NULL)
+                       OR (TR_PERS.emp_no IS NOT NULL
+                        AND to_char(emp.c_em_number) IS NULL)
+                       OR TR_PERS.phone <> emp.C_HOME_PHONE
+                       OR (TR_PERS.phone IS NULL
+                        AND emp.C_HOME_PHONE IS NOT NULL)
+                       OR (TR_PERS.phone IS NOT NULL
+                        AND emp.C_HOME_PHONE IS NULL)
+                       OR TR_PERS.post_code <> emp.post_code
+                       OR (TR_PERS.post_code IS NULL
+                        AND emp.post_code IS NOT NULL)
+                       OR (TR_PERS.post_code IS NOT NULL
+                        AND emp.post_code IS NULL)
+                       OR TR_PERS.post_grade_code <> emp.jobgrade
+                       OR (TR_PERS.post_grade_code IS NULL
+                        AND emp.jobgrade IS NOT NULL)
+                       OR (TR_PERS.post_grade_code IS NOT NULL
+                        AND emp.jobgrade IS NULL)
+                       OR TR_PERS.post_title <> emp.post_title
+                       OR (TR_PERS.post_title IS NULL
+                        AND emp.post_title IS NOT NULL)
+                       OR (TR_PERS.post_title IS NOT NULL
+                        AND emp.post_title IS NULL)
+                       OR TR_PERS.p_type <> emp.p_type
+                       OR (TR_PERS.p_type IS NULL
+                        AND emp.p_type IS NOT NULL)
+                       OR (TR_PERS.p_type IS NOT NULL
+                        AND emp.p_type IS NULL)
+                       OR TR_PERS.f_department_id <> emp.f_department_id
+                       OR (TR_PERS.f_department_id IS NULL
+                        AND emp.f_department_id IS NOT NULL)
+                       OR (TR_PERS.f_department_id IS NOT NULL
+                        AND emp.f_department_id IS NULL)
+                       OR TR_PERS.f_geo_id <> emp.f_geo_id
+                       OR (TR_PERS.f_geo_id IS NULL
+                        AND emp.f_geo_id IS NOT NULL)
+                       OR (TR_PERS.f_geo_id IS NOT NULL
+                        AND emp.f_geo_id IS NULL)
+                       OR TR_PERS.f_post_id <> emp.f_post_id
+                       OR (TR_PERS.f_post_id IS NULL
+                        AND emp.f_post_id IS NOT NULL)
+                       OR (TR_PERS.f_post_id IS NOT NULL
+                        AND emp.f_post_id IS NULL)
+                       OR TR_PERS.deleted <> deleted
+                       OR (TR_PERS.deleted IS NULL
+                        AND deleted IS NOT NULL)
+                       OR (TR_PERS.deleted IS NOT NULL
+                        AND deleted IS NULL)
+                       OR TR_PERS.work_place_title <> emp.work_place_title
+                       OR (TR_PERS.work_place_title IS NULL
+                        AND emp.work_place_title IS NOT NULL)
+                       OR (TR_PERS.work_place_title IS NOT NULL
+                        AND emp.work_place_title IS NULL)
+                       OR TR_PERS.c_username <> emp.c_username
+                       OR (TR_PERS.c_username IS NULL
+                        AND emp.c_username IS NOT NULL)
+                       OR (TR_PERS.c_username IS NOT NULL
+                        AND emp.c_username IS NULL)
+                ) CHANGES_
+                ON (CHANGES_.NATIONAL_CODE = T.NATIONAL_CODE and CHANGES_.deleted = T.DELETED)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET T.personnel_no            = CHANGES_.personnel_no,
+                            t.address                 = CHANGES_.address,
+                            t.birth_certificate_no    = CHANGES_.birth_certificate_no,
+                            t.birth_date              = CHANGES_.birth_date,
+                            t.birth_place             = CHANGES_.birth_place,
+                            t.ccp_affairs             = CHANGES_.ccp_affairs,
+                            t.ccp_area                = CHANGES_.ccp_area,
+                            t.ccp_assistant           = CHANGES_.ccp_assistant,
+                            t.ccp_code                = CHANGES_.ccp_code,
+                            t.ccp_section             = CHANGES_.ccp_section,
+                            t.ccp_title               = CHANGES_.ccp_title,
+                            t.ccp_unit                = CHANGES_.ccp_unit,
+                            t.company_name            = CHANGES_.company_name,
+                            t.department_code         = CHANGES_.department_code,
+                            t.department_title        = CHANGES_.department_title,
+                            t.education_level_title   = CHANGES_.education_level_title,
+                            t.education_field_title   = CHANGES_.education_field_title,
+                            t.employment_date         = CHANGES_.employment_date,
+                            t.employment_status_id    = CHANGES_.employment_status_id,
+                            t.EMPLOYMENT_STATUS_TITLE = CHANGES_.EMPLOYMENT_STATUS_TITLE,
+                            t.EMPLOYMENT_TYPE_TITLE   = CHANGES_.EMPLOYMENT_TYPE_TITLE,
+                            t.father_name             = CHANGES_.father_name,
+                            t.first_name              = CHANGES_.first_name,
+                            t.gender_title            = CHANGES_.gender_title,
+                            t.last_name               = CHANGES_.last_name,
+                            t.marital_status_title    = CHANGES_.marital_status_title,
+                            t.emp_no                  = CHANGES_.emp_no,
+                            t.phone                   = CHANGES_.phone,
+                            t.post_code               = CHANGES_.post_code,
+                            t.post_grade_code         = CHANGES_.post_grade_code,
+                            t.post_title              = CHANGES_.post_title,
+                            t.p_type                  = CHANGES_.p_type,
+                            t.f_department_id         = CHANGES_.f_department_id,
+                            t.f_geo_id                = CHANGES_.f_geo_id,
+                            t.f_post_id               = CHANGES_.f_post_id,
+                            t.work_place_title        = CHANGES_.work_place_title,
+                            t.c_username              = CHANGES_.c_username;
+
+--------------INSERT-----------------------------------------------------
+
+            MERGE INTO TBL_PERSONNEL T
+                USING (
+                    SELECT to_char(emp.c_em_number_10)    AS personnel_no,
+                           emp.c_address                  AS address,
+                           emp.c_ssn                      AS birth_certificate_no,
+                           emp.c_birthdate                AS birth_date,
+                           emp.c_birth_city               AS birth_place,
+                           emp.ccp_affairs,
+                           emp.ccp_area,
+                           emp.ccp_assistant,
+                           emp.ccp_code,
+                           emp.ccp_section,
+                           emp.ccp_title,
+                           emp.ccp_unit,
+                           emp.department_code            AS department_code,
+                           emp.c_inc_dep_title            AS department_title,
+                           emp.c_edu_lvl_title            AS education_level_title,
+                           emp.c_area_of_study            AS education_field_title,
+                           emp.c_emp_date                 AS employment_date,
+                           emp.c_emp_status_id            AS employment_status_id,
+                           emp.EMPLOYMENT_STATUS_TITLE,
+                           emp.EMPLOYMENT_TYPE_TITLE,
+                           emp.c_father_name              AS father_name,
+                           emp.c_first_name               AS first_name,
+                           emp.c_last_name                AS last_name,
+                           emp.c_national_code            AS national_code,
+                           to_char(emp.c_em_number)       AS emp_no,
+                           emp.c_home_phone               AS phone,
+                           emp.c_post_code                AS post_code,
+                           emp.jobgrade                AS post_grade_code,
+                           emp.c_official_post_pure_title AS post_title,
+                           emp.p_type                     AS p_type,
+                           --emp.c_inc_dep_id               AS f_department_id,
+                           --emp.c_geo_id                   AS f_geo_id,
+                           --emp.c_post_id                  AS f_post_id,
+                           emp.work_place_title           AS work_place_title,
+                           emp.c_username                 AS c_username,
+                           0                              AS deleted,
+                           emp.company_name               AS company_name,
+                           emp.gender_title               AS gender_title,
+                           emp.marital_status_title       AS marital_status_title,
+                           emp.f_geo_id                   AS f_geo_id,
+                           emp.f_department_id            AS f_department_id,
+                           emp.f_post_id                  AS f_post_id
+                    FROM (SELECT emp.*,
+                                 CASE
+                                     WHEN emp.p_type = 'ContractorPersonal' THEN
+                                         geo.c_title
+                                     ELSE
+                                         'شرکت ملي صنايع مس ايران'
+                                     END              AS company_name,
+                                 CASE
+                                     WHEN emp.c_gender = 'MALE' THEN
+                                         'مرد'
+                                     WHEN emp.c_gender = 'FEMALE' THEN
+                                         'زن'
+                                     END              AS gender_title,
+                                 CASE
+                                     WHEN emp.c_martial_status = 'SINGLE' THEN
+                                         'مجرد'
+                                     WHEN emp.c_martial_status = 'MARRIED' THEN
+                                         'متاهل'
+                                     END              AS marital_status_title,
+                                 geo.c_title          AS work_place_title,
+                                 stat.c_title         AS EMPLOYMENT_STATUS_TITLE,
+                                 type.c_title         AS EMPLOYMENT_TYPE_TITLE,
+                                 dep.c_omor_title     AS ccp_affairs,
+                                 dep.c_hoze_title     AS ccp_area,
+                                 dep.c_moavenat_title AS ccp_assistant,
+                                 dep.c_code           AS ccp_code,
+                                 dep.c_ghesmat_title  AS ccp_section,
+                                 dep.c_title          AS ccp_title,
+                                 dep.c_vahed_title    AS ccp_unit,
+                                 dep.c_code           AS department_code,
+                                 geo.id               AS f_geo_id,
+                                 dep.id               AS f_department_id,
+                                 post.id              As f_post_id
+                          FROM (select po.c_username,
+                                       po.C_BIRTH_CITY,
+                                       po.C_BIRTHDATE,
+                                       po.C_FATHER_NAME,
+                                       po.C_FIRST_NAME,
+                                       po.C_GENDER,
+                                       po.C_LAST_NAME,
+                                       po.C_MARTIAL_STATUS,
+                                       po.C_NATIONAL_CODE,
+                                       po.C_SSN,
+                                       e.C_ID,
+                                       e.C_EM_NUMBER,
+                                       e.C_EM_NUMBER_10,
+                                       e.C_LICENCE,
+                                       e.C_LICENCE_TITLE,
+                                       e.C_EDU_LVL_TITLE,
+                                       e.C_AREA_OF_STUDY,
+                                       e.C_LICENCE_ID,
+                                       e.C_FIELD_ID,
+                                       e.C_DEP_ID,
+                                       e.C_DEP_CODE,
+                                       e.C_DEP_TITLE,
+                                       e.C_INC_DEP_ID,
+                                       e.C_INC_DEP_TITLE,
+                                       e.C_INC_DEP_CODE,
+                                       e.C_JOB_CODE,
+                                       e.C_OFFICIAL_POST_PURE_TITLE,
+                                       e.JOBGRADE,
+                                       e.C_POST_ID,
+                                       e.C_ADDRESS,
+                                       e.P_TYPE,
+                                       e.C_PEOPLE_ID,
+                                       e.C_HOME_PHONE,
+                                       e.C_EMP_DATE,
+                                       e.C_GEO_ID,
+                                       e.C_EMP_TYPE_ID,
+                                       e.C_EMP_STATUS_ID,
+                                       e.C_WORK_TURN_ID,
+                                       e.C_WORK_EXPERIENCE_YEAR,
+                                       e.C_WORK_EXPERIENCE_MONTH,
+                                       e.C_WORK_EXPERIENCE_DAY,
+                                       e.C_LICENCE_CODE,
+                                       e.C_FIELD_CODE,
+                                       e.c_post_code
+                                FROM (select *
+                                      from (
+                                               select e.*,
+                                                      row_number() over (partition by e.c_people_id
+                                          order by c_id desc) as inx
+                                               from   tbl_md_employee_MDMS e)
+                                      where inx = 1) e
+                                         inner join   tbl_md_people_MDMS po on po.c_id = e.c_people_id
+                               ) emp
+                                   LEFT JOIN   vw_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                                   LEFT JOIN TBL_DEPARTMENT dep on mdms_dep.c_code = dep.C_CODE
+                                   LEFT JOIN   tbl_md_geo_work_MDMS mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                                   LEFT JOIN TBL_GEO_WORK geo
+                                             on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
+                                   LEFT JOIN   tbl_md_employee_STATUS_MDMS stat ON emp.c_emp_status_id = stat.c_id
+                                   LEFT JOIN   TBL_MD_EMPLOYMENT_TYPE_MDMS type ON emp.c_emp_type_id = type.c_id
+                                   LEFT JOIN   TBL_MD_POST_MDMS mdms_post on mdms_post.c_id = emp.c_post_id
+                                   LEFT JOIN TBL_POST post
+                                             on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
+                         ) emp
+                             LEFT JOIN (select * from TBL_PERSONNEL where DELETED = 0 and active = 1) TR_PERS
+                                       ON (emp.C_NATIONAL_CODE = TR_PERS.NATIONAL_CODE)
+                    where TR_PERS.id IS NULL) NEW_
+                ON (NEW_.NATIONAL_CODE = T.NATIONAL_CODE)
+                WHEN NOT MATCHED THEN
+                    INSERT (id,
+                            active,
+                            deleted,
+                            personnel_no,
+                            address,
+                            birth_certificate_no,
+                            birth_date,
+                            birth_place,
+                            ccp_affairs,
+                            ccp_area,
+                            ccp_assistant,
+                            ccp_code,
+                            ccp_section,
+                            ccp_title,
+                            ccp_unit,
+                            company_name,
+                            department_code,
+                            department_title,
+                            education_level_title,
+                            education_field_title,
+                            employment_date,
+                            employment_status_id,
+                            EMPLOYMENT_STATUS_TITLE,
+                            EMPLOYMENT_TYPE_TITLE,
+                            father_name,
+                            first_name,
+                            gender_title,
+                            last_name,
+                            marital_status_title,
+                            national_code,
+                            emp_no,
+                            phone,
+                            post_code,
+                            post_grade_code,
+                            post_title,
+                            p_type,
+                            f_department_id,
+                            f_geo_id,
+                            f_post_id,
+                            work_place_title,
+                            c_username)
+                        VALUES (SEQ_PERSONAL_ID.NEXTVAL,
+                                1,
+                                0,
+                                NEW_.personnel_no,
+                                NEW_.address,
+                                NEW_.birth_certificate_no,
+                                NEW_.birth_date,
+                                NEW_.birth_place,
+                                NEW_.ccp_affairs,
+                                NEW_.ccp_area,
+                                NEW_.ccp_assistant,
+                                NEW_.ccp_code,
+                                NEW_.ccp_section,
+                                NEW_.ccp_title,
+                                NEW_.ccp_unit,
+                                NEW_.company_name,
+                                NEW_.department_code,
+                                NEW_.department_title,
+                                NEW_.education_level_title,
+                                NEW_.education_field_title,
+                                NEW_.employment_date,
+                                NEW_.employment_status_id,
+                                NEW_.EMPLOYMENT_STATUS_TITLE,
+                                NEW_.EMPLOYMENT_TYPE_TITLE,
+                                NEW_.father_name,
+                                NEW_.first_name,
+                                NEW_.gender_title,
+                                NEW_.last_name,
+                                NEW_.marital_status_title,
+                                NEW_.national_code,
+                                NEW_.emp_no,
+                                NEW_.phone,
+                                NEW_.post_code,
+                                NEW_.post_grade_code,
+                                NEW_.post_title,
+                                NEW_.p_type,
+                                NEW_.f_department_id,
+                                NEW_.f_geo_id,
+                                NEW_.f_post_id,
+                                NEW_.work_place_title,
+                                NEW_.c_username);
+
+----------- UPDATE DELETED PERSONALS ----------------------
+
+            UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
+                                                              FROM TBL_PERSONNEL PRS_EXIST_TR
+                                                                       LEFT JOIN   tbl_md_employee_mdms PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
+                                                              WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
+
+
+
+
+            end;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_POST_GRADE_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_POST_GRADE_MDMS AS
+
+            BEGIN
+    ------------UPDATE-------------------------------------------------------
+            MERGE INTO TBL_POST_GRADE T
+                USING (
+                    (SELECT MDMS_POST_GRADE.C_CODE        AS MDMS_C_CODE,
+                            MDMS_POST_GRADE.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                            MDMS_POST_GRADE.C_TITLE_FA    AS MDMS_C_TITLE_FA,
+                            TR_POST_GRADE.C_CODE          AS TR_C_CODE,
+                            TR_POST_GRADE.C_PEOPLE_TYPE   AS TR_C_PEOPLE_TYPE,
+                            TR_POST_GRADE.C_TITLE_FA      AS TR_C_TITLE_FA
+                     FROM (
+                              SELECT C_CODE,
+                                     C_PEOPLE_TYPE,
+                                     NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
+                              FROM TBL_MD_POST_GRADE_MDMS
+                              WHERE c_code is not null
+                          ) MDMS_POST_GRADE
+                              INNER JOIN TBL_POST_GRADE TR_POST_GRADE
+                                         ON (MDMS_POST_GRADE.C_CODE = TR_POST_GRADE.C_CODE AND MDMS_POST_GRADE.C_PEOPLE_TYPE = TR_POST_GRADE.C_PEOPLE_TYPE)
+                     WHERE TR_POST_GRADE.C_TITLE_FA <> MDMS_POST_GRADE.C_TITLE_FA
+                        OR TR_POST_GRADE.C_PEOPLE_TYPE <> MDMS_POST_GRADE.C_PEOPLE_TYPE
+                        OR (TR_POST_GRADE.C_PEOPLE_TYPE IS NULL
+                         AND MDMS_POST_GRADE.C_PEOPLE_TYPE IS NOT NULL)
+                        OR (TR_POST_GRADE.C_PEOPLE_TYPE IS NOT NULL
+                         AND MDMS_POST_GRADE.C_PEOPLE_TYPE IS NULL)
+                    )
+                ) CHANGES_
+                ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET T.C_TITLE_FA         = MDMS_C_TITLE_FA,
+                            T.E_ENABLED          = null,
+                            T.E_DELETED          = null,
+                            C_LAST_MODIFIED_BY   = 'HR',
+                            D_LAST_MODIFIED_DATE = SYSDATE,
+                            N_VERSION            = T.N_VERSION + 1;
+            --------------INSERT-----------------------------------------------------
+            MERGE INTO TBL_POST_GRADE T
+                USING (
+                    SELECT MDMS_POST_GRADE.C_CODE        AS MDMS_C_CODE,
+                           MDMS_POST_GRADE.C_PEOPLE_TYPE AS MDMS_C_PEOPLE_TYPE,
+                           MDMS_POST_GRADE.C_TITLE_FA    AS MDMS_C_TITLE_FA
+                    FROM (
+                             SELECT C_CODE,
+                                    C_PEOPLE_TYPE,
+                                    NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
+                             FROM TBL_MD_POST_GRADE_MDMS
+                             WHERE
+                                 c_code is NOT null) MDMS_POST_GRADE
+                             LEFT JOIN TBL_POST_GRADE TR_POST_GRADE
+                                       ON (MDMS_POST_GRADE.C_CODE = TR_POST_GRADE.C_CODE AND MDMS_POST_GRADE.C_PEOPLE_TYPE = TR_POST_GRADE.C_PEOPLE_TYPE)
+                    WHERE TR_POST_GRADE.ID IS NULL) NEW_
+                ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN NOT MATCHED THEN
+                    INSERT (ID,
+                            C_CREATED_BY,
+                            D_CREATED_DATE,
+                            E_ENABLED,
+                            E_DELETED,
+                            N_VERSION,
+                            C_CODE,
+                            C_TITLE_FA,
+                            C_PEOPLE_TYPE)
+                        VALUES (SEQ_POST_GRADE_ID.NEXTVAL,
+                                'HR',
+                                SYSDATE,
+                                null,
+                                null,
+                                0,
+                                NEW_.MDMS_C_CODE,
+                                NEW_.MDMS_C_TITLE_FA,
+                                NEW_.MDMS_C_PEOPLE_TYPE);
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="namdari-hr-PRC_MERGE_TBL_POST_MDMS-job" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_MERGE_TBL_POST_MDMS AS
+
+            BEGIN
+    ------------UPDATE-------------------------------------------------------
+            MERGE INTO TBL_POST T
+                USING (
+                    SELECT MDMS_POST.C_CODE                 AS MDMS_C_CODE,
+                           MDMS_POST.C_TITLE_FA             AS MDMS_C_TITLE_FA,
+                           MDMS_POST.f_job_id               AS MDMS_f_job_id,
+                           MDMS_POST.f_department_id        AS MDMS_f_department_id,
+                           MDMS_POST.n_parent_id            AS MDMS_n_parent_id,
+                           MDMS_POST.c_area                 AS MDMS_c_area,
+                           MDMS_POST.c_mojtame_title        AS MDMS_c_mojtame_title,
+                           MDMS_POST.c_assistance           AS MDMS_c_assistance,
+                           MDMS_POST.c_affairs              AS MDMS_c_affairs,
+                           MDMS_POST.c_unit                 AS MDMS_c_unit,
+                           MDMS_POST.c_section              AS MDMS_c_section,
+                           MDMS_POST.c_cost_center_code     AS MDMS_c_cost_center_code,
+                           MDMS_POST.c_cost_center_title_fa AS MDMS_c_cost_center_title_fa,
+                           MDMS_POST.f_post_grade_id        AS MDMS_f_post_grade_id,
+                           MDMS_POST.C_PEOPLE_TYPE          AS C_PEOPLE_TYPE,
+                           TR_POST.C_CODE                   AS TR_C_CODE,
+                           TR_POST.C_TITLE_FA               AS TR_C_TITLE_FA,
+                           TR_POST.f_job_id                 AS TR_f_job_id,
+                           TR_POST.f_department_id          AS TR_f_department_id,
+                           TR_POST.n_parent_id              AS TR_n_parent_id,
+                           TR_POST.c_area                   AS TR_c_area,
+                           TR_POST.c_mojtame_title          AS TR_c_mojtame_title,
+                           TR_POST.c_assistance             AS TR_c_assistance,
+                           TR_POST.c_affairs                AS TR_c_affairs,
+                           TR_POST.c_unit                   AS TR_c_unit,
+                           TR_POST.c_section                AS TR_c_section,
+                           TR_POST.c_cost_center_code       AS TR_c_cost_center_code,
+                           TR_POST.c_cost_center_title_fa   AS TR_c_cost_center_title_fa,
+                           TR_POST.e_enabled                AS TR_e_enabled,
+                           TR_POST.e_deleted                AS TR_e_deleted
+                    FROM (
+                             SELECT post.c_code                               AS c_code,
+                                    nvl(post.c_title, 'null_' || post.c_code) AS c_title_fa,
+                                    post_grade.id                             AS f_post_grade_id,
+                                    job_.id                                   AS f_job_id,
+                                    post.c_people_type                        AS c_people_type,
+                                    dep.id                                    AS f_department_id,
+                                    parent_.id                                AS n_parent_id,
+                                    dep.c_hoze_title                          AS c_area,
+                                    dep.c_mojtame_title                       AS c_mojtame_title,
+                                    dep.c_moavenat_title                      AS c_assistance,
+                                    dep.c_omor_title                          AS c_affairs,
+                                    dep.c_vahed_title                         AS c_unit,
+                                    dep.c_ghesmat_title                       AS c_section,
+                                    dep.c_code                                AS c_cost_center_code,
+                                    dep.c_title                               AS c_cost_center_title_fa
+                             FROM TBL_MD_POST_MDMS post
+                                      left join vw_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                                      left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
+                                      left join TBL_MD_POST_grade_MDMS mdms_post_grade
+                                                on (post.c_grade_id = mdms_post_grade.c_id)
+                                      left join TBL_POST_GRADE post_grade
+                                                on (post_grade.c_code = mdms_post_grade.c_code and
+                                                    post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
+                                      left join TBL_md_job_MDMS MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                                      left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
+                                                                 job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
+                                      left join TBL_MD_POST_MDMS mdms_parent on mdms_parent.c_id = post.n_parent_id
+                                      left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
+                                                                     parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
+                         ) MDMS_POST
+                             INNER JOIN TBL_POST TR_POST
+                                        ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
+                    WHERE TR_POST.c_title_fa <> MDMS_POST.c_title_fa
+                       OR TR_POST.c_affairs <> MDMS_POST.c_affairs
+                       OR (TR_POST.c_affairs IS NULL
+                        AND MDMS_POST.c_affairs IS NOT NULL)
+                       OR (TR_POST.c_affairs IS NOT NULL
+                        AND MDMS_POST.c_affairs IS NULL)
+                       OR TR_POST.c_area <> MDMS_POST.c_area
+                       OR (TR_POST.c_area IS NULL
+                        AND MDMS_POST.c_area IS NOT NULL)
+                       OR (TR_POST.c_area IS NOT NULL
+                        AND MDMS_POST.c_area IS NULL)
+                       OR TR_POST.c_mojtame_title <> MDMS_POST.c_mojtame_title
+                       OR (TR_POST.c_mojtame_title IS NULL
+                        AND MDMS_POST.c_mojtame_title IS NOT NULL)
+                       OR (TR_POST.c_mojtame_title IS NOT NULL
+                        AND MDMS_POST.c_mojtame_title IS NULL)
+                       OR TR_POST.c_assistance <> MDMS_POST.c_assistance
+                       OR (TR_POST.c_assistance IS NULL
+                        AND MDMS_POST.c_assistance IS NOT NULL)
+                       OR (TR_POST.c_assistance IS NOT NULL
+                        AND MDMS_POST.c_assistance IS NULL)
+                       OR TR_POST.c_cost_center_title_fa <> MDMS_POST.c_cost_center_title_fa
+                       OR (TR_POST.c_cost_center_title_fa IS NULL
+                        AND MDMS_POST.c_cost_center_title_fa IS NOT NULL)
+                       OR (TR_POST.c_cost_center_title_fa IS NOT NULL
+                        AND MDMS_POST.c_cost_center_title_fa IS NULL)
+                       OR TR_POST.c_cost_center_code <> MDMS_POST.c_cost_center_code
+                       OR (TR_POST.c_cost_center_code IS NULL
+                        AND MDMS_POST.c_cost_center_code IS NOT NULL)
+                       OR (TR_POST.c_cost_center_code IS NOT NULL
+                        AND MDMS_POST.c_cost_center_code IS NULL)
+                       OR TR_POST.c_section <> MDMS_POST.c_section
+                       OR (TR_POST.c_section IS NULL
+                        AND MDMS_POST.c_section IS NOT NULL)
+                       OR (TR_POST.c_section IS NOT NULL
+                        AND MDMS_POST.c_section IS NULL)
+                       OR TR_POST.c_unit <> MDMS_POST.c_unit
+                       OR (TR_POST.c_unit IS NULL
+                        AND MDMS_POST.c_unit IS NOT NULL)
+                       OR (TR_POST.c_unit IS NOT NULL
+                        AND MDMS_POST.c_unit IS NULL)
+                       OR TR_POST.f_job_id <> MDMS_POST.f_job_id
+                       OR (TR_POST.f_job_id IS NULL
+                        AND MDMS_POST.f_job_id IS NOT NULL)
+                       OR (TR_POST.f_job_id IS NOT NULL
+                        AND MDMS_POST.f_job_id IS NULL)
+                       OR TR_POST.f_post_grade_id <> MDMS_POST.f_post_grade_id
+                       OR (TR_POST.f_post_grade_id IS NULL
+                        AND MDMS_POST.f_post_grade_id IS NOT NULL)
+                       OR (TR_POST.f_post_grade_id IS NOT NULL
+                        AND MDMS_POST.f_post_grade_id IS NULL)
+
+                       OR TR_POST.f_department_id <> MDMS_POST.f_department_id
+                       OR (TR_POST.f_department_id IS NULL
+                        AND MDMS_POST.f_department_id IS NOT NULL)
+                       OR (TR_POST.f_department_id IS NOT NULL
+                        AND MDMS_POST.f_department_id IS NULL)
+                       OR TR_POST.n_parent_id <> MDMS_POST.n_parent_id
+                       OR (TR_POST.n_parent_id IS NULL
+                        AND MDMS_POST.n_parent_id IS NOT NULL)
+                       OR (TR_POST.n_parent_id IS NOT NULL
+                        AND MDMS_POST.n_parent_id IS NULL)
+                ) CHANGES_
+                ON (CHANGES_.MDMS_C_CODE = T.C_CODE and CHANGES_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN MATCHED THEN
+                    UPDATE
+                        SET t.c_title_fa             = CHANGES_.MDMS_c_title_fa,
+                            t.c_affairs              = CHANGES_.MDMS_c_affairs,
+                            t.c_area                 = CHANGES_.MDMS_c_area,
+                            t.c_mojtame_title        = CHANGES_.MDMS_c_mojtame_title,
+                            t.c_assistance           = CHANGES_.MDMS_c_assistance,
+                            t.c_cost_center_code     = CHANGES_.MDMS_c_cost_center_code,
+                            t.c_cost_center_title_fa = CHANGES_.MDMS_c_cost_center_title_fa,
+                            t.c_section              = CHANGES_.MDMS_c_section,
+                            t.c_unit                 = CHANGES_.MDMS_c_unit,
+                            t.f_job_id               = CHANGES_.MDMS_f_job_id,
+                            t.f_post_grade_id        = CHANGES_.MDMS_f_post_grade_id,
+                            t.e_enabled              = NULL,
+                            t.e_deleted              = NULL,
+                            c_last_modified_by       = 'HR',
+                            d_last_modified_date     = sysdate,
+                            n_version                = t.n_version + 1,
+                            t.f_department_id        = CHANGES_.MDMS_f_department_id,
+                            t.n_parent_id            = CHANGES_.MDMS_n_parent_id;
+            ------------INSERT-------------------------------------------------------
+            MERGE INTO TBL_POST T
+                USING (
+                    SELECT MDMS_POST.*
+                    FROM (
+                             SELECT post.c_code                               AS c_code,
+                                    nvl(post.c_title, 'null_' || post.c_code) AS c_title_fa,
+                                    post_grade.id                             AS f_post_grade_id,
+                                    job_.id                                   AS f_job_id,
+                                    post.c_people_type                        AS c_people_type,
+                                    dep.id                                    AS f_department_id,
+                                    parent_.id                                AS n_parent_id,
+                                    dep.c_hoze_title                          AS c_area,
+                                    dep.c_mojtame_title                       AS c_mojtame_title,
+                                    dep.c_moavenat_title                      AS c_assistance,
+                                    dep.c_omor_title                          AS c_affairs,
+                                    dep.c_vahed_title                         AS c_unit,
+                                    dep.c_ghesmat_title                       AS c_section,
+                                    dep.c_code                                AS c_cost_center_code,
+                                    dep.c_title                               AS c_cost_center_title_fa
+                             FROM TBL_MD_POST_MDMS post
+                                      left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                                      left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
+                                      left join TBL_MD_POST_grade_MDMS mdms_post_grade
+                                                on (post.c_grade_id = mdms_post_grade.c_id)
+                                      left join TBL_POST_GRADE post_grade
+                                                on (post_grade.c_code = mdms_post_grade.c_code and
+                                                    post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
+                                      left join TBL_md_job_MDMS MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                                      left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
+                                                                 job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
+                                      left join TBL_MD_POST_MDMS mdms_parent on mdms_parent.c_id = post.n_parent_id
+                                      left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
+                                                                     parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
+                         ) MDMS_POST
+                             LEFT JOIN TBL_POST TR_POST
+                                       ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
+                    WHERE TR_POST.ID IS NULL
+                ) NEW_
+                ON (NEW_.C_CODE = T.C_CODE AND NEW_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
+                WHEN NOT MATCHED THEN
+                    INSERT (id, c_created_by, d_created_date, e_enabled, e_deleted, n_version, c_code, c_title_fa, c_affairs,
+                            c_area, c_mojtame_title, c_assistance, c_cost_center_title_fa, c_cost_center_code, c_section, c_unit,
+                            f_job_id, f_post_grade_id, c_people_type, f_department_id, n_parent_id)
+                        VALUES (SEQ_POST_ID.nextval, 'HR', sysdate, NULL, NULL, 0, NEW_.c_code,
+                                NEW_.c_title_fa, NEW_.c_affairs, NEW_.c_area, NEW_.c_mojtame_title, NEW_.c_assistance, NEW_.c_cost_center_title_fa,
+                                NEW_.c_cost_center_code, NEW_.c_section, NEW_.c_unit,
+                                NEW_.f_job_id, NEW_.f_post_grade_id, NEW_.c_people_type, NEW_.f_department_id, NEW_.n_parent_id);
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 

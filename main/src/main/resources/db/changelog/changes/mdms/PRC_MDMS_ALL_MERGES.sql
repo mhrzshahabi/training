@@ -1,4 +1,5 @@
 create PROCEDURE PRC_MDMS_ALL_MERGES AS
+
 BEGIN
     DECLARE
         err_code VARCHAR2(30);

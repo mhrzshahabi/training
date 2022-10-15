@@ -1,4 +1,5 @@
 create PROCEDURE PRC_MERGE_TBL_POST_MDMS AS
+
 BEGIN
     ------------UPDATE-------------------------------------------------------
 MERGE INTO TBL_POST T
