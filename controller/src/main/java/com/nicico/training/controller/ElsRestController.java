@@ -2964,13 +2964,13 @@ if (pageQuestionDto.getPageQuestion()!=null){
 
     }
 
-    @PostMapping("/teacher/class-to-els/")
-    public ElsExamResponse sendClassToEls(HttpServletRequest header, @RequestBody ElsExamCreateDTO dto) {
+    @GetMapping("/teacher/class-to-els/{classId}")
+    public ElsExamResponse sendClassToEls(HttpServletRequest header, @PathVariable("classId") Long classId) {
         ElsExamResponse elsExamResponse = new ElsExamResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                Tclass tclass = tclassService.getTClass(dto.getClassId());
+                Tclass tclass = tclassService.getTClass(classId);
                 ElsExamCreateDTO responseDto = tclassBeanMapper.toExamCreateDTO(tclass);
 
                 String courseCode = courseService.getCourse(tclass.getCourseId()).getCode();

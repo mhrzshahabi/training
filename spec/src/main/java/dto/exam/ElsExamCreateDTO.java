@@ -13,9 +13,9 @@ import lombok.experimental.Accessors;
 public class ElsExamCreateDTO {
     @ApiModelProperty(required = true)
     private Long classId;
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty
     private Long courseId;
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty
     private String courseCode;
     @ApiModelProperty
     private String examCode;
