@@ -37,7 +37,7 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.ClassCreateDTO;
+import dto.exam.ElsExamCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -2964,42 +2964,37 @@ if (pageQuestionDto.getPageQuestion()!=null){
 
     }
 
-    @GetMapping("/teacher/class-to-els/{classId}")
-    public ElsClassResponse sendClassToEls(HttpServletRequest header, @PathVariable Long classId) {
-        ElsClassResponse elsClassResponse = new ElsClassResponse();
+    @PostMapping("/teacher/class-to-els/")
+    public ElsExamResponse sendClassToEls(HttpServletRequest header, @RequestBody ElsExamCreateDTO dto) {
+        ElsExamResponse elsExamResponse = new ElsExamResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                Tclass tclass = tclassService.getTClass(classId);
-                ClassCreateDTO classCreateDTO = tclassBeanMapper.toClassCreateDTO(tclass);
+                Tclass tclass = tclassService.getTClass(dto.getClassId());
+                ElsExamCreateDTO responseDto = tclassBeanMapper.toExamCreateDTO(tclass);
 
-                classCreateDTO.setQuestionCount(0);
+                String courseCode = courseService.getCourse(tclass.getCourseId()).getCode();
+                responseDto.setCourseCode(courseCode);
 
-                String courseCode = courseService.getCourse(classCreateDTO.getCourseId()).getCode();
-                classCreateDTO.setCourseCode(courseCode);
-
-                if (tclass.getScoringMethod().equals("2")) {
-                    classCreateDTO.setScore(100d);
-                } else if (tclass.getScoringMethod().equals("3")) {
-                    classCreateDTO.setScore(20d);
-                } else {
-                    elsClassResponse.setStatus(400);
-                    elsClassResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
-                    return elsClassResponse;
+                if (!tclass.getScoringMethod().equals("2") && !tclass.getScoringMethod().equals("3")) {
+                    elsExamResponse.setStatus(400);
+                    elsExamResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
+                    return elsExamResponse;
                 }
 
-                elsClassResponse.setStatus(200);
-                elsClassResponse.setClassCreateDTO(classCreateDTO);
+                elsExamResponse.setStatus(200);
+                elsExamResponse.setMessage("successful");
+                elsExamResponse.setElsExamCreateDTO(responseDto);
 
             } catch (TrainingException ex) {
-                elsClassResponse.setStatus(HttpStatus.NOT_FOUND.value());
-                elsClassResponse.setMessage("کلاس مورد نظر یافت نشد");
+                elsExamResponse.setStatus(HttpStatus.NOT_FOUND.value());
+                elsExamResponse.setMessage("کلاس مورد نظر یافت نشد");
             }
         } else {
-            elsClassResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            elsClassResponse.setMessage("خطای شناسایی");
+            elsExamResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsExamResponse.setMessage("خطای شناسایی");
         }
 
-        return elsClassResponse;
+        return elsExamResponse;
     }
 }

@@ -1,10 +1,9 @@
 package com.nicico.training.mapper.tclass;
 
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.ClassStatus;
-import dto.exam.ClassCreateDTO;
+import dto.exam.ElsExamCreateDTO;
+import dto.exam.ExamCreateDTO;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
@@ -55,9 +54,12 @@ public interface TclassBeanMapper {
     TclassDTO.TClassDataService getTClassDataService(Tclass tclass);
 
     @Mappings({
-            @Mapping(target = "acceptanceLimit", source = "acceptancelimit")
+            @Mapping(target = "classId", source = "id"),
+            @Mapping(target = "name", source = "titleClass"),
+            @Mapping(target = "minimumAcceptScore", source = "acceptancelimit"),
+            @Mapping(target = "examCode", source = "code")
     })
-    ClassCreateDTO toClassCreateDTO(Tclass tclass);
+    ElsExamCreateDTO toExamCreateDTO(Tclass tclass);
 
     @Named("getStudentsCount")
     default Long getStudentsCount(Set<ClassStudent> classStudents){
@@ -123,5 +125,18 @@ public interface TclassBeanMapper {
       }
 
    }
+
+    @AfterMapping
+    default void setScoreAndQuestionCount(@MappingTarget ElsExamCreateDTO elsExamCreateDTO, Tclass tclass) {
+        elsExamCreateDTO.setQuestionCount(0);
+
+        if (tclass.getScoringMethod() != null) {
+            if (tclass.getScoringMethod().equals("2")) {
+                elsExamCreateDTO.setScore(100d);
+            } else if (tclass.getScoringMethod().equals("3")) {
+                elsExamCreateDTO.setScore(20d);
+            }
+        }
+    }
 
 }

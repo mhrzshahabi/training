@@ -1,6 +1,6 @@
 package request.exam;
 
-import dto.exam.ClassCreateDTO;
+import dto.exam.ElsExamCreateDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +9,6 @@ import response.BaseResponse;
 @Setter
 @Getter
 @ToString
-public class ElsClassResponse extends BaseResponse {
-    private ClassCreateDTO classCreateDTO;
+public class ElsExamResponse extends BaseResponse {
+    private ElsExamCreateDTO elsExamCreateDTO;
 }
