@@ -22,19 +22,7 @@ public class ElsExamCreateDTO {
     @ApiModelProperty
     private String name;
     @ApiModelProperty
-    private Long examStartDate;
-    @ApiModelProperty
-    private Long examEndDate;
-    @ApiModelProperty
-    private Integer questionCount;
-    @ApiModelProperty
-    private Double practicalScore;
-    @ApiModelProperty
     private Double score;
     @ApiModelProperty
     private Double minimumAcceptScore;
-    @ApiModelProperty
-    private Integer duration;
-    @ApiModelProperty
-    private String method;
 }
