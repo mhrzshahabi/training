@@ -19,6 +19,10 @@ public interface RequestDAO extends JpaRepository<Request, Long> {
 
     List<Request> findAllByStatus(RequestStatus status);
 
+    Optional<Request> findByProcessInstanceId(String processInstanceId);
+
+    Optional<Request> findFirstByProcessInstanceId(String processInstanceId);
+
     List<Request> findAllByType(RequestType type);
 
     List<Request> findAllByNationalCodeAndType(String nationalCode, RequestType requestType);

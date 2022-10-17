@@ -2,7 +2,6 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
@@ -36,11 +35,10 @@ import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh;
 @RequiredArgsConstructor
 public class StudentService implements IStudentService {
 
-    private final ModelMapper modelMapper;
     private final StudentDAO studentDAO;
-    private final DateUtil dateUtil;
-    private final ITeacherRoleService iTeacherRoleService;
+    private final ModelMapper modelMapper;
     private final IPersonnelService personnelService;
+    private final ITeacherRoleService iTeacherRoleService;
     private final IPersonnelRegisteredService personnelRegisteredService;
 
     @Transactional(readOnly = true)
@@ -285,4 +283,11 @@ public class StudentService implements IStudentService {
     public List<Student> getTestStudentList() {
         return studentDAO.getTestStudentList();
     }
+
+    @Override
+    public StudentDTO.TrainingCertificationDetail getTrainingCertificationDetail(String nationalCode, Long classId) {
+        Optional<Student> optionalStudent = studentDAO.getTrainingCertificationDetail(nationalCode, classId);
+        return optionalStudent.map(student -> modelMapper.map(student, StudentDTO.TrainingCertificationDetail.class)).orElse(null);
+    }
+
 }

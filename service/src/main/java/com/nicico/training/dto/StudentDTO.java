@@ -331,4 +331,13 @@ public class StudentDTO {
         private String nationalCode;
         private boolean hasPreparationTest;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("TrainingCertificationDetail")
+    public static class TrainingCertificationDetail {
+        private String peopleType;
+        private String companyName;
+    }
 }

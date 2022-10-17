@@ -183,6 +183,16 @@
                     showRequestItemProcessStatusToPlanningChiefForApproval(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
                     showRequestItemProcessToAppointmentExpert(record);
+                else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول صدور گواهی نامه"))
+                    showTrainingCertificationProcessToCertificationResponsible(record);
+                else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول مالی"))
+                    showTrainingCertificationProcessToFinancialResponsible(record);
+                else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی نهایی مسئول صدور گواهی نامه"))
+                    showTrainingCertificationProcessToCertificationResponsibleForApproval(record);
+                else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("تایید مدیر آموزش مجتمع"))
+                    showTrainingCertificationProcessToTrainingManager(record);
+                else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("در انتظار صدور گواهی نامه"))
+                    showTrainingCertificationProcessToCertificationResponsibleForIssuing(record);
                 else
                     showProcessAndCompletion(record);
             }
@@ -195,7 +205,10 @@
             if (record == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                reAssignTask(record);
+                if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول صدور گواهی نامه"))
+                    reAssignTrainingCertificationTask(record);
+                else
+                    reAssignTask(record);
             }
         }
     });
@@ -2019,6 +2032,590 @@
             Window_RequestItem_Appointment_Expert_Completion.show();
         }
     }
+    function showTrainingCertificationProcessToCertificationResponsible(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_TrainingCertification_Certification_Responsible = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        type: "RowSpacerItem"
+                    },
+                    {
+                        name: "payment",
+                        title: "",
+                        showTitle: false,
+                        value: "آیا نیاز به پرداخت هزینه دارد؟",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_TrainingCertification_Certification_Responsible_Yes = isc.IButton.create({
+                title: "بله",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByCertificationResponsibleToYes(record, Window_TrainingCertification_Certification_Responsible_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Certification_Responsible_No = isc.IButton.create({
+                title: "خیر",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByCertificationResponsibleToNo(record, Window_TrainingCertification_Certification_Responsible_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Certification_Responsible_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_TrainingCertification_Certification_Responsible_Completion.close();
+                }
+            });
+            let HLayout_TrainingCertification_Certification_Responsible = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_TrainingCertification_Certification_Responsible_Yes,
+                    Button_TrainingCertification_Certification_Responsible_No,
+                    Button_TrainingCertification_Certification_Responsible_Close
+                ]
+            });
+            let Window_TrainingCertification_Certification_Responsible_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "25%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_TrainingCertification_Certification_Responsible,
+                    HLayout_TrainingCertification_Certification_Responsible
+                ]
+            });
+
+            DynamicForm_TrainingCertification_Certification_Responsible.setValue("title", record.title);
+            DynamicForm_TrainingCertification_Certification_Responsible.setValue("createBy", record.createBy);
+
+            Window_TrainingCertification_Certification_Responsible_Completion.show();
+        }
+    }
+    function showTrainingCertificationProcessToFinancialResponsible(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let Window_TrainingCertification_Financial_Responsible_Return = isc.Window.create({
+                title: "عودت",
+                autoSize: false,
+                width: "30%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    isc.DynamicForm.create({
+                        ID: "reason",
+                        width: "100%",
+                        height: "75%",
+                        autoFocus: "true",
+                        cellPadding: 5,
+                        fields: [
+                            {
+                                name: "returnReason",
+                                title: "دلیل عودت",
+                                type: "text",
+                                required: true,
+                                validators: [{
+                                    validateOnExit: true,
+                                    type: "lengthRange",
+                                    min: 1,
+                                    max: 250,
+                                    stopOnError: true,
+                                    errorMessage: "حداکثر تعداد کاراکتر مجاز 250 می باشد. "
+                                }]
+                            }
+                        ]
+                    }),
+                    isc.HLayout.create({
+                        width: "100%",
+                        height: "25%",
+                        align: "center",
+                        membersMargin: 10,
+                        members: [
+                            isc.Button.create({
+                                title: "<spring:message code='global.ok'/>",
+                                click: function () {
+                                    if (!reason.validate())
+                                        return;
+
+                                    let baseUrl = trainingCertificationBPMSUrl;
+                                    let url = "/processes/financial-responsible/training-certification/cancel-process";
+                                    let var_data = {
+                                        "returnReason": reason.getField("returnReason").getValue(),
+                                    };
+                                    let reviewTaskRequest = {
+                                        taskId: record.taskId,
+                                        userName: userUserName,
+                                        approve: false,
+                                        processInstanceId: record.processInstanceId,
+                                        variables: var_data
+                                    };
+                                    let data = {
+                                        reviewTaskRequest: reviewTaskRequest,
+                                        reason: reason.getField("returnReason").getValue()
+                                    }
+
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url  , "POST", JSON.stringify(data), function (resp) {
+                                        wait.close();
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                                        } else {
+                                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                        }
+                                    }));
+                                    Window_TrainingCertification_Financial_Responsible_Completion.close();
+                                    Window_TrainingCertification_Financial_Responsible_Return.close();
+                                }
+                            }),
+                            isc.Button.create({
+                                title: "<spring:message code='cancel'/>",
+                                click: function () {
+                                    Window_TrainingCertification_Financial_Responsible_Return.close();
+                                }
+                            })
+                        ]
+                    })
+                ]
+            });
+            let DynamicForm_TrainingCertification_Financial_Responsible = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_TrainingCertification_Financial_Responsible_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByFinancialResponsible(record, Window_TrainingCertification_Financial_Responsible_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Financial_Responsible_Return = isc.IButton.create({
+                title: "عودت",
+                align: "center",
+                width: "120",
+                click: function () {
+                    Window_TrainingCertification_Financial_Responsible_Return.show();
+                }
+            });
+            let Button_TrainingCertification_Financial_Responsible_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_TrainingCertification_Financial_Responsible_Completion.close();
+                }
+            });
+            let HLayout_TrainingCertification_Financial_Responsible = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_TrainingCertification_Financial_Responsible_Confirm,
+                    Button_TrainingCertification_Financial_Responsible_Return,
+                    Button_TrainingCertification_Financial_Responsible_Close
+                ]
+            });
+            let Window_TrainingCertification_Financial_Responsible_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_TrainingCertification_Financial_Responsible,
+                    HLayout_TrainingCertification_Financial_Responsible
+                ]
+            });
+
+            DynamicForm_TrainingCertification_Financial_Responsible.setValue("title", record.title);
+            DynamicForm_TrainingCertification_Financial_Responsible.setValue("createBy", record.createBy);
+
+            Window_TrainingCertification_Financial_Responsible_Completion.show();
+        }
+    }
+    function showTrainingCertificationProcessToCertificationResponsibleForApproval(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_TrainingCertification_Certification_Responsible_Approval = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_TrainingCertification_Certification_Responsible_Approval_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByCertificationResponsibleForApproval(record, Window_TrainingCertification_Certification_Responsible_Approval_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Certification_Responsible_Approval_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_TrainingCertification_Certification_Responsible_Approval_Completion.close();
+                }
+            });
+            let HLayout_TrainingCertification_Certification_Responsible_Approval = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_TrainingCertification_Certification_Responsible_Approval_Confirm,
+                    Button_TrainingCertification_Certification_Responsible_Approval_Close
+                ]
+            });
+            let Window_TrainingCertification_Certification_Responsible_Approval_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_TrainingCertification_Certification_Responsible_Approval,
+                    HLayout_TrainingCertification_Certification_Responsible_Approval
+                ]
+            });
+
+            DynamicForm_TrainingCertification_Certification_Responsible_Approval.setValue("title", record.title);
+            DynamicForm_TrainingCertification_Certification_Responsible_Approval.setValue("createBy", record.createBy);
+
+            Window_TrainingCertification_Certification_Responsible_Approval_Completion.show();
+        }
+    }
+    function showTrainingCertificationProcessToTrainingManager(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_TrainingCertification_Training_Manager = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_TrainingCertification_Training_Manager_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByTrainingManager(record, Window_TrainingCertification_Training_Manager_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Training_Manager_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_TrainingCertification_Training_Manager_Completion.close();
+                }
+            });
+            let HLayout_TrainingCertification_Training_Manager = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_TrainingCertification_Training_Manager_Confirm,
+                    Button_TrainingCertification_Training_Manager_Close
+                ]
+            });
+            let Window_TrainingCertification_Training_Manager_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_TrainingCertification_Training_Manager,
+                    HLayout_TrainingCertification_Training_Manager
+                ]
+            });
+
+            DynamicForm_TrainingCertification_Training_Manager.setValue("title", record.title);
+            DynamicForm_TrainingCertification_Training_Manager.setValue("createBy", record.createBy);
+
+            Window_TrainingCertification_Training_Manager_Completion.show();
+        }
+    }
+    function showTrainingCertificationProcessToCertificationResponsibleForIssuing(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_TrainingCertification_Certification_Responsible_Issuing = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_TrainingCertification_Certification_Responsible_Issuing_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index === 0) {
+                                confirmTrainingCertificationProcessByCertificationResponsibleForIssuing(record, Window_TrainingCertification_Certification_Responsible_Issuing_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_TrainingCertification_Certification_Responsible_Issuing_Download = isc.IButton.create({
+                title: "دانلود گواهی نامه",
+                align: "center",
+                width: "140",
+                click: function () {
+                    downloadTrainingCertification(record, Window_TrainingCertification_Certification_Responsible_Issuing_Completion);
+                }
+            });
+            let Button_TrainingCertification_Certification_Responsible_Issuing_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_TrainingCertification_Certification_Responsible_Issuing_Completion.close();
+                }
+            });
+            let HLayout_TrainingCertification_Certification_Responsible_Issuing = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_TrainingCertification_Certification_Responsible_Issuing_Confirm,
+                    Button_TrainingCertification_Certification_Responsible_Issuing_Download,
+                    Button_TrainingCertification_Certification_Responsible_Issuing_Close
+                ]
+            });
+            let Window_TrainingCertification_Certification_Responsible_Issuing_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_TrainingCertification_Certification_Responsible_Issuing,
+                    HLayout_TrainingCertification_Certification_Responsible_Issuing
+                ]
+            });
+
+            DynamicForm_TrainingCertification_Certification_Responsible_Issuing.setValue("title", record.title);
+            DynamicForm_TrainingCertification_Certification_Responsible_Issuing.setValue("createBy", record.createBy);
+
+            Window_TrainingCertification_Certification_Responsible_Issuing_Completion.show();
+        }
+    }
 
     function showGroupExcelParallelRequestItemProcess(records) {
 
@@ -2433,6 +3030,145 @@
             }
         }));
     }
+    function confirmTrainingCertificationProcessByCertificationResponsibleToYes(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/certification-responsible-yes/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmTrainingCertificationProcessByCertificationResponsibleToNo(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/certification-responsible-no/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmTrainingCertificationProcessByFinancialResponsible(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/financial-responsible/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmTrainingCertificationProcessByCertificationResponsibleForApproval(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/certification-responsible-approval/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmTrainingCertificationProcessByTrainingManager(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/training-manager/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmTrainingCertificationProcessByCertificationResponsibleForIssuing(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/tasks/certification-responsible-issuing/training-certification/review";
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function downloadTrainingCertification(record, window) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/download/training-certification";
+
+        // wait.show();
+        // isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+        //     wait.close();
+        //     let response = JSON.parse(resp.httpResponseText);
+        //     window.close();
+        //     createDialog("info", response.message);
+        //     ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        // }));
+    }
 
     function confirmGroupProcess(records) {
 
@@ -2664,6 +3400,33 @@
                 ToolStripButton_Refresh_Processes_UserPortfolio.click();
             }));
         }
+    }
+    function reAssignTrainingCertificationTask(record) {
+
+        let baseUrl = trainingCertificationBPMSUrl;
+        let url = "/processes/training-certification/reAssign-process";
+        let map_data = {
+            "returnReason": null,
+        };
+        let reviewTaskRequest = {
+            variables: map_data,
+            processInstanceId: record.processInstanceId,
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+        };
+        let data = {
+            reviewTaskRequest: reviewTaskRequest,
+            reason: null,
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
     }
     function showExpertsOpinion(processRecord) {
 

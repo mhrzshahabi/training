@@ -4,11 +4,11 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AnswerReqVM;
 import com.nicico.training.dto.RequestResVM;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IRequestService;
+import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.mapper.request.RequestAuditMapper;
 import com.nicico.training.model.RequestAudit;
-import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.enums.RequestStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,30 +25,31 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/request")
 public class RequestController {
-    private final IRequestService iRequestService;
+    private final IStudentService studentService;
+    private final IRequestService requestService;
     private final RequestAuditMapper requestAuditMapper;
 
     @GetMapping("/all")
     public ResponseEntity<List<RequestResVM>> findAll() {
-        List<RequestResVM> all = iRequestService.findAll();
+        List<RequestResVM> all = requestService.findAll();
         return ResponseEntity.ok(all);
     }
 
     @PutMapping("/change-status")
-    public ResponseEntity<RequestResVM> changeStatus(@RequestParam RequestStatus status,@RequestParam String reference) {
-        RequestResVM requestResVM = iRequestService.changeStatus(reference, status);
+    public ResponseEntity<RequestResVM> changeStatus(@RequestParam RequestStatus status, @RequestParam String reference) {
+        RequestResVM requestResVM = requestService.changeStatus(reference, status);
         return ResponseEntity.ok(requestResVM);
     }
 
     @DeleteMapping
     public ResponseEntity<Boolean> remove(@RequestParam String reference) {
-        boolean aBoolean = iRequestService.remove(reference);
+        boolean aBoolean = requestService.remove(reference);
         return ResponseEntity.ok(aBoolean);
     }
 
     @PostMapping("/answer")
     public ResponseEntity<RequestResVM> answer(@RequestBody AnswerReqVM answerReqVM) {
-        RequestResVM requestResVM = iRequestService.answerRequest(answerReqVM.getReference(), answerReqVM.getResponse(), answerReqVM.getRequestStatus());
+        RequestResVM requestResVM = requestService.answerRequest(answerReqVM.getReference(), answerReqVM.getResponse(), answerReqVM.getRequestStatus());
         return ResponseEntity.ok(requestResVM);
     }
 
@@ -56,7 +57,7 @@ public class RequestController {
     @GetMapping(value = "/list")
     public ResponseEntity<ISC<RequestResVM>> requests(HttpServletRequest iscRq) throws IOException {
 
-        List<RequestResVM> all = iRequestService.findAll();
+        List<RequestResVM> all = requestService.findAll();
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
 
         SearchDTO.SearchRs<RequestResVM> searchRs = new SearchDTO.SearchRs<>();
@@ -65,13 +66,18 @@ public class RequestController {
 
         ISC<RequestResVM> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
 
+    @Loggable
+    @GetMapping(value = "/show-detail-training-certification/{nationalCode}/{classId}")
+    public ResponseEntity<StudentDTO.TrainingCertificationDetail> showTrainingCertificationDetail(@PathVariable String nationalCode, @PathVariable Long classId) {
+        return ResponseEntity.ok(studentService.getTrainingCertificationDetail(nationalCode, classId));
     }
 
     @Loggable
     @GetMapping(value="/audit/{requestId}")
     public ResponseEntity<RequestResVM.InfoForAudit.RequestAuditSpecRs> getRequestAuditData(@PathVariable Long requestId){
-        List<RequestAudit> list=iRequestService.getAuditData(requestId);
+        List<RequestAudit> list = requestService.getAuditData(requestId);
         List<RequestResVM.InfoForAudit> dto=requestAuditMapper.toRequestResponse(list);
         final RequestResVM.SpecAuditRs specResponse=new RequestResVM.SpecAuditRs();
         final RequestResVM.RequestAuditSpecRs specRs=new RequestResVM.RequestAuditSpecRs();

@@ -52,4 +52,6 @@ public interface IStudentService {
     List<Student> getAllStudentsOfClassByClassCode(String classCode);
 
     List<Long> findOneClassByNationalCodeInClass(String nationalCode, Long classId);
+
+    StudentDTO.TrainingCertificationDetail getTrainingCertificationDetail(String nationalCode, Long classId);
 }

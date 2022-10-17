@@ -1340,6 +1340,7 @@
     const minIoUrl = rootUrl + "/minIo";
     const bpmsUrl = rootUrl + "/bpms" ;
     const requestItemBPMSUrl = rootUrl + "/certification-bpms" ;
+    const trainingCertificationBPMSUrl = rootUrl + "/training-certification-bpms" ;
     const systemStatusUrl = rootUrl + "/system-status";
     const addIndividualPost = rootUrl + "/view-training-post/add";
     const addNeedAssmentForGaps = rootUrl + "/needsAssessmentWithGap/addSkills";
