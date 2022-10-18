@@ -70,4 +70,5 @@ public interface IPersonnelService {
 
     boolean changeEmploymentDate(Long id);
 
+    boolean isPresentByNationalCodeAndActiveAndDeleted(String nationalCode);
 }
