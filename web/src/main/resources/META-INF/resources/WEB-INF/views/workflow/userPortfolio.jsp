@@ -1131,7 +1131,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
@@ -1281,7 +1281,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
@@ -1436,7 +1436,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
@@ -1586,7 +1586,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
@@ -1736,7 +1736,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
@@ -1886,7 +1886,7 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses.length !== 0)
+                    if (resp.courses !== undefined && resp.courses.length !== 0)
                         ListGrid_RequestItem_Show_Courses.setData(resp.courses);
                     else
                         ListGrid_RequestItem_Show_Courses.setData([]);
