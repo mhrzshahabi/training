@@ -215,10 +215,10 @@ public class PersonnelRegisteredRestController {
     @Loggable
     @PostMapping(value = "/addList")
 //    @PreAuthorize("hasAuthority('c_personnelRegistered')")
-    public ResponseEntity<String> createList( @RequestBody List<PersonnelRegisteredDTO> requests) {
+    public ResponseEntity< List<PersonnelRegistered>> createList( @RequestBody List<PersonnelRegisteredDTO> requests) {
         List<PersonnelRegistered> list=personnelRegisterBeanMapper.toPersonnelRegisteredList(requests);
-        personnelRegisteredService.createList(list);
-        return new ResponseEntity<>("added successful", HttpStatus.CREATED);
+        List<PersonnelRegistered> wrongContactInfosList = personnelRegisteredService.createList(list);
+        return new ResponseEntity<>(wrongContactInfosList, HttpStatus.OK);
     }
 
     @Loggable

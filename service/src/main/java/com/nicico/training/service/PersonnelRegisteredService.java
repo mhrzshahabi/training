@@ -69,19 +69,26 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     }
 
     @Override
-    public void createList(List<PersonnelRegistered> requests) {
+    public List<PersonnelRegistered> createList(List<PersonnelRegistered> requests) {
+
+        List<PersonnelRegistered> wrongContactInfosList = new ArrayList<>();
+
         for (PersonnelRegistered personnelRegistered : requests) {
-            List<PersonnelRegistered> personnelRegistereds = personnelRegisteredDAO.findAllByMobile(personnelRegistered.getContactInfo().getMobile());
-            if (personnelRegistereds.isEmpty()) {
+            List<PersonnelRegistered> personnelRegisters = personnelRegisteredDAO.findAllByMobile(personnelRegistered.getContactInfo().getMobile());
+            if (personnelRegisters.isEmpty()) {
                 ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
                 personnelRegistered.setContactInfo(contactInfo);
             } else {
                 personnelRegistered.setContactInfo(null);
+                wrongContactInfosList.add(personnelRegistered);
             }
             personnelRegistered.setActive(1);
-            save(personnelRegistered);
+            if (personnelRegistered.getContactInfo() != null) {
+                save(personnelRegistered);
+            }
         }
 
+        return wrongContactInfosList;
     }
 
     @Transactional
@@ -176,8 +183,12 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     // ------------------------------
 
     private PersonnelRegisteredDTO.Info save(PersonnelRegistered personnelRegistered) {
-        ContactInfo contactInfo = contactInfoDAO.save(personnelRegistered.getContactInfo());
-        personnelRegistered.setContactInfo(contactInfo);
+        ContactInfo contactInfo = personnelRegistered.getContactInfo() ;
+        if (contactInfo != null) {
+            ContactInfo savedData=   contactInfoDAO.save(contactInfo);
+            personnelRegistered.setContactInfo(savedData);
+        }
+
         final PersonnelRegistered saved = personnelRegisteredDAO.saveAndFlush(personnelRegistered);
         return modelMapper.map(saved, PersonnelRegisteredDTO.Info.class);
     }

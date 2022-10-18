@@ -2128,6 +2128,20 @@
         isc.RPCManager.sendRequest(TrDSRequest(addPerssonelRegisteredList, "POST", JSON.stringify(students), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();
+                let wrongPersonnelRegistered = JSON.parse(resp.data);
+                let names = "";
+                if (wrongPersonnelRegistered.length > 0) {
+
+                    for (let j = 0; j < wrongPersonnelRegistered.length; j++) {
+
+                        names = names.concat(wrongPersonnelRegistered[j].firstName + " " + wrongPersonnelRegistered[j].lastName);
+                        if (j !== wrongPersonnelRegistered.length - 1)
+                            names = names.concat(", ");
+                    }
+                    createDialog("info", "شماره موبایل افراد زیر برای افراد دیگری در سیستم ذخیره شده اند :" + "</br>" + names);
+
+                }
+
                 GroupSelectedPersonnelRegisterLG.data.clearAll();
                 Win_student_GroupInsert.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>", "<spring:message code="error"/>");

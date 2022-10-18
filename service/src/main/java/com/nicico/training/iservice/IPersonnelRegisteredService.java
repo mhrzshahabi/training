@@ -20,7 +20,8 @@ public interface IPersonnelRegisteredService {
     List<PersonnelRegisteredDTO.Info> list();
 
     PersonnelRegisteredDTO.Info create(PersonnelRegisteredDTO.Create request);
-    void createList(List<PersonnelRegistered> requests);
+
+    List<PersonnelRegistered> createList(List<PersonnelRegistered> requests);
 
     PersonnelRegisteredDTO.Info update(Long id, PersonnelRegisteredDTO.Update request);
 
