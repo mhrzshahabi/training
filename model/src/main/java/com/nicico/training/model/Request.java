@@ -30,7 +30,6 @@ public class Request extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_seq")
     @SequenceGenerator(name = "request_seq", sequenceName = "request_seq_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
-
     private Long id;
 
     @Column
@@ -63,11 +62,25 @@ public class Request extends Auditable implements Serializable {
     @Column(name = "REQUEST_STATUS")
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
+
     @NotAudited
     private String reference;
 
+    @Column(name = "CLASS_ID")
+    @NotAudited
+    private Long classId;
+
+    @Column(name = "process_instance_id")
+    @NotAudited
+    private String processInstanceId;
+
+    @Column(name = "c_return_detail")
+    @NotAudited
+    private String returnDetail;
+
     @Transient
     private List<Attachment> requestAttachments;
+
     @Transient
     private List<Attachment> responseAttachments;
 

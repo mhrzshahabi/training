@@ -10,8 +10,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import response.question.dto.ElsAttachmentDto;
 
-import javax.persistence.Column;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,12 +17,14 @@ public class RequestResVM {
     private Long id;
     private String text;
     private String name;
+    private Long classId;
     private String nationalCode;
     private String response;
     private UserRequestType type;
     private RequestStatus status;
     private String reference;
     private String createdDate;
+    private String processInstanceId;
     private List<ElsAttachmentDto> requestAttachmentDtos;
     private List<ElsAttachmentDto> responseAttachmentDtos;
 

@@ -5475,6 +5475,17 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-097">
+        <addColumn tableName="tbl_Request">
+            <column name="CLASS_ID" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-098">
+        <addColumn tableName="tbl_Request">
+            <column name="process_instance_id" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet author="namdari (generated)" id="1661057829000-2">
         <addColumn tableName="tbl_class_student">
@@ -5547,6 +5558,12 @@ FROM
     <changeSet author="MShahabi" id="1799887766557-096">
         <addColumn tableName="tbl_request_item_process_detail">
             <column name="c_role_name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-099">
+        <addColumn tableName="tbl_request">
+            <column name="c_return_detail" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
 

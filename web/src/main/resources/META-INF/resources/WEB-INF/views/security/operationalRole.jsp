@@ -553,7 +553,10 @@
                     "CHIEF_EXECUTIVE_OFFICER": "رییس اجرا",
                     "EXECUTION_EXPERT": "کارشناس اجرا",
                     "MASTER_OF_PLANNING": "کارشناس ارشد برنامه ریزی",
-                    "HEAD_OF_PLANNING": "رییس برنامه ریزی"
+                    "HEAD_OF_PLANNING": "رییس برنامه ریزی",
+                    "CERTIFICATION_RESPONSIBLE": "مسئول صدور گواهی نامه آموزشی",
+                    "FINANCIAL_RESPONSIBLE": "مسئول مالی",
+                    "TRAINING_MANAGER": "مدیر آموزش"
                 },
                 valueField: "id",
                 displayField: "title",

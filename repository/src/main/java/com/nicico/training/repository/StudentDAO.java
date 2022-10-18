@@ -220,4 +220,12 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
     @Query(value = "update tbl_student set b_has_preparation_test =:hasPreparation where national_code IN(:nationalCodes)", nativeQuery = true)
     void updateHasPreparationTestByNationalCodes(List<String> nationalCodes, boolean hasPreparation);
 
+    @Query(value = "SELECT std.* " +
+            "FROM tbl_class_student cs " +
+            "INNER JOIN tbl_class cl ON cl.id = cs.class_id " +
+            "INNER JOIN tbl_student std ON std.id = cs.student_id " +
+            "WHERE " +
+            "cl.id =:classId " +
+            "AND std.national_code =:nationalCode", nativeQuery = true)
+    Optional<Student> getTrainingCertificationDetail(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
 }

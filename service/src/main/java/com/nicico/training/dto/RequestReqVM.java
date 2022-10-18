@@ -10,6 +10,7 @@ import java.util.List;
 public class RequestReqVM {
     private String name;
     private String text;
+    private Long classId;
     private String nationalCode;
     private UserRequestType type;
     private List<ElsAttachmentDto> attachments;
