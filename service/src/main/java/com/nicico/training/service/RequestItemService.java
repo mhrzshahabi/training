@@ -475,44 +475,55 @@ public class RequestItemService implements IRequestItemService {
                 RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
                 List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
 
-                if (chiefOpinionId != null) {
-                    requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
-                }
 
-                if (courses.size() != 0) {
-                    for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : courses) {
-                        RequestItemCoursesDetailDTO.Create create = modelMapper.map(requestItemCoursesDetailDTO, RequestItemCoursesDetailDTO.Create.class);
-                        create.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
-                        requestItemCoursesDetailService.create(create);
+                Long needToPassId = parameterValueService.getId("needToPassCourse");
+                List<Long> expertsOpinionId = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningExpert")
+                        .stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
+
+                if (expertsOpinionId.stream().noneMatch(item -> item.equals(needToPassId)) && courses.size() == 0 && chiefOpinionId != null && chiefOpinionId.equals(needToPassId))
+                    response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
+                else {
+
+                    if (chiefOpinionId != null) {
+                        requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
                     }
-                }
 
-                Map<String, Object> variables = reviewTaskRequest.getVariables();
-                if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse"))) {
-                    //  مانع
-                    // رییس اجرا
-                    variables.put("finalOpinion", "needToPassCourse");
-                    variables.put("assignTo", mainRunChief);
-                } else {
-                    // بلامانع
-                    if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
-                        // دارای ضمن خدمت
-                        // رییس اجرا و کارشناس انتصاب سمت
-                        variables.put("finalOpinion", "noObjection");
-                        variables.put("haveWhileServing", true);
+                    if (courses.size() != 0) {
+                        for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : courses) {
+                            RequestItemCoursesDetailDTO.Create create = modelMapper.map(requestItemCoursesDetailDTO, RequestItemCoursesDetailDTO.Create.class);
+                            create.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
+                            requestItemCoursesDetailService.create(create);
+                        }
+                    }
+
+                    Map<String, Object> variables = reviewTaskRequest.getVariables();
+                    if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse"))) {
+                        //  مانع
+                        // رییس اجرا
+                        variables.put("finalOpinion", "needToPassCourse");
                         variables.put("assignTo", mainRunChief);
-                        variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
                     } else {
-                        // بدون ضمن خدمت
-                        // کارشناس انتصاب سمت
-                        variables.put("finalOpinion", "noObjection");
-                        variables.put("haveWhileServing", false);
-                        variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                        // بلامانع
+                        if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
+                            // دارای ضمن خدمت
+                            // رییس اجرا و کارشناس انتصاب سمت
+                            variables.put("finalOpinion", "noObjection");
+                            variables.put("haveWhileServing", true);
+                            variables.put("assignTo", mainRunChief);
+                            variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                        } else {
+                            // بدون ضمن خدمت
+                            // کارشناس انتصاب سمت
+                            variables.put("finalOpinion", "noObjection");
+                            variables.put("haveWhileServing", false);
+                            variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+                        }
                     }
+                    requestItem.setProcessStatusId(parameterValueService.getId("finalApprovalByPlanningChief"));
+                    requestItemDAO.saveAndFlush(requestItem);
+                    response.setStatus(200);
                 }
-                requestItem.setProcessStatusId(parameterValueService.getId("finalApprovalByPlanningChief"));
-                requestItemDAO.saveAndFlush(requestItem);
-                response.setStatus(200);
+
             } else {
                 response.setStatus(runChiefResponse.getStatus());
             }
@@ -531,6 +542,8 @@ public class RequestItemService implements IRequestItemService {
             }
         } else if (response.getStatus() == 403) {
             response.setMessage("رئیس اجرا تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+        } else if (response.getStatus() == 412) {
+            response.setMessage("بدلیل نظر همه کارشناسان مبنی بر بلامانع و عدم انتخاب حداقل یک دوره؛ امکان انتخاب نیاز به گذراندن دوره وجود ندارد");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -548,7 +561,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -593,7 +606,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -638,7 +651,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
@@ -762,7 +775,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
             Map<String, Object> map = reviewTaskRequest.getVariables();
             map.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
@@ -801,7 +814,7 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
             requestItem.setLetterNumberSent(bpmsReqItemSentLetterDto.getLetterNumberSent());
             requestItem.setDateSent(bpmsReqItemSentLetterDto.getDateSent());

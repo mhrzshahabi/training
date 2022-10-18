@@ -73,7 +73,7 @@ public abstract class RequestItemBeanMapper {
     protected String idToPlanningChiefOpinion(Long id) {
 
         RequestItemProcessDetail requestItemProcessDetail;
-        requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(id, "planningChief");
+        requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(id, "planningChief");
         if (requestItemProcessDetail == null) {
             String chiefNationalCode = getOldPlanningChiefNationalCode();
             requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(id, chiefNationalCode);

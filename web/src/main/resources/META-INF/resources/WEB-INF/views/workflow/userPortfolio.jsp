@@ -2852,17 +2852,9 @@
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + chiefOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
             let response = JSON.parse(resp.httpResponseText);
-            if (response.status === 200) {
-                window.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
-            } else if (response.status === 403) {
-                window.close();
-                createDialog("info", JSON.parse(resp.httpResponseText).message);
-            } else {
-                window.close();
-                createDialog("info", "عملیات انجام نشد");
-            }
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
     }
     function confirmRequestItemProcessByRunChief(record, window) {
