@@ -12,4 +12,6 @@ import java.util.List;
 public interface TestQuestionProtocolDAO extends JpaRepository<QuestionProtocol, Long>, JpaSpecificationExecutor<QuestionProtocol> {
 
     List<QuestionProtocol> findAllByExamId(Long id);
+
+    QuestionProtocol findByQuestionId(Long questionId);
 }

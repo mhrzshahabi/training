@@ -38,6 +38,7 @@ import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.ElsExamCreateDTO;
+import dto.exam.ImportedQuestionProtocol;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -2996,5 +2997,26 @@ if (pageQuestionDto.getPageQuestion()!=null){
         }
 
         return elsExamResponse;
+    }
+
+    @GetMapping("/teacher/send-question-to-els")
+    public ElsAddQuestionToExamResponse sendQuestionToEls(HttpServletRequest header, @RequestBody Long examId, @RequestBody List<Long> questionIds) {
+        ElsAddQuestionToExamResponse response = new ElsAddQuestionToExamResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<QuestionProtocol> questionProtocols = questionProtocolService.findAllByExamId(examId);
+                List<ImportedQuestionProtocol> importedQuestionProtocols = questionBankBeanMapper.toImportedQuestionProtocols(questionProtocols);
+                response.setImportedQuestionProtocols(importedQuestionProtocols);
+            } catch (TrainingException ex) {
+                response.setStatus(ex.getHttpStatusCode());
+                response.setMessage(ex.getMessage());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
     }
 }
