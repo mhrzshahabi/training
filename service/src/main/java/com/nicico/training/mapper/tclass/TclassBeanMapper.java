@@ -128,13 +128,11 @@ public interface TclassBeanMapper {
 
     @AfterMapping
     default void setScoreAndQuestionCount(@MappingTarget ElsExamCreateDTO elsExamCreateDTO, Tclass tclass) {
-        elsExamCreateDTO.setQuestionCount(0);
-
         if (tclass.getScoringMethod() != null) {
             if (tclass.getScoringMethod().equals("2")) {
-                elsExamCreateDTO.setScore(100d);
+                elsExamCreateDTO.setFinalScore(100d);
             } else if (tclass.getScoringMethod().equals("3")) {
-                elsExamCreateDTO.setScore(20d);
+                elsExamCreateDTO.setFinalScore(20d);
             }
         }
     }
