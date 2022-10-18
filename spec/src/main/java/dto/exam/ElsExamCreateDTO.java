@@ -22,7 +22,7 @@ public class ElsExamCreateDTO {
     @ApiModelProperty
     private String name;
     @ApiModelProperty
-    private Double score;
+    private Double finalScore;
     @ApiModelProperty
     private Double minimumAcceptScore;
 }
