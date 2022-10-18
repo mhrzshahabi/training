@@ -34,8 +34,13 @@ public class RequestItemProcessDetailService implements IRequestItemProcessDetai
     }
 
     @Override
-    public RequestItemProcessDetail findByRequestItemIdAndRoleName(Long requestItemId, String roleName) {
+    public RequestItemProcessDetail findFirstByRequestItemIdAndRoleName(Long requestItemId, String roleName) {
         return requestItemProcessDetailDAO.findFirstByRequestItemIdAndRoleName(requestItemId, roleName).orElse(null);
+    }
+
+    @Override
+    public List<RequestItemProcessDetail> findByRequestItemIdAndRoleName(Long requestItemId, String roleName) {
+        return requestItemProcessDetailDAO.findByRequestItemIdAndRoleName(requestItemId, roleName);
     }
 
     @Override

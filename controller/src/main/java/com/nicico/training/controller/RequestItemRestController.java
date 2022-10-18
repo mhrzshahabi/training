@@ -269,7 +269,7 @@ public class RequestItemRestController {
     @GetMapping(value = "/planning-chief-opinion/{requestItemId}")
     public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getPlanningChiefOpinion(@PathVariable Long requestItemId) {
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = new RequestItemCoursesDetailDTO.OpinionInfo();
-        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItemId, "planningChief");
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItemId, "planningChief");
         if (requestItemProcessDetail != null) {
             ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
             opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
@@ -294,7 +294,7 @@ public class RequestItemRestController {
         BaseService.setCriteria(request, catAndSubCatCriteria);
         List<String> userAccessCourses = courseService.search(request).getList().stream().map(CourseDTO::getCode).collect(Collectors.toList());
 
-        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndRoleName(requestItemId, "planningChief");
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItemId, "planningChief");
         ParameterValueDTO.TupleInfo opinion = parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId());
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(), opinion.getTitle(), opinion.getId());
         List<RequestItemCoursesDetailDTO.Info> verifiedCoursesByPlanningChief = opinionInfo.getCourses();
