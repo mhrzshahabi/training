@@ -25,4 +25,11 @@ public class ElsExamCreateDTO {
     private Double finalScore;
     @ApiModelProperty
     private Double minimumAcceptScore;
+    @ApiModelProperty
+    private Long hDuration;
+    @ApiModelProperty
+    private String startDate;
+    @ApiModelProperty
+    private String endDate;
+
 }
