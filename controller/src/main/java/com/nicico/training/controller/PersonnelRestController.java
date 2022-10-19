@@ -285,4 +285,10 @@ public class PersonnelRestController {
         return iPersonnelService.changeEmploymentDate(id);
     }
 
+    @Loggable
+    @PutMapping(value = "/change-department")
+    public boolean changeDepartment(@RequestParam Long id,@RequestParam Long depId) {
+        return iPersonnelService.changeDepartment(id,depId);
+    }
+
 }

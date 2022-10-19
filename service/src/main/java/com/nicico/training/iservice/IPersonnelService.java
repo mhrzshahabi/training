@@ -70,4 +70,5 @@ public interface IPersonnelService {
 
     boolean changeEmploymentDate(Long id);
 
+    boolean changeDepartment(Long id, Long depId);
 }

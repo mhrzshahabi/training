@@ -268,6 +268,24 @@ public class PersonnelService implements IPersonnelService {
         }
     }
 
+    @Override
+    public boolean changeDepartment(Long id, Long depId) {
+        try {
+            Optional<Personnel>optionalPersonnel=personnelDAO.findById(id);
+            if (optionalPersonnel.isPresent()){
+                Personnel personnel=optionalPersonnel.get();
+                personnel.setDepartmentId(depId);
+                personnelDAO.save(personnel);
+                return true;
+            }else
+                return false;
+        }catch ( Exception e){
+            return false;
+
+        }
+
+    }
+
     //Unused
     @Override
     @Transactional
