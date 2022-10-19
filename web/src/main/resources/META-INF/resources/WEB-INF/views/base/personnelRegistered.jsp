@@ -1850,15 +1850,15 @@
         let Win_student_GroupInsert = isc.Window.create({
             ID: "Win_student_GroupInsert",
 
-            width: 1050,
+            width: 1450,
             height: 750,
-            minWidth: 700,
+            minWidth: 1450,
             minHeight: 500,
             autoSize: false,
             overflow: "hidden",
             title: "اضافه کردن گروهی",
             items: [isc.HLayout.create({
-                width: 1050,
+                width: 1450,
                 height: "88%",
                 autoDraw: false,
                 overflow: "auto",
@@ -1883,7 +1883,7 @@
                             {name: "gender", title: "<spring:message code="gender"/>", canEdit: false, autoFithWidth: true},
                             {name: "company", title: "<spring:message code="company"/>", canEdit: false, autoFithWidth: true},
                             {name: "mobile", title: "<spring:message code="mobile"/>", canEdit: false, autoFithWidth: true},
-                            {name: "description", title: "<spring:message code="description"/>", canEdit: false, width: 300, align: "left"},
+                            {name: "description", title: "<spring:message code="description"/>", canEdit: false, width: 400, align: "left"},
                             {name: "error", canEdit: false, hidden: true, autoFithWidth: true},
                             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
                         ],
@@ -2213,7 +2213,7 @@
                             list[i].error = false;
                             list[i].hasWarning = "warning";
                             if (checkCodeMeliPerReg(list[i].nationalCode,null) && checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
-                                list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
+                                list[i].description = "<span style=\"color:white !important;background-color:#d9a32d !important;padding: 2px;\">اگر شماره موبایل وارد شده برای فرد دیگری نباشد بعد از ذخیره  اضافه می شود.</span>";
                             else {
                                 if (!checkCodeMeliPerReg(list[i].nationalCode,null))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";

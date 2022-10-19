@@ -7,10 +7,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
-import com.nicico.training.iservice.IDepartmentService;
-import com.nicico.training.iservice.IOperationalRoleService;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.ITrainingPostService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.*;
@@ -42,6 +39,8 @@ public class OperationalRoleService implements IOperationalRoleService {
     private final OperationalUnitDAO operationalUnitDAO;
     private final OperationalRoleDAO operationalRoleDAO;
     private final ViewTrainingPostDAO viewTrainingPostDAO;
+    private final ICategoryService categoryService;
+    private final ISubcategoryService subcategoryService;
     private final ViewTrainingPostMapper viewTrainingPostMapper;
 
     @Autowired
@@ -185,6 +184,18 @@ public class OperationalRoleService implements IOperationalRoleService {
             userIds.addAll(operationalRole.getUserIds());
         }
         return userIds;
+    }
+
+    @Override
+    public Set<Category> getCategories(Long id) {
+        List<Long> ides=operationalRoleDAO.getCategoriesIdes(id);
+        return categoryService.getCategoriesByIds(ides);
+    }
+
+    @Override
+    public Set<Subcategory> getSubCategories(Long id) {
+        List<Long> ides=operationalRoleDAO.getSubCategories(id);
+        return subcategoryService.getSubcategoriesByIds(ides);
     }
 
     @Override

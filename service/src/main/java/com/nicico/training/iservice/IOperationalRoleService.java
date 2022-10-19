@@ -4,7 +4,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.model.Category;
 import com.nicico.training.model.OperationalRole;
+import com.nicico.training.model.Subcategory;
 
 import java.util.List;
 import java.util.Set;
@@ -54,4 +56,6 @@ public interface IOperationalRoleService {
 
     Set<Long> getAllUserIdsByIds(List<Long> ids);
 
+    Set<Category> getCategories(Long id);
+    Set<Subcategory> getSubCategories(Long id);
 }

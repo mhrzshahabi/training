@@ -44,6 +44,8 @@ public abstract class OperationalRoleBeanMapper {
     @Mapping(source = "subCategories", target = "subCategories", qualifiedByName = "getSubCategoriesByIds")
     public abstract OperationalRole toOperationalRoleFromOperationalRoleUpdateDto(OperationalRoleDTO.Update request);
 
+    @Mapping(source = "categories", target = "categories", ignore = true)
+    @Mapping(source = "subCategories", target = "subCategories", ignore = true)
     public abstract OperationalRole copyOperationalRoleFrom(OperationalRole operationalRole);
 
     @Named("getCategoriesByIds")
@@ -67,32 +69,41 @@ public abstract class OperationalRoleBeanMapper {
     @Named("getCategoriesIds")
     Set<CategoryDTO.CategoryInfoTuple> getCategoriesIds(Long operationRoleId) {
         OperationalRole operationalRole = iOperationalRoleService.getOperationalRole(operationRoleId);
-        Set<Category> categories = operationalRole.getCategories();
+        Set<Category> categories = iOperationalRoleService.getCategories(operationalRole.getId());
         List<CategoryDTO.CategoryInfoTuple> categoryInfoTuples = new ArrayList<>();
-        for (Category category : categories) {
-            CategoryDTO.CategoryInfoTuple tuple = new CategoryDTO.CategoryInfoTuple();
-            tuple.setId(category.getId());
-            tuple.setCode(category.getCode());
-            tuple.setTitleFa(category.getTitleFa());
-            tuple.setTitleEn(category.getTitleEn());
-            tuple.setDescription(category.getDescription());
-            categoryInfoTuples.add(tuple);
-        }
-        return categoryInfoTuples.stream().collect(Collectors.toSet());
+        if (categories!=null){
+            for (Category category : categories) {
+                CategoryDTO.CategoryInfoTuple tuple = new CategoryDTO.CategoryInfoTuple();
+                tuple.setId(category.getId());
+                tuple.setCode(category.getCode());
+                tuple.setTitleFa(category.getTitleFa());
+                tuple.setTitleEn(category.getTitleEn());
+                tuple.setDescription(category.getDescription());
+                categoryInfoTuples.add(tuple);
+            }
+            return new HashSet<>(categoryInfoTuples);
+        }else
+            return null;
+
     }
 
     @Named("getSubCategoriesIds")
     Set<SubcategoryDTO.SubCategoryInfoTuple> getSubCategoriesIds(Long operationRoleId) {
         OperationalRole operationalRole = iOperationalRoleService.getOperationalRole(operationRoleId);
-        Set<Subcategory> subCategories = operationalRole.getSubCategories();
+        Set<Subcategory> subCategories = iOperationalRoleService.getSubCategories(operationalRole.getId());;
         List<SubcategoryDTO.SubCategoryInfoTuple> subCategoryInfoTuples = new ArrayList<>();
-        for (Subcategory subcategory : subCategories) {
-            SubcategoryDTO.SubCategoryInfoTuple tuple = new SubcategoryDTO.SubCategoryInfoTuple();
-            tuple.setId(subcategory.getId());
-            tuple.setTitleFa(subcategory.getTitleFa());
-            tuple.setTitleEn(subcategory.getTitleEn());
-            subCategoryInfoTuples.add(tuple);
-        }
-        return subCategoryInfoTuples.stream().collect(Collectors.toSet());
+        if (subCategories!=null){
+            for (Subcategory subcategory : subCategories) {
+                SubcategoryDTO.SubCategoryInfoTuple tuple = new SubcategoryDTO.SubCategoryInfoTuple();
+                tuple.setId(subcategory.getId());
+                tuple.setTitleFa(subcategory.getTitleFa());
+                tuple.setTitleEn(subcategory.getTitleEn());
+                subCategoryInfoTuples.add(tuple);
+            }
+            return new HashSet<>(subCategoryInfoTuples);
+        }else
+            return null;
+
+
     }
 }

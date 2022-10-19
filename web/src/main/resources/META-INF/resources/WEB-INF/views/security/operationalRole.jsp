@@ -370,6 +370,7 @@
     var DynamicForm_JspOperationalRole = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
+        maxWidth: 800,
         titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
@@ -431,8 +432,22 @@
                 autoFitButtons: true,
                 titleVAlign: "top",
                 pickListProperties: {
-                    showFilterEditor: false
+                    canSelectAll: true,
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان گروه",
+                        align: "center"
+                    }
+                ],
+
                 changed: function () {
                     hasRoleCategoriesChanged = true;
                     var subCategoryField = DynamicForm_JspOperationalRole.getField("subCategories");
@@ -479,8 +494,30 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 pickListProperties: {
-                    showFilterEditor: false
+                    canSelectAll: true,
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "عنوان گروه",
+                        align: "center",
+                        sortNormalizer: function (record) {
+                            return record.category.titleFa;
+                        }
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان زیرگروه",
+                        align: "center"
+                    }
+                ],
+
                 focus: function () {
                     if (hasRoleCategoriesChanged) {
                         console.log("hasRoleCategoriesChanged", hasRoleCategoriesChanged);
