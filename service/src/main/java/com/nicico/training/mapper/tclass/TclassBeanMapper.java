@@ -7,9 +7,13 @@ import dto.exam.ExamCreateDTO;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
+
+import java.util.Date;
 import java.util.List;
 
 import java.util.Set;
+
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 @Transactional
@@ -57,7 +61,9 @@ public interface TclassBeanMapper {
             @Mapping(target = "classId", source = "id"),
             @Mapping(target = "name", source = "titleClass"),
             @Mapping(target = "minimumAcceptScore", source = "acceptancelimit"),
-            @Mapping(target = "examCode", source = "code")
+            @Mapping(target = "examCode", source = "code"),
+            @Mapping(target = "startDate", qualifiedByName = "stringDateToLongDate"),
+            @Mapping(target = "endDate", qualifiedByName = "stringDateToLongDate")
     })
     ElsExamCreateDTO toExamCreateDTO(Tclass tclass);
 
@@ -125,6 +131,15 @@ public interface TclassBeanMapper {
       }
 
    }
+
+    @Named("stringDateToLongDate")
+    default Long stringDateToLongDate(String strDate) {
+        if (strDate != null) {
+            Date date = getEpochDate(strDate, "04:30");
+            return (date.getTime() * 1000);
+        } else
+            return null;
+    }
 
     @AfterMapping
     default void setScoreAndQuestionCount(@MappingTarget ElsExamCreateDTO elsExamCreateDTO, Tclass tclass) {
