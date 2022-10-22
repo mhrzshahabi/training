@@ -636,4 +636,9 @@ public class MainFormController {
         return "report/classesReactiveAssessmentHasNotReachedQuorum";
     }
 
+    @RequestMapping("/classesWillBeHeldInNextTwoDaysReport")
+    public String classesWillBeHeldInNextTwoDaysReport() {
+        return "report/classesWillBeHeldInNextTwoDaysReport";
+    }
+
 }
