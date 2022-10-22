@@ -19795,5 +19795,69 @@ pb as (
         </createView>
     </changeSet>
 
+    <changeSet author="kasehpour" id="1666427348-01">
+        <createView viewName="VIEW_HSE_COURSE" replaceIfExists="true">
+            <![CDATA[
+             SELECT
+
+                 tbl_category.C_TITLE_FA                           AS CATEGORY_TITLE
+                ,TBL_SUB_CATEGORY.C_TITLE_FA                       AS SUB_CATEGORY_TITLE
+
+                ,TBL_COURSE.ID                                     AS COURSE_ID
+                ,TBL_COURSE.C_CODE                                 AS COURSE_CODE
+                ,TBL_COURSE.N_THEORY_DURATION                      AS COURSE_DURATION
+
+
+                ,TBL_CLASS.ID                                         AS CLASS_ID
+                ,TBL_CLASS.C_CODE                                     AS CLASS_CODE
+                ,TBL_CLASS.C_TITLE_CLASS                              AS TITLE_CLASS
+                ,TBL_CLASS.C_START_DATE                               AS CLASS_START_DATE
+                ,TBL_CLASS.C_END_DATE                                 AS CLASS_END_DATE
+
+
+                ,TBL_STUDENT.FIRST_NAME || ' ' ||
+                                                 TBL_STUDENT.LAST_NAME  AS STUDENT_FULLNAME
+                ,TBL_STUDENT.NATIONAL_CODE                              AS NATIONAL_CODE
+                ,TBL_STUDENT.PERSONNEL_NO                               AS PERSONNEL_NO
+                ,TBL_STUDENT.EMP_NO                                     AS EMP_NO
+
+                ,TBL_CLASS_STUDENT.SCORE                                AS SCORE
+
+                ,TBL_PARAMETER_VALUE.C_TITLE                            AS STATUS_SCORE
+                ,TBL_PARAMETER_VALUE.C_CODE                             AS CODE_STATUS_SCORE
+                ,TBL_PARAMETER_VALUE.ID                                 AS ID_STATUS_SCORE
+
+        FROM
+
+        TBL_COURSE
+        INNER JOIN
+           TBL_CLASS
+           ON
+            TBL_COURSE.ID = TBL_CLASS.F_COURSE
+        INNER JOIN
+           TBL_CLASS_STUDENT
+           ON  TBL_CLASS_STUDENT.CLASS_ID = TBL_CLASS.ID
+        INNER JOIN   TBL_STUDENT
+           ON
+           TBL_CLASS_STUDENT.STUDENT_ID = TBL_STUDENT.ID
+        INNER JOIN
+           TBL_PARAMETER_VALUE
+            ON
+             TBL_PARAMETER_VALUE.ID = TBL_CLASS_STUDENT.SCORES_STATE_ID
+
+         INNER JOIN     tbl_category
+             ON tbl_category.ID = TBL_COURSE.CATEGORY_ID
+
+          LEFT JOIN   TBL_SUB_CATEGORY
+              ON  TBL_SUB_CATEGORY.ID = TBL_COURSE.SUBCATEGORY_ID
+              AND  TBL_SUB_CATEGORY.F_CATEGORY_ID = tbl_category.ID
+
+        WHERE 1=1
+            AND TBL_PARAMETER_VALUE.F_PARAMETER_ID = 317
+            AND tbl_category.C_CODE = 'SA'
+            AND TBL_CLASS.C_CODE LIKE 'SA%'
+        ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>
