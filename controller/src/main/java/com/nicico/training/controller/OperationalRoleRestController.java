@@ -60,9 +60,12 @@ public class OperationalRoleRestController {
                     individual post to user
              */
             updating.setUserIds(request.getUserIds());
-//            updating.setPostIds(request.getPostIds());
 
             updating.setObjectType(request.getObjectType());
+            updating.setTitle(request.getTitle());
+            updating.setComplexId(request.getComplexId());
+            updating.setCode(request.getCode());
+            updating.setDescription(request.getDescription());
 
             updating.setCategories(arrivedUpdate.getCategories());
             if (!arrivedUpdate.getCategories().isEmpty() && arrivedUpdate.getCategories().size() != 0) {
