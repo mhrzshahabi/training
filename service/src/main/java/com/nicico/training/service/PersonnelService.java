@@ -612,4 +612,10 @@ public class PersonnelService implements IPersonnelService {
         }
         return model;
     }
+
+    @Override
+    public boolean isPresentByNationalCodeAndActiveAndDeleted(String nationalCode) {
+        Optional<Personnel>  personnel = personnelDAO.findFirstByNationalCodeAndActiveAndDeleted(nationalCode,1,0);
+        return personnel.isPresent();
+    }
 }

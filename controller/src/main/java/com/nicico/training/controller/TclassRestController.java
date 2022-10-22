@@ -81,6 +81,7 @@ public class TclassRestController {
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final TclassAuditMapper tclassAuditMapper;
+    private final PersonnelService personnelService;
 
     private final CriteriaUtil criteriaUtil;
 
@@ -1166,6 +1167,13 @@ public class TclassRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/is-personnel-registered/{national_code}")
+    public Boolean isPersonnelRegistered(@PathVariable String national_code) {
+
+        return personnelService.isPresentByNationalCodeAndActiveAndDeleted(national_code);
     }
 
 }
