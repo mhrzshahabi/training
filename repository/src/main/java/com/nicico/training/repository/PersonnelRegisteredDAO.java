@@ -61,6 +61,10 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
     @Modifying
     @Query(value = "update  tbl_personnel_registered set national_code = :nationalCode ,  e_deleted = null where id =:id ", nativeQuery = true)
     void editNationalCode(@Param("id") Long id,@Param("nationalCode") String nationalCode);
+
+
+     Optional<PersonnelRegistered> findFirstByNationalCodeAndActive(String nationalCode,Integer active);
+
 }
 
 

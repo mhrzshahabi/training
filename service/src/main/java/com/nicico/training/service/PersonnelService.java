@@ -614,8 +614,14 @@ public class PersonnelService implements IPersonnelService {
     }
 
     @Override
-    public boolean isPresentByNationalCodeAndActiveAndDeleted(String nationalCode) {
+    public boolean isPresentByNationalCode(String nationalCode) {
         Optional<Personnel>  personnel = personnelDAO.findFirstByNationalCodeAndActiveAndDeleted(nationalCode,1,0);
-        return personnel.isPresent();
-    }
+        if (personnel.isEmpty()){
+            return false;
+        }else {
+            Optional<PersonnelRegistered>  personnelRegistered = personnelRegisteredDAO.findFirstByNationalCodeAndActive(nationalCode,1);
+            return personnelRegistered.isPresent();
+        }
+
+     }
 }

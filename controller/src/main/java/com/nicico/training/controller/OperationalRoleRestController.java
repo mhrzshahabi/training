@@ -64,6 +64,7 @@ public class OperationalRoleRestController {
             updating.setObjectType(request.getObjectType());
             updating.setTitle(request.getTitle());
             updating.setComplexId(request.getComplexId());
+            updating.setOperationalUnitId(request.getOperationalUnitId());
             updating.setCode(request.getCode());
             updating.setDescription(request.getDescription());
 

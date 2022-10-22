@@ -596,6 +596,7 @@ public class TclassDTO {
     @ApiModel("TclassSpecRs")
     public static class PersonnelClassInfo_TclassSpecRs {
         private PersonnelClassInfo_SpecRs response;
+        private Boolean isInPersonnelTbl;
     }
 
     @Getter

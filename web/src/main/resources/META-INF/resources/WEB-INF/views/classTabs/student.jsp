@@ -2773,6 +2773,7 @@
 
         async function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
             let warnStudents = [];
+            let userInPersonnelTbl = [];
             let inValidPersonnel = [];
             let warnPreCourseStudents = [];
             let warnSameSessionStudents = [];
@@ -2850,7 +2851,9 @@
                                         x.scoreStateId === 401 ||
                                         x.scoreStateId === 410
                                     )}).map(q => q.courseId);
-
+                                    if (JSON.parse(resp.httpResponseText).isInPersonnelTbl === true){
+                                        userInPersonnelTbl.add(studentsDataArray[inx]);
+                                    }
                                     if (preCourseIds.every(pq => personnelCourses.includes(pq))) {
 
                                         if (equalCourseIds.some(eq => personnelCourses.includes(eq))) {
@@ -2866,7 +2869,7 @@
                                         var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                         studentsDataArray.removeList(warnPreCourseStudents);
 
-                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel, warnSameSessionStudents);
+                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel, warnSameSessionStudents,userInPersonnelTbl);
                                     }
 
                                 } else {
@@ -2891,10 +2894,11 @@
             }));
         }
 
-        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents) {
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents,userInPersonnelTblList) {
             let preCourseNames = "";
             let names = "";
             let sessionNames="";
+            let duplicateUser="";
 
             if (warnPreCourseStudents.length > 0) {
 
@@ -2902,6 +2906,14 @@
                     preCourseNames = preCourseNames.concat(warnPreCourseStudents[j].firstName + " " + warnPreCourseStudents[j].lastName);
                     if (j !== warnPreCourseStudents.length - 1)
                         preCourseNames = preCourseNames.concat(", ");
+                }
+            }
+            if (userInPersonnelTblList.length > 0) {
+
+                for (var j = 0; j < userInPersonnelTblList.length; j++) {
+                    duplicateUser = duplicateUser.concat(userInPersonnelTblList[j].firstName + " " + userInPersonnelTblList[j].lastName);
+                    if (j !== userInPersonnelTblList.length - 1)
+                        duplicateUser = duplicateUser.concat(", ");
                 }
             }
 
@@ -2934,7 +2946,7 @@
                 }
             }
 
-            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0 || warnSameSessionStudents.length>0 || warnSameSessionStudents>0) {
+            if (userInPersonnelTblList.length > 0  || warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0 || warnSameSessionStudents.length>0 || warnSameSessionStudents>0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
                     width: 600,
@@ -2986,6 +2998,23 @@
                             showTitle: false,
                             editorType: 'textArea',
                             canEdit: false
+                        },
+                        {
+                            name: "text2",
+                            width: "100%",
+                            colSpan: 2,
+                            value: "فراگیران با اسامی زیر  هم در لیست فراگیران شرکتی و هم در لیست پرسنل متفرقه  وجود دارند ؛ آیا تمایل دارید آنها را اضافه کنید؟",
+                            showTitle: false,
+                            editorType: 'staticText'
+                        },
+                        {
+                            name: "duplicateUser",
+                            width: "100%",
+                            colSpan: 2,
+                            title: "<spring:message code="title"/>",
+                            showTitle: false,
+                            editorType: 'textArea',
+                            canEdit: false
                         }
                     ]
                 });
@@ -3021,8 +3050,10 @@
                     DynamicForm_Warn_Students.getItem("preCourseText").hide();
                     DynamicForm_Warn_Students.getItem("warnPreCourseNames").hide();
                     DynamicForm_Warn_Students.getItem("text").hide();
+                    DynamicForm_Warn_Students.getItem("text2").hide();
                     DynamicForm_Warn_Students.getItem("textSession").hide();
                     DynamicForm_Warn_Students.getItem("warnNames").hide();
+                    DynamicForm_Warn_Students.getItem("duplicateUser").hide();
 
                     if (warnPreCourseStudents.length > 0) {
 
@@ -3030,6 +3061,13 @@
                         DynamicForm_Warn_Students.getItem("warnPreCourseNames").show();
                         DynamicForm_Warn_Students.setValue("warnPreCourseNames", preCourseNames);
                     }
+
+                if (userInPersonnelTblList.length > 0) {
+
+                    DynamicForm_Warn_Students.getItem("text2").show();
+                    DynamicForm_Warn_Students.getItem("duplicateUser").show();
+                    DynamicForm_Warn_Students.setValue("duplicateUser", duplicateUser);
+                }
                     if (warnStudents.length > 0) {
 
                         DynamicForm_Warn_Students.getItem("text").show();

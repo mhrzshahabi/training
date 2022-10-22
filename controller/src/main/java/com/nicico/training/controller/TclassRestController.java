@@ -582,6 +582,7 @@ public class TclassRestController {
 
         final TclassDTO.PersonnelClassInfo_SpecRs specResponse = new TclassDTO.PersonnelClassInfo_SpecRs();
         final TclassDTO.PersonnelClassInfo_TclassSpecRs specRs = new TclassDTO.PersonnelClassInfo_TclassSpecRs();
+        boolean isInPersonnelTbl=iPersonnelService.isPresentByNationalCode(national_code);
 
         if (list != null) {
             specResponse.setData(list)
@@ -589,6 +590,7 @@ public class TclassRestController {
                     .setEndRow(list.size())
                     .setTotalRows(list.size());
             specRs.setResponse(specResponse);
+            specRs.setIsInPersonnelTbl(isInPersonnelTbl);
         }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -1173,7 +1175,7 @@ public class TclassRestController {
     @GetMapping(value = "/is-personnel-registered/{national_code}")
     public Boolean isPersonnelRegistered(@PathVariable String national_code) {
 
-        return personnelService.isPresentByNationalCodeAndActiveAndDeleted(national_code);
+        return personnelService.isPresentByNationalCode(national_code);
     }
 
 }
