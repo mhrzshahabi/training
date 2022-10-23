@@ -654,22 +654,20 @@
         switch (title) {
             case "تيمی ,گروهی":
                 code.setValue("G" + cat + subCat);
-                form.getItem("competenceLevelId").setRequired(false);
-                form.getItem("competenceLevelId").setValue(null);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
             case "تخصصی":
                 code.setValue("T" + cat + subCat);
-                form.getItem("competenceLevelId").setRequired(true);
+                form.getItem("competenceLevelId").setRequired(false);
+                form.getItem("competenceLevelId").setValue(null);
                 break;
             case "سازمانی":
                 code.setValue("S" + cat + subCat);
-                form.getItem("competenceLevelId").setRequired(false);
-                form.getItem("competenceLevelId").setValue(null);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
             case "مدیریتی":
                 code.setValue("M" + cat + subCat);
-                form.getItem("competenceLevelId").setRequired(false);
-                form.getItem("competenceLevelId").setValue(null);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
         }
     }
