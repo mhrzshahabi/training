@@ -134,8 +134,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "عنوان"},
-        ],
-        fetchDataURL: parameterValueUrl + "/listByCode/v2/gapCompetenceType/iscList",
+        ]
     });
 
 
@@ -399,7 +398,7 @@
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "title", title: "عنوان", align: "center"},
         ],
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: false,
         allowAdvancedCriteria: false,
         allowFilterExpressions: false,
@@ -766,7 +765,12 @@
     function loadEditNeedsAssessmentGap(record, type, state = "R&W",isFromGap) {
         gapObjectId = record.id
         gapObjectType = type
-        clearAllListGrid()
+
+
+
+
+
+            clearAllListGrid()
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(canChangeData+gapObjectId+"/"+gapObjectType , "Get",null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -789,6 +793,11 @@
                 changeEnableBtn(IButton_Add_Course,canChange);
             }
         }));
+
+        DataSource_Competence_JspNeedsAssessmentGap.fetchDataURL=parameterValueUrl + "/listByCode/v2/gapCompetenceType/iscList/"+gapObjectType;
+        ListGrid_Competence_JspNeedsAssessmentGap.invalidateCache();
+        ListGrid_Competence_JspNeedsAssessmentGap.fetchData();
+
     }
     function checkSaveDataGap(data, dataSource, field) {
         console.log("123")
