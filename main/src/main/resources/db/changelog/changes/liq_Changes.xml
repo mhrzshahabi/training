@@ -7348,6 +7348,22 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-100">
+        <sql>
+            <![CDATA[
+                UPDATE TBL_PARAMETER_VALUE SET c_title = 'تيمی ,گروهی' where c_code = 'groupCompetence';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-101">
+        <sql>
+            <![CDATA[
+                DELETE FROM TBL_PARAMETER_VALUE where c_code = 'personalCompetence';
+            ]]>
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>
 
