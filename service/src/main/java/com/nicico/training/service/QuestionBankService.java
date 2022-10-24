@@ -475,4 +475,9 @@ public class QuestionBankService implements IQuestionBankService {
         return response;
     }
 
+    @Override
+    public List<QuestionBank> findAllByIds(List<Long> questionIds) {
+        return questionBankDAO.findByIds(questionIds);
+    }
+
 }

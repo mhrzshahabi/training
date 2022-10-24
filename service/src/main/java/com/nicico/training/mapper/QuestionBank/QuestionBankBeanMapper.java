@@ -619,7 +619,8 @@ public abstract class QuestionBankBeanMapper {
     }
 
     @Mappings({
-            @Mapping(source = "questionMark", target = "mark")
+            @Mapping(source = "questionMark", target = "mark"),
+            @Mapping(source = "questionId", target = "question.id")
     })
     public abstract List<ImportedQuestionProtocol> toImportedQuestionProtocols(List<QuestionProtocol> questionProtocols);
 }

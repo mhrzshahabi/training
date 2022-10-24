@@ -72,8 +72,7 @@ public class QuestionProtocolService implements IQuestionProtocolService {
     }
 
     @Override
-    public QuestionProtocol findAllByQuestionIds(Long questionId) {
-//        Optional.testQuestionProtocolDAO.findByQuestionId(questionId);
-        return null;
+    public List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds) {
+        return testQuestionProtocolDAO.findByQuestionIds(questionIds);
     }
 }

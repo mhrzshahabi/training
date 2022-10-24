@@ -52,4 +52,6 @@ public interface IQuestionBankService {
 
     void deleteQuestionsGroup(Long id, Set<Long> ids);
     BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData);
+
+    List<QuestionBank> findAllByIds(List<Long> questionIds);
 }
