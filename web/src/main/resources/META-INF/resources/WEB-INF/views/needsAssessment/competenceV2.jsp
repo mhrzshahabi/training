@@ -256,7 +256,7 @@
                 }
             },
             {
-                name: "competenceLevelId", title: "سطح شایستگی", required: true, type: "select", optionDataSource: CompetenceLevelDS_competenceV2,
+                name: "competenceLevelId", title: "سطح شایستگی", type: "select", optionDataSource: CompetenceLevelDS_competenceV2,
                 textAlign: "center",
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
 
@@ -652,20 +652,22 @@
         let cat = (form.getField("categoryId").getSelectedRecord()) ? (form.getField("categoryId").getSelectedRecord().code) : "";
         let subCat = (form.getField("subCategoryId").getSelectedRecord()) ? (form.getField("subCategoryId").getSelectedRecord().code) : "";
         switch (title) {
-            case "تيمی , گروهی (سازمانی)":
+            case "تيمی ,گروهی":
                 code.setValue("G" + cat + subCat);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
             case "تخصصی":
                 code.setValue("T" + cat + subCat);
+                form.getItem("competenceLevelId").setRequired(false);
+                form.getItem("competenceLevelId").setValue(null);
                 break;
             case "سازمانی":
                 code.setValue("S" + cat + subCat);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
             case "مدیریتی":
                 code.setValue("M" + cat + subCat);
-                break;
-            case "فردی (پستی)":
-                code.setValue("P" + cat + subCat);
+                form.getItem("competenceLevelId").setRequired(true);
                 break;
         }
     }
