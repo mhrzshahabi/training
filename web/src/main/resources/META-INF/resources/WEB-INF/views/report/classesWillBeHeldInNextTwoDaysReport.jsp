@@ -278,43 +278,6 @@
 
     });
 
-    let ToolStrip_Excel_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStripButtonExcel.create({
-        click: function () {
-            let criteria = ListGrid_ClassesWillBeHeldInNextTwoDaysReport.getCriteria();
-            if (typeof (criteria._constructor) != 'undefined') {
-                if (criteria.criteria == null) {
-                    criteria.criteria = [];
-                }
-                if (ListGrid_ClassesWillBeHeldInNextTwoDaysReport.implicitCriteria)
-                    criteria.criteria.add({...ListGrid_ClassesWillBeHeldInNextTwoDaysReport.implicitCriteria.criteria.filter(p => p.fieldName == "term.id")[0]});
-            } else {
-                if (ListGrid_ClassesWillBeHeldInNextTwoDaysReport.implicitCriteria)
-                    criteria = {
-                        _constructor: "AdvancedCriteria",
-                        criteria:
-                            [
-                                {...ListGrid_ClassesWillBeHeldInNextTwoDaysReport.implicitCriteria.criteria.filter(p => p.fieldName == "term.id")[0]}
-                            ],
-                        operator: "and"
-                    };
-            }
-
-            let newCriteria = {
-                _constructor: "AdvancedCriteria",
-                criteria:
-                    [],
-                operator: "and"
-            };
-            if (criteria.criteria !== undefined) {
-                for (let i = 0; i < criteria.criteria.length; i++) {
-                    if (criteria.criteria[i].fieldName !== undefined)
-                        newCriteria.criteria.add(criteria.criteria[i])
-                }
-            }
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_ClassesWillBeHeldInNextTwoDaysReport, classUrl + "add-permission/spec-list", 0, null, '', "اجرا - کلاس", newCriteria, null);
-        }
-    });
-
     let IButton_ClassesWillBeHeldInNextTwoDaysReport = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
