@@ -23,6 +23,16 @@
         ],
         fetchDataURL: genericStatisticalIndexReportUrl + "/iscList"
     });
+    RestDataSource_EReportType_GSIR = isc.TrDS.create({
+        fields: [
+            {name: "title", title: "عنوان سنجه/شاخص", filterOperator: "iContains", showHover: true},
+            {name: "relatedProcess", title: "فرآیند مرتبط", filterOperator: "iContains"},
+            {name: "evaluationType", title: "نوع سنجه (اهمیت)", filterOperator: "iContains"},
+            {name: "formula", title: "فرمول محاسبه"},
+            {name: "description", title: "تحلیل ناظر"}
+        ],
+        fetchDataURL: enumUrl + "eReportType/spec-list"
+    });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
     ToolStripButton_Excel_GSIR = isc.ToolStripButtonExcel.create({
@@ -155,74 +165,36 @@
             {
                 name: "reportType",
                 title: "نوع شاخص",
+                type: "SelectItem",
                 required: true,
-                valueMap: {
-                    "report01": "شاخص میزان کل نیازهای شناسایی شده",
-                    "report02": "مجموع ساعات آموزش اجرا شده",
-                    "report03": "سرانه انباشت سابقه آموزشی عمومی",
-                    "report04": "سرانه انباشت سابقه آموزشی تخصصی",
-                    "report05": "سرانه انباشت سابقه آموزشی مدیریتی",
-                    "report06": " نرخ گذر آموزش",
-                    "report07": " نرخ پوشش ارزشيابي سطح یادگیری",
-                    "report08": "نسبت نیازهای آموزشی تخصصی",
-                    "report09": "نسبت نیازهای آموزشی مهارتی",
-                    "report10": " نسبت کارکنان آموزش به کل کارکنان",
-                    "report11": "نرخ اثربخشي آموزش سطح یادگیری دوره هاي جدید",
-                    "report12": "نرخ اثربخشي آموزش سطح یادگیری دوره هاي پرتکرار",
-                    "report13": "نسبت تدریس مدرسان داخلی(همکار)",
-                    "report14": "نسبت آموزشهای otj",
-                    "report15": "نسبت آموزشهای خارج از تقویم",
-                    "report16": "نسبت دوره های لغو شده (انحراف از تقویم)",
-                    "report17": "نسبت آموزشهای خارج از سازمان",
-                    "report18": "نسبت آموزشهای داخل سازمان",
-                    "report19": "میزان آموزشهای تخصصی به مشتریان",
-                    "report20": "سرانه آموزشهای HSE",
-                    "report21": " سرانه آموزشی پایین تر از کارشناسی",
-                    "report22": " سرانه آموزشی سرپرستان",
-                    "report23": " سرانه آموزشی مدیران",
-                    "report24": " سرانه آموزشی نیروهای پیمانکاری",
-                    "report25": " سرانه ساعت آموزشی شرکت",
-                    "report26": "  شاخص نرخ مشارکت در آموزش",
-                    "report27": "شاخص نسبت آموزشهای اجرا شده",
-                    "report28": "نسبت تحقق تقویم آموزشی ( عنوان دوره )",
-                    "report29": "نسبت تحقق تقویم آموزشی (نفر ساعت)",
-                    "report30": "تعداد کل مدرسان شناسایی شده در بانک مدرسان",
-                    "report31": "تعداد مدرسان شناسایی شده در بانک مدرسان داخلی",
-                    "report32": "نسبت مدرسان ارزیابی شده",
-                    "report33": "نسبت آموزشهای الکترونیکی اجرا شده",
-                    "report34": "نسبت آموزشهای غیرحضوری اجرا شده",
-                    "report35": "نسبت دوره های طراحی شده مدیریتی",
-                    "report36": "نسبت طرح درسهای بازنگری شده",
-                    "report37": "نسبت طرح درسهای جدید",
-                    "report38": " نرخ نفوذ آموزش",
-                    "report39": "  نرخ نفوذ آموزش در کل",
-                    "report40": " نرخ نفوذ آموزش در  یک سال مورد اندازه گیری",
-                    "report41": " نسبت مشاغل پايين تر از کارشناسي دارای سند نیازسنجی",
-                    "report42": " نسبت مشاغل سرپرستی دارای سند نیازسنجی",
-                    "report43": " نسبت مشاغل کارشناسی دارای سند نیازسنجی",
-                    "report44": "نسبت مشاغل مدیریتی دارای سند نیازسنجی",
-                    "report45": "نرخ پوشش نیازسنجی امور",
-                    "report46": "نسبت نیازهای آموزشی پست محور",
-                    "report47": "نرخ پوشش ارزشیابی سطح واکنشی",
-                    "report48": "نسبت دوره های دارای روش ارزشیابی تعیین شده",
-                    "report49": "نسبت دوره های دارای هدف رفتاری تعریف شده",
-                    "report50": "میزان آموزشهای برنامه ریزی شده",
-                    "report51": "نسبت مشاغل کلیدی دارای سند صلاحیت",
-                    "report52": "نسبت نیازهای آموزشی خودآموخته (offline)",
-                    "report53": "تعداد دوره های طراحی شده استاندارد",
-                    "report54": "میزان دوره های تولید شده مجازی (الکترونیکی)",
-                    "report55": "تعداد محتواهای تدوین شده چندرسانه ایی جدید",
-                    "report56": "تعداد محتوای تولید شده بازی وار gamification",
-                    "report57": "ظرفیت اسمی آموزش ",
-                    "report58": "سرانه هزینه آموزش(کل)",
-                    "report59": "سرانه هزینه آموزش (مدیران)",
-                    "report60": "سرانه هزینه آموزش (کارکنان)",
-                    "report61": "نرخ اثربخشی آموزش سطح برونداد (رفتار)",
-                    "report62": "نرخ پوشش ارزشیابی (سطح رفتار)",
-                    "report63": "تعداد کمیته های خبرگی فعال",
-
-
+                textAlign: "center",
+                filterOnKeypress: true,
+                optionDataSource: RestDataSource_EReportType_GSIR,
+                valueField: "literal",
+                displayField: "title",
+                sortField: ["title"],
+                pickListProperties:{
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "title", width: "50%"},
+                    {name: "relatedProcess", width: "25%"},
+                    {name: "evaluationType", width: "25%"}
+                ],
+                changed: function (form, item, value) {
+                    form.setValue("reportTypeFormula", item.getSelectedRecord().formula);
+                    form.setValue("reportTypeDescription", item.getSelectedRecord().description);
                 }
+            },
+            {
+                name: "reportTypeFormula",
+                title: "فرمول محاسبه",
+                type: "staticText"
+            },
+            {
+                name: "reportTypeDescription",
+                title: "تحلیل ناظر",
+                type: "staticText"
             }
         ]
     });

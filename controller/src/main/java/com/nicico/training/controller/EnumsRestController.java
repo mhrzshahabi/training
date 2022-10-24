@@ -141,4 +141,9 @@ public class EnumsRestController {
         return new ResponseEntity<>(new ETeacherRankDTO.ETeacherRankSpecRs(), HttpStatus.OK);
     }
 
+    @GetMapping("eReportType/spec-list")
+    public ResponseEntity<EReportTypeDTO.EReportTypeSpecRs> getEReportType() {
+        return new ResponseEntity<>(new EReportTypeDTO.EReportTypeSpecRs(), HttpStatus.OK);
+    }
+
 }
