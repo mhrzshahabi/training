@@ -23,13 +23,13 @@
     }
 
     let nextTwoDays = addDays(2);
+    let reportCriteria;
 
-    var RestDataSource_ClassesWillBeHeldInNextTwoDaysReport = isc.TrDS.create({
+    let RestDataSource_ClassesWillBeHeldInNextTwoDaysReport = isc.TrDS.create({
         autoFitWidth: true,
         fields: [
             {name: "id",},
             {name: "group"},
-            {name: "hduration",},
             {name: "classCancelReasonId"},
             {name: "titleClass",},
             {name: "startDate",},
@@ -82,7 +82,7 @@
         fetchDataURL: classUrl + "add-permission/spec-list"
     });
 
-    var ListGrid_ClassesWillBeHeldInNextTwoDaysReport = isc.TrLG.create({
+    let ListGrid_ClassesWillBeHeldInNextTwoDaysReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_ClassesWillBeHeldInNextTwoDaysReport,
@@ -93,18 +93,6 @@
         initialSort: [
             {property: "id", direction: "descending"}
         ],
-        dataArrived: function () {
-
-            let filteredDataSource = ListGrid_ClassesWillBeHeldInNextTwoDaysReport.data.localData.reduce((filteredList, one) => {
-                if (one.startDate.contains(nextTwoDays)) {
-                    filteredList.push(one);
-                }
-                return filteredList
-            }, []);
-
-            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.setData(filteredDataSource);
-            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.data.localData = filteredDataSource;
-        },
         fields: [
             {
                 name: "id",
@@ -165,14 +153,6 @@
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
                 filterOperator: "iContains",
-            },
-            {
-                name: "hduration",
-                title: "<spring:message code='duration'/>",
-                align: "center",
-                width: 40,
-                filterOperator: "iContains",
-
             },
             {
                 name: "group",
@@ -297,10 +277,15 @@
         title: "چاپ گزارش",
         width: "150",
         click: function () {
+                 reportCriteria = {
+                      _constructor: "AdvancedCriteria",
+                     operator: "and",
+                     criteria: [{fieldName: "startDate", operator: "equals", value: nextTwoDays}]
+                  }
 
-            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.invalidateCache();
-            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.fetchData();
-        }
+                 ListGrid_ClassesWillBeHeldInNextTwoDaysReport.setImplicitCriteria(reportCriteria);
+                 ListGrid_ClassesWillBeHeldInNextTwoDaysReport.fetchData();
+         }
 
     });
 
@@ -380,7 +365,15 @@
         {
              createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         }else{
-             ExportToFile.downloadExcelRestUrl(null, ListGrid_ClassesWillBeHeldInNextTwoDaysReport,null, 0, null, '',"گزارش کلاسهایی که دو روز آینده برگزار می شوند" , null, null,0,true);
+
+                let criteria = ListGrid_ClassesWillBeHeldInNextTwoDaysReport.getCriteria();
+
+                if(ListGrid_ClassesWillBeHeldInNextTwoDaysReport.getCriteria().criteria){
+                for (let i = 0; i < criteria.criteria.length ; i++) {
+                reportCriteria.criteria.push(criteria.criteria[i]);
+                }
+                }
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_ClassesWillBeHeldInNextTwoDaysReport, classUrl + "add-permission/spec-list", 0, null, '',"گزارش کلاسهایی که دو روز آینده برگزار می شوند", criteria, null);
         }
     }
 
