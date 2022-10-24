@@ -10,7 +10,7 @@
 
     let nextTwoDays = JalaliDate.JalaliTodayDate();
 
-    let RestDataSource_ClassesWillBeHeldInNextTwoDaysReport = isc.TrDS.create({
+    var RestDataSource_ClassesWillBeHeldInNextTwoDaysReport = isc.TrDS.create({
         autoFitWidth: true,
         fields: [
             {name: "id",},
@@ -68,7 +68,7 @@
         fetchDataURL: classUrl + "add-permission/spec-list"
     });
 
-    let ListGrid_ClassesWillBeHeldInNextTwoDaysReport = isc.TrLG.create({
+    var ListGrid_ClassesWillBeHeldInNextTwoDaysReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_ClassesWillBeHeldInNextTwoDaysReport,
@@ -80,15 +80,16 @@
             {property: "id", direction: "descending"}
         ],
         dataArrived: function () {
-          let  hardCodeDate = '1401/01/01';//just for test
-            let filteredDataSource = ListGrid_ClassesWillBeHeldInNextTwoDaysReport.data.localData.reduce((final, one) => {
-                if (one.startDate.contains(hardCodeDate)) {
-                    final.push(one);
+
+            let filteredDataSource = ListGrid_ClassesWillBeHeldInNextTwoDaysReport.data.localData.reduce((filteredList, one) => {
+                if (one.startDate.contains(nextTwoDays)) {
+                    filteredList.push(one);
                 }
-                return final
+                return filteredList
             }, []);
 
             ListGrid_ClassesWillBeHeldInNextTwoDaysReport.setData(filteredDataSource);
+            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.data.localData = filteredDataSource;
         },
         fields: [
             {
@@ -314,7 +315,7 @@
         }
     });
 
-    IButton_ClassesWillBeHeldInNextTwoDaysReport = isc.IButtonSave.create({
+    let IButton_ClassesWillBeHeldInNextTwoDaysReport = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: "150",
@@ -326,7 +327,7 @@
 
     });
 
-    IButton_Clear_ClassesWillBeHeldInNextTwoDaysReport = isc.IButtonSave.create({
+    let IButton_Clear_ClassesWillBeHeldInNextTwoDaysReport = isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
         width: "150",
@@ -337,20 +338,22 @@
         }
     });
 
-    ToolStripButton_Excel_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStripButtonExcel.create({
+    let ToolStripButton_Excel_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStripButtonExcel.create({
 
         click: function () {
             makeExcelOutput();
         }
     });
 
-    ToolStripButton_Refresh_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStripButtonRefresh.create({
+    let ToolStripButton_Refresh_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_ClassesWillBeHeldInNextTwoDaysReport.invalidateCache();
+
+                ListGrid_ClassesWillBeHeldInNextTwoDaysReport.clearFilterValues();
+                ListGrid_ClassesWillBeHeldInNextTwoDaysReport.setData([]);
         }
     });
 
-    ToolStrip_Actions_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStrip.create({
+    let ToolStrip_Actions_ClassesWillBeHeldInNextTwoDaysReport = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
@@ -392,5 +395,16 @@
         ]
 
     });
+
+//--------------------------------------------functions ------------------------------
+
+    function makeExcelOutput() {
+        if (ListGrid_ClassesWillBeHeldInNextTwoDaysReport.getOriginalData().localData === undefined)
+        {
+             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        }else{
+             ExportToFile.downloadExcelRestUrl(null, ListGrid_ClassesWillBeHeldInNextTwoDaysReport,null, 0, null, '',"گزارش کلاسهایی که دو روز آینده برگزار می شوند" , null, null,0,true);
+        }
+    }
 
     //</script>
