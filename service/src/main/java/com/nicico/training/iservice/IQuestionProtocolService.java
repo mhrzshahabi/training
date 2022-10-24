@@ -19,4 +19,7 @@ public interface IQuestionProtocolService {
 
     List<QuestionProtocol> findAllByExamId(Long id);
 
+    List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds);
+
+
 }

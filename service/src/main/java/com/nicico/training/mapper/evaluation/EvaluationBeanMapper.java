@@ -59,7 +59,7 @@ public abstract class EvaluationBeanMapper {
 
 
     @Autowired
-    protected QuestionBankService questionBankService;
+    protected IQuestionBankService questionBankService;
     @Autowired
     protected QuestionnaireService questionnaireService;
     @Autowired
@@ -2477,4 +2477,130 @@ public abstract class EvaluationBeanMapper {
             return true;
 
     }
+
+    public ElsAddQuestionToExamResponse getQuestionProtocols(List<Long> questionIds) {
+        ElsAddQuestionToExamResponse response = new ElsAddQuestionToExamResponse();
+
+        List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
+        List<QuestionBank> questionBanks = questionBankService.findAllByIds(questionIds);
+        Boolean findDuplicate = false;
+
+        for (QuestionBank questionBank : questionBanks) {
+            ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
+            ImportedQuestion question = new ImportedQuestion();
+
+            QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
+            question.setId(questionBank.getId());
+            question.setTitle(questionBank.getQuestion());
+            question.setProposedPointValue(questionBank.getProposedPointValue());
+            questionProtocol.setProposedPointValue(questionBank.getProposedPointValue());
+            questionProtocol.setProposedTimeValue(questionBank.getProposedTimeValue());
+            if (attachments != null && attachments.getFiles() != null) {
+                question.setFiles(attachments.getFiles());
+            }
+            question.setType(convertQuestionType(questionBank.getQuestionTypeId()));
+
+            if (question.getType().equals(MULTI_CHOICES)) {
+                List<ImportedQuestionOption> options = new ArrayList<>();
+
+                ImportedQuestionOption option1 = new ImportedQuestionOption();
+                ImportedQuestionOption option2 = new ImportedQuestionOption();
+                ImportedQuestionOption option3 = new ImportedQuestionOption();
+                ImportedQuestionOption option4 = new ImportedQuestionOption();
+
+                if (questionBank.getOption1() != null) {
+                    option1.setTitle(questionBank.getOption1());
+                    option1.setLabel("الف");
+                    options.add(option1);
+                    if (attachments != null && attachments.getOption1Files() != null)
+                        option1.setMapFiles(attachments.getOption1Files());
+                }
+                if (questionBank.getOption2() != null) {
+                    option2.setTitle(questionBank.getOption2());
+                    option2.setLabel("ب");
+                    options.add(option2);
+                    if (attachments != null && attachments.getOption2Files() != null)
+                        option2.setMapFiles(attachments.getOption2Files());
+                }
+                if (questionBank.getOption3() != null) {
+                    option3.setTitle(questionBank.getOption3());
+                    option3.setLabel("ج");
+                    options.add(option3);
+                    if (attachments != null && attachments.getOption3Files() != null)
+                        option3.setMapFiles(attachments.getOption3Files());
+                }
+                if (questionBank.getOption4() != null) {
+                    option4.setTitle(questionBank.getOption4());
+                    option4.setLabel("د");
+                    options.add(option4);
+                    if (attachments != null && attachments.getOption4Files() != null)
+                        option4.setMapFiles(attachments.getOption4Files());
+                }
+                if (!findDuplicate) {
+                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                    findDuplicate = checkDuplicateQuestion(options, questionProtocols, title, question.getType());
+                    if (findDuplicate) {
+                        response.setStatus(HttpStatus.CONFLICT.value());
+                        response.setMessage("در آزمون سوال تکراری وجود دارد");
+                    }
+                }
+                if (options.size() == 0) {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage(String.format("گزینه های سوال «%s» تعیین نشده است.", question.getTitle()));
+                    return response;
+                }
+                question.setQuestionOption(options);
+                questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
+
+            } else if (question.getType().equals(DESCRIPTIVE)) {
+                if (!findDuplicate) {
+                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                    findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title, question.getType());
+                    if (findDuplicate) {
+                        response.setStatus(HttpStatus.CONFLICT.value());
+                        response.setMessage("در آزمون سوال تکراری وجود دارد");
+                        return response;
+                    }
+                }
+                questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+                question.setHasAttachment(questionBank.getHasAttachment());
+            }
+//            if (object.getQuestionData() != null) {
+//
+//
+//                QuestionScores questionScore = object.getQuestionData().stream()
+//                        .filter(x -> x.getId().equals(question.getId()))
+//                        .findFirst()
+//                        .get();
+//
+//                questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+//                int t = 0;
+//                if (questionScore.getTime() == null) {
+//                    t = 0;
+//                } else {
+//                    t = Integer.parseInt(questionScore.getTime());
+//                }
+//
+//                if (totalQuestionsTime != 0) {
+//
+//                    questionProtocol.setTime(t * 60);
+//                } else {
+//                    questionProtocol.setTime((examTime * 60) / questionsSize);
+//
+//                }
+//
+//
+//            }
+            questionProtocol.setQuestion(question);
+            questionProtocol.setIsChild(questionBank.getIsChild());
+            questionProtocol.setChildPriority(questionBank.getChildPriority());
+
+            questionProtocols.add(questionProtocol);
+        }
+
+        response.setImportedQuestionProtocols(questionProtocols);
+
+        return response;
+    }
+
 }

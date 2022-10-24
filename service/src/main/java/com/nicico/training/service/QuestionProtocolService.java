@@ -35,10 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -72,5 +69,10 @@ public class QuestionProtocolService implements IQuestionProtocolService {
     @Override
     public List<QuestionProtocol> findAllByExamId(Long id) {
         return testQuestionProtocolDAO.findAllByExamId(id);
+    }
+
+    @Override
+    public List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds) {
+        return testQuestionProtocolDAO.findByQuestionIds(questionIds);
     }
 }

@@ -16,6 +16,7 @@ import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
+import dto.exam.ImportedQuestionProtocol;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.question.dto.*;
@@ -616,4 +617,10 @@ public abstract class QuestionBankBeanMapper {
     List<QuestionBankDTO.Exam> getQuestionChilds(QuestionBank questionBank) {
         return toQuestionExamDtos(questionBank.getGroupQuestions());
     }
+
+    @Mappings({
+            @Mapping(source = "questionMark", target = "mark"),
+            @Mapping(source = "questionId", target = "question.id")
+    })
+    public abstract List<ImportedQuestionProtocol> toImportedQuestionProtocols(List<QuestionProtocol> questionProtocols);
 }

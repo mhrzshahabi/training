@@ -38,6 +38,7 @@ import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.ElsExamCreateDTO;
+import dto.exam.ImportedQuestionProtocol;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -2976,10 +2977,12 @@ if (pageQuestionDto.getPageQuestion()!=null){
                 String courseCode = courseService.getCourse(tclass.getCourseId()).getCode();
                 responseDto.setCourseCode(courseCode);
 
-                if (!tclass.getScoringMethod().equals("2") && !tclass.getScoringMethod().equals("3")) {
-                    elsExamResponse.setStatus(400);
-                    elsExamResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
-                    return elsExamResponse;
+                if (tclass.getScoringMethod() != null) {
+                    if (!tclass.getScoringMethod().equals("2") && !tclass.getScoringMethod().equals("3")) {
+                        elsExamResponse.setStatus(400);
+                        elsExamResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
+                        return elsExamResponse;
+                    }
                 }
 
                 elsExamResponse.setStatus(200);
@@ -2996,5 +2999,27 @@ if (pageQuestionDto.getPageQuestion()!=null){
         }
 
         return elsExamResponse;
+    }
+
+    @PostMapping("/teacher/send-question-to-els")
+    public ElsAddQuestionToExamResponse sendQuestionToEls(HttpServletRequest header, @RequestBody List<Long> questionIds) {
+        ElsAddQuestionToExamResponse response = new ElsAddQuestionToExamResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                response = evaluationBeanMapper.getQuestionProtocols(questionIds);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("successful");
+                response.setImportedQuestionProtocols(response.getImportedQuestionProtocols());
+            } catch (TrainingException ex) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("بروز خطا در سیستم: " + ex.getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
     }
 }
