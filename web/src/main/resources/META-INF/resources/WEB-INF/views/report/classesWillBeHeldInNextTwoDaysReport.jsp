@@ -8,7 +8,21 @@
 
 //<script>
 
-    let nextTwoDays = JalaliDate.JalaliTodayDate();
+    function addDays(days) {
+        let result = new Date();
+        result.setDate(result.getDate() + days);
+        result.toLocaleDateString('fa-IR');
+        let finalResult= new Intl.DateTimeFormat('fa-IR',{
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit',
+        }).format(result);
+
+       finalResult=finalResult.toEnglishDigit();
+        return finalResult ;
+    }
+
+    let nextTwoDays = addDays(2);
 
     var RestDataSource_ClassesWillBeHeldInNextTwoDaysReport = isc.TrDS.create({
         autoFitWidth: true,
