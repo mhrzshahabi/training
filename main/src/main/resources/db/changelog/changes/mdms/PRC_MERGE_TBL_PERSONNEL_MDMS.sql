@@ -231,11 +231,7 @@ MERGE INTO TBL_PERSONNEL T
             AND emp.c_area_of_study IS NOT NULL)
            OR (TR_PERS.education_field_title IS NOT NULL
             AND emp.c_area_of_study IS NULL)
-           OR TR_PERS.employment_date <> emp.c_emp_date
-           OR (TR_PERS.employment_date IS NULL
-            AND emp.c_emp_date IS NOT NULL)
-           OR (TR_PERS.employment_date IS NOT NULL
-            AND emp.c_emp_date IS NULL)
+
            OR TR_PERS.employment_status_id <> emp.c_emp_status_id
            OR (TR_PERS.employment_status_id IS NULL
             AND emp.c_emp_status_id IS NOT NULL)
@@ -362,7 +358,7 @@ MERGE INTO TBL_PERSONNEL T
                 t.department_title        = CHANGES_.department_title,
                 t.education_level_title   = CHANGES_.education_level_title,
                 t.education_field_title   = CHANGES_.education_field_title,
-                t.employment_date         = CHANGES_.employment_date,
+                t.employment_date         = null,
                 t.employment_status_id    = CHANGES_.employment_status_id,
                 t.EMPLOYMENT_STATUS_TITLE = CHANGES_.EMPLOYMENT_STATUS_TITLE,
                 t.EMPLOYMENT_TYPE_TITLE   = CHANGES_.EMPLOYMENT_TYPE_TITLE,
@@ -592,7 +588,7 @@ MERGE INTO TBL_PERSONNEL T
                     NEW_.department_title,
                     NEW_.education_level_title,
                     NEW_.education_field_title,
-                    NEW_.employment_date,
+                    null,
                     NEW_.employment_status_id,
                     NEW_.EMPLOYMENT_STATUS_TITLE,
                     NEW_.EMPLOYMENT_TYPE_TITLE,
@@ -625,5 +621,3 @@ UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
 
 
 end;
-/
-
