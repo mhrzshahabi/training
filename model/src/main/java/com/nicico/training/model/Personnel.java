@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -51,7 +50,7 @@ public class Personnel {
     private Integer deleted;
 
     @Column(name = "employment_date")
-    private String employmentDate;
+    private Date employmentDate;
 
     @Column(name = "post_title")
     private String postTitle;
