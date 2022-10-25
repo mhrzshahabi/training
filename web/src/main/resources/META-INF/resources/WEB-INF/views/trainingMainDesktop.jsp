@@ -2583,6 +2583,13 @@
                                 }
                             },
                             {isSeparator: true},
+                            {
+                                title: "گزارش کلاسهایی که دو روز آینده برگزار می شوند",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classesWillBeHeldInNextTwoDaysReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
                         ]
                 },
                 {isSeparator: true},
