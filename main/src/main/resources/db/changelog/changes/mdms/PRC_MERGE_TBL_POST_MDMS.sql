@@ -4,6 +4,7 @@ BEGIN
     ------------UPDATE-------------------------------------------------------
 MERGE INTO TBL_POST T
     USING (
+
         SELECT MDMS_POST.C_CODE                 AS MDMS_C_CODE,
                MDMS_POST.C_TITLE_FA             AS MDMS_C_TITLE_FA,
                MDMS_POST.f_job_id               AS MDMS_f_job_id,
@@ -61,13 +62,42 @@ MERGE INTO TBL_POST T
                           left join TBL_md_job_MDMS MDMS_POST on MDMS_POST.c_id = post.c_job_id
                           left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
                                                      job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
-                          left join TBL_MD_POST_MDMS mdms_parent on mdms_parent.c_id = post.n_parent_id
+                          left join (
+                     SELECT
+                         * FROM
+                         TBL_MD_POST_MDMS
+                     where
+                             C_CODE not in (
+
+                             SELECT C_CODE
+                             FROM (SELECT * FROM TBL_MD_POST_MDMS)
+                             GROUP BY C_CODE , C_PEOPLE_TYPE
+                             HAVING COUNT(*) > 1
+                         )
+
+                 ) mdms_parent on mdms_parent.c_id = post.n_parent_id
                           left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
+                 where
+                         post.c_code not in (
+
+                         SELECT C_CODE
+                         FROM (SELECT * FROM TBL_MD_POST_MDMS)
+                         GROUP BY C_CODE , C_PEOPLE_TYPE
+                         HAVING COUNT(*) > 1
+                     )
+
+
              ) MDMS_POST
+
+
                  INNER JOIN TBL_POST TR_POST
                             ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
-        WHERE TR_POST.c_title_fa <> MDMS_POST.c_title_fa
+        WHERE
+
+
+
+                TR_POST.c_title_fa <> MDMS_POST.c_title_fa
            OR TR_POST.c_affairs <> MDMS_POST.c_affairs
            OR (TR_POST.c_affairs IS NULL
             AND MDMS_POST.c_affairs IS NOT NULL)
@@ -129,6 +159,9 @@ MERGE INTO TBL_POST T
             AND MDMS_POST.n_parent_id IS NOT NULL)
            OR (TR_POST.n_parent_id IS NOT NULL
             AND MDMS_POST.n_parent_id IS NULL)
+
+
+
     ) CHANGES_
     ON (CHANGES_.MDMS_C_CODE = T.C_CODE and CHANGES_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN MATCHED THEN
@@ -156,7 +189,8 @@ MERGE INTO TBL_POST T
     USING (
         SELECT MDMS_POST.*
         FROM (
-                 SELECT post.c_code                               AS c_code,
+                 SELECT post.c_code                               AS c_code
+                         ,
                         nvl(post.c_title, 'null_' || post.c_code) AS c_title_fa,
                         post_grade.id                             AS f_post_grade_id,
                         job_.id                                   AS f_job_id,
@@ -187,8 +221,18 @@ MERGE INTO TBL_POST T
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
              ) MDMS_POST
                  LEFT JOIN TBL_POST TR_POST
-                           ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
+                           ON ((MDMS_POST.C_CODE = TR_POST.C_CODE ))
         WHERE TR_POST.ID IS NULL
+          and
+                MDMS_POST.C_CODE not in (
+
+                SELECT C_CODE
+                FROM (SELECT * FROM TBL_MD_POST_MDMS)
+                GROUP BY C_CODE , C_PEOPLE_TYPE
+                HAVING COUNT(*) > 1
+            )
+
+
     ) NEW_
     ON (NEW_.C_CODE = T.C_CODE AND NEW_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN NOT MATCHED THEN

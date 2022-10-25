@@ -5,12 +5,12 @@ create PROCEDURE PRC_DUPLICATED_ROW_CHECK_MDMS AS
         DUPLICATED_ROWS VARCHAR2(300);
     BEGIN
         SELECT CASE
-                   WHEN EXISTS(
-                           SELECT C_CODE, C_PEOPLE_TYPE
-                           FROM (SELECT * FROM TBL_MD_JOB_MDMS)
-                           GROUP BY C_CODE, C_PEOPLE_TYPE
-                           HAVING COUNT(*) > 1
-                       ) THEN 'TBL_MD_JOB'
+--                    WHEN EXISTS(
+--                            SELECT C_CODE, C_PEOPLE_TYPE
+--                            FROM (SELECT * FROM TBL_MD_JOB_MDMS)
+--                            GROUP BY C_CODE, C_PEOPLE_TYPE
+--                            HAVING COUNT(*) > 1
+--                        ) THEN 'TBL_MD_JOB'
                    WHEN EXISTS(
                            SELECT C_CODE, C_PEOPLE_TYPE
                            FROM (SELECT * FROM TBL_MD_POST_GRADE_MDMS)
@@ -29,12 +29,12 @@ create PROCEDURE PRC_DUPLICATED_ROW_CHECK_MDMS AS
                            GROUP BY C_CODE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_DEPARTMENT'
-                   WHEN EXISTS(
-                           SELECT C_CODE
-                           FROM (SELECT * FROM TBL_MD_POST_MDMS)
-                           GROUP BY C_CODE , C_PEOPLE_TYPE
-                           HAVING COUNT(*) > 1
-                       ) THEN 'TBL_MD_POST'
+--                    WHEN EXISTS(
+--                            SELECT C_CODE
+--                            FROM (SELECT * FROM TBL_MD_POST_MDMS)
+--                            GROUP BY C_CODE , C_PEOPLE_TYPE
+--                            HAVING COUNT(*) > 1
+--                        ) THEN 'TBL_MD_POST'
                    WHEN EXISTS(
                            SELECT C_NATIONAL_CODE FROM (
                                SELECT * FROM (

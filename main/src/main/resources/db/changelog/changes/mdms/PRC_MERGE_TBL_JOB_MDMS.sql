@@ -14,10 +14,34 @@ MERGE INTO TBL_JOB T
                   SELECT C_CODE,
                          C_PEOPLE_TYPE,
                          NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
-                  FROM TBL_MD_JOB_MDMS) MDMS_JOB
+                  FROM (
+
+                           SELECT
+                               * FROM TBL_MD_JOB_MDMS
+                           WHERE
+                                   C_CODE not in (
+
+                                   SELECT C_CODE
+                                   FROM (SELECT * FROM TBL_MD_JOB_MDMS)
+                                   GROUP BY C_CODE , C_PEOPLE_TYPE
+                                   HAVING COUNT(*) > 1
+                               )
+
+
+                       )) MDMS_JOB
                   INNER JOIN TBL_JOB TR_JOB
                              ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
-         WHERE TR_JOB.C_TITLE_FA <> MDMS_JOB.C_TITLE_FA)
+         WHERE TR_JOB.C_TITLE_FA <> MDMS_JOB.C_TITLE_FA
+           and
+                 MDMS_JOB.C_CODE not in (
+
+                 SELECT C_CODE
+                 FROM (SELECT * FROM TBL_MD_JOB_MDMS)
+                 GROUP BY C_CODE , C_PEOPLE_TYPE
+                 HAVING COUNT(*) > 1
+             )
+
+        )
             CHANGES_
     ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN MATCHED THEN
@@ -45,7 +69,16 @@ MERGE INTO TBL_JOB T
                      c_code is not null) MDMS_JOB
                  LEFT JOIN TBL_JOB TR_JOB
                            ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
-        WHERE TR_JOB.ID IS NULL) NEW_
+        WHERE TR_JOB.ID IS NULL
+          and
+                MDMS_JOB.C_CODE not in (
+
+                SELECT C_CODE
+                FROM (SELECT * FROM TBL_MD_JOB_MDMS)
+                GROUP BY C_CODE , C_PEOPLE_TYPE
+                HAVING COUNT(*) > 1
+            )
+    ) NEW_
     ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN NOT MATCHED THEN
         INSERT (ID,
