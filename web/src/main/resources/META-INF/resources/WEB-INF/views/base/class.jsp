@@ -3306,7 +3306,7 @@
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
 
                         DynamicForm_Class_JspClass.getItem("complexId").enable();
-                        DynamicForm_Class_JspClass.AgetItem("assistantId").disable();
+                        DynamicForm_Class_JspClass.getItem("assistantId").disable();
                         DynamicForm_Class_JspClass.getItem("affairsId").disable();
                         url = classUrl;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
@@ -4141,7 +4141,7 @@
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="message"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
+                buttonClick: function () {
                     this.close();
                 }
             });
