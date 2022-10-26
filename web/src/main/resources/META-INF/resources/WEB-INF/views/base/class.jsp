@@ -1528,8 +1528,10 @@
                     highlightClassStauts(value, 10);
                     if (classMethod.localeCompare("PUT") === 0 && value === "3")
                         checkEndingClass(oldValue);
-                    else if (classMethod.localeCompare("PUT") === 0 && value === "2")
+                    else if (classMethod.localeCompare("PUT") === 0 && value === "2") {
                         hasClassStarted(oldValue);
+                        hasClassStudentCount(oldValue);
+                    }
                     else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value === "2"))
                         return false;
                 }
@@ -4125,6 +4127,24 @@
                     }
                 }
             }));
+        }
+    }
+
+    function hasClassStudentCount(oldValue) {
+
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        let studentCount = record.studentCount;
+        if (studentCount === 0) {
+            classTypeStatus.setValue(oldValue);
+            isc.Dialog.create({
+                message: " در کلاس هیچ فراگیری وجود ندارد. ",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="message"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function () {
+                    this.close();
+                }
+            });
         }
     }
 
