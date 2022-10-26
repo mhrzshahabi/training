@@ -2,6 +2,7 @@ create or replace PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
 
 BEGIN------------UPDATE-------------------------------------------------------
 
+
 MERGE INTO TBL_PERSONNEL T
     USING (
         SELECT to_char(emp.c_em_number_10) AS personnel_no,
@@ -151,11 +152,6 @@ MERGE INTO TBL_PERSONNEL T
             AND to_char(emp.c_em_number_10) IS NOT NULL)
            OR (TR_PERS.personnel_no IS NOT NULL
             AND to_char(emp.c_em_number_10) IS NULL)
-           OR TR_PERS.address <> address
-           OR (TR_PERS.address IS NULL
-            AND address IS NOT NULL)
-           OR (TR_PERS.address IS NOT NULL
-            AND address IS NULL)
            OR TR_PERS.birth_certificate_no <> birth_certificate_no
            OR (TR_PERS.birth_certificate_no IS NULL
             AND birth_certificate_no IS NOT NULL)
@@ -342,7 +338,7 @@ MERGE INTO TBL_PERSONNEL T
     WHEN MATCHED THEN
         UPDATE
             SET T.personnel_no            = CHANGES_.personnel_no,
-                t.address                 = CHANGES_.address,
+                t.address                 = null,
                 t.birth_certificate_no    = CHANGES_.birth_certificate_no,
                 t.birth_date              = CHANGES_.birth_date,
                 t.birth_place             = CHANGES_.birth_place,
@@ -572,7 +568,7 @@ MERGE INTO TBL_PERSONNEL T
                     1,
                     0,
                     NEW_.personnel_no,
-                    NEW_.address,
+                    null,
                     NEW_.birth_certificate_no,
                     NEW_.birth_date,
                     NEW_.birth_place,
