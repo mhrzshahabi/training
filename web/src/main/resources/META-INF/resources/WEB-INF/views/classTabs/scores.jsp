@@ -792,12 +792,19 @@
     });
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
-        record.scoresStateId = newValue;
-        record.failureReasonId = null;
-        record.score = null
-        record.valence = null
-        scoresState_value = null;
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
+        debugger
+        if (record.scoresStateId == 401){
+            console.log( record.scoresStateId );
+
+        }else{
+            record.scoresStateId = newValue;
+            record.failureReasonId = null;
+            record.score = null
+            record.valence = null
+            scoresState_value = null;
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
+        }
+
 
     }
 
