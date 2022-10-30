@@ -360,8 +360,7 @@
                         return;
                     }
 
-                    console.log(ListGrid_class_Evaluation.getSelectedRecord().evaluation);
-                    if( value === 401 && ListGrid_class_Evaluation.getSelectedRecord().evaluation ==2 ) {
+                     if( value === 401 && ListGrid_class_Evaluation.getSelectedRecord().evaluation ==2 ) {
                         createDialog("info", "کاربر گرامی بدلیل اینکه ارزیابی دوره یادگیری است  <br>  شما  نمی توانید وضعیت قبول بدون نمره را ثبت کنید", "<spring:message code="message"/>");
                         ListGrid_Class_Student_Eval.invalidateCache();
                     }
