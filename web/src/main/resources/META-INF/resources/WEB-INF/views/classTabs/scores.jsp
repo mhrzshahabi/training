@@ -792,10 +792,10 @@
     });
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
-        debugger
-        if (record.scoresStateId == 401){
-            console.log( record.scoresStateId );
 
+        if (newValue == 401 && ListGrid_Class_JspClass.data.localData[0].evaluation == 2){
+            createDialog("info", "کاربر گرامی بدلیل اینکه ارزیابی دوره یادگیری است  <br>  شما  نمی توانید وضعیت قبول بدون نمره را ثبت کنید", "<spring:message code="message"/>");
+            ListGrid_Class_Student.invalidateCache();
         }else{
             record.scoresStateId = newValue;
             record.failureReasonId = null;
@@ -804,7 +804,6 @@
             scoresState_value = null;
             isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
         }
-
 
     }
 
