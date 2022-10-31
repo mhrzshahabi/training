@@ -192,6 +192,8 @@ public interface ITclassService {
 
     BaseResponse delete(Long id) throws IOException;
 
+    Boolean checkEvaluationsForEndingClass(Long classId);
+
     boolean compareTodayDate(Long classId);
 
     Boolean hasSessions(Long classId);

@@ -261,4 +261,59 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
                             class_code
             """, nativeQuery = true)
     List<ViewReactionEvaluationFormulaReport> getAll(String start, String end);
+
+    @Query(value = """
+                    SELECT
+                        percent_.percent_reaction
+                    FROM
+                        (
+                            SELECT
+                                tclass.id     AS class_id,
+                                tclass.c_code AS class_code
+                            FROM
+                                tbl_class tclass
+                            WHERE
+                                tclass.id =:classId
+                        ) z
+                        LEFT JOIN (
+                            SELECT
+                                class_id AS class_id,
+                                CASE
+                                WHEN all_reaction_eval = 0 THEN
+                                0
+                                ELSE
+                                CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                                END      AS percent_reaction
+                            FROM
+                                (
+                                    SELECT DISTINCT
+                                        cs.class_id AS class_id,
+                                        (
+                                            SELECT
+                                                COUNT(DISTINCT cs.id)
+                                            FROM
+                                                tbl_class_student cs
+                                                INNER JOIN tbl_class c ON cs.class_id = c.id
+                                            WHERE
+                                                c.id = classx.id
+                                                AND cs.evaluation_status_reaction IN ( 2, 3 )
+                                        )           AS filled_reaction_eval,
+                                        (
+                                            SELECT
+                                                COUNT(DISTINCT cs.id)
+                                            FROM
+                                                tbl_class_student cs
+                                                INNER JOIN tbl_class c ON cs.class_id = c.id
+                                            WHERE
+                                                c.id = classx.id
+                                                AND ( cs.evaluation_status_reaction IN ( 0, 1, 2, 3 )
+                                                      OR cs.evaluation_status_reaction IS NULL )
+                                        )           AS all_reaction_eval
+                                    FROM
+                                        tbl_class_student cs
+                                        INNER JOIN tbl_class classx ON cs.class_id = classx.id
+                                )
+                        ) percent_ ON z.class_id = percent_.class_id
+            """, nativeQuery = true)
+    String getPercentReaction(Long classId);
 }

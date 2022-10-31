@@ -23,6 +23,8 @@ public class ViewReactionEvaluationFormulaReportService extends BaseService<View
 
     }
 
-
-
+    @Override
+    public String getPercentReaction(Long classId) {
+        return viewReactionEvaluationFormulaReportDAO.getPercentReaction(classId);
+    }
 }

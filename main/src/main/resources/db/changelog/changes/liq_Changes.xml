@@ -7432,6 +7432,48 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-102">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_parameter_id
+            FROM TBL_PARAMETER
+            WHERE c_code = 'FER';
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_value)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'حد نصاب پرسشنامه های تکمیل شده برای پایان کلاس',
+                    'minQusForClassEnd',
+                    '60');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 
