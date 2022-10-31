@@ -12,6 +12,7 @@
     let competenceAttitudeGapData = [];
     let competenceKnowledgeGapData = [];
     let belowCourses = [];
+    let CNeedsAssessmentDomainId=0 ;
     let belowCoursesForMainPage = [];
     let competenceAbilityGapData = [];
 
@@ -111,6 +112,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name : "code"},
+            {name : "CNeedsAssessmentDomainId"},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
             {name: "categoryId", title: "گروه"},
@@ -265,6 +267,7 @@
                 title: "افزودن دوره",
                 click: function () {
                     let record = ListGrid_Knowledge_JspNeedsAssessmentGap.getSelectedRecord();
+                    CNeedsAssessmentDomainId=108;
                 openCourseWindow(record)
                 }
             }
@@ -276,6 +279,7 @@
                 title: "افزودن دوره",
                 click: function () {
                     let record = ListGrid_Ability_JspNeedsAssessmentGap.getSelectedRecord();
+                    CNeedsAssessmentDomainId=109;
                     if   (record !== undefined && record !== null ){
                          openCourseWindow(record)
                     }
@@ -292,6 +296,7 @@
                 title: "افزودن دوره",
                 click: function () {
                     let record = ListGrid_Attitude_JspNeedsAssessmentGap.getSelectedRecord();
+                    CNeedsAssessmentDomainId=110;
                     if   (record !== undefined && record !== null ){
                         // ListGrid_NeedsAssessment_JspENAGap.setData([]);
                         openCourseWindow(record)
@@ -370,7 +375,7 @@
         ],
         gridComponents: ["filterEditor", "header", "body"],
         rowDoubleClick(record){
-            addGridCompetenceRecords(record);
+            addGridCompetenceRecords(record,false);
         },
         selectionChanged(record, state) {
             if (state === true) {
@@ -701,6 +706,100 @@
             ListGrid_AllCompetence_JspNeedsAssessmentGap.fetchData();
         }
     });
+    let CompetenceTypeInGap = isc.DynamicForm.create({
+        titleAlign: "right",
+        fields: [
+            {
+                name: "CompetenceType",
+                title: "انتخاب حیطه ",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: false,
+                valueMap: {
+                    108: "دانشی",
+                    109: "توانشی",
+                    110: "نگرشی",
+
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            }
+        ]
+    });
+    let HLayout_Select_CompetenceTypeInGap = isc.TrHLayoutButtons.create({
+        alignLayout: "bottom",
+        height: "5%",
+        membersMargin: 10,
+        members: [
+            isc.IButtonSave.create({
+                title: "<spring:message code="verify"/>",
+                click: function () {
+
+                    let cTypeInGap = CompetenceTypeInGap.getField("CompetenceType").getValue();
+                    let record=ListGrid_AllCompetence_JspNeedsAssessmentGap.getSelectedRecord();
+
+                    switch (cTypeInGap) {
+                        case '108':
+                        {
+                            if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")
+                            && checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")
+                            && checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id") ) {
+                                DataSource_competence_Knowledge_JspNeedsAssessmentGap.addData(record);
+                                selectCompetenceTypeInGap.close();
+                                return;
+                            }
+                            createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                        }
+                            break;
+                        case '109':
+                        {
+                            if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")
+                                && checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")
+                                && checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id") ) {
+                                DataSource_competence_Ability_JspNeedsAssessmentGap.addData(record);
+                                selectCompetenceTypeInGap.close();
+                                return;
+                            }
+                            createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                        }
+                            break;
+                        case '110':
+                        {
+                            if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")
+                                && checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")
+                                && checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id") ) {
+                                DataSource_competence_Attitude_JspNeedsAssessmentGap.addData(record);
+                                selectCompetenceTypeInGap.close();
+                                return;
+                            }
+                            createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                        }
+                            break;
+                    }
+                }
+            }),
+            isc.IButtonCancel.create({
+                click: function () {
+                    CompetenceTypeInGap.clearValues();
+                    selectCompetenceTypeInGap.close();
+                }
+            })
+        ]
+    })
+
+
+    let selectCompetenceTypeInGap= isc.Window.create({
+        title: "انتخاب حیطه ",
+        width: "20%",
+        height: "20%",
+        align: "center",
+        autoSize: false,
+        showMaximizeButton: false,
+        dismissOnEscape: true,
+        items: [CompetenceTypeInGap, HLayout_Select_CompetenceTypeInGap]
+    });
 
 
 
@@ -866,6 +965,7 @@
             data.objectType=gapObjectType
             data.competenceId=selectedRecord.id
             data.createNeedAssessmentSkills=skillData
+            data.needsAssessmentDomainId=CNeedsAssessmentDomainId
 
             isc.RPCManager.sendRequest(TrDSRequest(addNeedAssmentForGaps , "POST",JSON.stringify(data), function (resp) {
 
@@ -1023,38 +1123,47 @@ if (canChange){
         belowCoursesForMainPage.length = 0;
 
     }
-    function addGridCompetenceRecords(record) {
-        switch (record.competenceLevelId) {
-            case 108:
-            {
-                if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")) {
-                    DataSource_competence_Knowledge_JspNeedsAssessmentGap.addData(record);
-                    return;
-                }
-                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
-            }
-                break;
-            case 109:
-            {
-                if (checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")) {
-                    DataSource_competence_Ability_JspNeedsAssessmentGap.addData(record);
-                    return;
-                }
-                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+    function addGridCompetenceRecords(record,firstLoad) {
+        if ((record.competenceLevelId === undefined || record.competenceLevelId ===null) && !firstLoad){
+            selectCompetenceTypeInGap.show();
+        }else {
 
+            let cLevelId=record.competenceLevelId;
+            if (cLevelId===undefined || cLevelId===null){
+                cLevelId=record.cneedsAssessmentDomainId;
             }
-                break;
-            case 110:
-            {
-                if (checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id")) {
-                    DataSource_competence_Attitude_JspNeedsAssessmentGap.addData(record);
-                    return;
-                }
-                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
 
+            switch (cLevelId) {
+                case 108:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Knowledge_JspNeedsAssessmentGap, "id")) {
+                        DataSource_competence_Knowledge_JspNeedsAssessmentGap.addData(record);
+                        return;
+                    }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                }
+                    break;
+                case 109:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Ability_JspNeedsAssessmentGap, "id")) {
+                        DataSource_competence_Ability_JspNeedsAssessmentGap.addData(record);
+                        return;
+                    }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                }
+                    break;
+                case 110:
+                {
+                    if (checkSaveDataGap(record, DataSource_competence_Attitude_JspNeedsAssessmentGap, "id")) {
+                        DataSource_competence_Attitude_JspNeedsAssessmentGap.addData(record);
+                        return;
+                    }
+                    createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+                }
+                    break;
             }
-                break;
         }
+
     }
     function callApiForLoadLastData() {
         wait.show();
@@ -1067,7 +1176,7 @@ if (canChange){
 
 
                     for (let i = 0; i < data.size(); i++) {
-                        addGridCompetenceRecords(data[i])
+                        addGridCompetenceRecords(data[i],true)
 
                     }
                 wait.close();

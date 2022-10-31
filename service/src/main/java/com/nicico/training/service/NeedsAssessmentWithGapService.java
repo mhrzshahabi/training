@@ -7,11 +7,8 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.repository.NeedsAssessmentWithGapDAO;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
@@ -117,7 +114,7 @@ public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapSer
 
         list.addAll(getGroupListForCompetences(objectType,objectId));
 
-        List<CompetenceDTO.Info> naList = competenceService.getInfos(list.stream().map(NeedsAssessmentWithGap::getCompetenceId).collect(Collectors.toList()));
+        List<CompetenceDTO.Info> naList = competenceService.getInfos(list);
 
         SearchDTO.SearchRs<CompetenceDTO.Info> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) naList.size());
@@ -160,7 +157,10 @@ public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapSer
             needsAssessmentWithGap.setCompetenceId(createNeedAssessment.getCompetenceId());
             needsAssessmentWithGap.setLimitSufficiency(s.getLimitSufficiency());
             needsAssessmentWithGap.setObjectCode(code);
+            if (competence.getCompetenceLevelId()!=null)
             needsAssessmentWithGap.setNeedsAssessmentDomainId(competence.getCompetenceLevelId());
+            else
+                needsAssessmentWithGap.setNeedsAssessmentDomainId(createNeedAssessment.getNeedsAssessmentDomainId());
             needsAssessmentWithGap.setNeedsAssessmentPriorityId(competence.getCompetencePriorityId());
             needsAssessmentWithGap.setObjectId(createNeedAssessment.getObjectId());
             needsAssessmentWithGap.setObjectType(createNeedAssessment.getObjectType());

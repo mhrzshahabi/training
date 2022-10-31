@@ -6,12 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.mapstruct.Mapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
@@ -130,6 +127,7 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
     public static class CreateNeedAssessment {
         private Long objectId;
         private Long competenceId;
+        private Long needsAssessmentDomainId;
         private String objectType;
         private List<CreateNeedAssessmentSkill> createNeedAssessmentSkills;
 

@@ -41,6 +41,7 @@ public class CompetenceDTO implements Serializable {
     @ApiModel("CompetenceDTO - Info")
     public static class Info extends CompetenceDTO {
         private Long id;
+        private Long CNeedsAssessmentDomainId;
         private Integer version;
         private String returnDetail;
         private ParameterValueDTO.MinInfo competenceType;

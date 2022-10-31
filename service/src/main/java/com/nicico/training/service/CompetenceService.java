@@ -8,10 +8,7 @@ import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
-import com.nicico.training.model.Competence;
-import com.nicico.training.model.NeedsAssessment;
-import com.nicico.training.model.NeedsAssessmentTemp;
-import com.nicico.training.model.Skill;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import com.nicico.training.repository.NeedsAssessmentTempDAO;
@@ -39,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -324,9 +322,24 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
 
     @Transactional(readOnly = true)
     @Override
-    public List<CompetenceDTO.Info> getInfos(List<Long> ids) {
-        return modelMapper.map(getCompetences(ids), new TypeToken<List<CompetenceDTO.Info>>() {
+    public List<CompetenceDTO.Info> getInfos(List<NeedsAssessmentWithGap> needsAssessmentWithGapList) {
+        List<CompetenceDTO.Info> removeItems=new ArrayList<>();
+        List<CompetenceDTO.Info> list= modelMapper.map(getCompetences(needsAssessmentWithGapList.stream().map(NeedsAssessmentWithGap::getCompetenceId).collect(Collectors.toList())), new TypeToken<List<CompetenceDTO.Info>>() {
         }.getType());
+        for (CompetenceDTO.Info competenceDTO : list){
+            if (competenceDTO.getCompetenceLevelId()==null){
+                Optional<NeedsAssessmentWithGap> needsAssessmentWithGap=needsAssessmentWithGapList.stream().filter(a->a.getCompetenceId().equals(competenceDTO.getId())).findFirst();
+         if (needsAssessmentWithGap.isPresent()){
+             competenceDTO.setCNeedsAssessmentDomainId(needsAssessmentWithGap.get().getNeedsAssessmentDomainId());
+         }else {
+             removeItems.add(competenceDTO);
+         }
+            }
+
+        }
+        list.removeAll(removeItems);
+
+        return  list;
     }
     public List<Competence> getCompetences(List<Long> ids) {
         return competenceDAO.findAllById(ids);
