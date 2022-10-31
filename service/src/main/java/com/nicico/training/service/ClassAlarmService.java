@@ -1945,6 +1945,38 @@ public class ClassAlarmService implements IClassAlarmService {
             if (!Alarm.isEmpty())
                 endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین " + Alarm.get(0) : Alarm.get(0));
 
+            //***** Has test question and question bank test question  *****
+            String alarmQuestionScripts;
+            alarmQuestionScripts = " SELECT\n" +
+                    "case \n" +
+                    "    when  count_id = 0 then  'بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.'\n" +
+                    "    end AS hasalarm\n" +
+                    "     \n" +
+                    "FROM (\n" +
+                    "select \n" +
+                    "count(tbl_class.id) as count_id\n" +
+                    "   \n" +
+                    "    FROM\n" +
+                    "        tbl_class \n" +
+                    "        INNER JOIN   \n" +
+                    "             tbl_test_question\n" +
+                    "             ON tbl_test_question.f_class = tbl_class.id\n" +
+                    "              AND tbl_class.id =  :class_id\n" +
+                    "              AND  tbl_class.C_EVALUATION = '2' -- learning\n" +
+                    "              AND   tbl_test_question.c_test_question_type = 'FinalTest'\n" +
+                    "        INNER JOIN \n" +
+                    "              tbl_question_bank_test_question \n" +
+                    "              ON tbl_test_question.id = tbl_question_bank_test_question.f_test_question\n" +
+                    "\n" +
+                    "  )  ";
+
+            List<?> alarmForQuestion = (List<?>) entityManager.createNativeQuery(alarmQuestionScripts)
+                    .setParameter("class_id", class_id)
+                     .getResultList();
+
+            if (!alarmForQuestion.isEmpty())
+                endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.<br />");
+
         } catch (Exception ex) {
             ex.printStackTrace();
 
