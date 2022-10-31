@@ -4100,7 +4100,7 @@
                                 isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/" + record.id, "GET", null, function(response) {
                                     wait.close();
                                     if (JSON.parse(response.httpResponseText) === false) {
-                                        createDialog("info", "حدنصاب ارزیابی انجام نشده است");
+                                        createDialog("info", "به دلیل به حدنصاب نرسیدن تکمیل پرسشنامه های ارزیابی واکنشی، امکان پایان کلاس وجود ندارد");
                                         classTypeStatus.setValue(oldValue);
                                         highlightClassStauts(oldValue, 10);
                                     }
