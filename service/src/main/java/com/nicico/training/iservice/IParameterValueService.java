@@ -38,4 +38,7 @@ public interface IParameterValueService {
     Optional<ParameterValue> findById(Long ParameterValueId);
 
     int getZone(String code);
+
+    ParameterValueDTO.Info getInfoByCode(String code);
+
 }

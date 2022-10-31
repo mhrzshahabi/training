@@ -110,7 +110,7 @@ public class TclassService implements ITclassService {
     private final EducationalCalenderDAO educationalCalenderDAO;
     private final QuestionnaireDAO questionnaireDAO;
     private final IParameterValueService iParameterValueService;
-
+    private final IViewReactionEvaluationFormulaReportService viewReactionEvaluationFormulaReportService;
 
 
     @Override
@@ -360,13 +360,15 @@ public class TclassService implements ITclassService {
             teacher.getTclasse().remove(tclass);
 
         tclassDAO.delete(tclass);
-//        attendanceDAO.deleteAll(attendances);
-//        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
-//        for (AttachmentDTO.Info attachment : attachmentInfoList) {
-//            attachmentService.delete(attachment.getId());
-//        }
         response.setStatus(200);
         return response;
+    }
+
+    @Override
+    public Boolean checkEvaluationsForEndingClass(Long classId) {
+        Double limit = Double.parseDouble(iParameterValueService.getInfoByCode("minQusForClassEnd").getValue());
+        Double evaluatedPercent = Double.parseDouble(viewReactionEvaluationFormulaReportService.getPercentReaction(classId));
+        return evaluatedPercent >= limit;
     }
 
     @Transactional

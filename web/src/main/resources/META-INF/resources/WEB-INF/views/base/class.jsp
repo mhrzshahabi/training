@@ -4064,10 +4064,10 @@
 
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "/attendance-completion?classId=" + record.id, "GET", null, function (resp) {
-                wait.close();
                 if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.httpResponseText);
                     if (result == true) {
+                        wait.close();
                         TabSet_Class.selectTab("classAlarmsTab");
                         isc.Dialog.create({
                             message: "حضور غیاب تکمیل نشده است",
@@ -4082,8 +4082,8 @@
                         highlightClassStauts(oldValue, 10);
                     } else {
                         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
-                            wait.close();
                             if (resp.data !== "") {
+                                wait.close();
                                 TabSet_Class.selectTab("classAlarmsTab");
                                 isc.Dialog.create({
                                     message: resp.data,
@@ -4096,6 +4096,15 @@
                                 });
                                 classTypeStatus.setValue(oldValue);
                                 highlightClassStauts(oldValue, 10);
+                            } else {
+                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/" + record.id, "GET", null, function(response) {
+                                    wait.close();
+                                    if (JSON.parse(response.httpResponseText) === false) {
+                                        createDialog("info", "حدنصاب ارزیابی انجام نشده است");
+                                        classTypeStatus.setValue(oldValue);
+                                        highlightClassStauts(oldValue, 10);
+                                    }
+                                }));
                             }
                         }));
                     }

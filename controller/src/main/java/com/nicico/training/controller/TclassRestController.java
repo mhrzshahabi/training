@@ -2,7 +2,6 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lowagie.text.pdf.codec.Base64;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -17,17 +16,9 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.*;
 import dto.ScoringClassDto;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.util.JRLoader;
-import org.modelmapper.TypeToken;
-import org.springframework.core.io.ClassPathResource;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
-import com.nicico.training.repository.InstituteDAO;
-import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import dto.LockClassDto;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +40,7 @@ import response.tclass.TclassCreateResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -529,6 +518,12 @@ public class TclassRestController {
     @GetMapping(value = "/checkEndingClass/{classId}/{endDate}")
     public String checkEndingClass(@PathVariable Long classId, @PathVariable String endDate, HttpServletResponse response) throws IOException {
         return classAlarmService.checkAlarmsForEndingClass(classId, endDate, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/checkEvaluationsForEndingClass/{classId}")
+    public Boolean checkEvaluationsForEndingClass(@PathVariable Long classId) throws IOException {
+        return tClassService.checkEvaluationsForEndingClass(classId);
     }
 
     @Loggable
