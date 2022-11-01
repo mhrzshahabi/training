@@ -2,7 +2,6 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.RequestStatus;
-import com.nicico.training.model.enums.UserRequestType;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.Getter;
@@ -20,7 +19,7 @@ public class RequestResVM {
     private Long classId;
     private String nationalCode;
     private String response;
-    private UserRequestType type;
+    private String userRequestTypeTitle;
     private RequestStatus status;
     private String reference;
     private String createdDate;
