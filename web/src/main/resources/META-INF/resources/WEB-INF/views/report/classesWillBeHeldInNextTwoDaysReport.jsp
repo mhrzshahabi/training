@@ -79,17 +79,18 @@
             {name: "classToOnlineStatus", type: "boolean"}
         ],
         autoFetchData: false,
+        filterOnKeypress: true,
         fetchDataURL: classUrl + "add-permission/spec-list"
     });
 
     let ListGrid_ClassesWillBeHeldInNextTwoDaysReport = isc.TrLG.create({
+        dataSource: RestDataSource_ClassesWillBeHeldInNextTwoDaysReport,
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_ClassesWillBeHeldInNextTwoDaysReport,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        selectionType: "single",
         autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: false,
-        sortDirection: "descending",
         initialSort: [
             {property: "id", direction: "descending"}
         ],
@@ -194,6 +195,7 @@
                 canSort: false,
                 autoFitWidth: true,
                 align: "center",
+                filterOperator: "iContains",
             },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",
@@ -268,7 +270,7 @@
             {name: "hasTest", hidden: true},
             {name: "classToOnlineStatus", hidden: true}
 
-        ],
+        ]
 
     });
 
