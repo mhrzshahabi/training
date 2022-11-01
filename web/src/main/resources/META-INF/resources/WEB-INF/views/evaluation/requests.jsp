@@ -16,7 +16,7 @@
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "name", title: "نام", filterOperator: "iContains"},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
-            {name: "type.titleFa", title: "نوع درخواست"},
+            {name: "userRequestTypeTitle", title: "نوع درخواست"},
             {name: "status", title: "وضعیت", valueMap: {ACTIVE: "ACTIVE", PENDING: "PENDING", CLOSED: "CLOSED", PROCESSING: "PROCESSING"}},
             {name: "text", title: "متن درخواست", filterOperator: "iContains"},
             {name: "response", title: "پاسخ", filterOperator: "iContains"},
@@ -81,7 +81,7 @@
                 canEdit: false
             },
             {
-                name: "type.titleFa",
+                name: "userRequestTypeTitle",
                 title: "نوع درخواست",
                 canEdit: false
             },
@@ -231,13 +231,13 @@
         contextMenu: Menu_Request,
         </sec:authorize>
         initialSort: [
-            {property: "type", direction: "ascending"}
+            {property: "userRequestTypeTitle", direction: "ascending"}
         ],
         fields: [
             {name: "id",primaryKey: true,hidden: true},
             {name: "name"},
             {name: "nationalCode"},
-            {name: "type.titleFa"},
+            {name: "userRequestTypeTitle"},
             {name: "status"},
             {name: "text"},
             {name: "response"},

@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.nicico.training.model.enums.UserRequestType;
 import lombok.Data;
 import response.question.dto.ElsAttachmentDto;
 
@@ -12,6 +11,6 @@ public class RequestReqVM {
     private String text;
     private Long classId;
     private String nationalCode;
-    private UserRequestType type;
+    private Long userRequestTypeId;
     private List<ElsAttachmentDto> attachments;
 }

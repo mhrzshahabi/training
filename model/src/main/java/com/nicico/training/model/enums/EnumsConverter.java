@@ -501,4 +501,24 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class UserRequestTypeConverter implements AttributeConverter<UserRequestType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(UserRequestType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public UserRequestType convertToEntityAttribute(Integer id) {
+
+            for (UserRequestType entry : UserRequestType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }
