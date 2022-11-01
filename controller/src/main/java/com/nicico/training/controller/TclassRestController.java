@@ -223,7 +223,7 @@ public class TclassRestController {
 
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-           criteria=criteria.replaceAll("\\s","");
+//           criteria=criteria.replaceAll("\\s","");
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
@@ -1039,7 +1039,7 @@ public class TclassRestController {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria=criteria.replaceAll("\\s","");
+//            criteria=criteria.replaceAll("\\s","");
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
