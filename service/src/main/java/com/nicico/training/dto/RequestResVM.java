@@ -16,6 +16,7 @@ public class RequestResVM {
     private Long id;
     private String text;
     private String name;
+    private Long classId;
     private String classTitle;
     private String nationalCode;
     private String response;
