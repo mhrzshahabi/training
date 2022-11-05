@@ -369,11 +369,32 @@
                     click: function () {
                         showStudentEvalToOnlineStatus();
                     }
-                },
+                },  {isSeparator: true},
                 {
                     title: "تاریخچه ارسال ارزیابی مدرس به سیستم آنلاین",
                     click: function () {
                         showTeacherEvalToOnlineStatus();
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='class.history'/>",
+                    click: function () {
+                        showTabClassChanges();
+                    }
+                }, {isSeparator: true},
+                {
+                    title: "<spring:message code='class.student.history'/>",
+                    click: function () {
+                        showTabHistoryOfRemovedClassStudents();
+
+                    }
+                }, {isSeparator: true},
+                {
+                    title: "تاریخچه افزودن فراگیران کلاس",
+                    click: function () {
+                        showTabHistoryOfAddedClassStudents();
+
                     }
                 }
             ]
@@ -1180,6 +1201,43 @@
             });
             Window_Student_Eval_History.show();
         }
+    }
+
+    function showTabClassChanges() {
+        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            if (mainTabSet.getTab("تغییرات کلاس") != null)
+                mainTabSet.removeTab("تغییرات کلاس")
+            createTab(this.title, "<spring:url value="web/classHistoryReport"/>");
+        }
+
+    }
+
+    function showTabHistoryOfRemovedClassStudents() {
+        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            if (mainTabSet.getTab("تاریخچه حذف فراگیران کلاس") != null)
+                mainTabSet.removeTab("تاریخچه حذف فراگیران کلاس")
+            createTab(this.title, "<spring:url value="web/classStudentHistoryRemoveReport"/>");
+        }
+
+    }
+
+    function showTabHistoryOfAddedClassStudents() {
+
+        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            if (mainTabSet.getTab("تاریخچه افزودن فراگیران کلاس") != null)
+                mainTabSet.removeTab("تاریخچه افزودن فراگیران کلاس")
+            createTab(this.title, "<spring:url value="web/classStudentHistoryAddReport"/>");
+        }
+
     }
 
     function showTeacherEvalToOnlineStatus() {
