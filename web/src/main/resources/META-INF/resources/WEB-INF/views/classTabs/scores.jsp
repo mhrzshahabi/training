@@ -792,8 +792,7 @@
     });
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
-
-        if (newValue == 401 && ListGrid_Class_JspClass.data.localData[0].evaluation == 2){
+        if (newValue == 401 && ListGrid_Class_JspClass.getSelectedRecord().evaluation == 2){
             createDialog("info", "کاربر گرامی بدلیل اینکه ارزیابی دوره یادگیری است  <br>  شما  نمی توانید وضعیت قبول بدون نمره را ثبت کنید", "<spring:message code="message"/>");
             ListGrid_Class_Student.invalidateCache();
         }else{
