@@ -750,7 +750,8 @@
                             let rec = CoursesLG_NAGap.getOriginalData().localData.get(i-1)
                             let  data={};
                             data.course=rec.skill.course.code;
-                            data.committeeScore=dataRecord;
+                            data.score=dataRecord;
+                            data.nationalCode=selectedPerson_NAGap.nationalCode;
                             validRecords.add(data);
                         }
                         else {
@@ -763,8 +764,21 @@
                 if (validRecords.length === 0) {
                     createDialog("info", "داده ای برای  ارسال وجود ندارد");
                 } else {
-                    validRecords
-                    zaza
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest("/training/api/scores-by-committee/add-scores", "POST", JSON.stringify(validRecords), function (resp) {
+                        let respText = JSON.parse(resp.httpResponseText);
+                        if (respText.status === 200) {
+                            createDialog("info", "عملیات با موفقیت انجام شد");
+                            wait.close();
+
+                        } else {
+                            createDialog("info", respText.message);
+                            wait.close();
+
+                        }
+                    }));
+
+
                 }
                 }
 

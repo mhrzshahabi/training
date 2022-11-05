@@ -28,8 +28,11 @@ public class ScoresByCommittee extends Auditable {
     private String score;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_course_id")
+    @JoinColumn(name = "f_course_id", nullable = false, insertable = false, updatable = false)
     private Course course;
+
+    @Column(name = "f_course_id", nullable = false)
+    private Long courseId;
 
 
 }

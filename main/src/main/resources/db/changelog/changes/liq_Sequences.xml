@@ -400,4 +400,8 @@
     <changeSet id="1633842708000-06" author="namdari">
         <createSequence sequenceName="seq_item_id"/>
     </changeSet>
+
+    <changeSet id="1633842708000-08" author="namdari">
+        <createSequence sequenceName="seq_scores_by_committee_id"/>
+    </changeSet>
 </databaseChangeLog>

@@ -67,6 +67,13 @@ public class CourseService implements ICourseService {
         return modelMapper.map(getCourse(id), CourseDTO.Info.class);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Course getByCode(String code) {
+        final Optional<Course> optionalCourse = courseDAO.findFirstByCode(code);
+        return optionalCourse.orElse(null);
+     }
+
     @Transactional(readOnly = true)
     @Override
     public Course getCourse(Long id) {
@@ -256,26 +263,26 @@ public class CourseService implements ICourseService {
     public CourseUpdateResponse update(Course course, List<Long> skillIds) {
 
         Course oldCourse = courseDAO.findCourseByIdEquals(course.getId());
-        course.setHasGoal(oldCourse.getGoalSet().size()>0);
+        course.setHasGoal(oldCourse.getGoalSet().size() > 0);
         CourseUpdateResponse response = new CourseUpdateResponse();
 
-        if(oldCourse.getGoalSet().stream().anyMatch(goal-> !goal.getSubCategoryId().equals(course.getSubCategoryId()))){
+        if (oldCourse.getGoalSet().stream().anyMatch(goal -> !goal.getSubCategoryId().equals(course.getSubCategoryId()))) {
             response.setMessage("خطا: زیر گروه دوره با زیر گروه هدف یکسان نیست!");
             response.setStatus(409);
             return response;
         }
-        if(oldCourse.getSkillSet().stream().anyMatch(skill-> !skill.getSubCategoryId().equals(course.getSubCategoryId()))){
+        if (oldCourse.getSkillSet().stream().anyMatch(skill -> !skill.getSubCategoryId().equals(course.getSubCategoryId()))) {
             response.setMessage("خطا: زیر گروه دوره با زیر گروه مهارت یکسان نیست!");
             response.setStatus(409);
             return response;
         }
         skillDAO.findByCourseMainObjectiveId(course.getId()).forEach(skill -> {
-           skill.setCourseMainObjectiveId(null);
-           skill.setCourseId(null);
-           skillDAO.save(skill);
-       });
-        if(!course.getCode().substring(0,6).equalsIgnoreCase(oldCourse.getCode().substring(0,6))){
-          course.setCode(codeGenerate(course.getCode().substring(0,6)));
+            skill.setCourseMainObjectiveId(null);
+            skill.setCourseId(null);
+            skillDAO.save(skill);
+        });
+        if (!course.getCode().substring(0, 6).equalsIgnoreCase(oldCourse.getCode().substring(0, 6))) {
+            course.setCode(codeGenerate(course.getCode().substring(0, 6)));
         }
         List<Skill> newSkills = skillDAO.findAllById(skillIds);
         newSkills.forEach(skill -> {
@@ -339,7 +346,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public List<Course> getCoursesViaCategoryAndSubCategory(ElsCatAndSub elsCatAndSub) {
-        return courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(),elsCatAndSub.getSubCategories());
+        return courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(), elsCatAndSub.getSubCategories());
     }
 
     @Transactional
@@ -413,8 +420,7 @@ public class CourseService implements ICourseService {
         Course one = courseDAO.getById(courseId);
         List<Goal> goalSet = one.getGoalSet();
         for (Long aLong : goalIdList) {
-            if(goalSet.stream().map(Goal::getId).anyMatch(a->a.equals(aLong)))
-            {
+            if (goalSet.stream().map(Goal::getId).anyMatch(a -> a.equals(aLong))) {
                 continue;
             }
             final Optional<Goal> ById = goalDAO.findById(aLong);
@@ -527,15 +533,15 @@ public class CourseService implements ICourseService {
     }
 
     @Transactional
-    public String codeGenerate(String codeStart){
-         int codeCounter = Integer.parseInt(getMaxCourseCode(codeStart)) + 1;
-         return codeStart + codeCounter/100 + codeCounter/10%10 + codeCounter%10;
+    public String codeGenerate(String codeStart) {
+        int codeCounter = Integer.parseInt(getMaxCourseCode(codeStart)) + 1;
+        return codeStart + codeCounter / 100 + codeCounter / 10 % 10 + codeCounter % 10;
     }
 
     @Transactional
     @Override
     public boolean checkForDelete(Long id) {
-        if(!workGroupService.isAllowUseId("Course",id)){
+        if (!workGroupService.isAllowUseId("Course", id)) {
             return false;
         }
         Optional<Course> one = courseDAO.findById(id);
@@ -621,10 +627,10 @@ public class CourseService implements ICourseService {
 
             for (Long id : teacherIds) {
                 Optional<Teacher> teacherOptional = teacherDAO.findById(id);
-                Teacher teacher=null;
+                Teacher teacher = null;
                 if (teacherOptional.isPresent())
-                    teacher=   teacherOptional.get();
-                if (teacher!=null){
+                    teacher = teacherOptional.get();
+                if (teacher != null) {
                     Map<String, Object> map = teacherService.evaluateTeacher(teacher, category, subCategory, parameterValues);
                     if (map.get("pass_status").equals("رد")) {
                         continue;
@@ -664,11 +670,11 @@ public class CourseService implements ICourseService {
     }
 
     private boolean checkTeacherPhone(Teacher teacher) {
-        if (teacher==null || teacher.getPersonality()==null || teacher.getPersonality().getContactInfoId()==null)
+        if (teacher == null || teacher.getPersonality() == null || teacher.getPersonality().getContactInfoId() == null)
             return false;
-        ContactInfoDTO.Info  contactInfo= contactInfoService.get(teacher.getPersonality().getContactInfoId());
-       String mobile=contactInfo.getMobile();
-       return checkMobileFormat(mobile);
+        ContactInfoDTO.Info contactInfo = contactInfoService.get(teacher.getPersonality().getContactInfoId());
+        String mobile = contactInfo.getMobile();
+        return checkMobileFormat(mobile);
 
     }
 
@@ -710,62 +716,62 @@ public class CourseService implements ICourseService {
 
         Map<String, Object[]> courseWithOutTeacherParams = new HashMap<>();
         CriteriaConverter.criteria2ParamsMap(request.getCriteria(), courseWithOutTeacherParams);
-        Object [] years = courseWithOutTeacherParams.get("tclassYears");
+        Object[] years = courseWithOutTeacherParams.get("tclassYears");
         Object startDate = courseWithOutTeacherParams.get("startDate");
         Object endDate = courseWithOutTeacherParams.get("endDate");
         Object startDate2 = courseWithOutTeacherParams.get("startDate2");
         Object endDate2 = courseWithOutTeacherParams.get("endDate2");
-        Object [] termIds = courseWithOutTeacherParams.get("termFilters");
-        Object [] courseIds = courseWithOutTeacherParams.get("courseId");
-        Object [] teacherIds = courseWithOutTeacherParams.get("teacherId");
+        Object[] termIds = courseWithOutTeacherParams.get("termFilters");
+        Object[] courseIds = courseWithOutTeacherParams.get("courseId");
+        Object[] teacherIds = courseWithOutTeacherParams.get("teacherId");
         List<SearchDTO.SortByRq> sortBy = request.getSortBy();
-        String [] fieldName = new String[sortBy.size()];
-        Boolean [] descending = new Boolean[sortBy.size()];
-        String [] sort =new String[sortBy.size()];
-        for(int i=0;i<sortBy.size();i++){
+        String[] fieldName = new String[sortBy.size()];
+        Boolean[] descending = new Boolean[sortBy.size()];
+        String[] sort = new String[sortBy.size()];
+        for (int i = 0; i < sortBy.size(); i++) {
             fieldName[i] = sortBy.get(i).getFieldName();
             descending[i] = sortBy.get(i).getDescending();
-            if(fieldName[i].equals( "code"))
+            if (fieldName[i].equals("code"))
                 sort[i] = "c_code";
-            if(fieldName[i].equals( "c_title_fa"))
+            if (fieldName[i].equals("c_title_fa"))
                 sort[i] = "c_code";
-            if(fieldName[i].equals( "max_start_date"))
+            if (fieldName[i].equals("max_start_date"))
                 sort[i] = "max_start_date";
-            if(descending[i] != null && descending[i] )
+            if (descending[i] != null && descending[i])
                 sort[i] += " desc ";
             else
                 sort[i] += " asc ";
         }
 
 
-        String sortQuery=null;
-        if(sort.length>0)
-            sortQuery =" order by "+StringUtils.join(sort,",");
+        String sortQuery = null;
+        if (sort.length > 0)
+            sortQuery = " order by " + StringUtils.join(sort, ",");
 
         List<Object> list;
 
-        String termIdsString = StringUtils.join(termIds,",");
-        if(termIdsString != null)
+        String termIdsString = StringUtils.join(termIds, ",");
+        if (termIdsString != null)
             termIdsString = "'," + termIdsString + ",'";
 
-        String courseIdsString = StringUtils.join(courseIds,",");
-        if(courseIdsString != null)
+        String courseIdsString = StringUtils.join(courseIds, ",");
+        if (courseIdsString != null)
             courseIdsString = "'," + courseIdsString + ",'";
 
-        String teacherIdsString = StringUtils.join(teacherIds,",");
-        if(teacherIdsString != null)
+        String teacherIdsString = StringUtils.join(teacherIds, ",");
+        if (teacherIdsString != null)
             teacherIdsString = "'," + teacherIdsString + ",'";
 
 
-        if( (courseIds == null || courseIds.length == 0) && (teacherIds == null || teacherIds.length ==0))
-            list =courseDAO.getCourseWithOutClassWithNeverProvidedAllCourses(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+        if ((courseIds == null || courseIds.length == 0) && (teacherIds == null || teacherIds.length == 0))
+            list = courseDAO.getCourseWithOutClassWithNeverProvidedAllCourses(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
         else if (courseIds == null || courseIds.length == 0)
-             list =courseDAO.getCourseWithOutClass(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+            list = courseDAO.getCourseWithOutClass(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
         else
-            list = courseDAO.getCourseWithOutClassWithNeverProvidedThisCourse(StringUtils.join(years, ","), startDate,endDate,startDate, endDate,termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+            list = courseDAO.getCourseWithOutClassWithNeverProvidedThisCourse(StringUtils.join(years, ","), startDate, endDate, startDate, endDate, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
         //List<Object> list = courseDAO.getCourseWithOutTeacher(years, startDate,endDate,strSData2, strEData2,termId,courseId, teacherId)
 
-        List <CourseDTO.courseWithOutTeacher> courseWithOutTeacherList =  new ArrayList<>();
+        List<CourseDTO.courseWithOutTeacher> courseWithOutTeacherList = new ArrayList<>();
         if (list.size() > 0) {
             courseWithOutTeacherList = new ArrayList<>(list.size());
             for (int i = 0; i < list.size(); i++) {

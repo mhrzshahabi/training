@@ -64,6 +64,7 @@ public class NeedsAssessmentWithGapDTO implements Serializable {
         private Long needsAssessmentDomainId;
         private Long needsAssessmentPriorityId;
         private Long limitSufficiency;
+        private String  committeeScore;
     }
 
     @Getter

@@ -61,6 +61,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final NeedAssessmentGroupResultDAO needAssessmentGroupResultDAO;
     protected EntityManager entityManager;
     private final ParameterValueDAO parameterValueDAO;
+    private final IScoresByCommitteeService iScoresByCommitteeService;
 
     public static final String PASS = "گذرانده";
 
@@ -76,9 +77,17 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
 
     @Transactional(readOnly = true)
-//    @Override
     public SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchForGap(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
         List<NeedsAssessmentWithGapDTO.ReportInfo> needsAssessmentReportList = getCourseListForGap(objectId, objectType, personnelId);
+        for (NeedsAssessmentWithGapDTO.ReportInfo  info: needsAssessmentReportList){
+            PersonnelDTO.Info student = personnelService.get(personnelId);
+
+            if (info.getSkill()!=null && info.getSkill().getCourse()!=null && student!=null && student.getNationalCode()!=null){
+                String score =iScoresByCommitteeService.getScore(student.getNationalCode(),info.getSkill().getCourse().getId());
+                info.setCommitteeScore(score);
+            }
+        }
+
         SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
         rs.setList(needsAssessmentReportList);

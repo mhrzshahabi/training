@@ -14,6 +14,7 @@ import java.util.function.Function;
 public interface ICourseService {
 
     CourseDTO.Info get(Long id);
+    Course getByCode(String code);
 
     Course getCourse(Long id);
 

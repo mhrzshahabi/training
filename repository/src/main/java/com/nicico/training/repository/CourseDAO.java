@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CourseDAO extends NicicoRepository<Course> {
@@ -213,4 +214,6 @@ public interface CourseDAO extends NicicoRepository<Course> {
     @Modifying
     @Query(value = "update TBL_COURSE set n_theory_duration =:theoryDuration where c_code =:code", nativeQuery = true)
     void updateDurationByCourseCode(String code, Float theoryDuration);
+
+    Optional<Course>findFirstByCode(String code);
 }
