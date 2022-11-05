@@ -140,7 +140,60 @@ public interface CourseDAO extends NicicoRepository<Course> {
             /*":sort "*/, nativeQuery = true)
     List<Object> getCourseWithOutClass(String years, Object startDate, Object endDate, Object strSData2, Object strEData2, String termIds, String courseIds, String teacherIds/*, String sort*/);
 
-    @Query(value = "SELECT COURSE_ID FROM VIEW_EQUAL_COURSE where REFERENCE_COURSE = :courseId", nativeQuery = true)
+    @Query(value = "select \n" +
+            "course_id\n" +
+            "from\n" +
+            "(\n" +
+            "            select \n" +
+            "                    \n" +
+            "                    reference_course,\n" +
+            "                    course_id,\n" +
+            "                    course_code,\n" +
+            "                    course_title_fa,\n" +
+            "                    course_theory_duration,\n" +
+            "                     course_technical_type\n" +
+            "                    from\n" +
+            "                    VIEW_EQUAL_COURSE\n" +
+            "                    where reference_course = :courseId\n" +
+            "                    union\n" +
+            "                     \n" +
+            "                     select \n" +
+            "                     reference_course,\n" +
+            "                            course_id,\n" +
+            "                            course_code,\n" +
+            "                            course_title_fa,\n" +
+            "                            course_theory_duration,\n" +
+            "                             course_technical_type\n" +
+            "                     from(\n" +
+            "                             select \n" +
+            "                             leve2.reference_course,\n" +
+            "                            leve2.course_id,\n" +
+            "                            leve2.course_code,\n" +
+            "                            leve2.course_title_fa,\n" +
+            "                            leve2.course_theory_duration,\n" +
+            "                             leve2.course_technical_type\n" +
+            "                             \n" +
+            "                            from\n" +
+            "                            VIEW_EQUAL_COURSE leve1\n" +
+            "                            left join (      select \n" +
+            "                                                 reference_course,\n" +
+            "                                                course_id,\n" +
+            "                                                course_code,\n" +
+            "                                                course_title_fa,\n" +
+            "                                                course_theory_duration,\n" +
+            "                                                course_technical_type\n" +
+            "                                     \n" +
+            "                                            from\n" +
+            "                                                 VIEW_EQUAL_COURSE\n" +
+            "                                      \n" +
+            "                                     )leve2\n" +
+            "                                     on  \n" +
+            "                                       leve2.reference_course = leve1.course_id\n" +
+            "                                       and leve1.reference_course = :courseId\n" +
+            "                         )  \n" +
+            "  )\n" +
+            "  where course_id is not null", nativeQuery = true)
+
     List<Long> getAllEqualCourseIds(Long courseId);
 
     List<Course> findAllByCategoryIdAndSubCategoryId(Long categoryId,Long subCategoryId);
