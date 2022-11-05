@@ -1177,6 +1177,13 @@
                     if (CoursesLG_NABOP.data.size()>1)
                         ExportToFile.exportToExcelFromClient(result.fields, data, titleReportExcel, ReportTypeDF_NABOP.getField("reportType").valueMap[reportType_NABOP]);
                 }
+            }),
+            isc.ToolStripButtonExcel.create({
+                title: "ارسال به Excel (با فیلتر)",
+                click: function () {
+                    if (CoursesLG_NABOP.data.size() > 1)
+                        ExportToFile.downloadExcelFromClient(CoursesLG_NABOP, null, titleReportExcel);
+                }
             })
         ]
     });
