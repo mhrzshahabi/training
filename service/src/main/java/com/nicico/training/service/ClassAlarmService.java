@@ -5,11 +5,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarmService;
 import com.nicico.training.model.Alarm;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.model.TestQuestion;
 import com.nicico.training.model.ViewClassConflict;
-import com.nicico.training.repository.AlarmDAO;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.ViewClassConflictDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -43,6 +42,7 @@ public class ClassAlarmService implements IClassAlarmService {
     private Long classIdQueue;
     private final Map<String, Long> alarmQueueDelete;
     private final Map<String, Long> alarmConflictQueueDelete;
+    private final TestQuestionDAO testQuestionDAO;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
 //////  null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'' AS tabName, '' AS pageAddress,
@@ -1947,35 +1947,32 @@ public class ClassAlarmService implements IClassAlarmService {
 
             //***** Has test question and question bank test question  *****
             String alarmQuestionScripts;
-            alarmQuestionScripts = " SELECT\n" +
-                    "case \n" +
-                    "    when  count_id = 0 then  'بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.'\n" +
-                    "    end AS hasalarm\n" +
-                    "     \n" +
-                    "FROM (\n" +
-                    "select \n" +
-                    "count(tbl_class.id) as count_id\n" +
-                    "   \n" +
-                    "    FROM\n" +
-                    "        tbl_class \n" +
-                    "        INNER JOIN   \n" +
-                    "             tbl_test_question\n" +
-                    "             ON tbl_test_question.f_class = tbl_class.id\n" +
-                    "              AND tbl_class.id =  :class_id\n" +
-                    "              AND  tbl_class.C_EVALUATION = '2' -- learning\n" +
-                    "              AND   tbl_test_question.c_test_question_type = 'FinalTest'\n" +
-                    "        INNER JOIN \n" +
-                    "              tbl_question_bank_test_question \n" +
-                    "              ON tbl_test_question.id = tbl_question_bank_test_question.f_test_question\n" +
-                    "\n" +
-                    "  )  ";
+            alarmQuestionScripts = " SELECT distinct \n" +
+                    "    tbl_class.id\n" +
+                    "FROM\n" +
+                    "    tbl_class\n" +
+                    "    INNER JOIN tbl_test_question ON tbl_test_question.f_class = tbl_class.id\n" +
+                    "        AND tbl_class.id = :class_id\n" +
+                    "        AND tbl_class.c_evaluation = '2' -- learning \n" +
+                    "        AND tbl_test_question.c_test_question_type = 'FinalTest'\n" +
+                    "    INNER JOIN tbl_question_bank_test_question ON tbl_test_question.id = tbl_question_bank_test_question.f_test_question";
 
             List<?> alarmForQuestion = (List<?>) entityManager.createNativeQuery(alarmQuestionScripts)
                     .setParameter("class_id", class_id)
                      .getResultList();
 
-            if (!alarmForQuestion.isEmpty())
-                endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.<br />");
+            Optional<Tclass> tClassById = tclassDAO.findById(class_id);
+
+            if (tClassById.get().getEvaluation().equals("2") && alarmForQuestion.isEmpty()) {
+
+                List<TestQuestion> testQuestionList = testQuestionDAO.findByTclassId(class_id);
+
+                if (testQuestionList.stream().anyMatch(t -> t.getTestQuestionType().equals("FinalTest"))) {
+                    endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.<br />");
+                }
+
+            }
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
