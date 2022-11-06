@@ -32,12 +32,14 @@ import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
 import com.nicico.training.mapper.teacher.TeacherPresentableCourseMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
+import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.ElsExamCreateDTO;
+import dto.exam.ElsImportedExam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -171,6 +173,7 @@ public class ElsRestController {
     private final IPublicationService iPublicationService;
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
+    private final TestQuestionMapper testQuestionMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -687,7 +690,7 @@ public class ElsRestController {
 
                     baseResponse.setStatus(406);
                     baseResponse.setMessage("نمرات کلاسی این کلاس اشتباه وارد شده است");
-                }else {
+                } else {
                     String practicalScore = testQuestionService.get(id).getPracticalScore();
 
                     boolean checkPracticalScoreInRange = evaluationBeanMapper.checkPracticalScoreInRange(practicalScore, examResult);
@@ -696,7 +699,7 @@ public class ElsRestController {
 
                         baseResponse.setStatus(406);
                         baseResponse.setMessage("نمرات عملی این کلاس اشتباه وارد شده است");
-                    }else {
+                    } else {
                         if (SecurityUtil.getFirstName() == null && SecurityUtil.getLastName() == null) {
 
                             baseResponse.setMessage("توکن منقصی شده است؛ مجدد لاگین کنید");
@@ -1157,37 +1160,36 @@ public class ElsRestController {
                     }
 
                     PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO, teacherId, false);
-if (pageQuestionDto.getPageQuestion()!=null){
-    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
-    PaginationDto paginationDto = new PaginationDto();
-    paginationDto.setCurrent(page);
-    paginationDto.setSize(size);
-    if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
-        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
-    else {
-        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
-    }
+                    if (pageQuestionDto.getPageQuestion() != null) {
+                        ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
+                        PaginationDto paginationDto = new PaginationDto();
+                        paginationDto.setCurrent(page);
+                        paginationDto.setSize(size);
+                        if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
+                            paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
+                        else {
+                            paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
+                        }
 
-    paginationDto.setLast((int) (paginationDto.getTotal() - 1));
-    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
-    questionBankDto.setPagination(paginationDto);
-    return questionBankDto;
-}else {
-    PaginationDto paginationDto = new PaginationDto();
-    paginationDto.setLast(0);
-    paginationDto.setTotal(0);
-    paginationDto.setSize(size);
-    paginationDto.setCurrent(page);
+                        paginationDto.setLast((int) (paginationDto.getTotal() - 1));
+                        paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
+                        questionBankDto.setPagination(paginationDto);
+                        return questionBankDto;
+                    } else {
+                        PaginationDto paginationDto = new PaginationDto();
+                        paginationDto.setLast(0);
+                        paginationDto.setTotal(0);
+                        paginationDto.setSize(size);
+                        paginationDto.setCurrent(page);
 
-    ElsQuestionBankDto questionBankDto =new ElsQuestionBankDto();
-    questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
-    List<ElsQuestionDto> emptyList=new ArrayList<>();
-    questionBankDto.setQuestions(emptyList);
-    questionBankDto.setPagination(paginationDto);
+                        ElsQuestionBankDto questionBankDto = new ElsQuestionBankDto();
+                        questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
+                        List<ElsQuestionDto> emptyList = new ArrayList<>();
+                        questionBankDto.setQuestions(emptyList);
+                        questionBankDto.setPagination(paginationDto);
 
-    return questionBankDto;
-}
-
+                        return questionBankDto;
+                    }
 
 
                 } else {
@@ -1429,16 +1431,16 @@ if (pageQuestionDto.getPageQuestion()!=null){
         ElsQuestionDto response = new ElsQuestionDto();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-        try {
-            QuestionBank questionBank = questionBankService.getById(id);
-            ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
-            ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
-            questionDto.setStatus(200);
-            return questionDto;
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.setMessage("سوال یافت نشد");
-        }
+            try {
+                QuestionBank questionBank = questionBankService.getById(id);
+                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
+                ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
+                questionDto.setStatus(200);
+                return questionDto;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("سوال یافت نشد");
+            }
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("خطای دسترسی");
@@ -2888,70 +2890,70 @@ if (pageQuestionDto.getPageQuestion()!=null){
                                                                      @PathVariable Integer page, @PathVariable Integer size, @RequestBody ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-        try {
+            try {
 
-            if (elsSearchDTO.getNationalCode() != null) {
-                Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
-                if (teacherId == null) {
-                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
-                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
-                    elsQuestionDto.setStatus(406);
-                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
-                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
-                    return dto;
-                }
-                PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO, teacherId, true);
+                if (elsSearchDTO.getNationalCode() != null) {
+                    Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
+                    if (teacherId == null) {
+                        ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                        ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                        elsQuestionDto.setStatus(406);
+                        elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                        dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                        return dto;
+                    }
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO, teacherId, true);
 
-                if (pageQuestionDto.getPageQuestion() != null) {
-                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
-                    PaginationDto paginationDto = new PaginationDto();
-                    paginationDto.setCurrent(page);
-                    paginationDto.setSize(size);
-                    if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
-                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
-                    else {
-                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
+                    if (pageQuestionDto.getPageQuestion() != null) {
+                        ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
+                        PaginationDto paginationDto = new PaginationDto();
+                        paginationDto.setCurrent(page);
+                        paginationDto.setSize(size);
+                        if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
+                            paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
+                        else {
+                            paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
+                        }
+
+                        paginationDto.setLast((int) (paginationDto.getTotal() - 1));
+                        paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
+                        questionBankDto.setPagination(paginationDto);
+                        return questionBankDto;
+                    } else {
+                        PaginationDto paginationDto = new PaginationDto();
+                        paginationDto.setLast(0);
+                        paginationDto.setTotal(0);
+                        paginationDto.setSize(size);
+                        paginationDto.setCurrent(page);
+
+                        ElsQuestionBankDto questionBankDto = new ElsQuestionBankDto();
+                        questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
+                        List<ElsQuestionDto> emptyList = new ArrayList<>();
+                        questionBankDto.setQuestions(emptyList);
+                        questionBankDto.setPagination(paginationDto);
+
+                        return questionBankDto;
+
                     }
 
-                    paginationDto.setLast((int) (paginationDto.getTotal() - 1));
-                    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
-                    questionBankDto.setPagination(paginationDto);
-                    return questionBankDto;
+
                 } else {
-                    PaginationDto paginationDto = new PaginationDto();
-                    paginationDto.setLast(0);
-                    paginationDto.setTotal(0);
-                    paginationDto.setSize(size);
-                    paginationDto.setCurrent(page);
-
-                    ElsQuestionBankDto questionBankDto =new ElsQuestionBankDto();
-                    questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
-                    List<ElsQuestionDto> emptyList=new ArrayList<>();
-                    questionBankDto.setQuestions(emptyList);
-                    questionBankDto.setPagination(paginationDto);
-
-                    return questionBankDto;
-
+                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                    elsQuestionDto.setStatus(500);
+                    elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
+                    dto.setQuestions(null);
+                    return dto;
                 }
 
 
-            } else {
+            } catch (Exception e) {
                 ElsQuestionBankDto dto = new ElsQuestionBankDto();
                 ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                 elsQuestionDto.setStatus(500);
-                elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
                 dto.setQuestions(null);
                 return dto;
             }
-
-
-        } catch (Exception e) {
-            ElsQuestionBankDto dto = new ElsQuestionBankDto();
-            ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
-            elsQuestionDto.setStatus(500);
-            dto.setQuestions(null);
-            return dto;
-        }
 
 
         } else {
@@ -3016,6 +3018,37 @@ if (pageQuestionDto.getPageQuestion()!=null){
             response.setMessage("خطای شناسایی");
         }
 
+        return response;
+    }
+
+    @PostMapping("/teacher/send-exam-to-training")
+    public ElsSendExamToTrainingResponse sendExamToTraining(HttpServletRequest header, @RequestBody ElsImportedExam importedExam) {
+        ElsSendExamToTrainingResponse response = new ElsSendExamToTrainingResponse();
+        ElsExamCreateDTO.Info info;
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                TestQuestionDTO.Create testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+                if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
+                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionDTO);
+                    info = testQuestionMapper.toInfo(createdTestQuestion);
+                } else {
+                    TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
+                    info = testQuestionMapper.toInfo(testQuestion);
+                }
+
+                response.setStatus(200);
+                response.setMessage("Exam successfully created");
+                response.setInfo(info);
+
+            } catch (Exception ex) {
+                response.setStatus(HttpStatus.CONFLICT.value());
+                response.setMessage("بروز خطا در سیستم: " + ex.getMessage());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
         return response;
     }
 }
