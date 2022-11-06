@@ -6,7 +6,16 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-      let record = ListGrid_Class_JspClass.getSelectedRecord();
+    let record;
+
+    if (this.ListGrid_class_Evaluation != undefined && this.eval_Flag_Tab_HistoryOfRemoved == 1) {
+        this.eval_Flag_Tab_HistoryOfRemoved = null;
+        record = this.ListGrid_class_Evaluation.getSelectedRecord();
+    } else {
+        if (this.ListGrid_Class_JspClass != undefined && this.eval_Flag_Tab_HistoryOfRemoved == null) {
+            record = this.ListGrid_Class_JspClass.getSelectedRecord();
+        }
+    }
 
     //----------------------------------------------------Default Rest--------------------------------------------------
 
