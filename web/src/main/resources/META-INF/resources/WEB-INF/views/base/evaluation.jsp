@@ -1238,7 +1238,6 @@
         }
     }
 
-
     function showTeacherEvalToOnlineStatus() {
 
         let record = ListGrid_class_Evaluation.getSelectedRecord();
