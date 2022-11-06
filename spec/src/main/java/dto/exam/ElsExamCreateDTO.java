@@ -1,6 +1,7 @@
 package dto.exam;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +32,24 @@ public class ElsExamCreateDTO {
     private String startDate;
     @ApiModelProperty
     private String endDate;
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ElsExamCreateDTO.Info")
+    public static class Info {
+        private Long id;
+        private Integer version;
+        private String startDate;
+        private String startTime;
+        private Integer duration;
+        private String endDate;
+        private String endTime;
+        private String practicalScore;
+        private String classScore;
+        private String testQuestionType;
+        private Long sourceExamId;
+    }
 
 }
