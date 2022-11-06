@@ -7,8 +7,6 @@ import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -37,6 +35,7 @@ public class NeedsAssessmentWithGap<E> extends Auditable {
                     @MetaValue(value = "PostGroup", targetEntity = PostGroup.class),
                     @MetaValue(value = "PostGrade", targetEntity = PostGrade.class),
                     @MetaValue(value = "PostGradeGroup", targetEntity = PostGradeGroup.class),
+                    @MetaValue(value = "GroupOfPersonnel", targetEntity = GroupOfPersonnel.class),
             })
     @JoinColumn(name = "f_object", nullable = false, insertable = false, updatable = false)
     private E object;

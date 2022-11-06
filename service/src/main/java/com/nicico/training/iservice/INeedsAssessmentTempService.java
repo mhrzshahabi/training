@@ -21,7 +21,7 @@ public interface   INeedsAssessmentTempService {
 
     NeedsAssessmentDTO.Info create(NeedsAssessmentDTO.Create create);
 
-    Boolean createOrUpdateList(List<NeedsAssessmentDTO.Create> createList);
+    Boolean createOrUpdateList(List<NeedsAssessmentDTO.Create> createList, Long objectId, String objectType);
 
     Boolean isCreatedByCurrentUser(String objectType, Long objectId);
 

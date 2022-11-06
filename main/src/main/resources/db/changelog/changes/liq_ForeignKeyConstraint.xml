@@ -1413,4 +1413,14 @@
     </changeSet>
 
 
+    <changeSet author="namdari (generated)" id="1633842708000-11">
+        <addForeignKeyConstraint baseColumnNames="f_group_id" baseTableName="tbl_personnel_in_group" constraintName="FK_group_in_tbl_tbl_personnel_in_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_group_of_personnel" validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1633842708000-12">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_personnel_in_group" constraintName="FK_personnel_id_in_tbl_personnel_in_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
+
+
 </databaseChangeLog>

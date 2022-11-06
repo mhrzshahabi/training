@@ -132,11 +132,11 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
-    @PostMapping("/createOrUpdateList")
-    public ResponseEntity<Boolean> createOrUpdateList(@RequestBody Object rq) {
+    @PostMapping("/createOrUpdateList/{objectId}/{objectType}")
+    public ResponseEntity<Boolean> createOrUpdateList(@RequestBody Object rq,@PathVariable Long objectId,@PathVariable String objectType) {
         List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq, new TypeToken<List<NeedsAssessmentDTO.Create>>() {
         }.getType());
-        Boolean hasAlreadySentToWorkFlow = iNeedsAssessmentTempService.createOrUpdateList(createList);
+        Boolean hasAlreadySentToWorkFlow = iNeedsAssessmentTempService.createOrUpdateList(createList,objectId,objectType);
         //zaza
         return new ResponseEntity<>(hasAlreadySentToWorkFlow, HttpStatus.OK);
     }

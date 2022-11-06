@@ -12,7 +12,10 @@ import com.nicico.training.dto.NeedsAssessmentForBpms;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
-import com.nicico.training.model.*;
+import com.nicico.training.model.Competence;
+import com.nicico.training.model.NeedsAssessment;
+import com.nicico.training.model.NeedsAssessmentTemp;
+import com.nicico.training.model.Skill;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -24,7 +27,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.search.SearchTerm;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -332,15 +334,15 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         return dao.findAll(NICICOSpecification.of(criteriaRq));
     }
 
-    public Boolean createOrUpdateList(List<NeedsAssessmentDTO.Create> createList) {
+    public Boolean createOrUpdateList(List<NeedsAssessmentDTO.Create> createList, Long objectId, String objectType) {
         for (NeedsAssessmentDTO.Create create : createList) {
             TrainingException exception = checkCategoryNotEquals(create);
             if (exception != null)
                 throw exception;
-            if (!isEditable(create.getObjectType(), create.getObjectId()))
+            if (create.getObjectType().equals(objectType) && !isEditable(create.getObjectType(), create.getObjectId()) )
                 throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentIsNotEditable, messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
         }
-        List<NeedsAssessmentTemp> alreadyExist = getListByObjectIdAndType(createList.get(0).getObjectType(), createList.get(0).getObjectId());
+        List<NeedsAssessmentTemp> alreadyExist = getListByObjectIdAndType(objectType, objectId);
         List<NeedsAssessmentTemp> removedRecords = new ArrayList<>();
         if (alreadyExist != null && !alreadyExist.isEmpty()) {
             for (NeedsAssessmentTemp needsAssessmentTemp : alreadyExist) {
@@ -356,6 +358,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 delete(removedRecord.getId());
             }
         for (NeedsAssessmentDTO.Create create : createList) {
+            if (create.getObjectType().equals(objectType))
             create(create);
         }
         Boolean hasAlreadySentToWorkFlow = !alreadyExist.isEmpty() && alreadyExist.stream()

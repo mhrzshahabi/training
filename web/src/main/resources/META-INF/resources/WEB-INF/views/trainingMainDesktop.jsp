@@ -1998,6 +1998,14 @@
                     }
                 },
                 </sec:authorize>
+                   <sec:authorize access="hasAuthority('Menu_NeedAssessment_Committee_Of_Experts')">
+                {
+                    title: "تیم/گروهی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/GroupForGap"/>");
+                    }
+                },
+                </sec:authorize>
 
                 <%--,--%>
                 <%--{--%>

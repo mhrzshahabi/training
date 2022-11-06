@@ -17,6 +17,8 @@
     var selectedRecord = {};
     var editing = false;
     let isGap;
+    let innerType;
+    let innerId;
     let isFromEdit=false;
     let canInsert;
     let limit=0;
@@ -2512,6 +2514,8 @@
 
     function loadEditNeedsAssessment(objectId, type, state = "R&W",isFromGap) {
         isGap=isFromGap
+        innerType=type
+        innerId=objectId.id
         canInsert=isFromGap
         ListGrid_Knowledge_JspNeedsAssessment.unsort();
         ListGrid_Ability_JspNeedsAssessment.unsort();
@@ -2685,7 +2689,8 @@
             createDialog("info", "<spring:message code="msg.error.list.cant.be.empty"/>")
             return [false ,false];
         }
-        let f = await fetch(needsAssessmentUrl+"/createOrUpdateList", {headers: apiHeader, method: "POST", body: JSON.stringify(data)});
+
+        let f = await fetch(needsAssessmentUrl+"/createOrUpdateList/"+innerId+"/"+innerType, {headers: apiHeader, method: "POST", body: JSON.stringify(data)});
         let hasAlreadySentToWorkFlow = await f.json();
         if(f.status === 500) {
             wait.close();
