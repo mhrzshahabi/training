@@ -2002,7 +2002,7 @@
                 {
                     title: "تیم/گروهی",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/GroupForGap"/>");
+                        createTab(this.title, "<spring:url value="web/GroupOfPersonnel"/>");
                     }
                 },
                 </sec:authorize>
@@ -3787,6 +3787,7 @@
     const addressUrl = rootUrl + "/address/";
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
+    const groupOfPersonnelUrl = rootUrl + "/group-of-personnel/";
     const checklistUrl = rootUrl + "/checklist/";
     const categoriesListUrl = rootUrl + "/category/";
     const checklistItemUrl = rootUrl + "/checklistItem/";

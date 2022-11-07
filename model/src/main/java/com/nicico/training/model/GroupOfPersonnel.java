@@ -14,7 +14,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_group_of_personnel")
+@Table(name = "tbl_group_of_personnel",uniqueConstraints = {@UniqueConstraint(columnNames = {"c_code"})})
 public class GroupOfPersonnel extends Auditable {
 
     @Id

@@ -1,17 +1,24 @@
 package com.nicico.training.iservice;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.GroupOfPersonnelDTO;
+import response.BaseResponse;
+
+import java.util.List;
+import java.util.Set;
 
 public interface IGroupOfPersonnelService {
-//    PostGroupDTO.Info get(Long id);
+    //    PostGroupDTO.Info get(Long id);
 //
 //    List<PostGroupDTO.Info> list();
 //
-    GroupOfPersonnelDTO.Info create(GroupOfPersonnelDTO.Create request);
-//
-//    PostGroupDTO.Info update(Long id, PostGroupDTO.Update request);
-//
-//    boolean delete(Long id);
+    BaseResponse create(GroupOfPersonnelDTO.Create request);
+
+    //
+    BaseResponse update(Long id, GroupOfPersonnelDTO.Update request);
+
+    //
+    BaseResponse delete(Long id);
 //
 //    void delete(PostGroupDTO.Delete request);
 //
@@ -39,7 +46,11 @@ public interface IGroupOfPersonnelService {
 //
 //    SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request);
 //
-//    SearchDTO.SearchRs<PostGroupDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<GroupOfPersonnelDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+
+    List<Long> getPersonnel(Long id);
+
+    void addPersonnel(Long groupId, Set<Long> ids);
 //
 //    List<PostDTO.Info> getPosts(Long postGroupID);
 //

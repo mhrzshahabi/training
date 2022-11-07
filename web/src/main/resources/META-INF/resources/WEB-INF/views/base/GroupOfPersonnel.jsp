@@ -9,12 +9,12 @@
 
     let method = "POST";
     let url;
-    <%--let wait_PostGradeGroup;--%>
+    let wait_groupOfPersonnelGroup;
     <%--let postGrade_PGG = null;--%>
     <%--let naJob_PGG = null;--%>
     <%--let personnelJob_PGG = null;--%>
     <%--let post_PGG = null;--%>
-    <%--let postGradesSelection=false;--%>
+    let personnelGroupSelection=false;
     <%--let oLoadAttachments_PostGradeGroup = null;--%>
 
 
@@ -34,57 +34,47 @@
         //     transformCriteriaForLastModifiedDateNA(dsRequest);
         //     return this.Super("transformRequest", arguments);
         // },
-        // fetchDataURL: viewPostGradeGroupUrl + "/iscList"
+        fetchDataURL: groupOfPersonnelUrl + "iscList"
     });
 
-    <%--let RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "code"},--%>
-    <%--        {name: "titleFa"},--%>
-    <%--        {--%>
-    <%--            name: "enabled",--%>
-    <%--            title: "<spring:message code="active.status"/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "equals",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            autoFitWidthApproach: "both",--%>
-    <%--        },--%>
-    <%--        {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار",}, filterOnKeypress: true},--%>
-    <%--    ],--%>
-    <%--    fetchDataURL: postGradeUrl + "/iscList"--%>
-    <%--});--%>
-    <%--let RestDataSource_All_PostGrades_PostGradeGroup_Jsp = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true},--%>
-    <%--        {name: "code"},--%>
-    <%--        {name: "titleFa"},--%>
-    <%--        {--%>
-    <%--            name: "enabled",--%>
-    <%--            title: "<spring:message code="active.status"/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "equals",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            autoFitWidthApproach: "both",--%>
-    <%--        },--%>
-    <%--    ],--%>
-    <%--    fetchDataURL: postGradeUrl + "/iscList"--%>
-    <%--});--%>
-    <%--let RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true},--%>
-    <%--        {name: "code"},--%>
-    <%--        {name: "titleFa"},--%>
-    <%--        {--%>
-    <%--            name: "enabled",--%>
-    <%--            title: "<spring:message code="active.status"/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "equals",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            autoFitWidthApproach: "both",--%>
-    <%--        },--%>
-    <%--    ]--%>
-    <%--});--%>
+    let RestDataSource_PersonnelForGroup_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code"},
+            {name: "titleFa"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار",}, filterOnKeypress: true},
+        ],
+        fetchDataURL: postGradeUrl + "/iscList"
+    });
+    let RestDataSource_All_Personnel_forGap_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "lastName"},
+            {name: "firstName"},
+            {name: "nationalCode"},
+            {name: "personnelNo"},
+            {name: "personnelNo2"},
+        ],
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
+    });
+    let RestDataSource_ForThisPersonnel_to_Group_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "lastName"},
+            {name: "firstName"},
+            {name: "nationalCode"},
+            {name: "personnelNo"},
+            {name: "personnelNo2"},
+        ]
+    });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +84,7 @@
     <%--        {--%>
     <%--            title: "<spring:message code='refresh'/>",--%>
     <%--            click: function () {--%>
-    <%--                ListGrid_Post_Grade_Group_refresh();--%>
+    <%--                ListGrid_GroupOfPersonnel_refresh();--%>
     <%--            }--%>
     <%--        },--%>
     <%--        </sec:authorize>--%>
@@ -110,7 +100,7 @@
     <%--        {--%>
     <%--            title: "<spring:message code='edit'/>",--%>
     <%--            click: function () {--%>
-    <%--                ListGrid_Post_Grade_Group_edit();--%>
+    <%--                ListGrid_GroupForGap_edit();--%>
     <%--            }--%>
     <%--        },--%>
     <%--        </sec:authorize>--%>
@@ -118,7 +108,7 @@
     <%--        {--%>
     <%--            title: "<spring:message code='remove'/>",--%>
     <%--            click: function () {--%>
-    <%--                ListGrid_Post_Grade_Group_remove();--%>
+    <%--                ListGrid_groupOfPersonnel_remove();--%>
     <%--            }--%>
     <%--        },--%>
     <%--        </sec:authorize>--%>
@@ -129,7 +119,7 @@
     <%--        {--%>
     <%--            title: "<spring:message code="post.grade.list"/>",--%>
     <%--            click: function () {--%>
-    <%--                Add_Post_Grade_Group_AddPostGrade_Jsp();--%>
+    <%--                Add_Personnel_to_Group_Jsp();--%>
     <%--            }--%>
     <%--        },--%>
     <%--        </sec:authorize>--%>
@@ -154,7 +144,7 @@
         // contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
         canMultiSort: true,
         initialSort: [
-            {property: "competenceCount", direction: "ascending"},
+            // {property: "competenceCount", direction: "ascending"},
             {property: "id", direction: "descending"}
         ],
         // getCellCSSText: function (record) {
@@ -164,442 +154,426 @@
         //     selectionUpdated_PostGradeGroup();
         // },
         // doubleClick: function () {
-        //     ListGrid_Post_Grade_Group_edit();
+        //     ListGrid_GroupForGap_edit();
         // }
     });
 
-    <%--defineWindowsEditNeedsAssessment(ListGrid_Post_Grade_Group_Jsp);--%>
-    <%--defineWindowsEditNeedsAssessmentForGap(ListGrid_Post_Grade_Group_Jsp);--%>
-    <%--defineWindow_NeedsAssessment_all_competence_gap(ListGrid_Post_Grade_Group_Jsp);--%>
+    <%--defineWindowsEditNeedsAssessment(ListGrid_GroupForGap_Jsp);--%>
+    <%--defineWindowsEditNeedsAssessmentForGap(ListGrid_GroupForGap_Jsp);--%>
+    <%--defineWindow_NeedsAssessment_all_competence_gap(ListGrid_GroupForGap_Jsp);--%>
     <%--defineWindowTreeNeedsAssessment();--%>
 
-    <%--let DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({--%>
-    <%--    titleWidth: "400",--%>
-    <%--    width: "700",--%>
-    <%--    align: "right",--%>
-    <%--    fields: [--%>
-    <%--        {--%>
-    <%--            name: "sgTitle",--%>
-    <%--            type: "staticText",--%>
-    <%--            title: "<spring:message code='post.grade.group.add.title'/>",--%>
-    <%--            wrapTitle: false,--%>
-    <%--            width: 250--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+    let DynamicForm_thisGroupPersonnelHeader_Jsp = isc.DynamicForm.create({
+        titleWidth: "400",
+        width: "700",
+        align: "right",
+        fields: [
+            {
+                name: "sgTitle",
+                type: "staticText",
+                title: "افزودن پرسنل به تیم / گروه",
+                wrapTitle: false,
+                width: 250
+            }
+        ]
+    });
 
-    <%--let ListGrid_AllPostGrades = isc.TrLG.create({--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    dataSource: RestDataSource_All_PostGrades_PostGradeGroup_Jsp,--%>
-    <%--    showRecordComponents: true,--%>
-    <%--    showRecordComponentsByCell: true,--%>
-    <%--    autoFetchData: false,--%>
-    <%--    showRowNumbers: true,--%>
-    <%--    sortField: 1,--%>
-    <%--    sortDirection: "descending",--%>
-    <%--    fields: [--%>
-    <%--        {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center", hidden: true,--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9]"--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},--%>
-    <%--        {name: "enabled",--%>
-    <%--            valueMap:{--%>
-    <%--                74 : "غیر فعال"--%>
-    <%--            },filterOnKeypress: true,--%>
+    let ListGrid_AllPersonnelForGroup = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_All_Personnel_forGap_Jsp,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        autoFetchData: false,
+        showRowNumbers: true,
+        sortField: 1,
+        sortDirection: "descending",
+        fields: [
+            {name: "firstName", title: "نام ", filterOperator: "iContains", align: "center"},
+            {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains", align: "center"},
+            {name: "nationalCode", title: "کد ملی", filterOperator: "iContains", align: "center"},
+            {name: "personnelNo", title: "کد پرسنلی 6 رقمی", filterOperator: "iContains", align: "center"},
+            {name: "personnelNo2", title: "کد پرسنلی 10 رقمی", filterOperator: "iContains", align: "center"},
+        ],
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        dataArrived:function(startRow, endRow){
+            let lgIds = ListGrid_ForThisGroup_GetPersonnel_Jpa.data.getAllCachedRows().map(function(item) {
+                return item.id;
+            });
 
-    <%--        },--%>
-    <%--        {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},--%>
-    <%--    ],--%>
-    <%--    selectionAppearance: "checkbox",--%>
-    <%--    selectionType: "simple",--%>
-    <%--    dataArrived:function(startRow, endRow){--%>
-    <%--        let lgIds = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.data.getAllCachedRows().map(function(item) {--%>
-    <%--            return item.id;--%>
-    <%--        });--%>
+            let findRows=ListGrid_AllPersonnelForGroup.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            ListGrid_AllPersonnelForGroup.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+        },
+        createRecordComponent: function (record, colNum) {
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName == "OnAdd") {
+                let recordCanvas = isc.HLayout.create({
+                    height: "100%",
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                let addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "اضافه کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        let current = record;
+                        let selected=ListGrid_ForThisGroup_GetPersonnel_Jpa.data.getAllCachedRows().map(function(item) {return item.id;});
 
-    <%--        let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});--%>
-    <%--        ListGrid_AllPostGrades.setSelectedState(findRows);--%>
-    <%--        findRows.setProperty("enabled", false);--%>
-    <%--    },--%>
-    <%--    createRecordComponent: function (record, colNum) {--%>
-    <%--        let fieldName = this.getFieldName(colNum);--%>
-    <%--        if (fieldName == "OnAdd") {--%>
-    <%--            let recordCanvas = isc.HLayout.create({--%>
-    <%--                height: "100%",--%>
-    <%--                width: "100%",--%>
-    <%--                layoutMargin: 5,--%>
-    <%--                membersMargin: 10,--%>
-    <%--                align: "center"--%>
-    <%--            });--%>
-    <%--            let addIcon = isc.ImgButton.create({--%>
-    <%--                showDown: false,--%>
-    <%--                showRollOver: false,--%>
-    <%--                layoutAlign: "center",--%>
-    <%--                src: "[SKIN]/actions/add.png",--%>
-    <%--                prompt: "اضافه کردن",--%>
-    <%--                height: 16,--%>
-    <%--                width: 16,--%>
-    <%--                grid: this,--%>
-    <%--                click: function () {--%>
-    <%--                    let current = record;--%>
-    <%--                    let selected=ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.data.getAllCachedRows().map(function(item) {return item.id;});--%>
+                        let ids = [];
 
-    <%--                    let ids = [];--%>
+                        if ($.inArray(current.id, selected) === -1){
+                            ids.push(current.id);
+                        }
 
-    <%--                    if ($.inArray(current.id, selected) === -1){--%>
-    <%--                        ids.push(current.id);--%>
-    <%--                    }--%>
+                        if(ids.length!=0){
+                            let findRows=ListGrid_AllPersonnelForGroup.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
 
-    <%--                    if(ids.length!=0){--%>
-    <%--                        let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});--%>
+                            let groupRecord = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+                            let groupId = groupRecord.id;
 
-    <%--                        let groupRecord = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--                        let groupId = groupRecord.id;--%>
+                            let JSONObj = {"ids": ids};
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + "addPersonnel/" + groupId + "/" + ids,
 
-    <%--                        let JSONObj = {"ids": ids};--%>
-    <%--                        wait.show();--%>
-    <%--                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + groupId + "/" + ids,--%>
-    <%--                                "POST", null, function (resp) {--%>
-    <%--                                wait.close();--%>
-    <%--                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                                    ListGrid_AllPostGrades.selectRecord(findRows);--%>
-    <%--                                    findRows.setProperty("enabled", false);--%>
-    <%--                                    ListGrid_AllPostGrades.redraw();--%>
+                                    "POST", null, function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllPersonnelForGroup.selectRecord(findRows);
+                                        findRows.setProperty("enabled", false);
+                                        ListGrid_AllPersonnelForGroup.redraw();
 
-    <%--                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
-    <%--                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();--%>
+                                        ListGrid_ForThisGroup_GetPersonnel_Jpa.invalidateCache();
+                                        ListGrid_ForThisGroup_GetPersonnel_Jpa.fetchData();
 
-    <%--                                } else {--%>
-    <%--                                    createDialog("info", "<spring:message code="msg.operation.error"/>",--%>
-    <%--                                    "<spring:message code="message"/>");--%>
-    <%--                                }--%>
-    <%--                                }--%>
-    <%--                            )--%>
-    <%--                        );--%>
-    <%--                    }--%>
-    <%--                }--%>
-    <%--            });--%>
-    <%--            recordCanvas.addMember(addIcon);--%>
-    <%--            return recordCanvas;--%>
-    <%--        } else--%>
-    <%--            return null;--%>
-    <%--    }--%>
-    <%--});--%>
+                                    } else {
+                                        createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                        "<spring:message code="message"/>");
+                                    }
+                                    }
+                                )
+                            );
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
 
-    <%--let ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa = isc.TrLG.create({--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    canDragRecordsOut: true,--%>
-    <%--    canAcceptDroppedRecords: true,--%>
-    <%--    showRowNumbers: true,--%>
-    <%--    showRecordComponents: true,--%>
-    <%--    showRecordComponentsByCell: true,--%>
-    <%--    autoFetchData: false,--%>
-    <%--    dataSource: RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp,--%>
-    <%--    selectionAppearance: "checkbox",--%>
-    <%--    selectionType: "simple",--%>
-    <%--    fields: [--%>
-    <%--        {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9]"--%>
-    <%--            },--%>
-    <%--            hidden: true--%>
-    <%--        },--%>
-    <%--        {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},--%>
-    <%--        {name: "enabled",--%>
-    <%--            valueMap:{--%>
-    <%--                74 : "غیر فعال"--%>
-    <%--            },filterOnKeypress: true,--%>
+    let ListGrid_ForThisGroup_GetPersonnel_Jpa = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        canDragRecordsOut: true,
+        canAcceptDroppedRecords: true,
+        showRowNumbers: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        autoFetchData: false,
+        dataSource: RestDataSource_ForThisPersonnel_to_Group_Jsp,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        fields: [
+            {name: "firstName", title: "نام ", filterOperator: "iContains", align: "center"},
+            {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains", align: "center"},
+            {name: "nationalCode", title: "کد ملی", filterOperator: "iContains", align: "center"},
+            {name: "personnelNo", title: "کد پرسنلی 6 رقمی", filterOperator: "iContains", align: "center"},
+            {name: "personnelNo2", title: "کد پرسنلی 10 رقمی", filterOperator: "iContains", align: "center"},
+         ],
+        dataArrived:function(){
+            if(personnelGroupSelection) {
+                ListGrid_AllPersonnelForGroup.invalidateCache();
+                ListGrid_AllPersonnelForGroup.fetchData();
+                personnelGroupSelection=false;
+            }
+        },
+        // createRecordComponent: function (record, colNum) {
+        //     let fieldName = this.getFieldName(colNum);
+        //     if (fieldName === "OnDelete") {
+        //         let recordCanvas = isc.HLayout.create({
+        //             height: 20,
+        //             width: "100%",
+        //             layoutMargin: 5,
+        //             membersMargin: 10,
+        //             align: "center"
+        //         });
+        //         let removeIcon = isc.ImgButton.create({
+        //             showDown: false,
+        //             showRollOver: false,
+        //             layoutAlign: "center",
+        //             src: "[SKIN]/actions/remove.png",
+        //             height: 16,
+        //             width: 16,
+        //             grid: this,
+        //             click: function () {
+        //                 let active = record;
+        //                 let activeId = active.id;
+        //                 let activeGroup = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+        //                 let activeGroupId = activeGroup.id;
+        //                 isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + [activeId],
+        //                     "DELETE", null, function (resp) {
+        //                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+        //
+        //                             ListGrid_ForThisGroup_GetPersonnel_Jpa.invalidateCache();
+        //
+        //                             let findRows=ListGrid_AllPersonnelForGroup.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+        //
+        //                             if(typeof (findRows)!='undefined' && findRows.length>0){
+        //                                 findRows.setProperty("enabled", true);
+        //                                 ListGrid_AllPersonnelForGroup.deselectRecord(findRows[0]);
+        //                             }
+        //
+        //                         } else {
+        //                             isc.say("خطا در پاسخ سرویس دهنده");
+        //                         }
+        //                     }));
+        //             }
+        //         });
+        //         recordCanvas.addMember(removeIcon);
+        //         return recordCanvas;
+        //     } else
+        //         return null;
+        // }
+    });
 
-    <%--        },--%>
-    <%--        {name: "OnDelete", title: " ", align: "center", canFilter: false}--%>
-    <%--    ],--%>
-    <%--    dataArrived:function(){--%>
-    <%--        if(postGradesSelection) {--%>
-    <%--            ListGrid_AllPostGrades.invalidateCache();--%>
-    <%--            ListGrid_AllPostGrades.fetchData();--%>
-    <%--            postGradesSelection=false;--%>
-    <%--        }--%>
-    <%--    },--%>
-    <%--    createRecordComponent: function (record, colNum) {--%>
-    <%--        let fieldName = this.getFieldName(colNum);--%>
-    <%--        if (fieldName === "OnDelete") {--%>
-    <%--            let recordCanvas = isc.HLayout.create({--%>
-    <%--                height: 20,--%>
-    <%--                width: "100%",--%>
-    <%--                layoutMargin: 5,--%>
-    <%--                membersMargin: 10,--%>
-    <%--                align: "center"--%>
-    <%--            });--%>
-    <%--            let removeIcon = isc.ImgButton.create({--%>
-    <%--                showDown: false,--%>
-    <%--                showRollOver: false,--%>
-    <%--                layoutAlign: "center",--%>
-    <%--                src: "[SKIN]/actions/remove.png",--%>
-    <%--                height: 16,--%>
-    <%--                width: 16,--%>
-    <%--                grid: this,--%>
-    <%--                click: function () {--%>
-    <%--                    let active = record;--%>
-    <%--                    let activeId = active.id;--%>
-    <%--                    let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--                    let activeGroupId = activeGroup.id;--%>
-    <%--                    isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + [activeId],--%>
-    <%--                        "DELETE", null, function (resp) {--%>
-    <%--                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+    let SectionStack_All_PersonnelInGap_Jsp = isc.SectionStack.create({
+        visibilityMode: "multiple",
+        width: "50%",
+        sections: [
+            {
+                title: "لیست کل پرسنل",
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [
+                    ListGrid_AllPersonnelForGroup,
+                    isc.ToolStripButtonAdd.create({
+                        width:"100%",
+                        height:25,
+                        title:"اضافه کردن گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        let ids = ListGrid_AllPersonnelForGroup.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                        let activeGroup = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+                                        let activeGroupId = activeGroup.id;
+                                        let JSONObj = {"ids": ids};
 
-    <%--                                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
+                                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + "addPersonnel/" + activeGroupId + "/" + ids,
+                                            "POST", null, function (resp) {
+                                                wait.close();
+                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                    ListGrid_ForThisGroup_GetPersonnel_Jpa.invalidateCache();
+                                                    ListGrid_ForThisGroup_GetPersonnel_Jpa.fetchData();
 
-    <%--                                let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});--%>
+                                                    let findRows=ListGrid_AllPersonnelForGroup.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
 
-    <%--                                if(typeof (findRows)!='undefined' && findRows.length>0){--%>
-    <%--                                    findRows.setProperty("enabled", true);--%>
-    <%--                                    ListGrid_AllPostGrades.deselectRecord(findRows[0]);--%>
-    <%--                                }--%>
-
-    <%--                            } else {--%>
-    <%--                                isc.say("خطا در پاسخ سرویس دهنده");--%>
-    <%--                            }--%>
-    <%--                        }));--%>
-    <%--                }--%>
-    <%--            });--%>
-    <%--            recordCanvas.addMember(removeIcon);--%>
-    <%--            return recordCanvas;--%>
-    <%--        } else--%>
-    <%--            return null;--%>
-    <%--    }--%>
-    <%--});--%>
-
-    <%--let SectionStack_All_Posts_Jsp = isc.SectionStack.create({--%>
-    <%--    visibilityMode: "multiple",--%>
-    <%--    width: "50%",--%>
-    <%--    sections: [--%>
-    <%--        {--%>
-    <%--            title: "<spring:message code="post.grade.list"/>",--%>
-    <%--            expanded: true,--%>
-    <%--            canCollapse: false,--%>
-    <%--            align: "center",--%>
-    <%--            items: [--%>
-    <%--                ListGrid_AllPostGrades,--%>
-    <%--                isc.ToolStripButtonAdd.create({--%>
-    <%--                    width:"100%",--%>
-    <%--                    height:25,--%>
-    <%--                    title:"اضافه کردن گروهی",--%>
-    <%--                    click: function () {--%>
-    <%--                        let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");--%>
-    <%--                        dialog.addProperties({--%>
-    <%--                            buttonClick: function (button, index) {--%>
-    <%--                                this.close();--%>
-    <%--                                if (index == 0) {--%>
-    <%--                                    let ids = ListGrid_AllPostGrades.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});--%>
-    <%--                                    let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--                                    let activeGroupId = activeGroup.id;--%>
-    <%--                                    let JSONObj = {"ids": ids};--%>
-
-    <%--                                    isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + activeGroupId + "/" + ids,--%>
-    <%--                                        "POST", null, function (resp) {--%>
-    <%--                                            wait.close();--%>
-    <%--                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                                                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
-    <%--                                                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();--%>
-
-    <%--                                                let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});--%>
-
-    <%--                                                if(typeof (findRows)!='undefined' && findRows.length>0){--%>
-    <%--                                                    findRows.setProperty("enabled", false);--%>
-    <%--                                                    ListGrid_AllPostGrades.redraw();--%>
-    <%--                                                }--%>
-    <%--                                                isc.say("عملیات با موفقیت انجام شد.");--%>
+                                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                        findRows.setProperty("enabled", false);
+                                                        ListGrid_AllPersonnelForGroup.redraw();
+                                                    }
+                                                    isc.say("عملیات با موفقیت انجام شد.");
 
 
 
-    <%--                                            } else {--%>
-    <%--                                                createDialog("info", "<spring:message code="msg.operation.error"/>",--%>
-    <%--                                                    "<spring:message code="message"/>");--%>
-    <%--                                            }--%>
-    <%--                                        }--%>
-    <%--                                    ));--%>
-    <%--                                }--%>
-    <%--                            }--%>
-    <%--                        })--%>
+                                                } else {
+                                                    createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                                        "<spring:message code="message"/>");
+                                                }
+                                            }
+                                        ));
+                                    }
+                                }
+                            })
 
-    <%--                    }--%>
-    <%--                })--%>
-    <%--            ]--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+                        }
+                    })
+                ]
+            }
+        ]
+    });
 
-    <%--let SectionStack_Current_Post_Grade_Jsp = isc.SectionStack.create({--%>
-    <%--    visibilityMode: "multiple",--%>
-    <%--    width: "50%",--%>
-    <%--    sections: [--%>
-    <%--        {--%>
-    <%--            expanded: true,--%>
-    <%--            canCollapse: false,--%>
-    <%--            align: "center",--%>
-    <%--            items: [--%>
-    <%--                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa,--%>
-    <%--                isc.ToolStripButtonRemove.create({--%>
-    <%--                    width:"100%",--%>
-    <%--                    height:25,--%>
-    <%--                    title:"حذف گروهی",--%>
-    <%--                    click: function () {--%>
-    <%--                        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");--%>
-    <%--                        dialog.addProperties({--%>
-    <%--                            buttonClick: function (button, index) {--%>
-    <%--                                this.close();--%>
-    <%--                                if (index == 0) {--%>
-    <%--                                    let ids = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.getSelection().map(function(item) {return item.id;});--%>
-    <%--                                    let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--                                    let activeGroupId = activeGroup.id;--%>
-    <%--                                    let JSONObj = {"ids": ids};--%>
-
-
-    <%--                                    isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + ids,--%>
-    <%--                                        "DELETE", null, function (resp) {--%>
-
-    <%--                                            wait.close();--%>
-    <%--                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                                                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
-    <%--                                                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();--%>
-
-    <%--                                                let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});--%>
-
-    <%--                                                if(typeof (findRows)!='undefined' && findRows.length>0){--%>
-    <%--                                                    findRows.setProperty("enabled", true);--%>
-    <%--                                                    ListGrid_AllPostGrades.deselectRecord(findRows);--%>
-    <%--                                                    ListGrid_AllPostGrades.redraw();--%>
-    <%--                                                }--%>
-    <%--                                                isc.say("عملیات با موفقیت انجام شد.");--%>
+    let SectionStack_Current_GroupPersonnel_Jsp = isc.SectionStack.create({
+        visibilityMode: "multiple",
+        width: "50%",
+        sections: [
+            {
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [
+                    ListGrid_ForThisGroup_GetPersonnel_Jpa,
+                    isc.ToolStripButtonRemove.create({
+                        width:"100%",
+                        height:25,
+                        title:"حذف گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        <%--let ids = ListGrid_ForThisGroup_GetPersonnel_Jpa.getSelection().map(function(item) {return item.id;});--%>
+                                        <%--let activeGroup = ListGrid_GroupForGap_Jsp.getSelectedRecord();--%>
+                                        <%--let activeGroupId = activeGroup.id;--%>
+                                        <%--let JSONObj = {"ids": ids};--%>
 
 
+                                        <%--isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + ids,--%>
+                                        <%--    "DELETE", null, function (resp) {--%>
 
-    <%--                                            } else {--%>
-    <%--                                                createDialog("info", "<spring:message code="msg.operation.error"/>",--%>
-    <%--                                                    "<spring:message code="message"/>");--%>
-    <%--                                            }--%>
-    <%--                                        }--%>
-    <%--                                    ));--%>
-    <%--                                }--%>
-    <%--                            }--%>
-    <%--                        })--%>
+                                        <%--        wait.close();--%>
+                                        <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+                                        <%--            ListGrid_ForThisGroup_GetPersonnel_Jpa.invalidateCache();--%>
+                                        <%--            ListGrid_ForThisGroup_GetPersonnel_Jpa.fetchData();--%>
 
-    <%--                    }--%>
-    <%--                })--%>
-    <%--            ]--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+                                        <%--            let findRows=ListGrid_AllPersonnelForGroup.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});--%>
 
-    <%--let HStack_thisPostGradeGroup_AddPostGrade_Jsp = isc.HStack.create({--%>
-    <%--    membersMargin: 10,--%>
-    <%--    height: 500,--%>
-    <%--    members: [--%>
-    <%--        SectionStack_All_Posts_Jsp,--%>
-    <%--        SectionStack_Current_Post_Grade_Jsp--%>
-    <%--    ]--%>
-    <%--});--%>
+                                        <%--            if(typeof (findRows)!='undefined' && findRows.length>0){--%>
+                                        <%--                findRows.setProperty("enabled", true);--%>
+                                        <%--                ListGrid_AllPersonnelForGroup.deselectRecord(findRows);--%>
+                                        <%--                ListGrid_AllPersonnelForGroup.redraw();--%>
+                                        <%--            }--%>
+                                        <%--            isc.say("عملیات با موفقیت انجام شد.");--%>
 
-    <%--let HLayOut_thisPostGradeGroup_AddPostGrade_Jsp = isc.TrHLayout.create({--%>
-    <%--    height: "10%",--%>
-    <%--    border: "0px solid yellow",--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    align: "center",--%>
 
-    <%--    members: [--%>
-    <%--        DynamicForm_thisPostGradeGroupHeader_Jsp--%>
-    <%--    ]--%>
-    <%--});--%>
 
-    <%--let VLayOut_PostGradeGroup_PostGrades_Jsp = isc.TrVLayout.create({--%>
-    <%--    border: "3px solid gray",--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    members: [--%>
-    <%--        HLayOut_thisPostGradeGroup_AddPostGrade_Jsp,--%>
-    <%--        HStack_thisPostGradeGroup_AddPostGrade_Jsp--%>
-    <%--    ]--%>
-    <%--});--%>
+                                        <%--        } else {--%>
+                                        <%--            createDialog("info", "<spring:message code="msg.operation.error"/>",--%>
+                                        <%--                "<spring:message code="message"/>");--%>
+                                        <%--        }--%>
+                                        <%--    }--%>
+                                        <%--));--%>
+                                    }
+                                }
+                            })
 
-    <%--let Window_Add_PostGrade_to_PostGradeGroup_Jsp = isc.Window.create({--%>
-    <%--    title: "<spring:message code="post.grade.list"/>",--%>
-    <%--    width: "900",--%>
-    <%--    height: "400",--%>
-    <%--    align: "center",--%>
-    <%--    closeClick: function () {--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();--%>
-    <%--        this.hide();--%>
-    <%--    },--%>
-    <%--    items: [--%>
-    <%--        VLayOut_PostGradeGroup_PostGrades_Jsp--%>
-    <%--    ]--%>
-    <%--});--%>
+                        }
+                    })
+                ]
+            }
+        ]
+    });
 
-    <%--let ToolStrip_Post_Grade_Group_Grades_Export2EXcel = isc.ToolStrip.create({--%>
-    <%--    width: "100%",--%>
-    <%--    membersMargin: 5,--%>
-    <%--    members: [--%>
-    <%--        isc.ToolStripButtonExcel.create({--%>
-    <%--            click: function () {--%>
-    <%--                let criteria = ListGrid_Grades_Post_Grade_Group_Jsp.getCriteria();--%>
+    let HStack_thisGroupPersonnel_AddPersonnel_Jsp = isc.HStack.create({
+        membersMargin: 10,
+        height: 500,
+        members: [
+            SectionStack_All_PersonnelInGap_Jsp,
+            SectionStack_Current_GroupPersonnel_Jsp
+        ]
+    });
 
-    <%--                if(typeof(criteria.operator)=='undefined'){--%>
-    <%--                    criteria._constructor="AdvancedCriteria";--%>
-    <%--                    criteria.operator="and";--%>
-    <%--                }--%>
+    let HLayOut_thisGroupPersonnel_AddPersonnel_Jsp = isc.TrHLayout.create({
+        height: "10%",
+        border: "0px solid yellow",
+        layoutMargin: 5,
+        align: "center",
 
-    <%--                if(typeof(criteria.criteria)=='undefined'){--%>
-    <%--                    criteria.criteria=[];--%>
-    <%--                }--%>
-    <%--                criteria.criteria.push({fieldName: "postGradeGroup", operator: "inSet", value: [ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id]});--%>
+        members: [
+            DynamicForm_thisGroupPersonnelHeader_Jsp
+        ]
+    });
 
-    <%--                ExportToFile.downloadExcel(null, ListGrid_Grades_Post_Grade_Group_Jsp , "Post_Grade_Without_Permission", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);--%>
-    <%--            }--%>
-    <%--        })--%>
-    <%--    ]--%>
-    <%--});--%>
+    let VLayOut_GroupPersonnel_Jsp = isc.TrVLayout.create({
+        border: "3px solid gray",
+        layoutMargin: 5,
+        members: [
+            HLayOut_thisGroupPersonnel_AddPersonnel_Jsp,
+            HStack_thisGroupPersonnel_AddPersonnel_Jsp
+        ]
+    });
 
-    <%--let ActionsTS_Post_Grade_Group_Grades = isc.ToolStrip.create({--%>
-    <%--    width: "100%",--%>
-    <%--    members: [--%>
-    <%--        ToolStrip_Post_Grade_Group_Grades_Export2EXcel--%>
-    <%--    ]--%>
-    <%--});--%>
+    let Window_Add_Personnel_to_Group_Jsp = isc.Window.create({
+        title: "لیست پرسنل",
+        width: "900",
+        height: "400",
+        align: "center",
+        closeClick: function () {
+            ListGrid_Personnel_for_Group_Jsp.invalidateCache();
+            this.hide();
+        },
+        items: [
+            VLayOut_GroupPersonnel_Jsp
+        ]
+    });
 
-    <%--let ListGrid_Grades_Post_Grade_Group_Jsp = isc.TrLG.create({--%>
-    <%--    dataSource: RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp,--%>
-    <%--    autoFetchData: false,--%>
-    <%--    gridComponents: [ActionsTS_Post_Grade_Group_Grades, "header", "filterEditor", "body",],--%>
-    <%--    fields: [--%>
-    <%--        {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{--%>
-    <%--                "Personal" : "شرکتی",--%>
-    <%--                "ContractorPersonal" : "پیمان کار"},--%>
-    <%--            filterOnKeypress: true},--%>
-    <%--        {--%>
-    <%--            name: "code",--%>
-    <%--            title: "<spring:message code='post.grade.code'/>",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9]"--%>
-    <%--            },--%>
-    <%--            hidden: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "titleFa",--%>
-    <%--            title: "<spring:message code='post.grade.title'/>",--%>
-    <%--            filterOperator: "iContains"--%>
-    <%--        },--%>
-    <%--        {name: "enabled",--%>
-    <%--            valueMap:{--%>
-    <%--                74 : "غیر فعال"--%>
-    <%--            },filterOnKeypress: true,--%>
-    <%--        },--%>
-    <%--    ]--%>
-    <%--});--%>
+    let ToolStrip_GroupPersonnel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Personnel_for_Group_Jsp.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    // criteria.criteria.push({fieldName: "postGradeGroup", operator: "inSet", value: [ListGrid_GroupForGap_Jsp.getSelectedRecord().id]});
+
+                    // ExportToFile.downloadExcel(null, ListGrid_Personnel_for_Group_Jsp , "Post_Grade_Without_Permission", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_GroupPersonnel = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_GroupPersonnel_Export2EXcel
+        ]
+    });
+
+    let ListGrid_Personnel_for_Group_Jsp = isc.TrLG.create({
+        dataSource: RestDataSource_PersonnelForGroup_Jsp,
+        autoFetchData: false,
+        gridComponents: [ActionsTS_GroupPersonnel, "header", "filterEditor", "body",],
+        fields: [
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{
+                    "Personal" : "شرکتی",
+                    "ContractorPersonal" : "پیمان کار"},
+                filterOnKeypress: true},
+            {
+                name: "code",
+                title: "<spring:message code='post.grade.code'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
+                hidden: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code='post.grade.title'/>",
+                filterOperator: "iContains"
+            },
+            {name: "enabled",
+                valueMap:{
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
+        ]
+    });
 
     let DynamicForm_GroupForGap_Jsp = isc.DynamicForm.create({
         width: "100%",
@@ -661,7 +635,7 @@
     });
 
     let Window_GroupForGap_Jsp = isc.Window.create({
-        title: "<spring:message code='post.grade.group'/>",
+        title: "پرسنل حاضر در گروه / تیم ",
         width: 700,
         align: "center",
         border: "1px solid gray",
@@ -676,44 +650,44 @@
     <%--ToolStripButton_EditNA_PGG = isc.ToolStripButton.create({--%>
     <%--    title: "ویرایش نیازسنجی",--%>
     <%--    click: function () {--%>
-    <%--        if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){--%>
+    <%--        if (ListGrid_GroupForGap_Jsp.getSelectedRecord() == null){--%>
     <%--            createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
     <%--            return;--%>
     <%--        }--%>
-    <%--        Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",false);--%>
+    <%--        Window_NeedsAssessment_Edit.showUs(ListGrid_GroupForGap_Jsp.getSelectedRecord(), "PostGradeGroup",false);--%>
     <%--    }--%>
     <%--});--%>
 
     ToolStripButton_EditNA_PGGGapGroupForGap = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی (گپ)",
         click: function () {
-            <%--if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){--%>
+            <%--if (ListGrid_GroupForGap_Jsp.getSelectedRecord() == null){--%>
             <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
             <%--    return;--%>
             <%--}--%>
-            <%--Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",true);--%>
+            <%--Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_GroupForGap_Jsp.getSelectedRecord(), "PostGradeGroup",true);--%>
         }
     });
 
     <%--ToolStripButton_NA_training_Post_grade_group_all_competece_gap = isc.ToolStripButton.create({--%>
     <%--    title: "نمای کلی  نیازسنجی بر اساس گپ شایستگی",--%>
     <%--    click: function () {--%>
-    <%--        if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null) {--%>
+    <%--        if (ListGrid_GroupForGap_Jsp.getSelectedRecord() == null) {--%>
     <%--            createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
     <%--            return;--%>
     <%--        }--%>
-    <%--        Window_NeedsAssessment_all_competence_gap.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",true);--%>
+    <%--        Window_NeedsAssessment_all_competence_gap.showUs(ListGrid_GroupForGap_Jsp.getSelectedRecord(), "PostGradeGroup",true);--%>
     <%--    }--%>
     <%--});--%>
 
     <%--ToolStripButton_TreeNA_PGG = isc.ToolStripButton.create({--%>
     <%--    title: "درخت نیازسنجی",--%>
     <%--    click: function () {--%>
-    <%--        if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){--%>
+    <%--        if (ListGrid_GroupForGap_Jsp.getSelectedRecord() == null){--%>
     <%--            createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
     <%--            return;--%>
     <%--        }--%>
-    <%--        Window_NeedsAssessment_Tree.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");--%>
+    <%--        Window_NeedsAssessment_Tree.showUs(ListGrid_GroupForGap_Jsp.getSelectedRecord(), "PostGradeGroup");--%>
     <%--    }--%>
     <%--});--%>
 
@@ -738,12 +712,12 @@
 
     let ToolStripButton_Refresh_GroupForGap_Jsp = isc.ToolStripButtonRefresh.create({
         click: function () {
-            // ListGrid_Post_Grade_Group_refresh();
+            ListGrid_GroupOfPersonnel_refresh();
         }
     });
     let ToolStripButton_Edit_GroupForGap_Jsp = isc.ToolStripButtonEdit.create({
         click: function () {
-            // ListGrid_Post_Grade_Group_edit();
+            ListGrid_GroupForGap_edit();
         }
     });
     let ToolStripButton_Add_GroupForGap_Jsp = isc.ToolStripButtonCreate.create({
@@ -753,7 +727,7 @@
     });
     let ToolStripButton_Remove_GroupForGap_Jsp = isc.ToolStripButtonRemove.create({
         click: function () {
-            // ListGrid_Post_Grade_Group_remove();
+            ListGrid_groupOfPersonnel_remove();
         }
     });
 
@@ -761,7 +735,7 @@
         <%--icon: "<spring:url value="post.png"/>",--%>
         title: "لیست پرسنل تیم / گروه",
         click: function () {
-            // Add_Post_Grade_Group_AddPostGrade_Jsp();
+            Add_Personnel_to_Group_Jsp();
         }
     });
 
@@ -771,8 +745,8 @@
     <%--    members: [--%>
     <%--        isc.ToolStripButtonExcel.create({--%>
     <%--            click: function () {--%>
-    <%--                let criteria = ListGrid_Post_Grade_Group_Jsp.getCriteria();--%>
-    <%--                ExportToFile.downloadExcel(null, ListGrid_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);--%>
+    <%--                let criteria = ListGrid_GroupForGap_Jsp.getCriteria();--%>
+    <%--                ExportToFile.downloadExcel(null, ListGrid_GroupForGap_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);--%>
     <%--            }--%>
     <%--        })--%>
     <%--    ]--%>
@@ -941,7 +915,7 @@
     <%--                if(typeof(criteria.criteria)=='undefined'){--%>
     <%--                    criteria.criteria=[];--%>
     <%--                }--%>
-    <%--                criteria.criteria.push({fieldName: "PostGradeGroupId", operator: "equals", value:ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});--%>
+    <%--                criteria.criteria.push({fieldName: "PostGradeGroupId", operator: "equals", value:ListGrid_GroupForGap_Jsp.getSelectedRecord().id});--%>
 
     <%--                ExportToFile.downloadExcel(null, PersonnelLG_PGG , "Post_Grade_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);--%>
     <%--            }--%>
@@ -1060,7 +1034,7 @@
     <%--                if(typeof(criteria.criteria)=='undefined'){--%>
     <%--                    criteria.criteria=[];--%>
     <%--                }--%>
-    <%--                criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});--%>
+    <%--                criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_GroupForGap_Jsp.getSelectedRecord().id});--%>
     <%--                criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGradeGroup"});--%>
 
     <%--                ExportToFile.downloadExcel(null, NALG_PGG , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);--%>
@@ -1241,7 +1215,7 @@
     <%--                    criteria.criteria=[];--%>
     <%--                }--%>
 
-    <%--                criteria.criteria.push({fieldName: "PostGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});--%>
+    <%--                criteria.criteria.push({fieldName: "PostGradeGroup", operator: "equals", value: ListGrid_GroupForGap_Jsp.getSelectedRecord().id});--%>
 
     <%--                ExportToFile.downloadExcel(null, PostLG_PGG , "Post_Grade_Group_Post", 0, null, '',"لیست پست ها - آموزش"  , criteria, null);--%>
     <%--            }--%>
@@ -1269,7 +1243,7 @@
     let Detail_Tab_GroupForGap = isc.TabSet.create({
         tabBarPosition: "top",
         tabs: [
-            <%--{name: "TabPane_Post_Grade_PGG", title: "<spring:message code='post.grade.list'/>", pane: ListGrid_Grades_Post_Grade_Group_Jsp},--%>
+            <%--{name: "TabPane_Post_Grade_PGG", title: "<spring:message code='post.grade.list'/>", pane: ListGrid_Personnel_for_Group_Jsp},--%>
             <%--{name: "TabPane_Post_PGG", title: "لیست پست ها", pane: PostLG_PGG},--%>
             <%--{name: "TabPane_Personnel_PGG", title: "لیست پرسنل", pane: PersonnelLG_PGG},--%>
             <%--{name: "TabPane_NA_PGG", title: "<spring:message code='need.assessment'/>", pane: NALG_PGG}--%>
@@ -1311,7 +1285,7 @@
 
     <%--function delete_post_grade_result(resp) {--%>
     <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();--%>
+    <%--        ListGrid_Personnel_for_Group_Jsp.invalidateCache();--%>
 
     <%--    } else {--%>
     <%--        let respText = resp.httpResponseText;--%>
@@ -1325,131 +1299,117 @@
 
     function GroupForGap_save_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let responseID = JSON.parse(resp.data).id;
-            let gridState = "[{id:" + responseID + "}]";
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 2000);
-            ListGrid_Post_Grade_Group_refresh();
-            setTimeout(function () {
-                ListGrid_Post_Grade_Group_Jsp.setSelectedState(gridState);
-            }, 1000);
+            ListGrid_GroupOfPersonnel_refresh();
             Window_GroupForGap_Jsp.close();
         } else {
-            let respText = resp.httpResponseText;
-            if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
-                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                    "<spring:message code="message"/>");
-            } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="message"/>");
-            }
+            let respText =  JSON.parse(resp.httpResponseText);
+            createDialog("info", respText.message,
+                "<spring:message code="message"/>");
         }
     }
 
-    <%--function Add_Post_Grade_Group_AddPostGrade_Jsp() {--%>
-    <%--    let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--    if (record == null || record.id == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        postGradesSelection=true;--%>
-    <%--        RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";--%>
-    <%--        ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
-    <%--        ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();--%>
-    <%--        DynamicForm_thisPostGradeGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));--%>
-    <%--        SectionStack_Current_Post_Grade_Jsp.setSectionTitle(0,"<spring:message code='post.grade.group'/>" + " " +--%>
-    <%--            getFormulaMessage(record.titleFa, "2", "red", "B"));--%>
-    <%--        Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();--%>
-    <%--    }--%>
-    <%--}--%>
+    function Add_Personnel_to_Group_Jsp() {
+        let record = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            personnelGroupSelection=true;
+            RestDataSource_ForThisPersonnel_to_Group_Jsp.fetchDataURL = groupOfPersonnelUrl + record.id + "/get-group-personnel";
+            ListGrid_ForThisGroup_GetPersonnel_Jpa.invalidateCache();
+            ListGrid_ForThisGroup_GetPersonnel_Jpa.fetchData();
+            DynamicForm_thisGroupPersonnelHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
+            SectionStack_Current_GroupPersonnel_Jsp.setSectionTitle(0,"پرسنل حاضر در گروه / تیم " + " " +
+                getFormulaMessage(record.titleFa, "2", "red", "B"));
+            Window_Add_Personnel_to_Group_Jsp.show();
+        }
+    }
 
-    <%--function ListGrid_Post_Grade_Group_edit() {--%>
-    <%--    let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--    if (record == null || record.id == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        DynamicForm_GroupForGap_Jsp.clearValues();--%>
-    <%--        method = "PUT";--%>
-    <%--        url = postGradeGroupUrl + record.id;--%>
-    <%--        DynamicForm_GroupForGap_Jsp.editRecord(record);--%>
-    <%--        Window_GroupForGap_Jsp.show();--%>
-    <%--    }--%>
-    <%--}--%>
+    function ListGrid_GroupForGap_edit() {
+        let record = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            DynamicForm_GroupForGap_Jsp.clearValues();
+            method = "PUT";
+            url = groupOfPersonnelUrl + record.id;
+            DynamicForm_GroupForGap_Jsp.editRecord(record);
+            Window_GroupForGap_Jsp.show();
+        }
+    }
 
-    <%--function ListGrid_Post_Grade_Group_remove() {--%>
-    <%--    let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-    <%--    if (record == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        let Dialog_Post_Grade_Group_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",--%>
-    <%--            "<spring:message code='global.warning'/>");--%>
-    <%--        Dialog_Post_Grade_Group_remove.addProperties({--%>
-    <%--            buttonClick: function (button, index) {--%>
-    <%--                this.close();--%>
-    <%--                if (index === 0) {--%>
-    <%--                    wait_PostGradeGroup = createDialog("wait");--%>
-    <%--                    isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + record.id, "DELETE", null,--%>
-    <%--                        "callback: Post_Grade_Group_remove_result(rpcResponse)"));--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    }--%>
-    <%--}--%>
+    function ListGrid_groupOfPersonnel_remove() {
+        let record = ListGrid_GroupForGap_Jsp.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Post_Grade_Group_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='global.warning'/>");
+            Dialog_Post_Grade_Group_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait_groupOfPersonnelGroup = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + record.id, "DELETE", null,
+                            "callback: groupOfPersonnelDel_result(rpcResponse)"));
+                    }
+                }
+            });
+        }
+    }
 
-    <%--function Post_Grade_Group_remove_result(resp) {--%>
-    <%--    wait_PostGradeGroup.close();--%>
-    <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--        ListGrid_Post_Grade_Group_Jsp.invalidateCache();--%>
-    <%--        let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",--%>
-    <%--            "<spring:message code="msg.command.done"/>");--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);--%>
-    <%--        setTimeout(function () {--%>
-    <%--            OK.close();--%>
-    <%--        }, 2000);--%>
-    <%--    } else {--%>
-    <%--        let respText = resp.httpResponseText;--%>
-    <%--        if (resp.httpResponseCode === 406 && respText === "NotDeletable") {--%>
-    <%--            createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");--%>
-    <%--        } else {--%>
-    <%--            createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--}--%>
+    function groupOfPersonnelDel_result(resp) {
+        wait_groupOfPersonnelGroup.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            ListGrid_GroupForGap_Jsp.invalidateCache();
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            ListGrid_Personnel_for_Group_Jsp.setData([]);
+            setTimeout(function () {
+                OK.close();
+            }, 2000);
+        } else {
+            let respText =  JSON.parse(resp.httpResponseText);
+            createDialog("info", respText.message,
+                "<spring:message code="message"/>");
+        }
+    }
 
-    <%--function ListGrid_Post_Grade_Group_refresh() {--%>
-    <%--    objectIdAttachment=null--%>
-    <%--    refreshLG(ListGrid_Post_Grade_Group_Jsp);--%>
-    <%--    ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);--%>
-    <%--    PostLG_PGG.setData([]);--%>
-    <%--    PersonnelLG_PGG.setData([]);--%>
-    <%--    NALG_PGG.setData([]);--%>
-    <%--    postGrade_PGG = null;--%>
-    <%--    naJob_PGG = null;--%>
-    <%--    personnelJob_PGG = null;--%>
-    <%--    post_PGG = null;--%>
-    <%--    oLoadAttachments_PostGradeGroup.ListGrid_JspAttachment.setData([]);--%>
-    <%--}--%>
+    function ListGrid_GroupOfPersonnel_refresh() {
+        refreshLG(ListGrid_GroupForGap_Jsp);
+        ListGrid_GroupForGap_Jsp.setData([]);
+        // PostLG_PGG.setData([]);
+        // PersonnelLG_PGG.setData([]);
+        // NALG_PGG.setData([]);
+        // postGrade_PGG = null;
+        // naJob_PGG = null;
+        // personnelJob_PGG = null;
+        // post_PGG = null;
+        // oLoadAttachments_PostGradeGroup.ListGrid_JspAttachment.setData([]);
+    }
 
     function ListGrid_GroupForGap_add() {
         method = "POST";
-        url = postGradeGroupUrl;
+        url = groupOfPersonnelUrl;
         DynamicForm_GroupForGap_Jsp.clearValues();
         Window_GroupForGap_Jsp.show();
     }
 
     <%--function ListGrid_Post_Grade_Group_Posts_refresh() {--%>
-    <%--    if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null)--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);--%>
+    <%--    if (ListGrid_GroupForGap_Jsp.getSelectedRecord() == null)--%>
+    <%--        ListGrid_Personnel_for_Group_Jsp.setData([]);--%>
     <%--    else {--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();--%>
-    <%--        ListGrid_Grades_Post_Grade_Group_Jsp.filterByEditor();--%>
+    <%--        ListGrid_Personnel_for_Group_Jsp.invalidateCache();--%>
+    <%--        ListGrid_Personnel_for_Group_Jsp.filterByEditor();--%>
     <%--    }--%>
     <%--}--%>
 
     <%--function selectionUpdated_PostGradeGroup(){--%>
-    <%--    let postGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
+    <%--    let postGradeGroup = ListGrid_GroupForGap_Jsp.getSelectedRecord();--%>
     <%--    let tab = Detail_Tab_GroupForGap.getSelectedTab();--%>
     <%--    if (postGradeGroup == null && tab.pane != null){--%>
     <%--        tab.pane.setData([]);--%>
@@ -1461,13 +1421,13 @@
     <%--            if (postGrade_PGG === postGradeGroup.id)--%>
     <%--                return;--%>
     <%--            postGrade_PGG = postGradeGroup.id;--%>
-    <%--            ListGrid_Grades_Post_Grade_Group_Jsp.setImplicitCriteria({--%>
+    <%--            ListGrid_Personnel_for_Group_Jsp.setImplicitCriteria({--%>
     <%--                _constructor: "AdvancedCriteria",--%>
     <%--                operator: "and",--%>
     <%--                criteria: [{fieldName: "postGradeGroup", operator: "equals", value: postGradeGroup.id}]--%>
     <%--            });--%>
-    <%--            ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();--%>
-    <%--            ListGrid_Grades_Post_Grade_Group_Jsp.fetchData();--%>
+    <%--            ListGrid_Personnel_for_Group_Jsp.invalidateCache();--%>
+    <%--            ListGrid_Personnel_for_Group_Jsp.fetchData();--%>
     <%--            break;--%>
     <%--        }--%>
     <%--        case "TabPane_Post_PGG":{--%>
@@ -1526,7 +1486,7 @@
 
     <%--});--%>
     <%--function receive_job_response(){--%>
-    <%--    let record=  ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
+    <%--    let record=  ListGrid_GroupForGap_Jsp.getSelectedRecord();--%>
     <%--    DynamicForm_Uncertainly_needAssessment_postGradeGroup.clearValues();--%>
     <%--    wait.show();--%>
     <%--    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/getNeedAssessmentTempByCode?code=" + record.code, "GET", null, function (resp) {--%>
@@ -1545,7 +1505,7 @@
     <%--}--%>
     <%--function delete_uncertainly_assessment_postGradeGroup(){--%>
 
-    <%--    let record=  ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
+    <%--    let record=  ListGrid_GroupForGap_Jsp.getSelectedRecord();--%>
     <%--    DynamicForm_Uncertainly_needAssessment_postGradeGroup.clearValues();--%>
     <%--    wait.show();--%>
     <%--    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {--%>

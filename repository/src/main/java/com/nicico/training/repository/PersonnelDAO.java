@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecificationExecutor<Personnel> {
@@ -81,4 +82,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     Long getDepartmentIdByNationalCode(String nationalCode);
 
     Optional<Personnel>  findFirstByNationalCodeAndActiveAndDeleted(String nationalCode,Integer active,Integer deleted);
+
+    @Query(value = "select * from TBL_PERSONNEL where id IN(:ids)" , nativeQuery = true)
+    Set<Personnel> findAllPersonnelById(Set<Long> ids);
 }

@@ -45,13 +45,13 @@ public class GroupOfPersonnelDTO {
 //        private Set<Long> personnelIds;
     }
 
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("JobGroupUpdateRq")
-//    public static class Update extends GroupOfPersonnelDTO {
-//        private Long id;
-//    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GroupOfPersonnelUpdateRq")
+    public static class Update extends GroupOfPersonnelDTO {
+        private Long id;
+    }
 //
 //    @Getter
 //    @Setter

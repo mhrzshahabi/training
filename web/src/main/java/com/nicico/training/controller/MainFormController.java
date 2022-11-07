@@ -164,9 +164,9 @@ public class MainFormController {
     public String showCommitteeOfExpertsForm() {
         return "base/CommitteeOfExperts";
     }
-    @RequestMapping("/GroupForGap")
+    @RequestMapping("/GroupOfPersonnel")
     public String showGroupForGapForm() {
-        return "base/GroupForGap";
+        return "base/GroupOfPersonnel";
     }
 
     @RequestMapping("/certification")
