@@ -547,6 +547,16 @@
                 canSort: false,
                 validateOnChange: false,
                 editEvent: "click",
+                showHover: true,
+                hoverHTML(record) {
+                    if (ListGrid_class_Evaluation.getSelectedRecord().evaluation == 1) {
+
+                        if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction === 1 || record.evaluationStatusReaction === 0) {
+                            return "بدلیل اینکه ارزیابی واکنشی پاسخ داده نشده امکان ثبت نمره برای این شخص وجود ندارد"
+                        }
+                    }
+                    return null;
+                },
                 change: function (form, item, value) {
 
                     if (ListGrid_Class_Student_Eval.getSelectedRecord().scoringMethod == "2") {
