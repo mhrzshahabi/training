@@ -76,6 +76,7 @@ public class TrainingPostDTO {
     public static class needAssessmentInfo {
         private Date lastModifiedDateNA;
         private String modifiedByNA;
+        private String titleFa;
 
         public String getLastModifiedDateNA() {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

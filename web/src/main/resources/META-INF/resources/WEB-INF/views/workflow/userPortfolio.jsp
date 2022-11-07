@@ -165,6 +165,7 @@
             if (record == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
+
                 if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس ارشد برنامه ریزی"))
                     showParallelRequestItemProcess(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
@@ -183,6 +184,7 @@
                     showRequestItemProcessStatusToPlanningChiefForApproval(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
                     showRequestItemProcessToAppointmentExpert(record);
+
                 else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول صدور گواهی نامه"))
                     showTrainingCertificationProcessToCertificationResponsible(record);
                 else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول مالی"))
