@@ -3301,7 +3301,7 @@
                         }
                         highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(), 1200);
                     } else {
-debugger
+
                         classMethod = "POST";
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
@@ -3327,11 +3327,6 @@ debugger
                         DynamicForm_Class_JspClass.setValue("evaluation", record.evaluation);
                         DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
                         DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
-                        // DynamicForm_Class_JspClass.setValue("targetPopulationTypeId", null);
-                        // DynamicForm_Class_JspClass.setValue("holdingClassTypeId",null);
-                        // DynamicForm_Class_JspClass.setValue("teachingMethodId", null);
-
-                        ///////////////////////
 
                         DynamicForm_Class_JspClass.setValue("targetPopulationTypeId",  record.targetPopulationTypeId);
                         DynamicForm_Class_JspClass.setValue("holdingClassTypeId",record.holdingClassTypeId);
@@ -3344,8 +3339,14 @@ debugger
                         DynamicForm_Class_JspClass.setValue("group", record.group);
                         DynamicForm_Class_JspClass.setValue("organizerId", record.organizerId);
                         DynamicForm_Class_JspClass.setValue("instituteId", record.instituteId);
-
-                        /////////////////////
+                        DynamicForm_Class_JspClass.setValue("trainingPlaceIds", record.trainingPlaceIds);
+                        DynamicForm_Class_JspClass.setValue("hasTest", record.hasTest);
+                        DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
+                        DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
+                        DynamicForm_Class_JspClass.setValue("evaluationScore", record.evaluationScore);
+                        DynamicForm_Class_JspClass.setValue("complexId", record.complexId);
+                        DynamicForm_Class_JspClass.setValue("assistantId", record.assistantId);
+                        DynamicForm_Class_JspClass.setValue("affairsId", record.affairsId);
 
                         if (userPersonInfo != null) {
                             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
@@ -3404,7 +3405,7 @@ debugger
 
 
                         autoTimeActivation();
-debugger
+
                     }
                 }));
 
