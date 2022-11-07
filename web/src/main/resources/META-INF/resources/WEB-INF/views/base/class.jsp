@@ -3301,7 +3301,6 @@
                         }
                         highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(), 1200);
                     } else {
-
                         classMethod = "POST";
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
@@ -3401,11 +3400,7 @@
                         });
                         DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
                         DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
-
-
-
                         autoTimeActivation();
-
                     }
                 }));
 
