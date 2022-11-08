@@ -16,5 +16,5 @@ public class ElsContactEvaluationDto {
     private String organizer;
     private String teacherFullName;
     private EvalCourseProtocol courseProtocol;
-    private long evaluationDeadline;
+    private boolean isEvaluationExpired;
 }

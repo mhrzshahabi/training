@@ -253,7 +253,8 @@ public abstract class EvaluationBeanMapper {
             evalCourseProtocol.setStartDate(evaluation.getTclass().getStartDate());
             evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
             dto.setCourseProtocol(evalCourseProtocol);
-            dto.setEvaluationDeadline(getEvaluationDeadline(evaluation.getTclass()));
+
+            dto.setEvaluationExpired(isEvaluationExpired(evaluation.getTclass()));
 
             elsContactEvaluationDtos.add(dto);
 
@@ -2606,7 +2607,7 @@ public abstract class EvaluationBeanMapper {
         return response;
     }
 
-    private Long getEvaluationDeadline(Tclass tclass) {
+    private boolean isEvaluationExpired(Tclass tclass) {
         String endDateStr = tclass.getEndDate();
         Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
         long endDateTimestamp = endDateEpoch.getTime();
@@ -2614,7 +2615,7 @@ public abstract class EvaluationBeanMapper {
         int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
         long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
 
-        return deadLine;
+        return System.currentTimeMillis() > deadLine;
     }
 
 }
