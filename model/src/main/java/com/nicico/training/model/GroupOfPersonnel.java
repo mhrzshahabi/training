@@ -34,8 +34,8 @@ public class GroupOfPersonnel extends Auditable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_personnel_in_group",
-            joinColumns = {@JoinColumn(name = "f_personnel_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_group_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "f_group_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_personnel_id", referencedColumnName = "id")})
     private Set<Personnel> personnelSet;
 
     @Column(name = "d_last_modified_date_na")
@@ -43,4 +43,12 @@ public class GroupOfPersonnel extends Auditable {
 
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
+
+    @Transient
+    private Integer personnelCount;
+
+    @PostLoad
+    private void onLoad() {
+        this.personnelCount = personnelSet.size();
+    }
 }

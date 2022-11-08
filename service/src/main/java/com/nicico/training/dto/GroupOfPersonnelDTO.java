@@ -21,6 +21,8 @@ public class GroupOfPersonnelDTO {
     @ApiModelProperty()
     private String description;
 
+    private Integer personnelCount;
+
     @Getter
     @Setter
     @Accessors(chain = true)

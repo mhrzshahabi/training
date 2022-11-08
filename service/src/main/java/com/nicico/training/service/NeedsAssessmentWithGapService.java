@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapService {
     private final NeedsAssessmentWithGapDAO needsAssessmentDAO;
     private final ITrainingPostService iTrainingPostService;
+    private final IGroupOfPersonnelService iGroupOfPersonnelService;
     private final IPostService iPostService;
     private final IPostGroupService iPostGroupService;
     private final IPostGradeService iPostGradeService;
@@ -104,6 +105,10 @@ public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapSer
             }
 
         }
+
+
+
+
         return  list;
     }
 
@@ -199,6 +204,11 @@ public class NeedsAssessmentWithGapService implements INeedsAssessmentWithGapSer
             case "TrainingPost" -> {
                 TrainingPostDTO.Info trainingPost = iTrainingPostService.getTrainingPost(objectId);
                 map.put(trainingPost.getCode(), trainingPost.getTitleFa());
+                return map;
+            }
+            case "GroupOfPersonnel","organizationCompetence" -> {
+                GroupOfPersonnel groupOfPersonnel = iGroupOfPersonnelService.get(objectId);
+                map.put(groupOfPersonnel.getCode(), groupOfPersonnel.getTitleFa());
                 return map;
             }
             case "Post" -> {

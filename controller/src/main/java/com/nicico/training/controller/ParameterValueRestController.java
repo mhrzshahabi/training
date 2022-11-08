@@ -74,6 +74,20 @@ public class ParameterValueRestController {
                     return list;
 
                 }
+                case "GroupOfPersonnel" -> {
+                    List<ParameterValueDTO.Info> data = Objects.requireNonNull(list.getBody()).getResponse().getData().stream().filter(a -> a.getCode().equals("groupCompetence")).collect(Collectors.toList());
+                    list.getBody().getResponse().setData(data);
+                    list.getBody().getResponse().setTotalRows(data.size());
+                    return list;
+
+                }
+                case "organizationCompetence" -> {
+                    List<ParameterValueDTO.Info> data = Objects.requireNonNull(list.getBody()).getResponse().getData().stream().filter(a -> a.getCode().equals("organizationCompetence")).collect(Collectors.toList());
+                    list.getBody().getResponse().setData(data);
+                    list.getBody().getResponse().setTotalRows(data.size());
+                    return list;
+
+                }
                 default -> {
 
                     return list;

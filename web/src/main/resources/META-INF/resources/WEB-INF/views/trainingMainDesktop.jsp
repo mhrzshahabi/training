@@ -2006,6 +2006,14 @@
                     }
                 },
                 </sec:authorize>
+                      <sec:authorize access="hasAuthority('Menu_NeedAssessment_Committee_Of_Experts')">
+                {
+                    title: "سازمانی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/OrganizationalNeedAssessment"/>");
+                    }
+                },
+                </sec:authorize>
 
                 <%--,--%>
                 <%--{--%>
