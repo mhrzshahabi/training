@@ -591,7 +591,6 @@
                             return "بدلیل اینکه ارزیابی واکنشی پاسخ داده نشده امکان ثبت نمره برای این شخص وجود ندارد"
                         }
                     }
-
                     return null;
                 },
                 change: function (form, item, value) {
@@ -717,7 +716,7 @@
         canEditCell: function (rowNum, colNum) {
             var record = this.getRecord(rowNum);
             var fieldName = this.getFieldName(colNum);
-debugger
+
             // if (fieldName === "scoresStateId") {
             //     return !(classRecord.scoringMethod == "1")
             // }
