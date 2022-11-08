@@ -16,6 +16,7 @@ import com.nicico.training.repository.*;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
+import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
 import dto.Question.QuestionScores;
 import dto.evaluuation.EvalCourse;
@@ -44,6 +45,7 @@ import response.question.dto.ElsQuestionTargetDto;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -251,6 +253,7 @@ public abstract class EvaluationBeanMapper {
             evalCourseProtocol.setStartDate(evaluation.getTclass().getStartDate());
             evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
             dto.setCourseProtocol(evalCourseProtocol);
+            dto.setEvaluationDeadline(getEvaluationDeadline(evaluation.getTclass()));
 
             elsContactEvaluationDtos.add(dto);
 
@@ -2601,6 +2604,17 @@ public abstract class EvaluationBeanMapper {
         response.setImportedQuestionProtocols(questionProtocols);
 
         return response;
+    }
+
+    private Long getEvaluationDeadline(Tclass tclass) {
+        String endDateStr = tclass.getEndDate();
+        Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
+        long endDateTimestamp = endDateEpoch.getTime();
+
+        int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
+        long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
+
+        return deadLine;
     }
 
 }

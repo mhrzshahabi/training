@@ -7475,6 +7475,45 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet  id="1667797300000" author="Montazeri">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                BEGIN
+                INSERT INTO tbl_parameter_value (
+                    id,
+                    c_created_by,
+                    d_created_date,
+                    e_deleted,
+                    e_enabled,
+                    c_last_modified_by,
+                    d_last_modified_date,
+                    n_version,
+                    f_parameter_id,
+                    c_title,
+                    c_code,
+                    c_type,
+                    c_value
+                ) VALUES (
+                    seq_parameter_value_id.NEXTVAL,
+                    'Montazeri',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    1,
+                    43,
+                    'مهلت ثبت ارزیابی واکنشی(روز)',
+                    'reactiveEvaluationDeadline',
+                    'IntegerItem',
+                    '15'
+                );
+                 END;
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 

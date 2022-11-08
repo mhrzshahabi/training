@@ -116,6 +116,7 @@ public class TrainingException extends NICICOException {
         UpdatingInvalidOldVersion(400),
         EvaluationNotFound(404),
         EvaluationAnswerNotFound(404),
+        EvaluationDeadline(406),
         ProvinceNotFound(404),
         InvalidData(405),
         PersonnelNotFound(404),

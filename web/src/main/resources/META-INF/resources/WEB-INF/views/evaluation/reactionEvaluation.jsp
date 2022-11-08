@@ -2359,6 +2359,8 @@
                             setTimeout(() => {
                                 msg.close();
                             }, 3000);
+                        } else if (JSON.parse(resp.httpResponseText).errors.get(0).code === "EvaluationDeadline") {
+                            createDialog("info", "<spring:message code="evaluation.deadline"/>", "<spring:message code="error"/>");
                         } else {
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
@@ -3156,7 +3158,10 @@
                             setTimeout(() => {
                                 msg.close();
                             }, 3000);
-                        } else {
+                        } else if (JSON.parse(resp.httpResponseText).errors.get(0).code === "EvaluationDeadline") {
+                            createDialog("info", "<spring:message code="evaluation.deadline"/>", "<spring:message code="error"/>");
+                        }
+                        else {
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
                     }))

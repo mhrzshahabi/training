@@ -8,6 +8,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.persianDate.PersianDate;
 import dto.evaluuation.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +71,9 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update request) {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
+
+        if (!checkEvaluationDeadLine(evaluation.getTclass()))
+            throw new TrainingException(TrainingException.ErrorType.EvaluationDeadline);
 
         evaluation.setDescription(request.getDescription());
         evaluation.setStatus(request.getStatus());
@@ -1159,4 +1164,20 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluationLevelId").toString()));
     }
 
+    private boolean checkEvaluationDeadLine(Tclass tclass) {
+        String endDateStr = tclass.getEndDate();
+        Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
+        long endDateTimestamp = endDateEpoch.getTime();
+
+        int deadLineDays = Integer.parseInt(
+                Objects.requireNonNull(parameterService.getByCode("ClassConfig").getResponse().getData()
+                        .stream()
+                        .filter(p -> p.getCode().equals("reactiveEvaluationDeadline"))
+                        .findFirst().orElse(null))
+                        .getValue()
+        );
+        long expireTime = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDays);
+
+        return System.currentTimeMillis() <= expireTime;
+    }
 }
