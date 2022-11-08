@@ -284,6 +284,9 @@
                     }
                 }
             }),
+            isc.Label.create({
+                ID: "alarmFor_reaction_evaluation_c"
+            }),
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('TclassScoresTab_R')">
@@ -1053,6 +1056,12 @@ debugger
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit);
+
+        alarmFor_reaction_evaluation_c.setContents(" ");
+        if (classRecord.evaluation == 1) {
+            alarmFor_reaction_evaluation_c.setContents("غیر قابل ویرایش بودن برخی رکوردها بدلیل وابستگی ثبت نمرات به ارزیابی واکنشی است");
+        }
+
         if (typeof classRecord.scoringMethod === 'undefined' || classRecord.scoringMethod == undefined) {
             createDialog("info", "کاربر گرامی توجه کنید که روش نمره دهی برای این کلاس نامشخص (undefined)است  لطفا فبل از ثبت نمرات روش نمره دهی را مشخص کنید", "<spring:message code="message"/>")
         }
