@@ -11,7 +11,7 @@ import java.util.Set;
 public interface IGroupOfPersonnelService {
     BaseResponse create(GroupOfPersonnelDTO.Create request);
     BaseResponse update(Long id, GroupOfPersonnelDTO.Update request);
-    BaseResponse delete(Long id);
+    Boolean delete(Long id,String type);
     SearchDTO.SearchRs<GroupOfPersonnelDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
     List<Long> getPersonnel(Long id);
     GroupOfPersonnel get(Long id);

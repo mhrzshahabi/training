@@ -16,19 +16,24 @@ import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
-import com.nicico.training.model.PostGradeGroup;
+import com.nicico.training.model.NeedsAssessmentWithGap;
 import com.nicico.training.repository.JobDAO;
 import com.nicico.training.repository.JobGroupDAO;
+import com.nicico.training.repository.NeedsAssessmentWithGapDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.setCriteria;
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +46,7 @@ public class JobGroupService implements IJobGroupService {
     private final IWorkGroupService workGroupService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -122,10 +128,23 @@ public class JobGroupService implements IJobGroupService {
     @Transactional
     @Override
     public void delete(Long id) {
-        if (needsAssessmentService.checkBeforeDeleteObject("JobGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("JobGroup", id))
+        if (needsAssessmentService.checkBeforeDeleteObject("JobGroup", id) &&
+                needsAssessmentTempService.checkBeforeDeleteObject("JobGroup", id) &&
+                checkGapBeforeDeleteObject( id))
             jobGroupDAO.deleteById(id);
         else
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+    }
+
+    private boolean checkGapBeforeDeleteObject( Long id) {
+        List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria("JobGroup", id, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
+            needsAssessmentWithGapDAO.deleteAllByObjectIdAndObjectType(id, "JobGroup");
+            return true;
+        }
+        return false;
     }
 
     @Transactional

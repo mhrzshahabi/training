@@ -691,14 +691,14 @@
             })],
         show(){
             let record = ListGrid_Competence_JspNeedsAssessmentGap.getSelectedRecord();
-            let competenceTitle= record.title
+            let competenceCode= record.code
 
             this.Super("show", arguments);
             let criteria = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2},
-                    {fieldName: "competenceType.title", operator: "equals", value:competenceTitle},
+                    {fieldName: "competenceType.code", operator: "equals", value:competenceCode},
                     {fieldName: "active", operator: "equals", value:true},
                 ]
             }

@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -8,9 +9,10 @@ import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPostGradeGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.model.NeedsAssessmentWithGap;
 import com.nicico.training.model.PostGrade;
 import com.nicico.training.model.PostGradeGroup;
-import com.nicico.training.model.PostGroup;
+import com.nicico.training.repository.NeedsAssessmentWithGapDAO;
 import com.nicico.training.repository.PostGradeDAO;
 import com.nicico.training.repository.PostGradeGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +30,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.setCriteria;
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     private final IWorkGroupService workGroupService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -79,7 +82,9 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     @Transactional
     @Override
     public void delete(Long id) {
-        if (needsAssessmentService.checkBeforeDeleteObject("PostGradeGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGradeGroup", id))
+        if (needsAssessmentService.checkBeforeDeleteObject("PostGradeGroup", id) &&
+                needsAssessmentTempService.checkBeforeDeleteObject("PostGradeGroup", id) &&
+                checkGapBeforeDeleteObject( id))
             try {
                 postGradeGroupDAO.deleteById(id);
             } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -87,6 +92,16 @@ public class PostGradeGroupService implements IPostGradeGroupService {
             }
         else
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+    }
+    private boolean checkGapBeforeDeleteObject( Long id) {
+        List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria("PostGradeGroup", id, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
+            needsAssessmentWithGapDAO.deleteAllByObjectIdAndObjectType(id, "PostGradeGroup");
+            return true;
+        }
+        return false;
     }
 
     @Transactional

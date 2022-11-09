@@ -15,9 +15,11 @@ import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.dto.TrainingPostDTO;
 import com.nicico.training.iservice.IPostGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.model.NeedsAssessmentWithGap;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.PostGroup;
 import com.nicico.training.model.TrainingPost;
+import com.nicico.training.repository.NeedsAssessmentWithGapDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.PostGroupDAO;
 import com.nicico.training.repository.TrainingPostDAO;
@@ -31,6 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.setCriteria;
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +47,7 @@ public class PostGroupService implements IPostGroupService {
     private final IWorkGroupService workGroupService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -150,7 +154,9 @@ public class PostGroupService implements IPostGroupService {
     @Override
     public boolean delete(Long id) {
         try {
-            if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id)) {
+            if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) &&
+                    needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id) &&
+                    checkGapBeforeDeleteObject( id)) {
                 postGroupDAO.deleteById(id);
                 return true;
             } else
@@ -183,7 +189,16 @@ public class PostGroupService implements IPostGroupService {
     }
 
     // ------------------------------
-
+    private boolean checkGapBeforeDeleteObject( Long id) {
+        List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria("PostGroup", id, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
+            needsAssessmentWithGapDAO.deleteAllByObjectIdAndObjectType(id, "PostGroup");
+            return true;
+        }
+        return false;
+    }
     private PostGroupDTO.Info save(PostGroup postGroup, Set<Long> postIds) {
         final Set<Post> posts = new HashSet<>();
 //        final Set<CompetenceOld> competences = new HashSet<>();

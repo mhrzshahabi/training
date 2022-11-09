@@ -1,14 +1,17 @@
 package com.nicico.training.service;
 
 
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.GroupOfPersonnelDTO;
 import com.nicico.training.iservice.IGroupOfPersonnelService;
 import com.nicico.training.model.GroupOfPersonnel;
+import com.nicico.training.model.NeedsAssessmentWithGap;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.GroupOfPersonnelDAO;
+import com.nicico.training.repository.NeedsAssessmentWithGapDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
+
 @Service
 @RequiredArgsConstructor
 public class GroupOfPersonnelService implements IGroupOfPersonnelService {
@@ -29,6 +34,7 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
     private final ModelMapper modelMapper;
     private final GroupOfPersonnelDAO groupOfPersonnelDao;
     private final PersonnelDAO personnelDAO;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
 
     @Transactional
     @Override
@@ -87,19 +93,26 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
     //
     @Transactional
     @Override
-    public BaseResponse delete(Long id) {
-        BaseResponse response = new ResendExamTimes();
-
-        try {
+    public Boolean delete(Long id,String type) {
+        if (checkGapBeforeDeleteObject( id,type) ) {
             groupOfPersonnelDao.deleteById(id);
-            response.setStatus(200);
-        } catch (Exception e) {
-            response.setMessage("عملیات انجام نشد .");
-            response.setStatus(404);
+            return true;
         }
-        return response;
 
+        return false;
     }
+
+    private boolean checkGapBeforeDeleteObject( Long id,String type) {
+         List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria(type, id, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
+            needsAssessmentWithGapDAO.deleteAllByObjectIdAndObjectType(id, type);
+            return true;
+        }
+        return false;
+    }
+
 
     @Transactional(readOnly = true)
     @Override

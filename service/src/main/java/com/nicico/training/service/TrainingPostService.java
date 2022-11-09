@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class TrainingPostService implements ITrainingPostService {
     private final PersonnelService personnelService;
     private final NeedsAssessmentService needsAssessmentService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -180,11 +183,25 @@ public class TrainingPostService implements ITrainingPostService {
     @Transactional
     @Override
     public boolean delete(Long id) {
-        if (needsAssessmentService.checkBeforeDeleteObject("TrainingPost", id) && needsAssessmentTempService.checkBeforeDeleteObject("TrainingPost", id)) {
+        if (needsAssessmentService.checkBeforeDeleteObject("TrainingPost", id) &&
+                needsAssessmentTempService.checkBeforeDeleteObject("TrainingPost", id) &&
+                checkGapBeforeDeleteObject( id)
+        ) {
             trainingPostDAO.deleteById(id);
             return true;
         }
 
+        return false;
+    }
+
+    private boolean checkGapBeforeDeleteObject( Long id) {
+        List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria("TrainingPost", id, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
+            needsAssessmentWithGapDAO.deleteAllByObjectIdAndObjectType(id, "TrainingPost");
+            return true;
+        }
         return false;
     }
 

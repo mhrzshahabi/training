@@ -299,7 +299,7 @@
                     this.close();
                     if (index === 0) {
                         wait_organizationCompetence = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + record.id, "DELETE", null,
+                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + record.id+"/organizationCompetence", "DELETE", null,
                             "callback: organizationCompetenceDel_result(rpcResponse)"));
                     }
                 }

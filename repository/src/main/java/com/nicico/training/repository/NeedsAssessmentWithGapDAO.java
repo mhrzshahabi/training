@@ -48,4 +48,9 @@ public interface NeedsAssessmentWithGapDAO extends BaseDAO<NeedsAssessmentWithGa
             "               and\n" +
             "              ( n_main_workflow_status_code is null OR n_main_workflow_status_code = 0 )", nativeQuery = true)
     List<NeedsAssessmentWithGap> getListForChangeData(Long objectId, String objectType);
+
+
+    @Modifying
+    @Query(value = "delete from tbl_needs_assessment_with_gap where F_OBJECT = :objectId and C_OBJECT_TYPE = :objectType", nativeQuery = true)
+    void deleteAllByObjectIdAndObjectType(Long objectId, String objectType);
 }

@@ -804,7 +804,7 @@
                     this.close();
                     if (index === 0) {
                         wait_groupOfPersonnelGroup = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + record.id, "DELETE", null,
+                        isc.RPCManager.sendRequest(TrDSRequest(groupOfPersonnelUrl + record.id+"/GroupOfPersonnel", "DELETE", null,
                             "callback: groupOfPersonnelDel_result(rpcResponse)"));
                     }
                 }

@@ -2076,7 +2076,7 @@
     function checkGender(gender) {
         if (gender === undefined || gender === null || gender === "")
             return false;
-        if (gender === "مرد" || gender === "زن")
+        if (gender.trim() === "مرد" || gender.trim() === "زن")
             return true;
         else
             return false;

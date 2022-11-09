@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.GroupOfPersonnelDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IGroupOfPersonnelService;
@@ -10,6 +11,7 @@ import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -69,11 +71,23 @@ public class GroupOfPersonnelRestController {
 
     //
     @Loggable
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}/{type}")
 //    @PreAuthorize("hasAuthority('d_job_group')")
-    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-        BaseResponse   response= groupOfPersonnelService.delete(id);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    public ResponseEntity delete(@PathVariable Long id,@PathVariable String type) {
+        try {
+            boolean haveError = false;
+
+            if (!groupOfPersonnelService.delete(id,type))
+                haveError = true;
+
+            if (haveError) {
+                return new ResponseEntity<>("", HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 //
 
