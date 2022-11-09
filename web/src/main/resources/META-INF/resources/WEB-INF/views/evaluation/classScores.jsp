@@ -270,6 +270,9 @@
                         ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_Student_Eval, tclassStudentUrl + "/scores-iscList/" + classId_Eval, 0, ListGrid_class_Evaluation, '', "ارزیابی - ثبت نمرات", ListGrid_Class_Student_Eval.getCriteria(), null);
                 }
             }),
+            isc.Label.create({
+                ID: "alarmFor_reaction_evaluation_e"
+            }),
             </sec:authorize>
             isc.ToolStrip.create({
                 width: "50%",
@@ -547,6 +550,16 @@
                 canSort: false,
                 validateOnChange: false,
                 editEvent: "click",
+                showHover: true,
+                hoverHTML(record) {
+                    if (ListGrid_class_Evaluation.getSelectedRecord().evaluation == 1) {
+
+                        if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction === 1 || record.evaluationStatusReaction === 0) {
+                            return "بدلیل اینکه ارزیابی واکنشی پاسخ داده نشده امکان ثبت نمره برای این شخص وجود ندارد"
+                        }
+                    }
+                    return null;
+                },
                 change: function (form, item, value) {
 
                     if (ListGrid_Class_Student_Eval.getSelectedRecord().scoringMethod == "2") {
@@ -972,6 +985,12 @@
     function loadPage_Scores_Eval() {
 
         classCode_Eval = ListGrid_class_Evaluation.getSelectedRecord().tclassCode;
+
+        alarmFor_reaction_evaluation_e.setContents(" ");
+        if (ListGrid_class_Evaluation.getSelectedRecord().evaluation == 1) {
+            alarmFor_reaction_evaluation_e.setContents("غیر قابل ویرایش بودن برخی رکوردها بدلیل وابستگی ثبت نمرات به ارزیابی واکنشی است");
+        }
+
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTClassDataForScoresInEval/" + classCode_Eval, "GET", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 let classData = JSON.parse(resp.httpResponseText);

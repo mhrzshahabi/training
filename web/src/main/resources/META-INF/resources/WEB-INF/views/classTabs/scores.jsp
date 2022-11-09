@@ -284,6 +284,9 @@
                     }
                 }
             }),
+            isc.Label.create({
+                ID: "alarmFor_reaction_evaluation_c"
+            }),
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('TclassScoresTab_R')">
@@ -579,6 +582,17 @@
                 </sec:authorize>
                 canSort:false,
                 validateOnChange: false,
+                showHover: true,
+                hoverHTML(record) {
+
+                    if (ListGrid_Class_JspClass.getSelectedRecord().evaluation == 1) {
+
+                        if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction === 1 || record.evaluationStatusReaction === 0) {
+                            return "بدلیل اینکه ارزیابی واکنشی پاسخ داده نشده امکان ثبت نمره برای این شخص وجود ندارد"
+                        }
+                    }
+                    return null;
+                },
                 change: function (form, item, value) {
 
                     if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "2") {
@@ -1041,6 +1055,12 @@
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit);
+
+        alarmFor_reaction_evaluation_c.setContents(" ");
+        if (classRecord.evaluation == 1) {
+            alarmFor_reaction_evaluation_c.setContents("غیر قابل ویرایش بودن برخی رکوردها بدلیل وابستگی ثبت نمرات به ارزیابی واکنشی است");
+        }
+
         if (typeof classRecord.scoringMethod === 'undefined' || classRecord.scoringMethod == undefined) {
             createDialog("info", "کاربر گرامی توجه کنید که روش نمره دهی برای این کلاس نامشخص (undefined)است  لطفا فبل از ثبت نمرات روش نمره دهی را مشخص کنید", "<spring:message code="message"/>")
         }
