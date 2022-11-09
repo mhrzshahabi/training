@@ -128,7 +128,7 @@
                 return;
             }
             let data = DynamicForm_OrganizationalNeedAssessment_Jsp.getValues();
-            isc.RPCManager.sendRequest(TrDSRequest(url, methodInOrganizationCompetence, JSON.stringify(data),
+            isc.RPCManager.sendRequest(TrDSRequest(urlInOrganizationCompetence, methodInOrganizationCompetence, JSON.stringify(data),
                 "callback: OrganizationalNeedAssessment_save_result(rpcResponse)"));
         }
     });
