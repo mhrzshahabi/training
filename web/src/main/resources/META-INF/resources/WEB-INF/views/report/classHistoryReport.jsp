@@ -6,14 +6,14 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    debugger
+
     let record;
 
-    if (this.ListGrid_class_Evaluation != undefined && this.eval_Flag_Tab_ClassChanges == 1) {
+    if (this.ListGrid_class_Evaluation !== undefined && this.eval_Flag_Tab_ClassChanges === 1) {
         this.eval_Flag_Tab_ClassChanges = null;
         record = this.ListGrid_class_Evaluation.getSelectedRecord();
     } else {
-        if (this.ListGrid_Class_JspClass != undefined && this.eval_Flag_Tab_ClassChanges == null)  {
+        if (this.ListGrid_Class_JspClass !== undefined && this.eval_Flag_Tab_ClassChanges == null)  {
             record = this.ListGrid_Class_JspClass.getSelectedRecord();
         }
     }
