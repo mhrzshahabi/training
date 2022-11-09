@@ -1169,6 +1169,8 @@ public class EvaluationService implements IEvaluationService {
         Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
         long endDateTimestamp = endDateEpoch.getTime();
 
+        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+
         int deadLineDays = Integer.parseInt(
                 Objects.requireNonNull(parameterService.getByCode("ClassConfig").getResponse().getData()
                         .stream()
@@ -1178,6 +1180,6 @@ public class EvaluationService implements IEvaluationService {
         );
         long expireTime = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDays);
 
-        return System.currentTimeMillis() <= expireTime;
+        return currentTimeSeconds <= expireTime;
     }
 }
