@@ -6,7 +6,18 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-      let record = ListGrid_Class_JspClass.getSelectedRecord();
+    debugger
+    let record;
+
+    if (this.ListGrid_class_Evaluation != undefined && this.eval_Flag_Tab_ClassChanges == 1) {
+        this.eval_Flag_Tab_ClassChanges = null;
+        record = this.ListGrid_class_Evaluation.getSelectedRecord();
+    } else {
+        if (this.ListGrid_Class_JspClass != undefined && this.eval_Flag_Tab_ClassChanges == null)  {
+            record = this.ListGrid_Class_JspClass.getSelectedRecord();
+        }
+    }
+
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
      RestDataSource_History_REFR = isc.TrDS.create({

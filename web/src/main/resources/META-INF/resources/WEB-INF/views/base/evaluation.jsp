@@ -12,6 +12,10 @@
     let evalDateCriteria = [];
     let departmentCriteria = [];
 
+     eval_Flag_Tab_ClassChanges= null;
+     eval_Flag_Tab_HistoryOfRemoved = null;
+     eval_Flag_Tab_HistoryAdded   = null;
+
     var RestDataSource_class_Evaluation = isc.TrDS.create({
         fields: [
             {name: "id"},
@@ -369,11 +373,63 @@
                     click: function () {
                         showStudentEvalToOnlineStatus();
                     }
-                },
+                },  {isSeparator: true},
                 {
                     title: "تاریخچه ارسال ارزیابی مدرس به سیستم آنلاین",
                     click: function () {
                         showTeacherEvalToOnlineStatus();
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code='class.history'/>",
+                    click: function () {
+
+                        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+                        if (record == null || record.id == null) {
+                            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        } else {
+                            eval_Flag_Tab_ClassChanges = 1;
+
+                            if (mainTabSet.getTab("تغییرات کلاس") != null)
+                                mainTabSet.removeTab("تغییرات کلاس")
+                            createTab(this.title, "<spring:url value="web/classHistoryReport"/>");
+                        }
+
+                    }
+                }, {isSeparator: true},
+                {
+                    title: "<spring:message code='class.student.history'/>",
+                    click: function () {
+
+                        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+                        if (record == null || record.id == null) {
+                            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        } else {
+                            eval_Flag_Tab_HistoryOfRemoved = 1;
+
+                            if (mainTabSet.getTab("تاریخچه حذف فراگیران کلاس") != null)
+                                mainTabSet.removeTab("تاریخچه حذف فراگیران کلاس")
+                            createTab(this.title, "<spring:url value="web/classStudentHistoryRemoveReport"/>");
+                        }
+
+                    }
+                }, {isSeparator: true},
+                {
+                    title: "تاریخچه افزودن فراگیران کلاس",
+                    click: function () {
+
+                        let record = JSON.parse(JSON.stringify(ListGrid_class_Evaluation.getSelectedRecord()));
+                        if (record == null || record.id == null) {
+                            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        } else {
+                            eval_Flag_Tab_HistoryAdded = 1;
+
+                            if (mainTabSet.getTab("تاریخچه افزودن فراگیران کلاس") != null)
+                                mainTabSet.removeTab("تاریخچه افزودن فراگیران کلاس")
+                            createTab(this.title, "<spring:url value="web/classStudentHistoryAddReport"/>");
+                        }
+
                     }
                 }
             ]
