@@ -74,7 +74,7 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
                 modelMapper.map(cById.get(), updating);
                 modelMapper.map(request, updating);
                 Optional<GroupOfPersonnel> optionalGroupOfPersonnel = groupOfPersonnelDao.findFirstByCode(updating.getCode());
-                if (optionalGroupOfPersonnel.isPresent() && !optionalGroupOfPersonnel.get().getId().equals(id) ) {
+                if (optionalGroupOfPersonnel.isPresent() && !optionalGroupOfPersonnel.get().getId().equals(id)) {
                     response.setMessage("امکان ایجاد گروه با کد تکراری وجود ندارد .");
                     response.setStatus(406);
                 } else {
@@ -93,8 +93,8 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
     //
     @Transactional
     @Override
-    public Boolean delete(Long id,String type) {
-        if (checkGapBeforeDeleteObject( id,type) ) {
+    public Boolean delete(Long id, String type) {
+        if (checkGapBeforeDeleteObject(id, type)) {
             groupOfPersonnelDao.deleteById(id);
             return true;
         }
@@ -102,8 +102,8 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
         return false;
     }
 
-    private boolean checkGapBeforeDeleteObject( Long id,String type) {
-         List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria(type, id, true)));
+    private boolean checkGapBeforeDeleteObject(Long id, String type) {
+        List<NeedsAssessmentWithGap> needsAssessments = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(getCriteria(type, id, true)));
         if (needsAssessments == null || needsAssessments.isEmpty())
             return true;
         if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
@@ -127,6 +127,12 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
     }
 
     @Override
+    public List<GroupOfPersonnel> getPersonnelGroups(Long id) {
+        List<Long> ids = groupOfPersonnelDao.getAllGroupByPersonnelId(id);
+        return groupOfPersonnelDao.findAllById(ids);
+    }
+
+    @Override
     public GroupOfPersonnel get(Long id) {
         return groupOfPersonnelDao.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
     }
@@ -147,6 +153,7 @@ public class GroupOfPersonnelService implements IGroupOfPersonnelService {
         }
         groupOfPersonnel.setPersonnelSet(personnelSet);
     }
+
     @Override
     @Transactional
     public void removePersonnel(Long groupId, Set<Long> ids) {

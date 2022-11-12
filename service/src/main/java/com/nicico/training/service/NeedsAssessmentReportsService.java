@@ -49,6 +49,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final NeedsAssessmentDAO needsAssessmentDAO;
     private final NeedsAssessmentWithGapDAO needsAssessmentWithGapDAO;
     private final NeedsAssessmentTempDAO needsAssessmentTempDAO;
+    private final IGroupOfPersonnelService iGroupOfPersonnelService;
     private final PersonnelDAO personnelDAO;
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
 
@@ -160,7 +161,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         Long passedCodeId = parameterValueService.getId("Passed");
         Long notPassedCodeId = parameterValueService.getId("false");
 
-        List<NeedsAssessmentWithGap> needsAssessmentList = getNeedsAssessmentListForGap(objectId, objectType);
+        List<NeedsAssessmentWithGap> needsAssessmentList = getNeedsAssessmentListForGap(objectId, objectType,personnelId);
         needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
         List<NeedsAssessmentWithGapDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentWithGapDTO.ReportInfo>>() {
         }.getType());
@@ -229,14 +230,50 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentWithGap> getNeedsAssessmentListForGap(Long objectId, String objectType) {
+    public List<NeedsAssessmentWithGap> getNeedsAssessmentListForGap(Long objectId, String objectType,Long personnelId) {
         List<NeedsAssessmentWithGap> needsAssessmentList = new ArrayList<>();
-        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        List<NeedsAssessmentWithGap> organizationalNeedsAssessmentList;
+        List<NeedsAssessmentWithGap> groupNeedsAssessmentList;
+         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
         criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
         addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, true, true);
         if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
             needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+
+
+        organizationalNeedsAssessmentList=getNeedsAssessmentOrganizational();
+        groupNeedsAssessmentList=getNeedsAssessmentGroupOfPersonnel(personnelId);
+        needsAssessmentList.addAll(organizationalNeedsAssessmentList);
+        needsAssessmentList.addAll(groupNeedsAssessmentList);
+        return removeDuplicateNAsForGap(needsAssessmentList);
+    }
+
+    private List<NeedsAssessmentWithGap> getNeedsAssessmentOrganizational() {
+
+        List<NeedsAssessmentWithGap> needsAssessmentList;
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        criteriaRq.getCriteria().add(makeNewCriteria("objectType", "organizationCompetence", EOperator.equals, null));
+             needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+
+        return removeDuplicateNAsForGap(needsAssessmentList);
+    }
+
+    private List<NeedsAssessmentWithGap> getNeedsAssessmentGroupOfPersonnel(Long personnelId) {
+
+        List<NeedsAssessmentWithGap> needsAssessmentList;
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        criteriaRq.getCriteria().add(makeNewCriteria("objectType", "GroupOfPersonnel", EOperator.equals, null));
+        List<GroupOfPersonnel> groupOfPersonnelList=iGroupOfPersonnelService.getPersonnelGroups(personnelId);
+        if (!groupOfPersonnelList.isEmpty()){
+            criteriaRq.getCriteria().add(makeNewCriteria("objectId", groupOfPersonnelList.stream().map(GroupOfPersonnel::getId).toList(), EOperator.inSet, null));
+        }
+        needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+
         return removeDuplicateNAsForGap(needsAssessmentList);
     }
 

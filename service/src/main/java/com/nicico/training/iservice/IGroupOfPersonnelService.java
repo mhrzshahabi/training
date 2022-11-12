@@ -14,6 +14,7 @@ public interface IGroupOfPersonnelService {
     Boolean delete(Long id,String type);
     SearchDTO.SearchRs<GroupOfPersonnelDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
     List<Long> getPersonnel(Long id);
+    List<GroupOfPersonnel> getPersonnelGroups(Long id);
     GroupOfPersonnel get(Long id);
     void addPersonnel(Long groupId, Set<Long> ids);
     void removePersonnel(Long groupId, Set<Long> ids);

@@ -23,4 +23,13 @@ public interface GroupOfPersonnelDAO extends JpaRepository<GroupOfPersonnel, Lon
 
 
     Optional<GroupOfPersonnel> findFirstByCode(String code);
+
+
+    @Modifying
+    @Query(value = "SELECT\n" +
+            "    f_group_id FROM\n" +
+            "    tbl_personnel_in_group\n" +
+            "    WHERE\n" +
+            "    f_personnel_id = :id", nativeQuery = true)
+    List<Long> getAllGroupByPersonnelId(Long id);
 }
