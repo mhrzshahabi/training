@@ -2615,7 +2615,7 @@ public abstract class EvaluationBeanMapper {
         int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
         long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
 
-        long currentTimeSeconds = TimeUnit.SECONDS.toSeconds(System.currentTimeMillis());
+        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
         return currentTimeSeconds > deadLine;
     }
