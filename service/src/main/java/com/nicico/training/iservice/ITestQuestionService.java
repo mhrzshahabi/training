@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.TestQuestion;
 import org.springframework.transaction.annotation.Transactional;
 

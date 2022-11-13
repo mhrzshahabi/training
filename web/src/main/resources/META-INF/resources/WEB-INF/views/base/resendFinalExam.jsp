@@ -422,7 +422,7 @@
     }
 
     function studentsToElsResendExam(record, users) {
-
+debugger
         let examData = {
             sourceExamId: record.id,
             duration: record.duration,
