@@ -2307,9 +2307,7 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                     createDialog("warning", "آزمون یافت نشد", "اخطار");
                 } else if (resp.httpResponseCode == 406) {
                     createDialog("warning", "خطا در حذف سوال", "اخطار");
-                } //else if (resp.httpResponseCode == 404) {
-                // createDialog("warning", "آزمون در آزمون آنلاین ثبت شده است و امکان حذف وجود ندارد", "اخطار");
-                // }
+                }
             }
         }))
     }
