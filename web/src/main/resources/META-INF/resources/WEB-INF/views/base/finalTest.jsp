@@ -2274,34 +2274,43 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         let record = FinalTestLG_finalTest.getSelectedRecord();
         let entityType = '<spring:message code="exam"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
+            let sentToELS = record.onlineFinalExamStatus // ارسال شده/ نشده
 
-            let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
-            dialog.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "DELETE", null, (resp) => {
-                            wait.close();
-                            if (generalGetResp(resp)) {
-                                if (resp.httpResponseCode == 200) {
-                                    let dialog = createDialog("info", "<spring:message code="msg.successfully.done"/>");
-                                    Timer.setTimeout(function () {
-                                        dialog.close();
-                                    }, dialogShowTime);
-                                    refresh_finalTest();
-                                } else  if (resp.httpResponseCode == 406){
-                                    createDialog("warning", "خطا در حذف سوال", "اخطار");
-                                }else  if (resp.httpResponseCode == 404){
-                                    createDialog("warning", "آزمون در آزمون آنلاین ثبت شده است و امکان حذف وجود ندارد", "اخطار");
-                                }
-                            }
-                        }))
+            let dialog;
+            if (sentToELS)
+                dialog = createDialog('ask', "<spring:message code="msg.confirm.record.remove.ask"/>");
+            else
+                dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+
+                dialog.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            deleteTestQuestion(record);
+                        }
                     }
-                }
-            })
+                })
+            }
+    }
 
-        }
-    };
+    function deleteTestQuestion(record) {
+        isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "DELETE", null, (resp) => {
+            wait.close();
+            if (generalGetResp(resp)) {
+                if (resp.httpResponseCode == 200) {
+                    let dialog = createDialog("info", "<spring:message code="msg.successfully.done"/>");
+                    Timer.setTimeout(function () {
+                        dialog.close();
+                    }, dialogShowTime);
+                    refresh_finalTest();
+                } else if (resp.httpResponseCode == 404) {
+                    createDialog("warning", "آزمون یافت نشد", "اخطار");
+                } else if (resp.httpResponseCode == 406) {
+                    createDialog("warning", "خطا در حذف سوال", "اخطار");
+                }
+            }
+        }))
+    }
 
     function showCopyForm_finalTest() {
 

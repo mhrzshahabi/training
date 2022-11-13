@@ -72,4 +72,7 @@ public interface ElsClient {
     @GetMapping(value = "/profilesInExam")
     ElsExamMonitoringRespDto getExamMonitoring(@RequestParam String examCode, @RequestParam String method);
 
+    @DeleteMapping("/exam")
+    BaseResponse deleteExamFromEls(@RequestParam Long sourceExamId, @RequestParam String method);
+
 }

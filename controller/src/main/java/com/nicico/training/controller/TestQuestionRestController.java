@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.iservice.ITestQuestionService;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class TestQuestionRestController {
     private final ObjectMapper objectMapper;
     private final ITestQuestionService testQuestionService;
     private final IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
+    private final ElsClient elsClient;
     // ------------------------------
 
     @Loggable
@@ -122,21 +125,20 @@ public class TestQuestionRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        BaseResponse baseResponse = new BaseResponse();
         try {
-            TestQuestionDTO.fullInfo testQuestion= testQuestionService.get(id);
-            if(testQuestion.getOnlineFinalExamStatus()==null||!testQuestion.getOnlineFinalExamStatus())
-            {
-                testQuestionService.delete(id);
-                return  new ResponseEntity<>(HttpStatus.OK);
-            }
-            else
-                return new ResponseEntity<>(
-                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_FOUND);
+            TestQuestion testQuestion = testQuestionService.getById(id);
+            testQuestionService.delete(id);
 
-        } catch (TrainingException | DataIntegrityViolationException e) {
+            // delete exam from ELS
+            if (testQuestion.getOnlineFinalExamStatus()) { // ارسال شده به آنلاین
+                baseResponse = elsClient.deleteExamFromEls(testQuestion.getId(), testQuestion.getTestQuestionType());
+            }
+            return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+                    new TrainingException(TrainingException.ErrorType.TestQuestionNotFound).getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
