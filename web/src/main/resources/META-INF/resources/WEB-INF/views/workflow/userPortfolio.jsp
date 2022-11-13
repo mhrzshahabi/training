@@ -165,24 +165,28 @@
             if (record == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
+
                 if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس ارشد برنامه ریزی"))
                     showParallelRequestItemProcess(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
                     showRequestItemProcessToDetermineStatus(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس اجرا"))
                     showRequestItemProcessStatusToRunChief(record);
-                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی سرپرست اجرا"))
+
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی سرپرست اجرا -"))
                     showRequestItemProcessStatusToRunSupervisor(record);
-                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس اجرا"))
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس اجرا -"))
                     showRequestItemProcessStatusToRunExperts(record);
-                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید سرپرست اجرا"))
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید سرپرست اجرا -"))
                     showRequestItemProcessStatusToRunSupervisorForApproval(record);
-                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید رئیس اجرا"))
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید رئیس اجرا -"))
                     showRequestItemProcessStatusToRunChiefForApproval(record);
-                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی / تایید رئیس برنامه ریزی"))
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی / تایید رئیس برنامه ریزی -"))
                     showRequestItemProcessStatusToPlanningChiefForApproval(record);
+
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
                     showRequestItemProcessToAppointmentExpert(record);
+
                 else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول صدور گواهی نامه"))
                     showTrainingCertificationProcessToCertificationResponsible(record);
                 else if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول مالی"))
@@ -1281,9 +1285,12 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses !== undefined && resp.courses.length !== 0)
-                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
-                    else
+                    if (resp.courses !== undefined && resp.courses.length !== 0) {
+                        if (record.name.includes("انتصاب سمت"))
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses.filter(item => item.priority.contains("انتصاب سمت")));
+                        else
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    } else
                         ListGrid_RequestItem_Show_Courses.setData([]);
                     Window_RequestItem_Show_Status_Completion.show();
                 }
@@ -1436,9 +1443,12 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses !== undefined && resp.courses.length !== 0)
-                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
-                    else
+                    if (resp.courses !== undefined && resp.courses.length !== 0) {
+                        if (record.name.includes("انتصاب سمت"))
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses.filter(item => item.priority.contains("انتصاب سمت")));
+                        else
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    } else
                         ListGrid_RequestItem_Show_Courses.setData([]);
                     Window_RequestItem_Show_Status_Completion.show();
                 }
@@ -1586,9 +1596,12 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses !== undefined && resp.courses.length !== 0)
-                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
-                    else
+                    if (resp.courses !== undefined && resp.courses.length !== 0) {
+                        if (record.name.includes("انتصاب سمت"))
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses.filter(item => item.priority.contains("انتصاب سمت")));
+                        else
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    } else
                         ListGrid_RequestItem_Show_Courses.setData([]);
                     Window_RequestItem_Show_Status_Completion.show();
                 }
@@ -1736,9 +1749,12 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses !== undefined && resp.courses.length !== 0)
-                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
-                    else
+                    if (resp.courses !== undefined && resp.courses.length !== 0) {
+                        if (record.name.includes("انتصاب سمت"))
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses.filter(item => item.priority.contains("انتصاب سمت")));
+                        else
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    } else
                         ListGrid_RequestItem_Show_Courses.setData([]);
                     Window_RequestItem_Show_Status_Completion.show();
                 }
@@ -1886,9 +1902,12 @@
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
-                    if (resp.courses !== undefined && resp.courses.length !== 0)
-                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
-                    else
+                    if (resp.courses !== undefined && resp.courses.length !== 0) {
+                        if (record.name.includes("انتصاب سمت"))
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses.filter(item => item.priority.contains("انتصاب سمت")));
+                        else
+                            ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    } else
                         ListGrid_RequestItem_Show_Courses.setData([]);
                     Window_RequestItem_Show_Status_Completion.show();
                 }
@@ -2860,8 +2879,12 @@
     function confirmRequestItemProcessByRunChief(record, window) {
 
         let baseUrl = requestItemBPMSUrl;
-        let url = "/tasks/run-chief/request-item/review";
-
+        let url;
+        if (record.name.includes("ضمن خدمت")) {
+            url = "/tasks/run-chief/request-item/review";
+        } else {
+            url = "/tasks/run-chief/need-to-pass/request-item/review";
+        }
         let reviewTaskRequest = {
             taskId: record.taskId,
             approve: true,
