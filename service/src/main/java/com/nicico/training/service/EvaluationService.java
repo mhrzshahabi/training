@@ -72,7 +72,7 @@ public class EvaluationService implements IEvaluationService {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
 
-        if (!checkEvaluationDeadLine(evaluation.getTclass()))
+        if (evaluation.getEvaluationLevel().getCode().equals("Reactive") && !checkEvaluationDeadLine(evaluation.getTclass()))
             throw new TrainingException(TrainingException.ErrorType.EvaluationDeadline);
 
         evaluation.setDescription(request.getDescription());
