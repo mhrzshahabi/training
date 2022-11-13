@@ -53,6 +53,16 @@
             ListGrid_Competence_Request_Item.invalidateCache();
         }
     });
+    ToolStripButton_Refresh_Competence_Request_Item = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            ListGrid_Competence_Request_Item.invalidateCache();
+        }
+    });
+    ToolStripButton_Excel_Competence_Request_Item = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Competence_Request_Item , requestItemUrl + "/report-list", 0, null, '', "گزارش مراحل تایید صلاحیت علمی و فنی", null, null, 0, true);
+        }
+    });
     ToolStrip_Actions_Competence_Request_Item = isc.ToolStrip.create({
         width: "100%",
         border: '0px',
@@ -62,7 +72,8 @@
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Competence_Request_Item
+                    ToolStripButton_Refresh_Competence_Request_Item,
+                    ToolStripButton_Excel_Competence_Request_Item
                 ]
             })
         ]

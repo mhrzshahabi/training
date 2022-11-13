@@ -143,6 +143,12 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/run-chief/need-to-pass/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunChiefNeedToPass(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunChiefNeedToPass(reviewTaskRequest);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/run-supervisor/request-item/review"})
     public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest) {
         return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest);

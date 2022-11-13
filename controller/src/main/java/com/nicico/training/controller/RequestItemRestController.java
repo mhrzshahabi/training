@@ -199,7 +199,12 @@ public class RequestItemRestController {
         searchRq.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        List<RequestItem> resultList = requestItemService.search(searchRq).stream().filter(item -> item.getProcessInstanceId() != null).collect(Collectors.toList());
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.notNull);
+        criteriaRq.setFieldName("processInstanceId");
+        searchRq.setCriteria(criteriaRq);
+
+        List<RequestItem> resultList = requestItemService.search(searchRq);
         List<RequestItemDTO.ReportInfo> result = requestItemBeanMapper.toRequestItemReportInfoDtoList(resultList);
 
         ISC.Response<RequestItemDTO.ReportInfo> response = new ISC.Response<>();

@@ -70,6 +70,8 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunChief(ReviewTaskRequest reviewTaskRequest);
 
+    BaseResponse reviewRequestItemTaskByRunChiefNeedToPass(ReviewTaskRequest reviewTaskRequest);
+
     BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
