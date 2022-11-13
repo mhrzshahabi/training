@@ -129,7 +129,7 @@ public class TestQuestionRestController {
         BaseResponse baseResponse = new BaseResponse();
         try {
             TestQuestion testQuestion = testQuestionService.getById(id);
-//            testQuestionService.delete(id);
+            testQuestionService.delete(id);
 
             // delete exam from ELS
             if (testQuestion.getOnlineFinalExamStatus()) { // ارسال شده به آنلاین
