@@ -7529,6 +7529,50 @@ FROM
             <column name="mobile_number" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="kasehpour_t" id="1659256386-03">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+             DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_parameter_id
+            FROM TBL_PARAMETER
+            WHERE c_code = 'StudentFailureReason';
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_value)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                 'مردود به علت عدم پر کردن ارزیابی واکنشی',
+                    'TotalFailedForNotAnsweredReaction',
+                    NULL);
+            END;
+            END;
+           ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
