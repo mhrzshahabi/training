@@ -254,7 +254,7 @@ public abstract class EvaluationBeanMapper {
             evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
             dto.setCourseProtocol(evalCourseProtocol);
 
-            dto.setEvaluationExpired(isEvaluationExpired(evaluation.getTclass()));
+            dto.setEvaluationExpired(isEvaluationExpired(evaluation));
 
             elsContactEvaluationDtos.add(dto);
 
@@ -2607,8 +2607,8 @@ public abstract class EvaluationBeanMapper {
         return response;
     }
 
-    private boolean isEvaluationExpired(Tclass tclass) {
-        String endDateStr = tclass.getEndDate();
+    private boolean isEvaluationExpired(Evaluation evaluation) {
+        String endDateStr = evaluation.getTclass().getEndDate();
         Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
         long endDateTimestamp = endDateEpoch.getTime();
 
@@ -2617,7 +2617,9 @@ public abstract class EvaluationBeanMapper {
 
         long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
-        return currentTimeSeconds > deadLine;
+        boolean isReactive = evaluation.getEvaluationLevel().getCode().equals("Reactive");
+
+        return isReactive && currentTimeSeconds > deadLine;
     }
 
 }
