@@ -3029,6 +3029,8 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 TestQuestionDTO.Create testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+                long tclassId = tclassService.getClassByCode(testQuestionDTO.getClassCode()).getId();
+                testQuestionDTO.setTclassId(tclassId);
                 if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
                     TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionDTO);
                     info = testQuestionMapper.toInfo(createdTestQuestion);

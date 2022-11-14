@@ -7,14 +7,15 @@ import lombok.ToString;
 import response.BaseResponse;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Setter
 @Getter
 @ToString
 public class ElsImportedExam extends BaseResponse {
     @NotNull
-    @ApiModelProperty(required = true)
-    private Long classId;
+    @ApiModelProperty
+    private String examCode;
 
     @NotNull
     @ApiModelProperty(required = true)
@@ -44,4 +45,7 @@ public class ElsImportedExam extends BaseResponse {
 
     @ApiModelProperty
     private String classScore;
+
+    @ApiModelProperty
+    private List<ImportedQuestionProtocol> questionProtocols;
 }

@@ -15,7 +15,7 @@ public interface TestQuestionMapper {
     @Mappings({
             @Mapping(target = "date", source = "startDate"),
             @Mapping(target = "time", source = "startTime"),
-            @Mapping(target = "tclassId", source = "classId"),
+            @Mapping(target = "classCode", source = "examCode")
     })
     TestQuestionDTO.Create toTestQuestionDto(ElsImportedExam elsImportedExam);
 

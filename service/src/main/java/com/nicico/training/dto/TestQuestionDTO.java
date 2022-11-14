@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.QuestionProtocol;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -102,6 +103,8 @@ public class TestQuestionDTO {
         private String testQuestionType;
         private String practicalScore;
         private String classScore;
+        private String classCode;
+        private List<QuestionProtocol> questionProtocols;
     }
 
     @Getter
