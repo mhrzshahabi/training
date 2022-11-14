@@ -4,6 +4,7 @@ import com.nicico.training.model.ParameterValue;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ParameterValueDAO extends BaseDAO<ParameterValue, Long> {
 
@@ -14,6 +15,8 @@ public interface ParameterValueDAO extends BaseDAO<ParameterValue, Long> {
     List<ParameterValue> findAllByParameterId(long id);
 
     ParameterValue findByTitle(String title);
+
+    Optional<ParameterValue> findFirstByValue(String title);
 
     List< ParameterValue> findAllByTitle(String title);
 

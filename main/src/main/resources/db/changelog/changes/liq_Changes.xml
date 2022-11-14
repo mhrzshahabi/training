@@ -7518,6 +7518,17 @@ FROM
     <addUniqueConstraint tableName="tbl_group_of_personnel" columnNames="c_code"
                          constraintName="unique_c_code"/>
     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633842708000-15">
+        <addColumn tableName="tbl_message">
+            <column name="tracking_number" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="namdari (generated)" id="1633842708000-16">
+        <addColumn tableName="tbl_message">
+            <column name="mobile_number" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

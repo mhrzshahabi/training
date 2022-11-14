@@ -2014,6 +2014,12 @@
                     }
                 },
                 </sec:authorize>
+                {
+                    title: "پایش شایستگی فرد",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needsAssessmentReportsWithGap-reports"/>");
+                    }
+                },
 
                 <%--,--%>
                 <%--{--%>
@@ -2617,12 +2623,7 @@
                     submenu:
                         [
 <%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">--%>
-                            {
-                                title: "پایش شایستگی فرد",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/needsAssessmentReportsWithGap-reports"/>");
-                                }
-                            },
+
                             {isSeparator: true},
 <%--                            </sec:authorize>--%>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
@@ -3770,6 +3771,7 @@
     const classAuditUrl = rootUrl + "/tclass/audit/";
     const requestAuditUrl = rootUrl +"/request/audit/"
     const classEvalAuditUrl = rootUrl + "/tclass/evalAudit/";
+    const smsService = rootUrl + "/message/";
     const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";
     const classStudentAddHistoryUrl = rootUrl + "/class-student/add/history/";

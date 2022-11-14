@@ -431,6 +431,12 @@
                         }
 
                     }
+                },
+                {
+                    title: "تاریخچه ارسال sms",
+                    click: function () {
+                        showSmsHistory();
+                    }
                 }
             ]
     });
@@ -1237,6 +1243,119 @@
             Window_Student_Eval_History.show();
         }
     }
+    function showSmsHistory() {
+
+        let record = ListGrid_class_Evaluation.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code="msg.not.selected.record"/>");
+        } else {
+            let RestDataSource_Sms_History = isc.TrDS.create({
+                fields: [
+                    {name: "id",primaryKey: true, hidden: true},
+                    {name: "createdBy"},
+                    {name: "createdDate"},
+                    {name: "pId"},
+                    {name: "trackingNumber"},
+                    {name: "mobileNumber"}
+                ],
+                fetchDataURL: smsService+"sms-history/" + record.id
+            });
+            let ListGrid_Sms_History = isc.TrLG.create({
+                width: "100%",
+                height: "100%",
+                showRecordComponents: true,
+                showRecordComponentsByCell: true,
+                dataSource: RestDataSource_Sms_History,
+                selectionType: "single",
+                autoFetchData: true,
+                initialSort: [
+                    {property: "modifiedDate", direction: "descending"}
+                ],
+                fields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                         align: "center",
+                         canFilter: false
+                    },
+                    {
+                        name: "smsType",
+                        title: "نوع اس ام اس",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },{
+                        name: "trackingNumber",
+                        title: "trackingNumber",
+                        align: "center",
+                        width: "10%",
+                        hidden:true,
+                        canFilter: false
+                    },
+                    {
+                        name: "mobileNumber",
+                        title: "موبایل",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "createdBy",
+                        title: "ایجاد کننده",
+                        align: "center",
+                        width: "10%",
+                        filterOperator: "equals"
+                    },
+                    {
+                        name: "createdDate",
+                        title: "تاریخ ویرایش",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "requestTracker",
+                        title: "جزییات پیام",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }
+                ], createRecordComponent: function (record, colNum) {
+
+                    let fieldName = this.getFieldName(colNum);
+                    if (fieldName === "requestTracker") {
+                        return isc.IButton.create({
+                            layoutAlign: "center",
+                            // disabled: !record.onlineFinalExamStatus,
+                            title: "جزییات پیام",
+                            margin: 3,
+                            click: function () {
+                                showSmsDetail(record.id);
+                            }
+                        });
+                    } else {
+                        return null;
+                    }
+
+                }
+            });
+            let Window_Sms_History = isc.Window.create({
+                title: "تاریخچه ارسال sms",
+                autoSize: false,
+                width: "60%",
+                height: "60%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    ListGrid_Sms_History
+                ]
+            });
+            Window_Sms_History.show();
+        }
+    }
 
     function showTeacherEvalToOnlineStatus() {
 
@@ -1337,5 +1456,16 @@
             Window_Teacher_Eval_History.show();
         }
     }
+    function showSmsDetail(requestId) {
 
+        isc.RPCManager.sendRequest(TrDSRequest(smsService+"sms-detail/" + requestId , "GET", null, function (resp) {
+            if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                 createDialog("info", resp.httpResponseText, "جزییات");
+
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
     // </script>

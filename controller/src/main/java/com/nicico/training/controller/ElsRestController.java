@@ -197,7 +197,7 @@ public class ElsRestController {
                 paramValMap.put("user_name", getPrefix(evalTargetUser.getGender()) + evalTargetUser.getLastName());
                 paramValMap.put("evaluation_title", tclass.getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
-                sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()));
+                sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()),null,tclass.getId());
             }
         } catch (Exception e) {
             log.error("Exception evaluation ", e);
@@ -224,7 +224,7 @@ public class ElsRestController {
             paramValMap.put("user_name", getPrefix(teacher.getGender()) + teacher.getLastName());
             paramValMap.put("evaluation_title", tclass.getTitleClass());
             paramValMap.put("url", elsSmsUrl);
-            sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()));
+            sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()),null,tclass.getId());
 
         } catch (Exception e) {
             log.error("Exception evaluation ", e);

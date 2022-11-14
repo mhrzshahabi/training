@@ -246,7 +246,8 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         groupNeedsAssessmentList=getNeedsAssessmentGroupOfPersonnel(personnelId);
         needsAssessmentList.addAll(organizationalNeedsAssessmentList);
         needsAssessmentList.addAll(groupNeedsAssessmentList);
-        return removeDuplicateNAsForGap(needsAssessmentList);
+//        return removeDuplicateNAsForGap(needsAssessmentList);
+        return needsAssessmentList;
     }
 
     private List<NeedsAssessmentWithGap> getNeedsAssessmentOrganizational() {

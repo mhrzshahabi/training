@@ -41,4 +41,5 @@ public interface IParameterValueService {
 
     ParameterValueDTO.Info getInfoByCode(String code);
 
+    String getTitleByValue(String pId);
 }

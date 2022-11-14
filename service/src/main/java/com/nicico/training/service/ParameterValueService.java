@@ -147,6 +147,15 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         return modelMapper.map(dao.findByCode(code), ParameterValueDTO.Info.class);
     }
 
+    @Override
+    public String getTitleByValue(String pId) {
+        Optional<ParameterValue> parameterValueOptional = dao.findFirstByValue(pId);
+        if (parameterValueOptional.isPresent())
+            return parameterValueOptional.get().getTitle();
+        else
+            return "";
+    }
+
     public void editParameterValue(String des, String code, Long id) {
         ParameterValue parameterValue = dao.findFirstById(id);
         parameterValue.setCode(code);

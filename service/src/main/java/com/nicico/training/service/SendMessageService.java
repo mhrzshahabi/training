@@ -24,20 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.nicico.training.model.ClassStudentUser;
+import response.SmsResponse;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -73,14 +69,36 @@ public class SendMessageService implements ISendMessageService {
     private String elsSmsUrl;
 
     @Override
-    public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
+    public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId) {
         JSONObject json = new JSONObject();
         json.put("to", recipients);
         json.put("pid", pid);
         json.put("params", new JSONObject(paramValMap));
 
         try {
-            smsFeignClient.sendSms(json);
+            SmsResponse res=   smsFeignClient.sendSms(json);
+            if (messageId!=null){
+                Optional<Message> optionalMessage=  messageService.get(messageId);
+                if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
+                    Message message=optionalMessage.get();
+                    message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+                    message.setMobileNumber(res.getReceivers().get(0).getNumber());
+                    messageService.save(message);
+                }
+            }else {
+                Message message =new Message();
+                message.setContextText("null");
+                message.setContextHtml("null");
+                message.setPId(pid);
+                message.setUserTypeId(702L);
+                message.setCountSend(0);
+                message.setInterval(0);
+                message.setMobileNumber(res.getReceivers().get(0).getNumber());
+                message.setTclassId(classId);
+                message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+                messageService.save(message);
+
+            }
             List<String> result = new ArrayList<>(recipients.size());
             recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
             return result;
@@ -101,14 +119,16 @@ public class SendMessageService implements ISendMessageService {
         Integer cnt = masterList.size();
 
         for (int i = 0; i < cnt; i++) {
+            Long classId=0L;
             if (masterList.get(i).getObjectType().equals("ClassStudent")) {
                 ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
-
+                classId= model != null ? model.getTclassId() : 0L;
                 if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             } else if (masterList.get(i).getObjectType().equals("Teacher")) {
                 Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+                classId= model != null ? model.getId() : 0L;
 
                 if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
@@ -129,7 +149,7 @@ public class SendMessageService implements ISendMessageService {
 
             try {
 
-                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId);
                 Long returnMessageId = null;
 
                 MessageContactLog log = new MessageContactLog();
@@ -544,7 +564,7 @@ if (classStudent.isPresent()){
 
             MessageContact messageContact = messageContactDAO.findById(result.getMessageContactList().get(i).getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers);
+            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers,result.getId(),result.getTclassId());
             Long returnMessageId = null;
 
             MessageContactLog log = new MessageContactLog();
