@@ -2616,8 +2616,7 @@ public abstract class EvaluationBeanMapper {
         long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
 
         long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-
-        boolean isReactive = evaluation.getEvaluationLevel().getCode().equals("Reactive");
+        boolean isReactive = iParameterValueService.getInfo(evaluation.getEvaluationLevelId()).getCode().equals("Reactive");
 
         return isReactive && currentTimeSeconds > deadLine;
     }
