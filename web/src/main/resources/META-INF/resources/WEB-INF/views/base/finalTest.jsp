@@ -2305,8 +2305,8 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                     refresh_finalTest();
                 } else if (resp.httpResponseCode == 404) {
                     createDialog("warning", "آزمون یافت نشد", "اخطار");
-                } else if (resp.httpResponseCode == 406) {
-                    createDialog("warning", "خطا در حذف سوال", "اخطار");
+                } else {
+                    createDialog("warning", "خطا در حذف سوال از سامانه آنلاین", "اخطار");
                 }
             }
         }))
