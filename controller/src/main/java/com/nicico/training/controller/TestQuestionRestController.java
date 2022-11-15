@@ -129,12 +129,16 @@ public class TestQuestionRestController {
         BaseResponse baseResponse = new BaseResponse();
         try {
             TestQuestion testQuestion = testQuestionService.getById(id);
-            testQuestionService.delete(id);
-
             // delete exam from ELS
             if (testQuestion.getOnlineFinalExamStatus()) { // ارسال شده به آنلاین
                 baseResponse = elsClient.deleteExamFromEls(testQuestion.getId(), testQuestion.getTestQuestionType());
             }
+            if (baseResponse.getStatus() != 200) {
+                return new ResponseEntity<>(
+                        new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest).getMessage(), HttpStatus.BAD_REQUEST);
+            }
+            // delete exam from Database
+            testQuestionService.delete(id);
             return new ResponseEntity<>(baseResponse, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(
