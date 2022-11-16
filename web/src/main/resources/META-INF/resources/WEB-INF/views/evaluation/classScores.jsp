@@ -401,6 +401,27 @@
                 },
                 changed: function (form, item, value) {
                     failureReason_value_Eval = value;
+
+                    if (isScoreDependent_Eval) {
+
+                        if (ListGrid_class_Evaluation.getSelectedRecord().evaluation == 1) {
+
+                            if (ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === undefined
+                                || ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === null
+                                || ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === 1
+                                || ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === 0) {
+                                if (value !== 796) {
+                                    ListGrid_Class_Student_Eval.getSelectedRecord().failureReasonId = null;
+                                    ListGrid_Class_Student_Eval.invalidateCache();
+                                    createDialog("info", "کاربر گرامی با توجه به اینکه نمره وابسته به ارزیابی است </br>و ارزیابی واکنشی جواب داده نشده فقط وضعیت مردود </br>به علت عدم پر کردن ارزیابی واکنشی قابل انتخاب است ", "توجه!");
+                                    return;
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
                     if ((scoresState_value_Eval === 403 && value === 453) || (this.grid.getRecord(this.rowNum).scoresStateId === 403 && value === 453) || value === 453) {
                         failureReason_value_Eval = null;
                         failureReason_change_Eval = false;
