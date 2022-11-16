@@ -302,7 +302,7 @@
             {name: "classEndDate", title: "تاریخ پایان" },
             {name: "classDuration", title: "مدت" },
             {name: "supervisorName", title: "مسئول اجرا" },
-            {name: "reactionPercent", title: "نمره ارزیابی واکنشی" },
+            {name: "reactionPercent", title: "درصد فرم های ارزیابی واکنشی تکمیل شده" },
             {name: "reactiveLimit", title: "حد نصاب ارزیابی واکنشی" },
         ]
     });

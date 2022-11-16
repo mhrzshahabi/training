@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.Message;
 import com.nicico.training.model.MessageContact;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface MessageContactDAO extends BaseDAO<MessageContact, Long> {
 
@@ -25,4 +27,19 @@ public interface MessageContactDAO extends BaseDAO<MessageContact, Long> {
     @Modifying
     @Query(value = "delete from tbl_message_contact where id = :id", nativeQuery = true)
     void deleteByOneId(Long id);
+
+    List<MessageContact> findAllByMessageId(Long id);
+
+    Optional<MessageContact> findFirstById(Long messageId);
+
+     @Modifying
+    @Query(value = "SELECT\n" +
+            "    *\n" +
+            "FROM\n" +
+            "         tbl_message_contact\n" +
+            "    INNER JOIN tbl_message message ON tbl_message_contact.f_message_id = message.id\n" +
+            "     WHERE\n" +
+            "     message.f_message_class = :id \n" +
+            "  and   tracking_number is NOT NULL", nativeQuery = true)
+    List<MessageContact> getClassSmsHistory(Long id);
 }

@@ -264,7 +264,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     private List<NeedsAssessmentWithGap> getNeedsAssessmentGroupOfPersonnel(Long personnelId) {
 
-        List<NeedsAssessmentWithGap> needsAssessmentList;
+        List<NeedsAssessmentWithGap> needsAssessmentList=new ArrayList<>();
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
         criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
@@ -272,10 +272,11 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         List<GroupOfPersonnel> groupOfPersonnelList=iGroupOfPersonnelService.getPersonnelGroups(personnelId);
         if (!groupOfPersonnelList.isEmpty()){
             criteriaRq.getCriteria().add(makeNewCriteria("objectId", groupOfPersonnelList.stream().map(GroupOfPersonnel::getId).toList(), EOperator.inSet, null));
-        }
-        needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+            needsAssessmentList = needsAssessmentWithGapDAO.findAll(NICICOSpecification.of(criteriaRq));
+            return removeDuplicateNAsForGap(needsAssessmentList);
+        }else
+            return needsAssessmentList;
 
-        return removeDuplicateNAsForGap(needsAssessmentList);
     }
 
     @Transactional(readOnly = true)

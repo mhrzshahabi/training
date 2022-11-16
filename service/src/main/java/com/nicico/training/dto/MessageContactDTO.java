@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,5 +56,40 @@ public class MessageContactDTO {
         private String objectType;
         private Long objectId;
         private String pid;
+    }
+
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("InfoForEvalAudit")
+    public static class InfoForSms {
+        private Long id;
+        private String createdBy;
+        private String createdDate;
+        private String objectMobile;
+        private String trackingNumber;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecSmsRs {
+        private List<InfoForSms> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("SmsSpecRsSpecRs")
+    public static class SmsSpecRs {
+        private SpecSmsRs response;
     }
 }

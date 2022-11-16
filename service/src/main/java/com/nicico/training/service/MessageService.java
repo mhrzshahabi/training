@@ -18,10 +18,8 @@ import com.nicico.training.repository.MessageDAO;
 import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.SmsDeliveryResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +35,6 @@ public class MessageService implements IMessageService {
     private final ParameterService parameterService;
     private final ParameterValueService parameterValueService;
     private final ModelMapper modelMapper;
-    private final SmsFeignClient smsFeignClient;
 
     @Override
     public MessageDTO.Info create(MessageDTO.Create model) {
@@ -91,35 +88,10 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    @Transactional
-    public void save(Message message) {
-        messageDAO.save(message);
+    public Message save(Message message) {
+       return messageDAO.save(message);
     }
 
-    @Override
-    public List<MessageDTO.InfoForSms> getClassSmsHistory(Long classId) {
-        List<Message> messages = messageDAO.getClassSmsHistory(classId);
-        List<MessageDTO.InfoForSms> list= modelMapper.map(messages, new TypeToken<List<MessageDTO.InfoForSms>>() {
-        }.getType());
 
-        for (MessageDTO.InfoForSms message : list){
-            message.setSmsType(parameterValueService.getTitleByValue(message.getPId()));
-        }
-        return list;
-    }
 
-    @Override
-    public String getSmsDetail(Long id) {
-        Optional<Message> optionalMessage =messageDAO.findById(id);
-        if (optionalMessage.isPresent()){
-            String track=optionalMessage.get().getTrackingNumber();
-            SmsDeliveryResponse s=smsFeignClient.delivery(track);
-            if (s.getState().equals("delivered")){
-                return "پیامک به کاربر تحویل داده شد";
-            }else return "پیامک به کاربر تحویل داده نشد";
-        }
-
-        return "پیامک به کاربر تحویل داده نشد";
-
-    }
 }

@@ -7573,6 +7573,196 @@ FROM
         </sql>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1633842708000-17">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace TRIGGER "INSERT_TBL_POST" AFTER
+    INSERT ON tbl_post
+    REFERENCING
+        NEW AS new
+    FOR EACH ROW
+DECLARE
+            trainingpostid   NUMBER(19, 0);
+    nextid           NUMBER(19, 0);
+            BEGIN
+            SELECT
+                CASE
+                    WHEN EXISTS (
+                            SELECT
+                                tp.id
+                            FROM
+                                tbl_training_post tp
+                            WHERE
+                                tp.c_code = regexp_substr(:new.c_code, '\d*')
+                              AND tp.c_title_fa = :new.c_title_fa
+--                    AND tp.c_people_type = :new.c_people_type
+                        ) THEN
+                        (
+                            SELECT
+                                tp.id
+                            FROM
+                                tbl_training_post tp
+                            WHERE
+                                tp.c_code = regexp_substr(:new.c_code, '\d*')
+                              AND tp.c_title_fa = :new.c_title_fa
+--                        AND tp.c_people_type = :new.c_people_type
+                              AND ROWNUM = 1
+                        )
+                    ELSE
+                        NULL
+                    END
+            INTO trainingpostid
+            FROM
+                dual;
+
+            IF trainingpostid IS NOT NULL THEN
+        INSERT INTO tbl_post_training_post ptp (
+            f_training_post_id,
+            f_post_id
+        ) VALUES (
+            trainingpostid,
+            :new.id
+        );
+
+        IF :new.e_enabled IS NULL THEN
+            UPDATE tbl_training_post tp
+            SET
+                tp.e_enabled = NULL,
+                c_last_modified_by = 'HR',
+                d_last_modified_date = sysdate,
+                n_version = tp.n_version + 1
+            WHERE
+                tp.c_code = regexp_substr(:new.c_code, '\d*')
+              AND tp.c_title_fa = :new.c_title_fa;
+--                AND tp.c_people_type = :new.c_people_type;
+
+            END IF;
+
+        IF :new.e_deleted IS NULL THEN
+            UPDATE tbl_training_post tp
+            SET
+                tp.e_deleted = NULL,
+                c_last_modified_by = 'HR',
+                d_last_modified_date = sysdate,
+                n_version = tp.n_version + 1
+            WHERE
+                tp.c_code = regexp_substr(:new.c_code, '\d*')
+              AND tp.c_title_fa = :new.c_title_fa;
+--                AND tp.c_people_type = :new.c_people_type;
+
+            END IF;
+
+            ELSE
+            SELECT
+                CASE
+                    WHEN EXISTS (
+                            SELECT
+                                tp.id
+                            FROM
+                                tbl_training_post tp
+                            WHERE
+                                tp.c_code = regexp_substr(:new.c_code, '\d*')
+--                        AND tp.c_people_type = :new.c_people_type
+                        ) THEN
+                        1
+                    ELSE
+                        NULL
+                    END
+            INTO trainingpostid
+            FROM
+                dual;
+
+            IF trainingpostid IS NULL THEN
+            SELECT
+                seq_training_post_id.NEXTVAL
+            INTO nextid
+            FROM
+                dual;
+
+            INSERT INTO tbl_training_post tp (
+                id,
+                c_created_by,
+                d_created_date,
+                e_deleted,
+                e_enabled,
+                c_last_modified_by,
+                d_last_modified_date,
+                n_version,
+                c_affairs,
+                c_area,
+                c_assistance,
+                c_code,
+                c_cost_center_code,
+                c_cost_center_title_fa,
+                c_section,
+                c_title_fa,
+                c_unit,
+                f_job_id,
+                f_post_grade_id,
+                c_people_type,
+                f_department_id,
+                c_modified_by_na,
+                d_last_modified_date_na
+            ) VALUES (
+                nextid,
+                :new.c_created_by,
+                :new.d_created_date,
+                :new.e_deleted,
+                :new.e_enabled,
+                :new.c_last_modified_by,
+                :new.d_last_modified_date,
+                :new.n_version,
+                :new.c_affairs,
+                :new.c_area,
+                :new.c_assistance,
+                regexp_substr(:new.c_code, '\d*'),
+                :new.c_cost_center_code,
+                :new.c_cost_center_title_fa,
+                :new.c_section,
+                :new.c_title_fa,
+                :new.c_unit,
+                :new.f_job_id,
+                :new.f_post_grade_id,
+                :new.c_people_type,
+                :new.f_department_id,
+                NULL,
+                NULL
+                );
+
+            INSERT INTO tbl_post_training_post ptp (
+                f_training_post_id,
+                f_post_id
+            ) VALUES (
+                nextid,
+                :new.id
+                );
+
+            END IF;
+
+            END IF;
+
+            END;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1633842708000-18">
+        <dropColumn columnName="tracking_number" tableName="tbl_message"/>
+    </changeSet>
+    <changeSet author="namdari (generated)" id="1633842708000-19">
+        <dropColumn columnName="mobile_number" tableName="tbl_message"/>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1633842708000-20">
+        <addColumn tableName="tbl_message_contact">
+            <column name="tracking_number" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

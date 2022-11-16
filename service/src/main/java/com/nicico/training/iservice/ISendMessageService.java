@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface ISendMessageService {
 
-    List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId);
+    List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId,Long objectId);
 
     void scheduling();
     void sendSmsForUsers() throws IOException;

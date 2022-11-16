@@ -112,7 +112,6 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
             updating.setDeleted(null);
         }
 
-        //zaza update phone
         boolean savedToAllRepos = contactInfoService.updateAllRepositoriesWithThisContactInfo(personnelRegistered, updating.getContactInfo());
         if (savedToAllRepos)
             return save(updating);

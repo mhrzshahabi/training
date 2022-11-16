@@ -3771,7 +3771,7 @@
     const classAuditUrl = rootUrl + "/tclass/audit/";
     const requestAuditUrl = rootUrl +"/request/audit/"
     const classEvalAuditUrl = rootUrl + "/tclass/evalAudit/";
-    const smsService = rootUrl + "/message/";
+    const smsService = rootUrl + "/messageContact/";
     const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";
     const classStudentAddHistoryUrl = rootUrl + "/class-student/add/history/";

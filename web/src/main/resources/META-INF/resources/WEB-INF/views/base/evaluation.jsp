@@ -1254,9 +1254,8 @@
                     {name: "id",primaryKey: true, hidden: true},
                     {name: "createdBy"},
                     {name: "createdDate"},
-                    {name: "pId"},
                     {name: "trackingNumber"},
-                    {name: "mobileNumber"}
+                    {name: "objectMobile"}
                 ],
                 fetchDataURL: smsService+"sms-history/" + record.id
             });
@@ -1277,13 +1276,6 @@
                         hidden: true,
                          align: "center",
                          canFilter: false
-                    },
-                    {
-                        name: "smsType",
-                        title: "نوع اس ام اس",
-                        align: "center",
-                        width: "10%",
-                        canFilter: false
                     },{
                         name: "trackingNumber",
                         title: "trackingNumber",
@@ -1293,7 +1285,7 @@
                         canFilter: false
                     },
                     {
-                        name: "mobileNumber",
+                        name: "objectMobile",
                         title: "موبایل",
                         align: "center",
                         width: "10%",

@@ -69,5 +69,11 @@ public class MessageContact<E> extends Auditable {
 
     @OneToMany(mappedBy = "messageContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MessageContactLog> messageContactLogList;
+
+
+    @Column(name = "tracking_number")
+    private String trackingNumber;
+
+
 }
 

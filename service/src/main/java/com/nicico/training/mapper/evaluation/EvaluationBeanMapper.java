@@ -106,6 +106,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
     @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "id", target = "studentId")
     @Mapping(source = "contactInfo", target = "cellNumber", qualifiedByName = "getLiveCellNumber")
     public abstract EvalTargetUser toTargetUser(Student student);
 
@@ -547,7 +548,6 @@ public abstract class EvaluationBeanMapper {
     }
 
     private ExamQuestionsObject getQuestionsForFinalTest(ExamImportedRequest object) {
-        //zaza finish1
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
@@ -1941,7 +1941,6 @@ public abstract class EvaluationBeanMapper {
                     questionsDto.setOptions(listString.toString());
                 }
 //                else  if (questionsDto.getType().equals(GROUPQUESTION.getValue())){
-//zaza fininsh 3
 //                }
                 else {
                     questionsDto.setOptions("-");

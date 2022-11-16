@@ -69,7 +69,7 @@ public class SendMessageService implements ISendMessageService {
     private String elsSmsUrl;
 
     @Override
-    public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId) {
+    public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId,Long objectId) {
         JSONObject json = new JSONObject();
         json.put("to", recipients);
         json.put("pid", pid);
@@ -78,25 +78,34 @@ public class SendMessageService implements ISendMessageService {
         try {
             SmsResponse res=   smsFeignClient.sendSms(json);
             if (messageId!=null){
-                Optional<Message> optionalMessage=  messageService.get(messageId);
+                Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
                 if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
-                    Message message=optionalMessage.get();
+                    MessageContact message=optionalMessage.get();
                     message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-                    message.setMobileNumber(res.getReceivers().get(0).getNumber());
-                    messageService.save(message);
+                    messageContactDAO.save(message);
                 }
             }else {
-                Message message =new Message();
-                message.setContextText("null");
-                message.setContextHtml("null");
-                message.setPId(pid);
-                message.setUserTypeId(702L);
-                message.setCountSend(0);
-                message.setInterval(0);
-                message.setMobileNumber(res.getReceivers().get(0).getNumber());
-                message.setTclassId(classId);
-                message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-                messageService.save(message);
+                if (objectId!=null){
+                    Message message =new Message();
+                    message.setContextText("null");
+                    message.setContextHtml("null");
+                    message.setPId(pid);
+                    message.setUserTypeId(702L);
+                    message.setCountSend(0);
+                    message.setInterval(0);
+                    message.setTclassId(classId);
+                    Message  saved=   messageService.save(message);
+                    MessageContact messageContact =new MessageContact();
+                    messageContact.setStatusId(588L);
+                    messageContact.setObjectMobile(res.getReceivers().get(0).getNumber());
+                    messageContact.setObjectType("ClassStudent");
+                    messageContact.setObjectId(objectId);
+                    messageContact.setMessageId(saved.getId());
+
+                    messageContact.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+                    messageContactDAO.save(messageContact);
+                }
+
 
             }
             List<String> result = new ArrayList<>(recipients.size());
@@ -120,15 +129,18 @@ public class SendMessageService implements ISendMessageService {
 
         for (int i = 0; i < cnt; i++) {
             Long classId=0L;
+            Long id=0L;
             if (masterList.get(i).getObjectType().equals("ClassStudent")) {
                 ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
                 classId= model != null ? model.getTclassId() : 0L;
+                id= model != null ? model.getId() : 0L;
                 if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             } else if (masterList.get(i).getObjectType().equals("Teacher")) {
                 Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
                 classId= model != null ? model.getId() : 0L;
+                id= model != null ? model.getTeacherId() : 0L;
 
                 if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
@@ -149,7 +161,7 @@ public class SendMessageService implements ISendMessageService {
 
             try {
 
-                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId);
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId,id);
                 Long returnMessageId = null;
 
                 MessageContactLog log = new MessageContactLog();
@@ -564,7 +576,7 @@ if (classStudent.isPresent()){
 
             MessageContact messageContact = messageContactDAO.findById(result.getMessageContactList().get(i).getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers,result.getId(),result.getTclassId());
+            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers,messageContact.getId(),result.getTclassId(),null);
             Long returnMessageId = null;
 
             MessageContactLog log = new MessageContactLog();
@@ -578,10 +590,9 @@ if (classStudent.isPresent()){
             } else {
                 try {
                     returnMessageId = Long.parseLong(returnMessage.get(0));
-                    messageContact.setLastSentDate(new Date());
-                    messageContact.setCountSent(messageContact.getCountSent() + 1);
-
-                    messageContactDAO.save(messageContact);
+//                    messageContact.setLastSentDate(new Date());
+//                    messageContact.setCountSent(messageContact.getCountSent() + 1);
+//                    messageContactDAO.save(messageContact);
 
                     log.setErrorMessage("");
                     log.setReturnMessageId(returnMessageId.toString());

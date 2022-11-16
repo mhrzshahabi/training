@@ -214,7 +214,6 @@ public class EvaluationAnalysisRestController {
         else
             params.put("studentsGradeToTeacher", 0.0);
 
-        //zazazaza.
 
 
         HashMap<Double,String> doubleArrayList = new HashMap<>();

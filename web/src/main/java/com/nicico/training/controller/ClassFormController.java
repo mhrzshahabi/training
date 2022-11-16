@@ -252,7 +252,6 @@ public class ClassFormController {
        });
 
         parameters.put(ConstantVARs.REPORT_TYPE, type);
-        //zazazaza.
 
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(xyData) + "}";

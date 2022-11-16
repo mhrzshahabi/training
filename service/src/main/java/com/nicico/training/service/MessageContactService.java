@@ -6,37 +6,25 @@
 
 package com.nicico.training.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicico.copper.common.dto.grid.GridResponse;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IMasterDataService;
+import com.nicico.training.dto.MessageContactDTO;
+import com.nicico.training.dto.MessageParameterDTO;
 import com.nicico.training.iservice.IMessageContactService;
 import com.nicico.training.model.MessageContact;
 import com.nicico.training.model.MessageParameter;
 import com.nicico.training.repository.MessageContactDAO;
 import com.nicico.training.repository.MessageParameterDAO;
+import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.SmsDeliveryResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +33,7 @@ public class MessageContactService implements IMessageContactService {
     private final MessageContactDAO messageContactDAO;
     private final MessageParameterDAO messageParameterDAO;
     private final ModelMapper modelMapper;
+    private final SmsFeignClient smsFeignClient;
 
     @Override
     public List<MessageContactDTO.AllMessagesForSend> getAllMessageContactForSend() {
@@ -59,6 +48,11 @@ public class MessageContactService implements IMessageContactService {
         }
 
         return masterList;
+    }
+
+    @Override
+    public List<MessageContact> getAllMessage(Long id) {
+        return messageContactDAO.findAllByMessageId(id);
     }
 
     @Override
@@ -92,4 +86,28 @@ public class MessageContactService implements IMessageContactService {
         messageContactDAO.deleteByOneId(id);
 
     }
+
+        @Override
+    public List<MessageContactDTO.InfoForSms> getClassSmsHistory(Long classId) {
+        List<MessageContact> messages = messageContactDAO.getClassSmsHistory(classId);
+            return modelMapper.map(messages, new TypeToken<List<MessageContactDTO.InfoForSms>>() {
+            }.getType());
+    }
+
+        @Override
+    public String getSmsDetail(Long id) {
+        Optional<MessageContact> optionalMessage =messageContactDAO.findById(id);
+
+        if (optionalMessage.isPresent()){
+            String track=optionalMessage.get().getTrackingNumber();
+            SmsDeliveryResponse s=smsFeignClient.delivery(track);
+            if (s.getState().equals("delivered")){
+                return "پیامک به کاربر تحویل داده شد";
+            }else return "پیامک به کاربر تحویل داده نشد";
+        }
+
+        return "پیامک به کاربر تحویل داده نشد";
+
+    }
+
 }

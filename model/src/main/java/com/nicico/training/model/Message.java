@@ -67,9 +67,5 @@ public class Message extends Auditable {
     @Column(name = "f_orginal_message_message")
     private Long orginalMessageId;
 
-    @Column(name = "tracking_number")
-    private String trackingNumber;
 
-    @Column(name = "mobile_number")
-    private String mobileNumber;
 }
