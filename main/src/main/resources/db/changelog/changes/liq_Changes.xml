@@ -7530,7 +7530,7 @@ FROM
         </addColumn>
     </changeSet>
 
-    <changeSet author="kasehpour_t" id="1659256386-03">
+    <changeSet author="kasehpour_t" id="1668582651-02">
         <sql splitStatements="false" stripComments="false">
             <![CDATA[
              DECLARE
@@ -7554,8 +7554,10 @@ FROM
                                              f_parameter_id,
                                              c_title,
                                              c_code,
-                                             c_value)
-            VALUES (seq_parameter_value_id.NEXTVAL,
+                                             c_value,
+                                             C_DESCRIPTION,
+                                             C_TYPE)
+            VALUES (796,
                     'kasehpour_t',
                     current_timestamp,
                     NULL,
@@ -7566,6 +7568,8 @@ FROM
                     l_parameter_id,
                  'مردود به علت عدم پر کردن ارزیابی واکنشی',
                     'TotalFailedForNotAnsweredReaction',
+                    NULL,
+                    NULL,
                     NULL);
             END;
             END;
