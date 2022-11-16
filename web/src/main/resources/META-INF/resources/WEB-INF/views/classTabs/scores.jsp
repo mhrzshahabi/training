@@ -431,7 +431,7 @@
                                 || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === null
                                 || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 1
                                 || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 0) {
-                                if (value !== 1325) {
+                                if (value !== 796) {
                                     ListGrid_Class_Student.getSelectedRecord().failureReasonId = null;
                                     ListGrid_Class_Student.invalidateCache();
                                     createDialog("info", "کاربر گرامی با توجه به اینکه نمره وابسته به ارزیابی است </br>و ارزیابی واکنشی جواب داده نشده فقط وضعیت مردود </br>به علت عدم پر کردن ارزیابی واکنشی قابل انتخاب است ", "توجه!");
