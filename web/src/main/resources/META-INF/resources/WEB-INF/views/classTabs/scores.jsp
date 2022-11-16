@@ -50,6 +50,14 @@
         ],
         fetchDataURL: parameterValueUrl + "/iscList/318"
     });
+    RestDataSource_FailureReason_JSPScoresV2 = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList"
+    });
 
 
     RestDataSource_ClassStudent = isc.TrDS.create({
@@ -376,6 +384,20 @@
                 },
                 changed: function (form, item, value) {
 
+                    if (value===403 && isScoreDependent &&
+                        (ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === undefined
+                            || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === null
+                            || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 1
+                            || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 0)){
+                        RestDataSource_FailureReason_JSPScoresV2.implicitCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [{fieldName: "id", operator: "inSet", value: 796}]
+                        };
+                        ListGrid_Class_Student.getField("failureReasonId").optionDataSource=RestDataSource_FailureReason_JSPScoresV2;
+                    }else {
+                        ListGrid_Class_Student.getField("failureReasonId").optionDataSource=RestDataSource_FailureReason_JSPScores;
+                    }
 
                     if (classRecord.scoringMethod == "4" && value == 400) {
                         createDialog("info", "کاربر گرامی بدلیل اینکه روش نمره دهی قبول با نمره است <br> شما  نمی توانید وضعیت قبول با نمره را ثبت کنید", "<spring:message code="message"/>");
@@ -409,7 +431,7 @@
                 type: "SelectItem",
                 valueField: "id",
                 displayField: "title",
-                optionDataSource: RestDataSource_FailureReason_JSPScores,
+                // optionDataSource: RestDataSource_FailureReason_JSPScores,
                 filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false,
@@ -423,26 +445,6 @@
                 },
                 changed: function (form, item, value) {
 
-                    if (isScoreDependent) {
-
-                        if (ListGrid_Class_JspClass.getSelectedRecord().evaluation == 1) {
-
-                            if (ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === undefined
-                                || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === null
-                                || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 1
-                                || ListGrid_Class_Student.getSelectedRecord().evaluationStatusReaction === 0) {
-                                if (value !== 796) {
-                                    ListGrid_Class_Student.getSelectedRecord().failureReasonId = null;
-                                    ListGrid_Class_Student.invalidateCache();
-                                    createDialog("info", "کاربر گرامی با توجه به اینکه نمره وابسته به ارزیابی است </br>و ارزیابی واکنشی جواب داده نشده فقط وضعیت مردود </br>به علت عدم پر کردن ارزیابی واکنشی قابل انتخاب است ", "توجه!");
-                                    return;
-                                } else {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-
                     failureReason_value = value
                     if ((scoresState_value === 403 && value === 453) || (this.grid.getRecord(this.rowNum).scoresStateId === 403 && value === 453) || value === 453) {
                         failureReason_value = null;
@@ -452,6 +454,13 @@
                         return;
                     }
                     if ((scoresState_value === 403 && value === 407) || (this.grid.getRecord(this.rowNum).scoresStateId === 403 && value === 407) || value === 407) {
+                        failureReason_value = null;
+                        failureReason_change = false;
+                        scoresState_value = null;
+                        ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value)
+                        return;
+                    }
+                    if ((scoresState_value === 403 && value === 796) || (this.grid.getRecord(this.rowNum).scoresStateId === 403 && value === 796) || value === 796) {
                         failureReason_value = null;
                         failureReason_change = false;
                         scoresState_value = null;
