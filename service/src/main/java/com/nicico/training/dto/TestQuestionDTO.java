@@ -100,10 +100,15 @@ public class TestQuestionDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer duration;
+        @ApiModelProperty
         private String testQuestionType;
+        @ApiModelProperty
         private String practicalScore;
+        @ApiModelProperty
         private String classScore;
+        @ApiModelProperty
         private String classCode;
+        @ApiModelProperty
         private List<QuestionProtocol> questionProtocols;
     }
 

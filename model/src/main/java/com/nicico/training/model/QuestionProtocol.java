@@ -39,4 +39,10 @@ public class QuestionProtocol {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_test_question", insertable = false, updatable = false)
     private TestQuestion exam;
+
+    @Transient
+    private String questionTitle;
+
+    @Transient
+    private String questionType;
 }

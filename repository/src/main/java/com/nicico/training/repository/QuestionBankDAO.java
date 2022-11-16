@@ -43,4 +43,6 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     @Query(value = "SELECT DISTINCT   tbl_question_bank.* FROM       tbl_group_question  INNER JOIN tbl_question_bank ON tbl_group_question.f_child_id = tbl_question_bank.id WHERE  tbl_group_question.f_parent_id =:f_parent_id",nativeQuery = true)
     List<QuestionBank> getChillQuestionByParentId(@Param("f_parent_id")Long f_parent_id);
+
+    List<QuestionBank> findAllByTeacherId(Long teacherId);
 }

@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.testQuestion;
 
 import com.nicico.training.dto.TestQuestionDTO;
+import com.nicico.training.mapper.questionProtocol.QuestionProtocolMapper;
 import com.nicico.training.model.TestQuestion;
 import dto.exam.ElsExamCreateDTO;
 import dto.exam.ElsImportedExam;
@@ -9,7 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN, uses = QuestionProtocolMapper.class)
 public interface TestQuestionMapper {
 
     @Mappings({
