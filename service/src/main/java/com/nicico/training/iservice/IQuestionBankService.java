@@ -54,4 +54,7 @@ public interface IQuestionBankService {
     BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData);
 
     List<QuestionBank> findAllByIds(List<Long> questionIds);
+
+    List<QuestionBank> findAllTeacherId(Long teacherId);
+
 }

@@ -3039,6 +3039,49 @@ public class ElsRestController {
                     info = testQuestionMapper.toInfo(testQuestion);
                 }
 
+                // assign questions to the created exam
+                Long teacherId = tclassService.get(tclassId).getTeacherId();
+                List<QuestionBank> allByTeacherId = questionBankService.findAllTeacherId(teacherId);
+
+                Set<QuestionBank> filteredQuestions = new HashSet<>();
+
+                for (QuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
+                    Optional<QuestionBank> questionBank = allByTeacherId.stream()
+                            .filter(q -> q.getQuestion().equals(qp.getQuestionTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestionType()))
+                            .findFirst();
+
+                    questionBank.ifPresent(filteredQuestions::add);
+
+                }
+
+                List<QuestionProtocol> questionProtocols = new ArrayList<>();
+
+                filteredQuestions.forEach(question -> {
+//                    QuestionProtocol qp = questionProtocolService.findByQuestionId(question.getId());
+                    QuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
+                            .filter(questionProtocol -> questionProtocol.getQuestionId().equals(question.getId()))
+                            .findFirst()
+                            .orElse(null);
+
+                    QuestionProtocol questionProtocol = new QuestionProtocol();
+                    questionProtocol.setQuestionId(question.getId());
+                    questionProtocol.setExamId(info.getId());
+                    questionProtocol.setQuestionTitle(question.getQuestion());
+
+                    if (qp != null) {
+                        questionProtocol.setQuestionMark(qp.getQuestionMark());
+                        questionProtocol.setTime(qp.getTime());
+                        questionProtocol.setCorrectAnswerTitle(qp.getCorrectAnswerTitle());
+                        questionProtocol.setQuestionType(qp.getQuestionType());
+                    }
+
+                    questionProtocols.add(questionProtocol);
+                });
+
+                testQuestionDTO.setQuestionProtocols(questionProtocols);
+
+                // ----------------------------------
+
                 response.setStatus(200);
                 response.setMessage("Exam successfully created");
                 response.setInfo(info);
