@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.websocket.server.PathParam;
-import java.util.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaSpecificationExecutor<ClassStudent> {
 
@@ -147,6 +147,149 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
     List<Object> findAllClassByTeacher(String nationalCode, int page,int sizee);
 
+
+    @Query(value = "\n" +
+            "SELECT *\n" +
+            "FROM (\n" +
+            "         SELECT a.*, rownum r__\n" +
+            "         FROM (\n" +
+            "                  SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                                  tbl_class.id                                                     AS classid,\n" +
+            "                                  tbl_teacher.id                                                   AS teacherid,\n" +
+            "                                  tbl_class.c_code                                                 AS code,\n" +
+            "                                  tbl_class.c_title_class                                          AS title,\n" +
+            "                                  tbl_course.c_title_fa                                            AS name,\n" +
+            "                                  tbl_class.n_max_capacity                                         AS capacity,\n" +
+            "                                  tbl_class.n_h_duration                                           AS duration,\n" +
+            "                                  view_complex.c_title                                             AS location,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.c_status = 1 THEN\n" +
+            "                                          4\n" +
+            "                                      WHEN tbl_class.c_status = 2 THEN\n" +
+            "                                          1\n" +
+            "                                      WHEN tbl_class.c_status = 3 THEN\n" +
+            "                                          2\n" +
+            "                                      WHEN tbl_class.c_status = 4 THEN\n" +
+            "                                          3\n" +
+            "                                      WHEN tbl_class.c_status = 5 THEN\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS coursestatus,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                                          1\n" +
+            "                                      ELSE\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS classtype,\n" +
+            "                                  tbl_class.c_start_date                                           AS startdate,\n" +
+            "                                  tbl_class.c_end_date                                             AS finishdate,\n" +
+            "                                  concat(concat(tbl_personal_info.c_first_name_fa, ' '),\n" +
+            "                                         tbl_personal_info.c_last_name_fa)                         as instructor,\n" +
+            "                                  evaluation.eval,\n" +
+            "                                  tbl_class.f_supervisor                                           AS supervisorId,\n" +
+            "                                  tbl_class.f_planner                                              AS plannerId,\n" +
+            "                                  concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME) AS supervisorNAME,\n" +
+            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME\n" +
+            "                  FROM tbl_class_student\n" +
+            "                           INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "                           INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "                           INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "                           LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "                           INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "                           LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "                           LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "                           LEFT JOIN(\n" +
+            "                      SELECT teacher.id AS std,\n" +
+            "                             eval.id    AS eval,\n" +
+            "                             class.id   AS class\n" +
+            "                      FROM tbl_evaluation eval\n" +
+            "                               INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "                               INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "                               INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "                               INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "                      WHERE personal.c_national_code = :nationalCode\n" +
+            "                        AND class.teacher_online_eval_status = 1\n" +
+            "                        AND tbl_parameter_value.c_code = '11'\n" +
+            "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "                  WHERE tbl_teacher.c_teacher_code = :nationalCode\n " +
+            " and  tbl_class.c_evaluation !='1'  " +
+            "                  ORDER BY classid Desc) a\n" +
+            "         WHERE rownum < ((:page * :sizee) + 1)\n" +
+            "     )\n" +
+            "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
+    List<Object> findAllClassByTeacherForPre(String nationalCode, int page,int sizee);
+
+
+
+
+    @Query(value = "\n" +
+            "SELECT *\n" +
+            "FROM (\n" +
+            "         SELECT a.*, rownum r__\n" +
+            "         FROM (\n" +
+            "                  SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                                  tbl_class.id                                                     AS classid,\n" +
+            "                                  tbl_teacher.id                                                   AS teacherid,\n" +
+            "                                  tbl_class.c_code                                                 AS code,\n" +
+            "                                  tbl_class.c_title_class                                          AS title,\n" +
+            "                                  tbl_course.c_title_fa                                            AS name,\n" +
+            "                                  tbl_class.n_max_capacity                                         AS capacity,\n" +
+            "                                  tbl_class.n_h_duration                                           AS duration,\n" +
+            "                                  view_complex.c_title                                             AS location,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.c_status = 1 THEN\n" +
+            "                                          4\n" +
+            "                                      WHEN tbl_class.c_status = 2 THEN\n" +
+            "                                          1\n" +
+            "                                      WHEN tbl_class.c_status = 3 THEN\n" +
+            "                                          2\n" +
+            "                                      WHEN tbl_class.c_status = 4 THEN\n" +
+            "                                          3\n" +
+            "                                      WHEN tbl_class.c_status = 5 THEN\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS coursestatus,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                                          1\n" +
+            "                                      ELSE\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS classtype,\n" +
+            "                                  tbl_class.c_start_date                                           AS startdate,\n" +
+            "                                  tbl_class.c_end_date                                             AS finishdate,\n" +
+            "                                  concat(concat(tbl_personal_info.c_first_name_fa, ' '),\n" +
+            "                                         tbl_personal_info.c_last_name_fa)                         as instructor,\n" +
+            "                                  evaluation.eval,\n" +
+            "                                  tbl_class.f_supervisor                                           AS supervisorId,\n" +
+            "                                  tbl_class.f_planner                                              AS plannerId,\n" +
+            "                                  concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME) AS supervisorNAME,\n" +
+            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME\n" +
+            "                  FROM tbl_class_student\n" +
+            "                           INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "                           INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "                           INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "                           LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "                           INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "                           LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "                           LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "                           LEFT JOIN(\n" +
+            "                      SELECT teacher.id AS std,\n" +
+            "                             eval.id    AS eval,\n" +
+            "                             class.id   AS class\n" +
+            "                      FROM tbl_evaluation eval\n" +
+            "                               INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "                               INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "                               INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "                               INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "                      WHERE personal.c_national_code = :nationalCode\n" +
+            "                        AND class.teacher_online_eval_status = 1\n" +
+            "                        AND tbl_parameter_value.c_code = '11'\n" +
+            "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "                  WHERE tbl_teacher.c_teacher_code = :nationalCode\n " +
+            "  and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'    " +
+            "                  ORDER BY classid Desc) a\n" +
+            "         WHERE rownum < ((:page * :sizee) + 1)\n" +
+            "     )\n" +
+            "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
+    List<Object> findAllClassByTeacherForExam(String nationalCode, int page,int sizee);
     @Query(value = "\n" +
             "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
             "                tbl_class.id                                                                             AS classid,\n" +
@@ -208,6 +351,140 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     List<Object> findAllCountClassByTeacher(String nationalCode);
+
+
+
+    @Query(value = "\n" +
+            "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                tbl_class.id                                                                             AS classid,\n" +
+            "                tbl_teacher.id                                                                           AS teacherid,\n" +
+            "                tbl_class.c_code                                                                         AS code,\n" +
+            "                tbl_class.c_title_class                                                                  AS title,\n" +
+            "                tbl_course.c_title_fa                                                                    AS name,\n" +
+            "                tbl_class.n_max_capacity                                                                 AS capacity,\n" +
+            "                tbl_class.n_h_duration                                                                   AS duration,\n" +
+            "                view_complex.c_title                                                                     AS location,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.c_status = 1 THEN\n" +
+            "                        4\n" +
+            "                    WHEN tbl_class.c_status = 2 THEN\n" +
+            "                        1\n" +
+            "                    WHEN tbl_class.c_status = 3 THEN\n" +
+            "                        2\n" +
+            "                    WHEN tbl_class.c_status = 4 THEN\n" +
+            "                        3\n" +
+            "                    WHEN tbl_class.c_status = 5 THEN\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS coursestatus,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                        1\n" +
+            "                    ELSE\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS classtype,\n" +
+            "                tbl_class.c_start_date                                                                   AS startdate,\n" +
+            "                tbl_class.c_end_date                                                                     AS finishdate,\n" +
+            "                concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor,\n" +
+            "                evaluation.eval,\n" +
+            "                tbl_class.f_supervisor                                                                   AS supervisorId,\n" +
+            "                tbl_class.f_planner                                                                      AS plannerId,\n" +
+            "                concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME)                         AS supervisorNAME,\n" +
+            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME\n" +
+            "FROM tbl_class_student\n" +
+            "         INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "         INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "         INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "         LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "         INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "         LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "         LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "         LEFT JOIN(\n" +
+            "    SELECT teacher.id AS std,\n" +
+            "           eval.id    AS eval,\n" +
+            "           class.id   AS class\n" +
+            "    FROM tbl_evaluation eval\n" +
+            "             INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "             INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "             INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "             INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "    WHERE personal.c_national_code = :nationalCode\n" +
+            "      AND class.teacher_online_eval_status = 1\n" +
+            "      AND tbl_parameter_value.c_code = '11'\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
+            " and  tbl_class.c_evaluation !='1'" +
+            "ORDER BY classid Desc "
+            ,nativeQuery = true)
+    List<Object> findAllCountClassByTeacherForPre(String nationalCode);
+
+
+
+
+
+    @Query(value = "\n" +
+            "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                tbl_class.id                                                                             AS classid,\n" +
+            "                tbl_teacher.id                                                                           AS teacherid,\n" +
+            "                tbl_class.c_code                                                                         AS code,\n" +
+            "                tbl_class.c_title_class                                                                  AS title,\n" +
+            "                tbl_course.c_title_fa                                                                    AS name,\n" +
+            "                tbl_class.n_max_capacity                                                                 AS capacity,\n" +
+            "                tbl_class.n_h_duration                                                                   AS duration,\n" +
+            "                view_complex.c_title                                                                     AS location,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.c_status = 1 THEN\n" +
+            "                        4\n" +
+            "                    WHEN tbl_class.c_status = 2 THEN\n" +
+            "                        1\n" +
+            "                    WHEN tbl_class.c_status = 3 THEN\n" +
+            "                        2\n" +
+            "                    WHEN tbl_class.c_status = 4 THEN\n" +
+            "                        3\n" +
+            "                    WHEN tbl_class.c_status = 5 THEN\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS coursestatus,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                        1\n" +
+            "                    ELSE\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS classtype,\n" +
+            "                tbl_class.c_start_date                                                                   AS startdate,\n" +
+            "                tbl_class.c_end_date                                                                     AS finishdate,\n" +
+            "                concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor,\n" +
+            "                evaluation.eval,\n" +
+            "                tbl_class.f_supervisor                                                                   AS supervisorId,\n" +
+            "                tbl_class.f_planner                                                                      AS plannerId,\n" +
+            "                concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME)                         AS supervisorNAME,\n" +
+            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME\n" +
+            "FROM tbl_class_student\n" +
+            "         INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "         INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "         INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "         LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "         INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "         LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "         LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "         LEFT JOIN(\n" +
+            "    SELECT teacher.id AS std,\n" +
+            "           eval.id    AS eval,\n" +
+            "           class.id   AS class\n" +
+            "    FROM tbl_evaluation eval\n" +
+            "             INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "             INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "             INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "             INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "    WHERE personal.c_national_code = :nationalCode\n" +
+            "      AND class.teacher_online_eval_status = 1\n" +
+            "      AND tbl_parameter_value.c_code = '11'\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
+            "    and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'  " +
+            "ORDER BY classid Desc "
+            ,nativeQuery = true)
+    List<Object> findAllCountClassByTeacherForExam(String nationalCode);
+
+
 
     @Query(value = "SELECT *\n" +
             "FROM (\n" +
@@ -547,6 +824,150 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "     )\n" +
             "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
     List<Object> findAllClassByTeacherFilter(String nationalCode,String search, int page,int sizee);
+
+
+
+    @Query(value = "\n" +
+            "SELECT *\n" +
+            "FROM (\n" +
+            "         SELECT a.*, rownum r__\n" +
+            "         FROM (\n" +
+            "                  SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                                  tbl_class.id                                                     AS classid,\n" +
+            "                                  tbl_teacher.id                                                   AS teacherid,\n" +
+            "                                  tbl_class.c_code                                                 AS code,\n" +
+            "                                  tbl_class.c_title_class                                          AS title,\n" +
+            "                                  tbl_course.c_title_fa                                            AS name,\n" +
+            "                                  tbl_class.n_max_capacity                                         AS capacity,\n" +
+            "                                  tbl_class.n_h_duration                                           AS duration,\n" +
+            "                                  view_complex.c_title                                             AS location,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.c_status = 1 THEN\n" +
+            "                                          4\n" +
+            "                                      WHEN tbl_class.c_status = 2 THEN\n" +
+            "                                          1\n" +
+            "                                      WHEN tbl_class.c_status = 3 THEN\n" +
+            "                                          2\n" +
+            "                                      WHEN tbl_class.c_status = 4 THEN\n" +
+            "                                          3\n" +
+            "                                      WHEN tbl_class.c_status = 5 THEN\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS coursestatus,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                                          1\n" +
+            "                                      ELSE\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS classtype,\n" +
+            "                                  tbl_class.c_start_date                                           AS startdate,\n" +
+            "                                  tbl_class.c_end_date                                             AS finishdate,\n" +
+            "                                  concat(concat(tbl_personal_info.c_first_name_fa, ' '),\n" +
+            "                                         tbl_personal_info.c_last_name_fa)                         as instructor,\n" +
+            "                                  evaluation.eval,\n" +
+            "                                  tbl_class.f_supervisor                                           AS supervisorId,\n" +
+            "                                  tbl_class.f_planner                                              AS plannerId,\n" +
+            "                                  concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME) AS supervisorNAME,\n" +
+            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME\n" +
+            "                  FROM tbl_class_student\n" +
+            "                           INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "                           INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "                           INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "                           LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "                           INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "                           LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "                           LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "                           LEFT JOIN(\n" +
+            "                      SELECT teacher.id AS std,\n" +
+            "                             eval.id    AS eval,\n" +
+            "                             class.id   AS class\n" +
+            "                      FROM tbl_evaluation eval\n" +
+            "                               INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "                               INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "                               INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "                               INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "                      WHERE personal.c_national_code = :nationalCode\n" +
+            "                        AND class.teacher_online_eval_status = 1\n" +
+            "                        AND tbl_parameter_value.c_code = '11'\n" +
+            "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "                  WHERE tbl_teacher.c_teacher_code = :nationalCode and  tbl_class.c_evaluation !='1' \n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
+            "                  ORDER BY classid Desc) a\n" +
+            "         WHERE rownum < ((:page * :sizee) + 1)\n" +
+            "     )\n" +
+            "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
+    List<Object> findAllClassByTeacherFilterForPre(String nationalCode,String search, int page,int sizee);
+
+
+    @Query(value = "\n" +
+            "SELECT *\n" +
+            "FROM (\n" +
+            "         SELECT a.*, rownum r__\n" +
+            "         FROM (\n" +
+            "                  SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                                  tbl_class.id                                                     AS classid,\n" +
+            "                                  tbl_teacher.id                                                   AS teacherid,\n" +
+            "                                  tbl_class.c_code                                                 AS code,\n" +
+            "                                  tbl_class.c_title_class                                          AS title,\n" +
+            "                                  tbl_course.c_title_fa                                            AS name,\n" +
+            "                                  tbl_class.n_max_capacity                                         AS capacity,\n" +
+            "                                  tbl_class.n_h_duration                                           AS duration,\n" +
+            "                                  view_complex.c_title                                             AS location,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.c_status = 1 THEN\n" +
+            "                                          4\n" +
+            "                                      WHEN tbl_class.c_status = 2 THEN\n" +
+            "                                          1\n" +
+            "                                      WHEN tbl_class.c_status = 3 THEN\n" +
+            "                                          2\n" +
+            "                                      WHEN tbl_class.c_status = 4 THEN\n" +
+            "                                          3\n" +
+            "                                      WHEN tbl_class.c_status = 5 THEN\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS coursestatus,\n" +
+            "                                  CASE\n" +
+            "                                      WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                                          1\n" +
+            "                                      ELSE\n" +
+            "                                          2\n" +
+            "                                      END                                                          AS classtype,\n" +
+            "                                  tbl_class.c_start_date                                           AS startdate,\n" +
+            "                                  tbl_class.c_end_date                                             AS finishdate,\n" +
+            "                                  concat(concat(tbl_personal_info.c_first_name_fa, ' '),\n" +
+            "                                         tbl_personal_info.c_last_name_fa)                         as instructor,\n" +
+            "                                  evaluation.eval,\n" +
+            "                                  tbl_class.f_supervisor                                           AS supervisorId,\n" +
+            "                                  tbl_class.f_planner                                              AS plannerId,\n" +
+            "                                  concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME) AS supervisorNAME,\n" +
+            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME\n" +
+            "                  FROM tbl_class_student\n" +
+            "                           INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "                           INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "                           INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "                           LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "                           INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "                           LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "                           LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "                           LEFT JOIN(\n" +
+            "                      SELECT teacher.id AS std,\n" +
+            "                             eval.id    AS eval,\n" +
+            "                             class.id   AS class\n" +
+            "                      FROM tbl_evaluation eval\n" +
+            "                               INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "                               INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "                               INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "                               INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "                      WHERE personal.c_national_code = :nationalCode\n" +
+            "                        AND class.teacher_online_eval_status = 1\n" +
+            "                        AND tbl_parameter_value.c_code = '11'\n" +
+            "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "                  WHERE tbl_teacher.c_teacher_code = :nationalCode  and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'   \n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
+            "                  ORDER BY classid Desc) a\n" +
+            "         WHERE rownum < ((:page * :sizee) + 1)\n" +
+            "     )\n" +
+            "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
+    List<Object> findAllClassByTeacherFilterForExam(String nationalCode,String search, int page,int sizee);
+
     @Query(value = "\n" +
             "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
             "                tbl_class.id                                                                             AS classid,\n" +
@@ -609,6 +1030,140 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     Collection<Object> findAllCountClassByTeacherFilter(String nationalCode,String search);
+
+
+
+
+    @Query(value = "\n" +
+            "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                tbl_class.id                                                                             AS classid,\n" +
+            "                tbl_teacher.id                                                                           AS teacherid,\n" +
+            "                tbl_class.c_code                                                                         AS code,\n" +
+            "                tbl_class.c_title_class                                                                  AS title,\n" +
+            "                tbl_course.c_title_fa                                                                    AS name,\n" +
+            "                tbl_class.n_max_capacity                                                                 AS capacity,\n" +
+            "                tbl_class.n_h_duration                                                                   AS duration,\n" +
+            "                view_complex.c_title                                                                     AS location,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.c_status = 1 THEN\n" +
+            "                        4\n" +
+            "                    WHEN tbl_class.c_status = 2 THEN\n" +
+            "                        1\n" +
+            "                    WHEN tbl_class.c_status = 3 THEN\n" +
+            "                        2\n" +
+            "                    WHEN tbl_class.c_status = 4 THEN\n" +
+            "                        3\n" +
+            "                    WHEN tbl_class.c_status = 5 THEN\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS coursestatus,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                        1\n" +
+            "                    ELSE\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS classtype,\n" +
+            "                tbl_class.c_start_date                                                                   AS startdate,\n" +
+            "                tbl_class.c_end_date                                                                     AS finishdate,\n" +
+            "                concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor,\n" +
+            "                evaluation.eval,\n" +
+            "                tbl_class.f_supervisor                                                                   AS supervisorId,\n" +
+            "                tbl_class.f_planner                                                                      AS plannerId,\n" +
+            "                concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME)                         AS supervisorNAME,\n" +
+            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME\n" +
+            "FROM tbl_class_student\n" +
+            "         INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "         INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "         INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "         LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "         INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "         LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "         LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "         LEFT JOIN(\n" +
+            "    SELECT teacher.id AS std,\n" +
+            "           eval.id    AS eval,\n" +
+            "           class.id   AS class\n" +
+            "    FROM tbl_evaluation eval\n" +
+            "             INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "             INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "             INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "             INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "    WHERE personal.c_national_code = :nationalCode\n" +
+            "      AND class.teacher_online_eval_status = 1\n" +
+            "      AND tbl_parameter_value.c_code = '11'\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "WHERE tbl_teacher.c_teacher_code = :nationalCode  and  tbl_class.c_evaluation !='1' \n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
+            "ORDER BY classid Desc "
+            ,nativeQuery = true)
+    Collection<Object> findAllCountClassByTeacherFilterForPre(String nationalCode,String search);
+
+
+
+    @Query(value = "\n" +
+            "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
+            "                tbl_class.id                                                                             AS classid,\n" +
+            "                tbl_teacher.id                                                                           AS teacherid,\n" +
+            "                tbl_class.c_code                                                                         AS code,\n" +
+            "                tbl_class.c_title_class                                                                  AS title,\n" +
+            "                tbl_course.c_title_fa                                                                    AS name,\n" +
+            "                tbl_class.n_max_capacity                                                                 AS capacity,\n" +
+            "                tbl_class.n_h_duration                                                                   AS duration,\n" +
+            "                view_complex.c_title                                                                     AS location,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.c_status = 1 THEN\n" +
+            "                        4\n" +
+            "                    WHEN tbl_class.c_status = 2 THEN\n" +
+            "                        1\n" +
+            "                    WHEN tbl_class.c_status = 3 THEN\n" +
+            "                        2\n" +
+            "                    WHEN tbl_class.c_status = 4 THEN\n" +
+            "                        3\n" +
+            "                    WHEN tbl_class.c_status = 5 THEN\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS coursestatus,\n" +
+            "                CASE\n" +
+            "                    WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "                        1\n" +
+            "                    ELSE\n" +
+            "                        2\n" +
+            "                    END                                                                                  AS classtype,\n" +
+            "                tbl_class.c_start_date                                                                   AS startdate,\n" +
+            "                tbl_class.c_end_date                                                                     AS finishdate,\n" +
+            "                concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor,\n" +
+            "                evaluation.eval,\n" +
+            "                tbl_class.f_supervisor                                                                   AS supervisorId,\n" +
+            "                tbl_class.f_planner                                                                      AS plannerId,\n" +
+            "                concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME)                         AS supervisorNAME,\n" +
+            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME\n" +
+            "FROM tbl_class_student\n" +
+            "         INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "         INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "         INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "         LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "         INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "         LEFT JOIN TBL_PERSONNEL planner on TBL_CLASS.F_PLANNER = planner.ID\n" +
+            "         LEFT JOIN TBL_PERSONNEL supervisor on TBL_CLASS.F_SUPERVISOR = supervisor.ID\n" +
+            "         LEFT JOIN(\n" +
+            "    SELECT teacher.id AS std,\n" +
+            "           eval.id    AS eval,\n" +
+            "           class.id   AS class\n" +
+            "    FROM tbl_evaluation eval\n" +
+            "             INNER JOIN tbl_teacher teacher ON eval.f_evaluator_id = teacher.id\n" +
+            "             INNER JOIN tbl_personal_info personal ON teacher.f_personality = personal.id\n" +
+            "             INNER JOIN tbl_class class ON eval.f_class_id = class.id\n" +
+            "             INNER JOIN tbl_parameter_value ON eval.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "    WHERE personal.c_national_code = :nationalCode\n" +
+            "      AND class.teacher_online_eval_status = 1\n" +
+            "      AND tbl_parameter_value.c_code = '11'\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "WHERE tbl_teacher.c_teacher_code = :nationalCode       and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'   \n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
+            "ORDER BY classid Desc "
+            ,nativeQuery = true)
+    Collection<Object> findAllCountClassByTeacherFilterForExam(String nationalCode,String search);
+
+
+
     @Query(value = "select tbl_session.id \n" +
             "from tbl_class_student inner join tbl_class on tbl_class_student.class_id=tbl_class.id inner join  tbl_session on tbl_session.f_class_id=tbl_class.id \n" +
             "inner join tbl_student on tbl_student.id=tbl_class_student.student_id\n" +

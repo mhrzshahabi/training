@@ -1272,4 +1272,9 @@ public class TeacherRestController {
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
+    @PutMapping("/changeTeacherPersonnel/{id}/{personnel_code}")
+    public boolean changeTeacherPersonnel(@PathVariable long id,@PathVariable String personnel_code) {
+        return teacherService.changeTeacherPersonnel(id,personnel_code);
+    }
+
 }

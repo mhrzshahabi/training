@@ -714,6 +714,69 @@ public class ClassStudentService implements IClassStudentService {
         return dto;
     }
 
+
+    @Override
+    public ElsClassListV2Dto getTeacherClassesV3WithFilter(String examType,String nationalCode, String search, Integer page, Integer size) {
+        ElsClassListV2Dto dto = new ElsClassListV2Dto();
+        List<Object> list=new ArrayList<>();
+        long count=0;
+        if(search==null || search.equals("")) {
+            if (examType.equals("preTest")){
+                list = classStudentDAO.findAllClassByTeacherForPre(nationalCode, page + 1, size);
+                count = classStudentDAO.findAllCountClassByTeacherForPre(nationalCode).size();
+            }else {
+                list = classStudentDAO.findAllClassByTeacherForExam(nationalCode, page + 1, size);
+                count = classStudentDAO.findAllCountClassByTeacherForExam(nationalCode).size();
+            }
+
+        }else{
+            if (examType.equals("preTest")){
+            list = classStudentDAO.findAllClassByTeacherFilterForPre(nationalCode, search, page + 1, size);
+            count = classStudentDAO.findAllCountClassByTeacherFilterForPre(nationalCode, search).size();
+            }else {
+                list = classStudentDAO.findAllClassByTeacherFilterForExam(nationalCode, search, page + 1, size);
+                count = classStudentDAO.findAllCountClassByTeacherFilterForExam(nationalCode, search).size();
+            }
+
+        }
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+
+        List<ElsClassV2Dto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassV2Dto elsClassDto = new ElsClassV2Dto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            result.add(elsClassDto);
+        }
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPagination(paginationDto);
+        dto.setData(result);
+
+        return dto;
+    }
+
     @Override
     public ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size) {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
@@ -800,4 +863,4 @@ public class ClassStudentService implements IClassStudentService {
 
         return dto;
     }
-}
+ }

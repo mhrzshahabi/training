@@ -50,6 +50,7 @@ public interface IClassStudentService {
     ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size);
     ElsClassListV2Dto getTeacherClassesV2(String nationalCode, Integer page, Integer size);
     ElsClassListV2Dto getTeacherClassesV2WithFilter(String nationalCode,String search, Integer page, Integer size);
+    ElsClassListV2Dto getTeacherClassesV3WithFilter(String examType,String nationalCode,String search, Integer page, Integer size);
 
     ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
     ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size);

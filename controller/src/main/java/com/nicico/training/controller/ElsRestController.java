@@ -3088,4 +3088,31 @@ public class ElsRestController {
         }
         return response;
     }
+
+
+
+    @GetMapping("/user-classes-filter/v3/{page}/{size}")
+    public ElsClassListV2Dto getUserClassesV2WithFilterForExamOrPre(HttpServletRequest header
+            , @RequestParam String type
+            , @RequestParam String examType
+            , @RequestParam String nationalCode
+            , @RequestParam(required = false) String search
+            , @PathVariable Integer page, @PathVariable Integer size) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                if ("teacher".equals(type)) {
+                    return classStudentService.getTeacherClassesV3WithFilter(examType, nationalCode, search, page, size);
+                }
+                log.error("default error" + type);
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            } catch (Exception s) {
+                log.error("Exception error:" + s);
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
 }

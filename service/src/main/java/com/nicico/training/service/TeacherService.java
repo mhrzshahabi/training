@@ -1048,4 +1048,16 @@ public class TeacherService implements ITeacherService {
     public String getTeacherResidence(Long teacherId) {
         return teacherDAO.getTeacherResidence(teacherId);
     }
+
+    @Override
+    public boolean changeTeacherPersonnel(long id, String personnel_code) {
+        Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
+        if (optionalTeacher.isPresent()){
+            Teacher teacher= optionalTeacher.get();
+            teacher.setPersonnelStatus(true);
+            teacher.setPersonnelCode(personnel_code);
+            teacherDAO.save(teacher);
+        }
+        return false;
+    }
 }

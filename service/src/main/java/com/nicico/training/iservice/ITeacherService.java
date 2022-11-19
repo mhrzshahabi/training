@@ -81,4 +81,6 @@ public interface ITeacherService {
     SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request);
 
     String getTeacherResidence(Long teacherId);
+
+    boolean changeTeacherPersonnel(long id, String personnel_code);
 }
