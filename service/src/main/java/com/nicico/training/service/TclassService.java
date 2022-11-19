@@ -365,10 +365,33 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public Boolean checkEvaluationsForEndingClass(Long classId) {
-        Double limit = Double.parseDouble(iParameterValueService.getInfoByCode("minQusForClassEnd").getValue());
-        Double evaluatedPercent = Double.parseDouble(viewReactionEvaluationFormulaReportService.getPercentReaction(classId));
+    public Boolean checkEvaluationsEvaluatedPercentForEndingClass(Long classId) {
+        double limit = Double.parseDouble(iParameterValueService.getInfoByCode("minQusForClassEnd").getValue());
+        double evaluatedPercent = Double.parseDouble(viewReactionEvaluationFormulaReportService.getPercentReaction(classId));
         return evaluatedPercent >= limit;
+    }
+
+    @Override
+    public Boolean checkEvaluationsEndDateForEndingClass(Long classId) {
+        int evaluationDeadline = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
+        Tclass tClass = getTClass(classId);
+        String endEvalDeadLine = dateAdd(tClass.getEndDate(), evaluationDeadline);
+        return DateUtil.todayDate().compareTo(endEvalDeadLine) >= 0;
+    }
+
+    private String dateAdd(String currentDate, int add) {
+        String miladiDate = DateUtil.convertKhToMi1(currentDate);
+        try {
+            String[] all = miladiDate.split("-");
+            java.sql.Date mil = new java.sql.Date(Integer.parseInt(all[0]) - 1900, Integer.parseInt(all[1]) - 1, Integer.parseInt(all[2]));
+            mil.setDate(mil.getDate() + add);
+            currentDate = DateUtil.convertMiToKh(mil.toString());
+        } catch (Exception var6) {
+            if (add > 0) {
+                currentDate = this.dateAdd(currentDate, add - 1);
+            }
+        }
+        return currentDate;
     }
 
     @Transactional
