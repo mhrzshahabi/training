@@ -32,6 +32,10 @@ public class ElsExamCreateDTO {
     private String startDate;
     @ApiModelProperty
     private String endDate;
+    @ApiModelProperty
+    private String evaluation;
+    @ApiModelProperty
+    private String scoringMethod;
 
     @Getter
     @Setter
