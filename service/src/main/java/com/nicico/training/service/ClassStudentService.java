@@ -750,6 +750,7 @@ public class ClassStudentService implements IClassStudentService {
             Object[] arr = (Object[]) o;
             Long classId = Long.parseLong(arr[1].toString());
             Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setClassId(classId);
             elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
             elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
             elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
