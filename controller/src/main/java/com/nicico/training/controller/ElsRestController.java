@@ -2975,14 +2975,6 @@ public class ElsRestController {
                 String courseCode = courseService.getCourse(tclass.getCourseId()).getCode();
                 responseDto.setCourseCode(courseCode);
 
-                if (tclass.getScoringMethod() != null) {
-                    if (!tclass.getScoringMethod().equals("2") && !tclass.getScoringMethod().equals("3")) {
-                        elsExamResponse.setStatus(400);
-                        elsExamResponse.setMessage("امکان ایجاد آزمون برای این کلاس وجود ندارد.");
-                        return elsExamResponse;
-                    }
-                }
-
                 elsExamResponse.setStatus(200);
                 elsExamResponse.setMessage("successful");
                 elsExamResponse.setElsExamCreateDTO(responseDto);
