@@ -210,8 +210,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                        AND class.teacher_online_eval_status = 1\n" +
             "                        AND tbl_parameter_value.c_code = '11'\n" +
             "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "       LEFT JOIN tbl_test_question ON (tbl_class.id = tbl_test_question.f_class and tbl_test_question.c_test_question_type = 'PreTest')\n" +
+            "" +
             "                  WHERE tbl_teacher.c_teacher_code = :nationalCode\n " +
             " and  tbl_class.c_evaluation !='1'  " +
+            " and tbl_test_question.id is null  " +
             "                  ORDER BY classid Desc) a\n" +
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
@@ -283,8 +286,9 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                        AND class.teacher_online_eval_status = 1\n" +
             "                        AND tbl_parameter_value.c_code = '11'\n" +
             "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            "       LEFT JOIN tbl_test_question ON (tbl_class.id = tbl_test_question.f_class and tbl_test_question.c_test_question_type = 'FinalTest')\n" +
             "                  WHERE tbl_teacher.c_teacher_code = :nationalCode\n " +
-            "  and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'    " +
+            "  and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'  and tbl_test_question.id is null  " +
             "                  ORDER BY classid Desc) a\n" +
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
@@ -410,9 +414,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "    WHERE personal.c_national_code = :nationalCode\n" +
             "      AND class.teacher_online_eval_status = 1\n" +
             "      AND tbl_parameter_value.c_code = '11'\n" +
-            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)" +
+            "       LEFT JOIN tbl_test_question ON (tbl_class.id = tbl_test_question.f_class and tbl_test_question.c_test_question_type = 'PreTest')\n \n" +
             "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
             " and  tbl_class.c_evaluation !='1'" +
+            " and  tbl_test_question.id is null " +
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     List<Object> findAllCountClassByTeacherForPre(String nationalCode);
@@ -477,9 +483,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "    WHERE personal.c_national_code = :nationalCode\n" +
             "      AND class.teacher_online_eval_status = 1\n" +
             "      AND tbl_parameter_value.c_code = '11'\n" +
-            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
+            ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)" +
+            "    LEFT JOIN tbl_test_question ON (tbl_class.id = tbl_test_question.f_class and tbl_test_question.c_test_question_type = 'FinalTest')" +
+            "\n" +
             "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
-            "    and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4'  " +
+            "    and    tbl_class.c_scoring_method != '1' and tbl_class.c_scoring_method != '4' and  tbl_test_question.id is null " +
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     List<Object> findAllCountClassByTeacherForExam(String nationalCode);
