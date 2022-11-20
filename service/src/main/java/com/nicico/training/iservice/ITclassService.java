@@ -192,7 +192,9 @@ public interface ITclassService {
 
     BaseResponse delete(Long id) throws IOException;
 
-    Boolean checkEvaluationsForEndingClass(Long classId);
+    Boolean checkEvaluationsEvaluatedPercentForEndingClass(Long classId);
+
+    Boolean checkEvaluationsEndDateForEndingClass(Long classId);
 
     boolean compareTodayDate(Long classId);
 

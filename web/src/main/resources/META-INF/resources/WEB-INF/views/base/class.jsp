@@ -4120,12 +4120,21 @@
                                 classTypeStatus.setValue(oldValue);
                                 highlightClassStauts(oldValue, 10);
                             } else {
-                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/" + record.id, "GET", null, function(response) {
-                                    wait.close();
+                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/evaluatedPercent/" + record.id, "GET", null, function(response) {
                                     if (JSON.parse(response.httpResponseText) === false) {
+                                        wait.close();
                                         createDialog("info", "به دلیل به حدنصاب نرسیدن تکمیل پرسشنامه های ارزیابی واکنشی، امکان پایان کلاس وجود ندارد");
                                         classTypeStatus.setValue(oldValue);
                                         highlightClassStauts(oldValue, 10);
+                                    } else {
+                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/endDate/" + record.id, "GET", null, function(response) {
+                                            wait.close();
+                                            if (JSON.parse(response.httpResponseText) === false) {
+                                                createDialog("info", "مدت زمان لازم جهت ثبت ارزیابی واکنشی به پایان نرسیده است، بنابراین امکان پایان کلاس وجود ندارد");
+                                                classTypeStatus.setValue(oldValue);
+                                                highlightClassStauts(oldValue, 10);
+                                            }
+                                        }));
                                     }
                                 }));
                             }

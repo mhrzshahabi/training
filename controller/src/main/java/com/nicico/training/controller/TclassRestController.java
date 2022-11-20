@@ -521,9 +521,15 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/checkEvaluationsForEndingClass/{classId}")
-    public Boolean checkEvaluationsForEndingClass(@PathVariable Long classId) throws IOException {
-        return tClassService.checkEvaluationsForEndingClass(classId);
+    @GetMapping(value = "/checkEvaluationsForEndingClass/evaluatedPercent/{classId}")
+    public Boolean checkEvaluationsEvaluatedPercentForEndingClass(@PathVariable Long classId) throws IOException {
+        return tClassService.checkEvaluationsEvaluatedPercentForEndingClass(classId);
+    }
+
+    @Loggable
+    @GetMapping(value = "/checkEvaluationsForEndingClass/endDate/{classId}")
+    public Boolean checkEvaluationsEndDateForEndingClass(@PathVariable Long classId) throws IOException {
+        return tClassService.checkEvaluationsEndDateForEndingClass(classId);
     }
 
     @Loggable
