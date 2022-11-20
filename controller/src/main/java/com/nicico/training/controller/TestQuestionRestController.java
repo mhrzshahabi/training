@@ -14,13 +14,10 @@ import com.nicico.training.iservice.ITestQuestionService;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.QuestionBankTestQuestion;
 import com.nicico.training.model.TestQuestion;
-import com.nicico.training.repository.QuestionBankTestQuestionDAO;
-import com.nicico.training.service.QuestionBankTestQuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -132,13 +129,14 @@ public class TestQuestionRestController {
             // delete exam from ELS
             if (testQuestion.getOnlineFinalExamStatus()) { // ارسال شده به آنلاین
                 baseResponse = elsClient.deleteExamFromEls(testQuestion.getId(), testQuestion.getTestQuestionType());
+                if (baseResponse.getStatus() != 200) {
+                    return new ResponseEntity<>(
+                            new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest).getMessage(), HttpStatus.BAD_REQUEST);
+                }
+
             }
-            if (baseResponse.getStatus() != 200) {
-                return new ResponseEntity<>(
-                        new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest).getMessage(), HttpStatus.BAD_REQUEST);
-            }
-            // delete exam from Database
             testQuestionService.delete(id);
+            // delete exam from Database
             return new ResponseEntity<>(baseResponse, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(
