@@ -64,7 +64,6 @@ public class TestQuestionDTO {
         private String practicalScore;
         private String classScore;
         private TclassDTO.ExamInfo tclass;
-        private String testQuestionType;
     }
 
     @Getter
@@ -108,10 +107,6 @@ public class TestQuestionDTO {
         private String practicalScore;
         @ApiModelProperty
         private String classScore;
-        @ApiModelProperty
-        private String classCode;
-        @ApiModelProperty
-        private List<ElsImportedQuestionProtocol> questionProtocols;
     }
 
     @Getter
@@ -170,4 +165,38 @@ public class TestQuestionDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TestQuestionDTO.Import")
+    public static class Import extends TestQuestionDTO {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String date;
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String time;
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String endDate;
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String endTime;
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer duration;
+        @ApiModelProperty
+        private String testQuestionType;
+        @ApiModelProperty
+        private String practicalScore;
+        @ApiModelProperty
+        private String classScore;
+        @ApiModelProperty
+        private String classCode;
+        @ApiModelProperty
+        private List<ElsImportedQuestionProtocol> questionProtocols;
+    }
+
 }

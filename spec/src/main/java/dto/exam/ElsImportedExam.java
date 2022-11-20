@@ -47,5 +47,5 @@ public class ElsImportedExam extends BaseResponse {
     private String classScore;
 
     @ApiModelProperty
-    private List<ImportedQuestionProtocol> questionProtocols;
+    private List<ElsImportedQuestionProtocol> questionProtocols;
 }

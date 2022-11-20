@@ -3019,11 +3019,12 @@ public class ElsRestController {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                TestQuestionDTO.Create testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+                TestQuestionDTO.Import testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+
                 long tclassId = tclassService.getClassByCode(testQuestionDTO.getClassCode()).getId();
                 testQuestionDTO.setTclassId(tclassId);
                 if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
-                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionDTO);
+                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
                     info = testQuestionMapper.toInfo(createdTestQuestion);
                 } else {
                     TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
@@ -3038,7 +3039,7 @@ public class ElsRestController {
 
                 for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
                     Optional<QuestionBank> questionBank = allByTeacherId.stream()
-                            .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestion().getType().getValue()))
+                            .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestion().getQuestionType()))
                             .findFirst();
 
                     questionBank.ifPresent(filteredQuestions::add);
@@ -3048,22 +3049,20 @@ public class ElsRestController {
                 List<ElsImportedQuestionProtocol> questionProtocols = new ArrayList<>();
 
                 filteredQuestions.forEach(question -> {
-//                    QuestionProtocol qp = questionProtocolService.findByQuestionId(question.getId());
                     ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
-                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()))
+                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()) && questionProtocol.getQuestion().getQuestionType().equals(question.getQuestionType().getTitle()))
                             .findFirst()
                             .orElse(null);
 
                     ElsImportedQuestionProtocol questionProtocol = new ElsImportedQuestionProtocol();
-                    questionProtocol.setQuestionId(question.getId());
-                    questionProtocol.setExamId(info.getId());
-                    questionProtocol.setQuestionTitle(question.getQuestion());
+
+                    questionProtocol.setQuestion(questionBankBeanMapper.toElsImportedQuestion(question));
+                    questionProtocol.setProposedPointValue(question.getProposedPointValue());
+                    questionProtocol.setProposedTimeValue(question.getProposedTimeValue());
 
                     if (qp != null) {
                         questionProtocol.setMark(qp.getMark());
                         questionProtocol.setTime(qp.getTime());
-                        questionProtocol.setCorrectAnswerTitle(qp.getCorrectAnswerTitle());
-                        questionProtocol.setQuestionType(qp.getQuestion().getType().getValue());
                     }
 
                     questionProtocols.add(questionProtocol);

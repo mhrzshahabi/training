@@ -4,19 +4,24 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import response.question.dto.ElsAttachmentDto;
+import response.question.dto.ElsAttachmentDto2;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ElsImportedQuestion {
-    @ApiModelProperty
+public class ElsImportedQuestionOption {
+    @ApiModelProperty(hidden = true)
     private Long id;
     @ApiModelProperty(required = true)
     private String title;
     @ApiModelProperty
-    private List<ElsImportedQuestionOption> questionOptionDTOS;
+    private String label;
     @ApiModelProperty
-    private String questionType;
+    private boolean checked;
+    @ApiModelProperty
+    private List<ElsAttachmentDto2> attachments;
 }

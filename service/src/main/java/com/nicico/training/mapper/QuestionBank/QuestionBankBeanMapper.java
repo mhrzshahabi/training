@@ -1,12 +1,8 @@
 package com.nicico.training.mapper.QuestionBank;
 
 
-import com.ibm.icu.text.SimpleDateFormat;
-import com.ibm.icu.util.TimeZone;
-import com.ibm.icu.util.ULocale;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.QuestionBankDTO;
-import com.nicico.training.dto.RequestResVM;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
@@ -16,14 +12,13 @@ import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
+import dto.exam.ElsImportedQuestion;
 import dto.exam.ImportedQuestionProtocol;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.question.dto.*;
 
-import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -623,4 +618,11 @@ public abstract class QuestionBankBeanMapper {
             @Mapping(source = "questionId", target = "question.id")
     })
     public abstract List<ImportedQuestionProtocol> toImportedQuestionProtocols(List<QuestionProtocol> questionProtocols);
+
+    @Mappings({
+            @Mapping(target = "title", source = "question"),
+            @Mapping(target = "questionType", source = "questionType.title")
+    })
+    public abstract ElsImportedQuestion toElsImportedQuestion(QuestionBank questionBank);
+
 }
