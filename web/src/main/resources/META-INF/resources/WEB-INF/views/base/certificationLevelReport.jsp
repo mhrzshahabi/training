@@ -140,6 +140,21 @@
                 align: "center"
             },
             {
+                name: "name",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "lastName",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "affairs",
+                width: "10%",
+                align: "center"
+            },
+            {
                 name: "personnelNo2",
                 width: "10%",
                 align: "center"
@@ -151,6 +166,11 @@
             },
             {
                 name: "post",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "postTitle",
                 width: "10%",
                 align: "center"
             },
