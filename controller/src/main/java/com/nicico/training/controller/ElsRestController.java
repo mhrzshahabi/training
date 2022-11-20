@@ -38,8 +38,7 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.ElsExamCreateDTO;
-import dto.exam.ElsImportedExam;
+import dto.exam.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -3020,11 +3019,12 @@ public class ElsRestController {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                TestQuestionDTO.Create testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+                TestQuestionDTO.Import testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
+
                 long tclassId = tclassService.getClassByCode(testQuestionDTO.getClassCode()).getId();
                 testQuestionDTO.setTclassId(tclassId);
                 if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
-                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionDTO);
+                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
                     info = testQuestionMapper.toInfo(createdTestQuestion);
                 } else {
                     TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
@@ -3037,34 +3037,32 @@ public class ElsRestController {
 
                 Set<QuestionBank> filteredQuestions = new HashSet<>();
 
-                for (QuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
+                for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
                     Optional<QuestionBank> questionBank = allByTeacherId.stream()
-                            .filter(q -> q.getQuestion().equals(qp.getQuestionTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestionType()))
+                            .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestion().getQuestionType()))
                             .findFirst();
 
                     questionBank.ifPresent(filteredQuestions::add);
 
                 }
 
-                List<QuestionProtocol> questionProtocols = new ArrayList<>();
+                List<ElsImportedQuestionProtocol> questionProtocols = new ArrayList<>();
 
                 filteredQuestions.forEach(question -> {
-//                    QuestionProtocol qp = questionProtocolService.findByQuestionId(question.getId());
-                    QuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
-                            .filter(questionProtocol -> questionProtocol.getQuestionId().equals(question.getId()))
+                    ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
+                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()) && questionProtocol.getQuestion().getQuestionType().equals(question.getQuestionType().getTitle()))
                             .findFirst()
                             .orElse(null);
 
-                    QuestionProtocol questionProtocol = new QuestionProtocol();
-                    questionProtocol.setQuestionId(question.getId());
-                    questionProtocol.setExamId(info.getId());
-                    questionProtocol.setQuestionTitle(question.getQuestion());
+                    ElsImportedQuestionProtocol questionProtocol = new ElsImportedQuestionProtocol();
+
+                    questionProtocol.setQuestion(questionBankBeanMapper.toElsImportedQuestion(question));
+                    questionProtocol.setProposedPointValue(question.getProposedPointValue());
+                    questionProtocol.setProposedTimeValue(question.getProposedTimeValue());
 
                     if (qp != null) {
-                        questionProtocol.setQuestionMark(qp.getQuestionMark());
+                        questionProtocol.setMark(qp.getMark());
                         questionProtocol.setTime(qp.getTime());
-                        questionProtocol.setCorrectAnswerTitle(qp.getCorrectAnswerTitle());
-                        questionProtocol.setQuestionType(qp.getQuestionType());
                     }
 
                     questionProtocols.add(questionProtocol);

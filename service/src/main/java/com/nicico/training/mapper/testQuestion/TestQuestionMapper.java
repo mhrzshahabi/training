@@ -1,7 +1,6 @@
 package com.nicico.training.mapper.testQuestion;
 
 import com.nicico.training.dto.TestQuestionDTO;
-import com.nicico.training.mapper.questionProtocol.QuestionProtocolMapper;
 import com.nicico.training.model.TestQuestion;
 import dto.exam.ElsExamCreateDTO;
 import dto.exam.ElsImportedExam;
@@ -10,7 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN, uses = QuestionProtocolMapper.class)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface TestQuestionMapper {
 
     @Mappings({
@@ -18,7 +17,7 @@ public interface TestQuestionMapper {
             @Mapping(target = "time", source = "startTime"),
             @Mapping(target = "classCode", source = "examCode")
     })
-    TestQuestionDTO.Create toTestQuestionDto(ElsImportedExam elsImportedExam);
+    TestQuestionDTO.Import toTestQuestionDto(ElsImportedExam elsImportedExam);
 
     @Mappings({
             @Mapping(target = "startDate", source = "date"),
@@ -34,5 +33,6 @@ public interface TestQuestionMapper {
     })
     ElsExamCreateDTO.Info toInfo(TestQuestion testQuestion);
 
+    TestQuestionDTO.Create toCreate(TestQuestionDTO.Import dto);
 
 }
