@@ -95,6 +95,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
@@ -3036,21 +3037,22 @@ public class ElsRestController {
                 List<QuestionBank> allByTeacherId = questionBankService.findAllTeacherId(teacherId);
 
                 Set<QuestionBank> filteredQuestions = new HashSet<>();
+                if (testQuestionDTO.getQuestionProtocols() != null && !testQuestionDTO.getQuestionProtocols().isEmpty()) {
+                    for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
+                        Optional<QuestionBank> questionBank = allByTeacherId.stream()
+                                .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
+                                .findFirst();
 
-                for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
-                    Optional<QuestionBank> questionBank = allByTeacherId.stream()
-                            .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && q.getQuestionType().getTitle().equals(qp.getQuestion().getQuestionType()))
-                            .findFirst();
+                        questionBank.ifPresent(filteredQuestions::add);
 
-                    questionBank.ifPresent(filteredQuestions::add);
-
+                    }
                 }
 
                 List<ElsImportedQuestionProtocol> questionProtocols = new ArrayList<>();
 
                 filteredQuestions.forEach(question -> {
                     ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
-                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()) && questionProtocol.getQuestion().getQuestionType().equals(question.getQuestionType().getTitle()))
+                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()) && questionProtocol.getQuestion().getType().getValue().equals(question.getQuestionType().getTitle()))
                             .findFirst()
                             .orElse(null);
 

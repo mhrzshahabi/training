@@ -18,5 +18,5 @@ public class ElsImportedQuestion {
     @ApiModelProperty
     private List<ElsImportedQuestionOption> questionOptionDTOS;
     @ApiModelProperty
-    private String questionType;
+    private EQuestionType type;
 }
