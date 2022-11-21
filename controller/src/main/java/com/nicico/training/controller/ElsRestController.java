@@ -3037,13 +3037,15 @@ public class ElsRestController {
                 List<QuestionBank> allByTeacherId = questionBankService.findAllTeacherId(teacherId);
 
                 Set<QuestionBank> filteredQuestions = new HashSet<>();
-                for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
-                    Optional<QuestionBank> questionBank = allByTeacherId.stream()
-                            .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
-                            .findFirst();
+                if (testQuestionDTO.getQuestionProtocols() != null && !testQuestionDTO.getQuestionProtocols().isEmpty()) {
+                    for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
+                        Optional<QuestionBank> questionBank = allByTeacherId.stream()
+                                .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
+                                .findFirst();
 
-                    questionBank.ifPresent(filteredQuestions::add);
+                        questionBank.ifPresent(filteredQuestions::add);
 
+                    }
                 }
 
                 List<ElsImportedQuestionProtocol> questionProtocols = new ArrayList<>();
