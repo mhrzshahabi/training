@@ -1,8 +1,11 @@
 package com.nicico.training.utility.persianDate;
 
+import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.model.Tclass;
 import dto.exam.ClassType;
 import dto.exam.CourseStatus;
+import dto.exam.EQuestionType;
 import net.jcip.annotations.ThreadSafe;
 import org.apache.commons.lang3.StringUtils;
 import response.tclass.dto.CourseProgramDTO;
@@ -11,6 +14,8 @@ import response.tclass.dto.WeekDays;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static dto.exam.EQuestionType.*;
 
 /**
  * This class provides static helper methods, in order to remove boilerplate code.
@@ -526,5 +531,15 @@ public class MyUtils {
         }
 
         return true;
+    }
+
+    public static EQuestionType convertQuestionType(Long questionTypeId, IParameterValueService parameterValueService) {
+        ParameterValueDTO.TupleInfo info = parameterValueService.getInfo(questionTypeId);
+        return switch (info.getTitle()) {
+            case "چند گزینه ای" -> MULTI_CHOICES;
+            case "تشریحی" -> DESCRIPTIVE;
+            case "سوالات گروهی" -> GROUPQUESTION;
+            default -> null;
+        };
     }
 }

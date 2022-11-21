@@ -620,8 +620,7 @@ public abstract class QuestionBankBeanMapper {
     public abstract List<ImportedQuestionProtocol> toImportedQuestionProtocols(List<QuestionProtocol> questionProtocols);
 
     @Mappings({
-            @Mapping(target = "title", source = "question"),
-            @Mapping(target = "questionType", source = "questionType.title")
+            @Mapping(target = "title", source = "question")
     })
     public abstract ElsImportedQuestion toElsImportedQuestion(QuestionBank questionBank);
 
