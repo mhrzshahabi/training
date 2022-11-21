@@ -2461,20 +2461,24 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public boolean getScoreDependency() {
+    public Map<String, Object> getScoreDependency() {
 
+        boolean isScoreDependent;
+        Map<String, Object> result = new HashMap<>();
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
-        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("scoreDependsOnEvaluation")).findFirst().orElse(null);
-        if (info != null) {
-            switch (info.getValue()) {
-                case "بله":
-                    return true;
-                case "خیر":
-                    return false;
-                default:
-                    return true;
+        ParameterValueDTO.Info scoreDependsOnEvaluation = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("scoreDependsOnEvaluation")).findFirst().orElse(null);
+        ParameterValueDTO.Info classBasisDate = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("classBasisDate")).findFirst().orElse(null);
+
+        if (scoreDependsOnEvaluation != null) {
+            if ("خیر".equals(scoreDependsOnEvaluation.getValue())) {
+                isScoreDependent = false;
+            } else {
+                isScoreDependent = true;
             }
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+        result.put("isScoreDependent", isScoreDependent);
+        result.put("classBasisDate", classBasisDate != null ? classBasisDate.getValue() : null);
+        return result;
     }
 
     @Transactional

@@ -7767,6 +7767,53 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-103">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            SELECT id
+            INTO l_parameter_id
+            FROM TBL_PARAMETER
+            WHERE c_code = 'ClassConfig';
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_type,
+                                             c_value,
+                                             c_description)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'تاریخ مبنای کلاس',
+                    'classBasisDate',
+                    'text',
+                    '1401/09/15',
+                    'با فرمت YYYY/MM/DD وارد شود');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
