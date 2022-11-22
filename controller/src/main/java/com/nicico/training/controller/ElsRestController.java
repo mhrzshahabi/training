@@ -3024,13 +3024,6 @@ public class ElsRestController {
 
                 long tclassId = tclassService.getClassByCode(testQuestionDTO.getClassCode()).getId();
                 testQuestionDTO.setTclassId(tclassId);
-                if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
-                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
-                    info = testQuestionMapper.toInfo(createdTestQuestion);
-                } else {
-                    TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
-                    info = testQuestionMapper.toInfo(testQuestion);
-                }
 
                 // assign questions to the created exam
                 Long teacherId = tclassService.get(tclassId).getTeacherId();
@@ -3073,6 +3066,14 @@ public class ElsRestController {
                 testQuestionDTO.setQuestionProtocols(questionProtocols);
 
                 // ----------------------------------
+                if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
+                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
+                    info = testQuestionMapper.toInfo(createdTestQuestion);
+                } else {
+                    TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
+                    info = testQuestionMapper.toInfo(testQuestion);
+                }
+                // -----------------------------------
 
                 response.setStatus(200);
                 response.setMessage("Exam successfully created");
