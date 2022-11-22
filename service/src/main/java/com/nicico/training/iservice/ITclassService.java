@@ -168,7 +168,7 @@ public interface ITclassService {
 
     EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
 
-    boolean getScoreDependency();
+    Map<String, Object> getScoreDependency();
 
     List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
 

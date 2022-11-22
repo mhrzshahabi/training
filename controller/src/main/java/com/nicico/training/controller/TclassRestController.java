@@ -901,7 +901,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/scoreDependsOnEvaluation")
-    public boolean getScoreDependency() {
+    public Map<String, Object> getScoreDependency() {
         return tClassService.getScoreDependency();
     }
 

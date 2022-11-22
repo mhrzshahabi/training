@@ -36,11 +36,13 @@
     var classAcceptanceLimit_Eval = null;
 
     let isScoreDependent_Eval = true;
+    let classBasisDate_Eval;
 
     //----------------------------------------------------Default Rest--------------------------------------------------
     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "scoreDependsOnEvaluation", "GET", null, function (resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            isScoreDependent_Eval = JSON.parse(resp.data);
+            isScoreDependent_Eval = JSON.parse(resp.data).isScoreDependent;
+            classBasisDate_Eval = JSON.parse(resp.data).classBasisDate;
         }
     }));
     //------------------------------------------------------------------------------------------------------------------
@@ -189,7 +191,9 @@
                                 isc.IButton.create({
                                     title: "تایید",
                                     click: function () {
-                                        if(isScoreDependent_Eval) {
+                                        let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                                        let checkBasisDate = classEndDate >= classBasisDate_Eval;
+                                        if(isScoreDependent_Eval && checkBasisDate) {
 
                                             if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
 
@@ -360,8 +364,9 @@
                     }
                 },
                 changed: function (form, item, value) {
-
-                    if (value===403 && isScoreDependent_Eval &&
+                    let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                    let checkBasisDate = classEndDate >= classBasisDate_Eval;
+                    if (value===403 && isScoreDependent_Eval && checkBasisDate &&
                         (ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === undefined
                                     || ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === null
                                     || ListGrid_Class_Student_Eval.getSelectedRecord().evaluationStatusReaction === 1
@@ -721,7 +726,9 @@
             }
 
             if (fieldName === "score") {
-                if (isScoreDependent_Eval) {
+                let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                let checkBasisDate = classEndDate >= classBasisDate_Eval;
+                if (isScoreDependent_Eval && checkBasisDate) {
 
                     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;

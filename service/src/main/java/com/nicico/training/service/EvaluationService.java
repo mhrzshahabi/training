@@ -72,7 +72,7 @@ public class EvaluationService implements IEvaluationService {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
 
-        if (evaluation.getEvaluationLevel().getCode().equals("Reactive") && !checkEvaluationDeadLine(evaluation.getTclass()))
+        if (checkClassBasisDate(evaluation.getTclass().getEndDate()) && evaluation.getEvaluationLevel().getCode().equals("Reactive") && !checkEvaluationDeadLine(evaluation.getTclass()))
             throw new TrainingException(TrainingException.ErrorType.EvaluationDeadline);
 
         evaluation.setDescription(request.getDescription());
@@ -1181,5 +1181,15 @@ public class EvaluationService implements IEvaluationService {
         long expireTime = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDays);
 
         return currentTimeSeconds <= expireTime;
+    }
+
+    private boolean checkClassBasisDate(String classEndDate) {
+
+        TotalResponse<ParameterValueDTO.Info> parameterValues = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info classBasisDate = parameterValues.getResponse().getData().stream().filter(p -> p.getCode().equals("classBasisDate")).findFirst().orElse(null);
+        if (classBasisDate == null)
+            return false;
+        else
+            return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
     }
 }
