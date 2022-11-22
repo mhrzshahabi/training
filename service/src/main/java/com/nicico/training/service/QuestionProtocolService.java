@@ -75,4 +75,10 @@ public class QuestionProtocolService implements IQuestionProtocolService {
     public List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds) {
         return testQuestionProtocolDAO.findByQuestionIds(questionIds);
     }
+
+    @Transactional
+    @Override
+    public List<QuestionProtocol> saveAll(List<QuestionProtocol> questionProtocols) {
+        return testQuestionProtocolDAO.saveAll(questionProtocols);
+    }
 }

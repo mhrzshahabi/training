@@ -21,5 +21,7 @@ public interface IQuestionProtocolService {
 
     List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds);
 
+    List<QuestionProtocol> saveAll(List<QuestionProtocol> questionProtocols);
+
 
 }

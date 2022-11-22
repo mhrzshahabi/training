@@ -26,6 +26,7 @@ import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.employmentHistory.EmploymentHistoryBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
+import com.nicico.training.mapper.question_protocol.QuestionProtocolMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
@@ -174,6 +175,7 @@ public class ElsRestController {
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
     private final TestQuestionMapper testQuestionMapper;
+    private final QuestionProtocolMapper questionProtocolMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -3062,6 +3064,8 @@ public class ElsRestController {
 
                     questionProtocols.add(questionProtocol);
                 });
+
+                questionProtocolService.saveAll(questionProtocolMapper.toQuestionProtocols(questionProtocols));
 
                 testQuestionDTO.setQuestionProtocols(questionProtocols);
 
