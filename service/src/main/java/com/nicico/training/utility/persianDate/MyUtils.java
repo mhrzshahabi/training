@@ -1,5 +1,6 @@
 package com.nicico.training.utility.persianDate;
 
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.model.Tclass;
@@ -12,6 +13,7 @@ import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.WeekDays;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -542,4 +544,25 @@ public class MyUtils {
             default -> null;
         };
     }
+
+    public static boolean isEvaluationExpired(String endDateStr, String type,int deadLineDaysValue) {
+        Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
+        long endDateTimestamp = endDateEpoch.getTime();
+
+        long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
+
+        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        boolean isReactive = type.equals("Reactive");
+        return isReactive && currentTimeSeconds > deadLine;
+    }
+
+    public static boolean checkClassBasisDate(String classEndDate,TotalResponse<ParameterValueDTO.Info> parameterValues) {
+
+        ParameterValueDTO.Info classBasisDate = parameterValues.getResponse().getData().stream().filter(p -> p.getCode().equals("classBasisDate")).findFirst().orElse(null);
+        if (classBasisDate == null)
+            return false;
+        else
+            return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
+    }
+
 }

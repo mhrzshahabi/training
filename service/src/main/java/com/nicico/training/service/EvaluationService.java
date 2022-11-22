@@ -4,11 +4,14 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.DynamicQuestionDTO;
+import com.nicico.training.dto.EvaluationAnswerDTO;
+import com.nicico.training.dto.EvaluationDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
-import com.nicico.training.utility.persianDate.PersianDate;
+import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,8 +73,11 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update request) {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
+        String type =evaluation.getEvaluationLevel().getCode();
+        TotalResponse<ParameterValueDTO.Info> parameterValues = parameterService.getByCode("ClassConfig");
 
-        if (checkClassBasisDate(evaluation.getTclass().getEndDate()) && evaluation.getEvaluationLevel().getCode().equals("Reactive") && !checkEvaluationDeadLine(evaluation.getTclass()))
+        int deadLineDaysValue = Integer.parseInt(modelMapper.map(parameterValueDAO.findByCode("reactiveEvaluationDeadline"), ParameterValueDTO.Info.class).getValue());
+        if (MyUtils.checkClassBasisDate(evaluation.getTclass().getEndDate(),parameterValues) && MyUtils.isEvaluationExpired(evaluation.getTclass().getEndDate(), type,deadLineDaysValue))
             throw new TrainingException(TrainingException.ErrorType.EvaluationDeadline);
 
         evaluation.setDescription(request.getDescription());
@@ -1164,32 +1169,6 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluationLevelId").toString()));
     }
 
-    private boolean checkEvaluationDeadLine(Tclass tclass) {
-        String endDateStr = tclass.getEndDate();
-        Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
-        long endDateTimestamp = endDateEpoch.getTime();
 
-        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
-        int deadLineDays = Integer.parseInt(
-                Objects.requireNonNull(parameterService.getByCode("ClassConfig").getResponse().getData()
-                        .stream()
-                        .filter(p -> p.getCode().equals("reactiveEvaluationDeadline"))
-                        .findFirst().orElse(null))
-                        .getValue()
-        );
-        long expireTime = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDays);
-
-        return currentTimeSeconds <= expireTime;
-    }
-
-    private boolean checkClassBasisDate(String classEndDate) {
-
-        TotalResponse<ParameterValueDTO.Info> parameterValues = parameterService.getByCode("ClassConfig");
-        ParameterValueDTO.Info classBasisDate = parameterValues.getResponse().getData().stream().filter(p -> p.getCode().equals("classBasisDate")).findFirst().orElse(null);
-        if (classBasisDate == null)
-            return false;
-        else
-            return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
-    }
 }

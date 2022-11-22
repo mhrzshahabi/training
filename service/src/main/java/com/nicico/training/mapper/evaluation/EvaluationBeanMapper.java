@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.QuestionBankDTO;
@@ -16,7 +17,7 @@ import com.nicico.training.repository.*;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
-import com.nicico.training.utility.persianDate.PersianDate;
+import com.nicico.training.utility.persianDate.MyUtils;
 import dto.Question.QuestionData;
 import dto.Question.QuestionScores;
 import dto.evaluuation.EvalCourse;
@@ -45,7 +46,6 @@ import response.question.dto.ElsQuestionTargetDto;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -58,7 +58,8 @@ public abstract class EvaluationBeanMapper {
 
     @Autowired
     protected IParameterValueService iParameterValueService;
-
+    @Autowired
+    protected IParameterService iParameterService;
 
     @Autowired
     protected IQuestionBankService questionBankService;
@@ -138,8 +139,8 @@ public abstract class EvaluationBeanMapper {
         request.setTitle(questionnaire.getTitle());
         try {
             request.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            request.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName()):"");
+            request.setPlanner(evaluation.getTclass().getPlanner() != null ? (evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()) : "");
         } catch (NullPointerException ignored) {
         }
         request.setTargetUsers(classStudents.stream()
@@ -181,8 +182,8 @@ public abstract class EvaluationBeanMapper {
         responseDto.setTitle(questionnaire.getTitle());
         try {
             responseDto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            responseDto.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName()):"");
+            responseDto.setPlanner(evaluation.getTclass().getPlanner() != null ? (evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()) : "");
         } catch (NullPointerException ignored) {
         }
         responseDto.setQuestions(questionDtos);
@@ -238,8 +239,8 @@ public abstract class EvaluationBeanMapper {
             }
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            dto.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName()):"");
+            dto.setPlanner(evaluation.getTclass().getPlanner() != null ? (evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()) : "");
             PersonalInfo teacher = iPersonalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId());
             dto.setTeacherFullName(teacher.getFirstNameFa() + " " +
                     teacher.getLastNameFa());
@@ -254,8 +255,11 @@ public abstract class EvaluationBeanMapper {
             evalCourseProtocol.setStartDate(evaluation.getTclass().getStartDate());
             evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
             dto.setCourseProtocol(evalCourseProtocol);
-
-            dto.setEvaluationExpired(isEvaluationExpired(evaluation));
+            String type = iParameterValueService.getInfo(evaluation.getEvaluationLevelId()).getCode();
+            TotalResponse<ParameterValueDTO.Info> parameterValues = iParameterService.getByCode("ClassConfig");
+            int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
+            boolean checkClassBasisDate=MyUtils.checkClassBasisDate(evaluation.getTclass().getEndDate(),parameterValues);
+            dto.setEvaluationExpired(MyUtils.isEvaluationExpired(evaluation.getTclass().getEndDate(), type,deadLineDaysValue) && checkClassBasisDate);
 
             elsContactEvaluationDtos.add(dto);
 
@@ -386,7 +390,7 @@ public abstract class EvaluationBeanMapper {
         if (QuestionBankTestQuestionList != null && QuestionBankTestQuestionList.size() > 0)
             timeQues = (time * 60) / QuestionBankTestQuestionList.size();
 
-        ExamCreateDTO examData = getExamData2(exam, tClass,exam.getId());
+        ExamCreateDTO examData = getExamData2(exam, tClass, exam.getId());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
         ImportedCourseDto courseDto = getCourseData2(exam);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
@@ -516,9 +520,9 @@ public abstract class EvaluationBeanMapper {
         ElsExtendedExamRequest request = new ElsExtendedExamRequest();
         ElsResendExamRequestResponse elsResendExamRequestResponse = new ElsResendExamRequestResponse();
         int time = Math.toIntExact(object.getDuration());
-        int zone=iParameterValueService.getZone("gmtTime");
+        int zone = iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(object.getTime(),zone);
+        String newTime = convertToTimeZone(object.getTime(), zone);
 
         Date startDate = getEpochDate(object.getStartDate(), newTime);
         Date endDate = getEndDateFromDuration(getStringGeoDate(object.getStartDate(), newTime)
@@ -973,10 +977,10 @@ public abstract class EvaluationBeanMapper {
 
     private ExamCreateDTO getExamData(ExamImportedRequest object, Tclass tClass) {
         int time = Math.toIntExact(object.getExamItem().getDuration());
-        int zone=iParameterValueService.getZone("gmtTime");
+        int zone = iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(object.getExamItem().getTime(),zone);
-        String newEndTime = convertToTimeZone(object.getExamItem().getEndTime(),zone);
+        String newTime = convertToTimeZone(object.getExamItem().getTime(), zone);
+        String newEndTime = convertToTimeZone(object.getExamItem().getEndTime(), zone);
 //        String newTime = object.getExamItem().getTime();
 
         Date startDate = getEpochDate(object.getExamItem().getDate(), newTime);
@@ -998,9 +1002,9 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
-            double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
-            exam.setScore(20D-(classScore+practicalScore));
+            double classScore = (object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+            double practicalScore = (object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+            exam.setScore(20D - (classScore + practicalScore));
             exam.setFinalScore(20D);
             exam.setPracticalScore(practicalScore);
             exam.setClassScore(classScore);
@@ -1010,9 +1014,9 @@ public abstract class EvaluationBeanMapper {
             else
                 exam.setMinimumAcceptScore(50D);
 
-            double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
-            double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
-            exam.setScore(100D-(classScore+practicalScore));
+            double classScore = (object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+            double practicalScore = (object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+            exam.setScore(100D - (classScore + practicalScore));
             exam.setFinalScore(100D);
             exam.setPracticalScore(practicalScore);
             exam.setClassScore(classScore);
@@ -1039,7 +1043,7 @@ public abstract class EvaluationBeanMapper {
 
         List<QuestionBankDTO.Exam> parents = testQuestionBanks.stream().filter(a -> a.getQuestionType().getTitle().equals(EQuestionType.GROUPQUESTION.getValue())).toList();
         for (QuestionBankDTO.Exam parent : parents) {
-            childSize = parent.getChilds().size() +childSize;
+            childSize = parent.getChilds().size() + childSize;
         }
         return testQuestionBanks.size() + childSize - parents.size();
     }
@@ -1047,10 +1051,10 @@ public abstract class EvaluationBeanMapper {
     private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, Long examId) {
         Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(examId);
         int time = Math.toIntExact(exam.getDuration());
-        int zone=iParameterValueService.getZone("gmtTime");
+        int zone = iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(exam.getTime(),zone);
-        String newEndTime = convertToTimeZone(exam.getEndTime(),zone);
+        String newTime = convertToTimeZone(exam.getTime(), zone);
+        String newEndTime = convertToTimeZone(exam.getEndTime(), zone);
 //        String newTime = exam.getTime();
 
         Date startDate = getEpochDate(exam.getDate(), newTime);
@@ -1070,9 +1074,9 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             examCreateDTO.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
-            double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
-            examCreateDTO.setScore(20D-(classScore+practicalScore));
+            double classScore = (exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
+            double practicalScore = (exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
+            examCreateDTO.setScore(20D - (classScore + practicalScore));
             examCreateDTO.setFinalScore(20D);
             examCreateDTO.setPracticalScore(practicalScore);
             examCreateDTO.setClassScore(classScore);
@@ -1083,9 +1087,9 @@ public abstract class EvaluationBeanMapper {
             else
                 examCreateDTO.setMinimumAcceptScore(50D);
 
-            double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
-            double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
-            examCreateDTO.setScore(100D-(classScore+practicalScore));
+            double classScore = (exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
+            double practicalScore = (exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
+            examCreateDTO.setScore(100D - (classScore + practicalScore));
             examCreateDTO.setFinalScore(100D);
 
             examCreateDTO.setPracticalScore(practicalScore);
@@ -1126,13 +1130,13 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            if (type.equalsIgnoreCase("preTest")){
+            if (type.equalsIgnoreCase("preTest")) {
                 exam.setScore(20D);
                 exam.setFinalScore(20D);
-            }else {
-                double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
-                double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
-                exam.setScore(20D-(classScore+practicalScore));
+            } else {
+                double classScore = (object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+                double practicalScore = (object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+                exam.setScore(20D - (classScore + practicalScore));
                 exam.setFinalScore(20D);
                 exam.setPracticalScore(practicalScore);
                 exam.setClassScore(classScore);
@@ -1143,15 +1147,15 @@ public abstract class EvaluationBeanMapper {
             else
                 exam.setMinimumAcceptScore(50D);
 
-            if (type.equalsIgnoreCase("preTest")){
+            if (type.equalsIgnoreCase("preTest")) {
                 exam.setScore(100D);
                 exam.setFinalScore(100D);
 
 
-            }else {
-                double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
-                double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
-                exam.setScore(100D-(classScore+practicalScore));
+            } else {
+                double classScore = (object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+                double practicalScore = (object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+                exam.setScore(100D - (classScore + practicalScore));
                 exam.setFinalScore(100D);
                 exam.setPracticalScore(practicalScore);
                 exam.setClassScore(classScore);
@@ -1176,7 +1180,7 @@ public abstract class EvaluationBeanMapper {
         examDto.setEndDate(null);
         Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(examId);
         examDto.setQuestionCount(getSizeOfQuestions(testQuestionBanks));
-         examDto.setSourceExamId(exam.getId());
+        examDto.setSourceExamId(exam.getId());
         examDto.setDuration(0);
 
         if (tClass.getScoringMethod().equals("3")) {
@@ -2170,12 +2174,12 @@ public abstract class EvaluationBeanMapper {
 
             updatedResultDto.setMobileNumber(data.getCellNumber());
             updatedResultDto.setNationalCode(data.getNationalCode());
-            if (data.getClassScore()!=null && !Objects.equals(data.getClassScore(), "-"))
-            updatedResultDto.setClassScore(Double.parseDouble(data.getClassScore()));
+            if (data.getClassScore() != null && !Objects.equals(data.getClassScore(), "-"))
+                updatedResultDto.setClassScore(Double.parseDouble(data.getClassScore()));
             else
                 updatedResultDto.setClassScore(null);
 
-            if (data.getPracticalScore()!=null && !Objects.equals(data.getPracticalScore(), "-"))
+            if (data.getPracticalScore() != null && !Objects.equals(data.getPracticalScore(), "-"))
                 updatedResultDto.setPracticalScore(Double.parseDouble(data.getPracticalScore()));
             else
                 updatedResultDto.setPracticalScore(null);
@@ -2439,42 +2443,43 @@ public abstract class EvaluationBeanMapper {
 
 
     public boolean checkClassScoreInRange(String allClassScore, List<ExamResult> examResult) {
-        if (allClassScore!=null) {
+        if (allClassScore != null) {
 
 
-                for (ExamResult data : examResult) {
-                    double classScore = 0D;
+            for (ExamResult data : examResult) {
+                double classScore = 0D;
 
-                    if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
-                        String englishFinalResult = new BigDecimal(data.getClassScore()).toString();
-                        classScore = Double.parseDouble(englishFinalResult);
-                        if (classScore >  Double.parseDouble(allClassScore))
-                            return false;
-                    }
-
+                if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
+                    String englishFinalResult = new BigDecimal(data.getClassScore()).toString();
+                    classScore = Double.parseDouble(englishFinalResult);
+                    if (classScore > Double.parseDouble(allClassScore))
+                        return false;
                 }
-                return true;
+
+            }
+            return true;
 
         } else
             return true;
 
     }
+
     public boolean checkPracticalScoreInRange(String allPracticalScore, List<ExamResult> examResult) {
-        if (allPracticalScore!=null) {
+        if (allPracticalScore != null) {
 
 
-                for (ExamResult data : examResult) {
-                    double practicalScore = 0D;
+            for (ExamResult data : examResult) {
+                double practicalScore = 0D;
 
-                    if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
-                        String englishFinalResult = new BigDecimal(data.getPracticalScore()).toString();
-                        practicalScore = Double.parseDouble(englishFinalResult);
-                        if (practicalScore >  Double.parseDouble(allPracticalScore))
-                            return false;
-                    }
-
+                if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
+                    String englishFinalResult = new BigDecimal(data.getPracticalScore()).toString();
+                    practicalScore = Double.parseDouble(englishFinalResult);
+                    if (practicalScore > Double.parseDouble(allPracticalScore))
+                        return false;
                 }
-                return true;
+
+            }
+            return true;
 
         } else
             return true;
@@ -2606,18 +2611,6 @@ public abstract class EvaluationBeanMapper {
         return response;
     }
 
-    private boolean isEvaluationExpired(Evaluation evaluation) {
-        String endDateStr = evaluation.getTclass().getEndDate();
-        Date endDateEpoch = PersianDate.getEpochDate(endDateStr, "23:59");
-        long endDateTimestamp = endDateEpoch.getTime();
 
-        int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
-        long deadLine = endDateTimestamp + TimeUnit.DAYS.toSeconds(deadLineDaysValue);
-
-        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-        boolean isReactive = iParameterValueService.getInfo(evaluation.getEvaluationLevelId()).getCode().equals("Reactive");
-
-        return isReactive && currentTimeSeconds > deadLine;
-    }
 
 }
