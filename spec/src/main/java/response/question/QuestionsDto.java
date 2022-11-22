@@ -10,6 +10,7 @@ public class QuestionsDto {
     private String question;
     private String type;
     private String score;
+    private String time;
     private String options;
     private Double proposedPointValue;
     private Double proposedTimeValue;

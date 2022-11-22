@@ -260,6 +260,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     }
 
     @Override
+    public void saveAll(List<QuestionBankTestQuestion> questionBankTestQuestion) {
+        questionBankTestQuestionDAO.saveAll(questionBankTestQuestion);
+    }
+
+    @Override
     public QuestionBankTestQuestion findByTestQuestionIdAndQuestionBankId(Long testQuestionId, Long questionBankId) {
         Optional<QuestionBankTestQuestion> questionBankTestQuestion = questionBankTestQuestionDAO.findFirstByTestQuestionIdAndQuestionBankId(testQuestionId, questionBankId);
         return questionBankTestQuestion.orElse(null);

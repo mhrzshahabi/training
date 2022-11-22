@@ -1,23 +1,18 @@
 package com.nicico.training.iservice;
 
 
-import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.QuestionBankDTO;
-import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.model.QuestionProtocol;
-import com.nicico.training.model.TestQuestion;
 import dto.exam.ImportedQuestionProtocol;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 public interface IQuestionProtocolService {
 
     void saveQuestionProtocol(Long sourceExamId, List<ImportedQuestionProtocol> questionProtocols);
 
     List<QuestionProtocol> findAllByExamId(Long id);
+    Optional<QuestionProtocol> findOneByExamIdAndQuestionId(Long id, Long questionId);
 
     List<QuestionProtocol> findAllByQuestionIds(List<Long> questionIds);
 

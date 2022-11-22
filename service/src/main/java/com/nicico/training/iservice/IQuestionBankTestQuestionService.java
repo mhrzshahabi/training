@@ -31,4 +31,5 @@ public interface IQuestionBankTestQuestionService {
 
     QuestionBankTestQuestion findByTestQuestionIdAndQuestionBankId(Long testQuestionId, Long questionBankId);
 
+    void  saveAll(List<QuestionBankTestQuestion> questionBankTestQuestion);
 }

@@ -39,7 +39,10 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.*;
+import dto.exam.EQuestionType;
+import dto.exam.ElsExamCreateDTO;
+import dto.exam.ElsImportedExam;
+import dto.exam.ElsImportedQuestionProtocol;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -81,7 +84,10 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
 import response.question.dto.*;
-import response.tclass.*;
+import response.tclass.ElsClassDetailResponse;
+import response.tclass.ElsSessionAttendanceResponse;
+import response.tclass.ElsSessionResponse;
+import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsClassListDto;
 import response.tclass.dto.ElsClassListV2Dto;
 import response.tclass.dto.ElsSessionDetailsResponse;
@@ -96,10 +102,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
+import static dto.exam.EQuestionType.*;
 
 @Slf4j
 @RestController
@@ -3042,41 +3048,49 @@ public class ElsRestController {
 
                     }
                 }
+                info= saveExam(testQuestionDTO);
+                // ----------------------------------
 
-                List<ElsImportedQuestionProtocol> questionProtocols = new ArrayList<>();
+
+
+                List<QuestionBankTestQuestion> questionBankTestQuestions = new ArrayList<>();
+                List<QuestionProtocol> questionProtocols = new ArrayList<>();
 
                 filteredQuestions.forEach(question -> {
                     ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
-                            .filter(questionProtocol -> questionProtocol.getQuestion().getId().equals(question.getId()) && questionProtocol.getQuestion().getType().getValue().equals(question.getQuestionType().getTitle()))
+                            .filter(questionProtocol -> questionProtocol.getQuestion().getTitle().equals(question.getQuestion()) && questionProtocol.getQuestion().getType().getValue().equals(convertQuestionType(question.getQuestionTypeId()).getValue()))
                             .findFirst()
                             .orElse(null);
 
-                    ElsImportedQuestionProtocol questionProtocol = new ElsImportedQuestionProtocol();
-
-                    questionProtocol.setQuestion(questionBankBeanMapper.toElsImportedQuestion(question));
-                    questionProtocol.setProposedPointValue(question.getProposedPointValue());
-                    questionProtocol.setProposedTimeValue(question.getProposedTimeValue());
-
                     if (qp != null) {
-                        questionProtocol.setMark(qp.getMark());
+                        QuestionBankTestQuestion questionBankTestQuestion = new QuestionBankTestQuestion();
+                        QuestionProtocol questionProtocol = new QuestionProtocol();
+
+                        questionBankTestQuestion.setQuestionBankId(question.getId());
+                        questionBankTestQuestion.setTestQuestionId(info.getId());
+                        questionBankTestQuestions.add(questionBankTestQuestion);
+                        questionProtocol.setQuestionId(question.getId());
+                        questionProtocol.setExamId(info.getId());
                         questionProtocol.setTime(qp.getTime());
+                        questionProtocol.setCorrectAnswerTitle(question.getDescriptiveAnswer());
+                        questionProtocol.setQuestionMark(Float.valueOf(qp.getMark().toString()));
+                        questionProtocols.add(questionProtocol);
                     }
 
-                    questionProtocols.add(questionProtocol);
                 });
+                if (!questionBankTestQuestions.isEmpty()){
+                    try {
+                        questionBankTestQuestionService.saveAll(questionBankTestQuestions);
+                        questionProtocolService.saveAll(questionProtocols);
 
-                questionProtocolService.saveAll(questionProtocolMapper.toQuestionProtocols(questionProtocols));
-
-                testQuestionDTO.setQuestionProtocols(questionProtocols);
-
-                // ----------------------------------
-                if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
-                    TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
-                    info = testQuestionMapper.toInfo(createdTestQuestion);
-                } else {
-                    TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
-                    info = testQuestionMapper.toInfo(testQuestion);
+                    }catch (Exception e){
+                        testQuestionService.delete(info.getId());
+                    }
                 }
+                else
+                    testQuestionService.delete(info.getId());
+
+
                 // -----------------------------------
 
                 response.setStatus(200);
@@ -3094,6 +3108,15 @@ public class ElsRestController {
         return response;
     }
 
+    private ElsExamCreateDTO.Info saveExam(TestQuestionDTO.Import testQuestionDTO) {
+        if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
+            TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
+           return testQuestionMapper.toInfo(createdTestQuestion);
+        } else {
+            TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
+            return testQuestionMapper.toInfo(testQuestion);
+        }
+    }
 
 
     @GetMapping("/user-classes-filter/v3/{page}/{size}")
@@ -3119,5 +3142,17 @@ public class ElsRestController {
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
+    }
+
+
+
+    private EQuestionType convertQuestionType(Long questionTypeId) {
+        ParameterValueDTO.TupleInfo info = parameterValueService.getInfo(questionTypeId);
+        return switch (info.getTitle()) {
+            case "چند گزینه ای" -> MULTI_CHOICES;
+            case "تشریحی" -> DESCRIPTIVE;
+            case "سوالات گروهی" -> GROUPQUESTION;
+            default -> null;
+        };
     }
 }

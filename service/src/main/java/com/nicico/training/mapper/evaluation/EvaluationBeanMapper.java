@@ -1933,6 +1933,11 @@ public abstract class EvaluationBeanMapper {
                 QuestionsDto questionsDto = new QuestionsDto();
                 questionsDto.setQuestion(question.getQuestion().getTitle());
                 questionsDto.setType(question.getQuestion().getType().getValue());
+                Optional<QuestionProtocol> q=iQuestionProtocolService.findOneByExamIdAndQuestionId(object.getExamItem().getId(),question.getQuestion().getId());
+                String score =(q.isPresent()) ? String.valueOf(q.get().getQuestionMark()==null ? "" : q.get().getQuestionMark()) : "";
+                String time =(q.isPresent()) ? String.valueOf(q.get().getTime()==null ? "" : q.get().getTime()/60) : "";
+                questionsDto.setScore(score);
+                questionsDto.setTime(time);
                 questionsDto.setId(question.getQuestion().getId());
                 questionsDto.setProposedPointValue(question.getProposedPointValue());
                 questionsDto.setProposedTimeValue(question.getProposedTimeValue());
