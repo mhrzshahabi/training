@@ -1375,7 +1375,9 @@
                     type: "text",
                     length: 11,
                     keyPressFilter: "[0-9]",
-                    wrapHintText: false
+                    wrapHintText: false,
+                    validateOnExit: true,
+                    validators: [TrValidators.MobileValidate]
                 },
                 {
                     name: "mobile2_sms",
@@ -1415,7 +1417,9 @@
                     type: "text",
                     length: 11,
                     keyPressFilter: "[0-9]",
-                    wrapHintText: false
+                    wrapHintText: false,
+                    validateOnExit: true,
+                    validators: [TrValidators.MobileValidate]
                 },
                 {
                     name: "hrMobile_sms",
@@ -1454,6 +1458,8 @@
                     title: "",
                     type: "text",
                     disabled: true,
+                    validateOnExit: true,
+                    validators: [TrValidators.MobileValidate]
                 },
                 {
                     name: "mdmsMobile_sms",
@@ -1492,6 +1498,8 @@
                     title: "",
                     type: "text",
                     disabled: true,
+                    validateOnExit: true,
+                    validators: [TrValidators.MobileValidate]
                 },
             ]
         });

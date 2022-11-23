@@ -474,6 +474,7 @@
                 required: true,
                 keyPressFilter: "[0-9]",
                 // length: "10",
+                validators: [TrValidators.NationalCodeValidate],
                 blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
 
