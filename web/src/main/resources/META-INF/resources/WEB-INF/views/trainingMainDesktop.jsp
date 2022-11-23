@@ -135,6 +135,7 @@
                                     type: "TextItem",
                                     length: 10000,
                                     controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
+                                    validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                                     transformPastedValue:function(item, form, pastedValue)
                                     {
                                         item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
