@@ -340,4 +340,19 @@ public class StudentDTO {
         private String peopleType;
         private String companyName;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - ReactionNotFilled")
+    public static class ReactionNotFilled {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String fullName;
+
+        public String getFullName() {
+            return (getFirstName() + " " + getLastName()).compareTo("null null") == 0 ? null : getFirstName() + " " + getLastName();
+        }
+    }
 }

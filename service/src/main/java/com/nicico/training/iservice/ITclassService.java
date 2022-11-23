@@ -1,10 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.ClassBaseResponse;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TargetSocietyDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
@@ -192,7 +189,9 @@ public interface ITclassService {
 
     BaseResponse delete(Long id) throws IOException;
 
-    Boolean checkEvaluationsEvaluatedPercentForEndingClass(Long classId);
+    List<StudentDTO.ReactionNotFilled> checkEvaluationsNotFilledForEndingClass(Long classId);
+
+    BaseResponse changeNotFilledStudentsStatus(Long classId, List<Long> studentIds);
 
     Boolean checkEvaluationsEndDateForEndingClass(Long classId);
 

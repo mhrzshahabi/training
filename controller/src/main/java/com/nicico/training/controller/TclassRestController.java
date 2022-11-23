@@ -521,9 +521,15 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/checkEvaluationsForEndingClass/evaluatedPercent/{classId}")
-    public Boolean checkEvaluationsEvaluatedPercentForEndingClass(@PathVariable Long classId) throws IOException {
-        return tClassService.checkEvaluationsEvaluatedPercentForEndingClass(classId);
+    @GetMapping(value = "/checkEvaluationsForEndingClass/notFilled/{classId}")
+    public List<StudentDTO.ReactionNotFilled> checkEvaluationsNotFilledForEndingClass(@PathVariable Long classId) throws IOException {
+        return tClassService.checkEvaluationsNotFilledForEndingClass(classId);
+    }
+
+    @Loggable
+    @PutMapping(value = "/changeStudentsStatus/notFilled/{classId}")
+    public BaseResponse changeNotFilledStudentsStatus(@PathVariable Long classId, @RequestBody List<Long> studentIds) {
+        return tClassService.changeNotFilledStudentsStatus(classId, studentIds);
     }
 
     @Loggable

@@ -365,10 +365,47 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public Boolean checkEvaluationsEvaluatedPercentForEndingClass(Long classId) {
-        double limit = Double.parseDouble(iParameterValueService.getInfoByCode("minQusForClassEnd").getValue());
-        double evaluatedPercent = Double.parseDouble(viewReactionEvaluationFormulaReportService.getPercentReaction(classId));
-        return evaluatedPercent >= limit;
+    @Transactional(readOnly = true)
+    public List<StudentDTO.ReactionNotFilled> checkEvaluationsNotFilledForEndingClass(Long classId) {
+
+        Tclass tClass = getTClass(classId);
+        List<Student> notFilledStudents;
+        TotalResponse<ParameterValueDTO.Info> classConfigParameterValues = parameterService.getByCode("ClassConfig");
+        if (MyUtils.checkClassBasisDate(tClass.getEndDate(), classConfigParameterValues)) {
+
+            notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() != 2 && item.getEvaluationStatusReaction() != 3).map(ClassStudent::getStudent).collect(Collectors.toList());
+            if (notFilledStudents.size() != 0) {
+                List<StudentDTO.ReactionNotFilled> students = modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
+                return students;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse changeNotFilledStudentsStatus(Long classId, List<Long> studentIds) {
+
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            TotalResponse<ParameterValueDTO.Info> scoreStateParameterValues = parameterService.getByCode("StudentScoreState");
+            ParameterValueDTO.Info scoreState = scoreStateParameterValues.getResponse().getData().stream().filter(p -> p.getCode().equals("TotalFailed")).findFirst().orElse(null);
+
+            TotalResponse<ParameterValueDTO.Info> failureReasonParameterValues = parameterService.getByCode("StudentFailureReason");
+            ParameterValueDTO.Info failureReason = failureReasonParameterValues.getResponse().getData().stream().filter(p -> p.getCode().equals("TotalFailedForNotAnsweredReaction")).findFirst().orElse(null);
+
+            List<ClassStudent> classStudents = classStudentDAO.findAllByTclassId(classId);
+            List<ClassStudent> notFilledClassStudents = classStudents.stream().filter(item -> studentIds.contains(item.getStudentId())).collect(Collectors.toList());
+            notFilledClassStudents.forEach(item -> {
+                item.setScore(null);
+                item.setScoresStateId(scoreState.getId());
+                item.setFailureReasonId(failureReason.getId());
+            });
+            baseResponse.setStatus(HttpStatus.OK.value());
+        } catch (Exception e) {
+            baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        }
+        return baseResponse;
     }
 
     @Override

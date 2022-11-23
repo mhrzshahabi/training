@@ -7814,6 +7814,22 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-104">
+        <sql>
+            <![CDATA[
+            DELETE FROM TBL_PARAMETER_VALUE where c_code = 'minQusForClassEnd';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-105">
+        <sql>
+            <![CDATA[
+            UPDATE TBL_PARAMETER_VALUE SET c_title = 'مردود به علت عدم پر نکردن ارزیابی واکنشی' where c_code = 'TotalFailedForNotAnsweredReaction';
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
