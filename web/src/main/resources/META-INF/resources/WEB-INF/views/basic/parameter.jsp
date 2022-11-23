@@ -125,7 +125,13 @@
         ID: "ParameterDF_parameter",
         fields: [
             {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
+            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ],},
             {name: "code", title: "<spring:message code="code"/>", required: true, validators: [TrValidators.NotEmpty],},
             {name: "type", title: "<spring:message code="type"/>"},
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
