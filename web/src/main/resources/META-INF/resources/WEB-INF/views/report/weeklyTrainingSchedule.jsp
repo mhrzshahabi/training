@@ -60,7 +60,7 @@
                 separateSpecialValues: true,
                 textAlign: "center",
                 pickListWidth: "280",
-                `pickListFields`: [
+                pickListFields: [
                     {name: "titleFa", width: "100%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
                     isCategoryChanged_JspWeeklyTrainingSchedule = true;
