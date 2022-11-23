@@ -1,0 +1,97 @@
+<configuration>
+    <springProperty scope="context" name="AppName" source="spring.application.name" defaultValue=""/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProfile name="Local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <property name="LOG_FILE" value="/var/log/nicico/${AppName}.log"/>
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+
+            <file>${LOG_FILE}</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <maxHistory>3</maxHistory>
+                <maxFileSize>2MB</maxFileSize>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="FILE_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>/var/log/nicico/trace.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>/var/log/nicico/trace.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <maxHistory>5</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+            </rollingPolicy>
+        </appender>
+
+        <logger name="com.nicico" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="com.nicico" level="INFO" additivity="false">
+            <appender-ref ref="FILE"/>
+        </logger>
+        <logger name="com.nicico.training.component" level="INFO">
+            <appender-ref ref="FILE_TRACE"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="Development,Staging,Production">
+        <property name="LOG_FILE" value="/var/log/nicico/${AppName}.log"/>
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+
+            <file>${LOG_FILE}</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <maxHistory>3</maxHistory>
+                <maxFileSize>2MB</maxFileSize>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="FILE_TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>/var/log/nicico/trace.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>/var/log/nicico/trace.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <maxHistory>5</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+            </rollingPolicy>
+        </appender>
+
+        <logger name="com.nicico" level="INFO" additivity="false">
+            <appender-ref ref="FILE"/>
+        </logger>
+
+        <logger name="com.nicico.training.component" level="INFO">
+            <appender-ref ref="FILE_TRACE"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>
+
