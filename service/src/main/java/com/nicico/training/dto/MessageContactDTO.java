@@ -63,6 +63,7 @@ public class MessageContactDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @AllArgsConstructor
     @ApiModel("InfoForEvalAudit")
     public static class InfoForSms {
         private Long id;
@@ -70,6 +71,11 @@ public class MessageContactDTO {
         private String createdDate;
         private String objectMobile;
         private String trackingNumber;
+        private String name;
+        private String lastName;
+        private String nationalCode;
+        private String smsType;
+        private String userType;
     }
 
     @Getter
