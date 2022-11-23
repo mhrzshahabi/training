@@ -16,7 +16,6 @@ import com.nicico.training.repository.MessageParameterDAO;
 import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.SmsDeliveryResponse;
@@ -87,23 +86,46 @@ public class MessageContactService implements IMessageContactService {
 
     }
 
-        @Override
+    @Override
     public List<MessageContactDTO.InfoForSms> getClassSmsHistory(Long classId) {
-        List<MessageContact> messages = messageContactDAO.getClassSmsHistory(classId);
-            return modelMapper.map(messages, new TypeToken<List<MessageContactDTO.InfoForSms>>() {
-            }.getType());
+        List<?> messages = messageContactDAO.getClassSmsHistory(classId);
+
+        List<MessageContactDTO.InfoForSms> data = new ArrayList<>();
+
+
+        if (messages != null) {
+
+            data = new ArrayList<>(messages.size());
+
+            for (Object message : messages) {
+                Object[] d = (Object[]) message;
+                data.add(new MessageContactDTO.InfoForSms(
+                        (d[5] != null ? Long.parseLong(d[5].toString()) : null),
+                        (d[6] != null ? d[6].toString() : ""),
+                        (d[8] != null ? d[8].toString() : ""),
+                        (d[7] != null ? d[7].toString() : ""),
+                        (d[4] != null ? d[4].toString() : ""),
+                        (d[1] != null ? d[1].toString() : ""),
+                        (d[2] != null ? d[2].toString() : ""),
+                        (d[3] != null ? d[3].toString() : ""),
+                        (d[9] != null ? d[9].toString() : ""),
+                        (d[0] != null ? d[0].toString() : "")
+                ));
+            }
+        }
+        return data;
     }
 
-        @Override
+    @Override
     public String getSmsDetail(Long id) {
-        Optional<MessageContact> optionalMessage =messageContactDAO.findById(id);
+        Optional<MessageContact> optionalMessage = messageContactDAO.findById(id);
 
-        if (optionalMessage.isPresent()){
-            String track=optionalMessage.get().getTrackingNumber();
-            SmsDeliveryResponse s=smsFeignClient.delivery(track);
-            if (s.getState().equals("delivered")){
+        if (optionalMessage.isPresent()) {
+            String track = optionalMessage.get().getTrackingNumber();
+            SmsDeliveryResponse s = smsFeignClient.delivery(track);
+            if (s.getState().equals("delivered")) {
                 return "پیامک به کاربر تحویل داده شد";
-            }else return "پیامک به کاربر تحویل داده نشد";
+            } else return "پیامک به کاربر تحویل داده نشد";
         }
 
         return "پیامک به کاربر تحویل داده نشد";

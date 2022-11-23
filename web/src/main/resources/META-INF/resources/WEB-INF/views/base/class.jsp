@@ -5101,6 +5101,11 @@
                     {name: "createdBy"},
                     {name: "createdDate"},
                     {name: "trackingNumber"},
+                    {name: "userType"},
+                    {name: "smsType"},
+                    {name: "nationalCode"},
+                    {name: "lastName"},
+                    {name: "name"},
                     {name: "objectMobile"}
                 ],
                 fetchDataURL: smsService+"sms-history/" + record.id
@@ -5128,6 +5133,37 @@
                         align: "center",
                         width: "10%",
                         hidden:true,
+                        canFilter: false
+                    },
+                    {
+                        name: "name",
+                        title: "نام",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }, {
+                        name: "lastName",
+                        title: "نام خانوادگی",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }, {
+                        name: "nationalCode",
+                        title: "کد ملی",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }, {
+                        name: "smsType",
+                        title: "نوع اس ام اس",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }, {
+                        name: "userType",
+                        title: "نوع کاربر",
+                        align: "center",
+                        width: "10%",
                         canFilter: false
                     },
                     {
