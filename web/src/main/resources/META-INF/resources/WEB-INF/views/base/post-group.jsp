@@ -1433,6 +1433,12 @@
                 name: "code",
                 title: "<spring:message code='code'/>",
                 type: "text",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+                    }]
             },
             {
                 name: "titleEn",
@@ -1444,7 +1450,7 @@
                 hint: "English/انگلیسی",
                 showHintInField: true,
                 keyPressFilter: "[a-z|A-Z|0-9 |]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,TrValidators.NotContainSpecialWords],
             },
             {
                 name: "description",
