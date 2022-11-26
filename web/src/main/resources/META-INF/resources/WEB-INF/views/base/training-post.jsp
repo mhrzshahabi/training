@@ -913,6 +913,13 @@
                 required: true,
                 requiredMessage: "<spring:message code="msg.field.is.required"/>",
                 colSpan: 2,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
             {
                 name: "jobId",
