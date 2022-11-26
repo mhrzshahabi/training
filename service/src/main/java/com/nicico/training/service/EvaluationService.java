@@ -332,10 +332,10 @@ public class EvaluationService implements IEvaluationService {
                 if (answers.isEmpty())
                     notAnsweredEvaluations.add(evaluation);
             }
-            return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
+            return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode).stream().toList();
         } else if (evaluatorType.equals("student")) {
             List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            List<Evaluation> behavioralEvaluations= getBehavioralEvaluations(list,evaluatorNationalCode);
+            List<Evaluation> behavioralEvaluations= getBehavioralEvaluations(list,evaluatorNationalCode).stream().toList();
             return  getExecutionEvaluations(behavioralEvaluations,evaluatorNationalCode);
         } else {
             return null;
@@ -384,8 +384,8 @@ public class EvaluationService implements IEvaluationService {
         return specRs;
     }
 
-    private List<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
-        List<Evaluation> finalList = new ArrayList<>(list);
+    private Set<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
+        Set<Evaluation> finalList = new HashSet<>(list);
         List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations();
         for (Evaluation evaluation : evaluationList){
             if (evaluation.getEvaluatorTypeId() == 187L) {
@@ -406,7 +406,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private List<Evaluation> getExecutionEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
-        List<Evaluation> finalList = new ArrayList<>(list);
+        Set<Evaluation> finalList = new HashSet<>(list);
         List<Evaluation> evaluationList = evaluationDAO.getExecutionEvaluations();
         for (Evaluation evaluation : evaluationList){
 //            if (evaluation.getEvaluatorTypeId() == 187L) {
@@ -424,7 +424,7 @@ public class EvaluationService implements IEvaluationService {
                     finalList.add(evaluation);
             }
         }
-            return finalList;
+            return finalList.stream().toList();
     }
 
     @Transactional
