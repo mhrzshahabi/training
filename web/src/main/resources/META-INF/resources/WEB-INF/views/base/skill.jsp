@@ -219,6 +219,12 @@
                 validateOnExit:true,
                 readonly: true,
                 width: "300",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+        {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.field.length"/>",
+            expression: /^.{2,150}$/
+        }]
             },
             {
                 name: "titleEn",
@@ -227,7 +233,13 @@
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 showHintInField: true,
                 width: "300",
+                validators: [ TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
 
+                    }]
             },
             {
                 name: "categoryId",
@@ -390,7 +402,13 @@
                 colSpan: 4,
                 title: "<spring:message code="description"/>",
                 width: "700",
-                type: 'areaText'
+                type: 'areaText',
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+                    }]
             }
         ]
     });
