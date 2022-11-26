@@ -436,7 +436,7 @@
                 type: "SelectItem",
                 valueField: "id",
                 displayField: "title",
-                // optionDataSource: RestDataSource_FailureReason_JSPScores,
+                optionDataSource: RestDataSource_FailureReason_JSPScores,
                 filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false,
