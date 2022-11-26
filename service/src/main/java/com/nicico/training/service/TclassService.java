@@ -373,10 +373,9 @@ public class TclassService implements ITclassService {
         TotalResponse<ParameterValueDTO.Info> classConfigParameterValues = parameterService.getByCode("ClassConfig");
         if (MyUtils.checkClassBasisDate(tClass.getEndDate(), classConfigParameterValues)) {
 
-            notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() != 2 && item.getEvaluationStatusReaction() != 3).map(ClassStudent::getStudent).collect(Collectors.toList());
+            notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() == null || item.getEvaluationStatusReaction() == 0 || item.getEvaluationStatusReaction() == 1).map(ClassStudent::getStudent).collect(Collectors.toList());
             if (notFilledStudents.size() != 0) {
-                List<StudentDTO.ReactionNotFilled> students = modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
-                return students;
+                return modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
             }
         }
         return new ArrayList<>();
