@@ -112,13 +112,24 @@
                 name: "titleFa",
                 title: "<spring:message code="title"/>",
                 required: true,
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber, {
+                    type: "regexp",
+                    errorMessage: "<spring:message code="msg.field.length"/>",
+                    expression: /^.{2,150}$/
+
+                }],
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "workDomain",
                 title: "<spring:message code="workDomain"/>",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
             {
                 name: "companyId",
@@ -203,7 +214,8 @@
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
                 required: false,
-                length: "30"
+                length: "30",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
 
         ]
@@ -306,6 +318,13 @@
             {
                 name: "address.restAddr",
                 title: "<spring:message code='address'/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "address.phone",
