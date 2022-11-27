@@ -172,7 +172,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
                                     tbl_evaluation
                                 WHERE
                                     ( b_status = 1
-                                      AND f_evaluator_type_id = 188 )
+                                      AND f_evaluator_type_id = 188  and f_evaluation_level_id =154)
                                 GROUP BY
                                     tbl_evaluation.f_class_id,
                                     tbl_evaluation.b_status,
