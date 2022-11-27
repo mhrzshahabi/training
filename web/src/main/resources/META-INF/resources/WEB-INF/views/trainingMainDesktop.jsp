@@ -1501,11 +1501,6 @@
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
-        LengthOfChar: {
-            type: "regexp",
-            errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
-            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
-        },
         NotContainSpecialWords: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.words"/>",
