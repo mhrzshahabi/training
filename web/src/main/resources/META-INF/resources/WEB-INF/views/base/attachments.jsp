@@ -51,6 +51,7 @@
                     title: "<spring:message code="attach.file.name"/>",
                     required: true,
                     length: 50,
+                    validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                     keyPressFilter: /^((?![/\\?%*:|"<>.]).)*$/
                 },
                 {
@@ -80,6 +81,7 @@
                 {
                     name: "description",
                     title: "<spring:message code="description"/>",
+                    validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                     length: 255
                 }
             ]
