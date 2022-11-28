@@ -563,7 +563,7 @@ public abstract class EvaluationBeanMapper {
             if (object.getQuestionData() != null) {
                 totalQuestionsTime += object.getQuestionData().stream().mapToLong(questionScore -> {
                     String time = questionScore.getTime();
-                    if (time == null)
+                    if (time == null || time.equals(""))
                         return 0;
                     else
                         return Long.parseLong(questionScore.getTime());
@@ -684,7 +684,7 @@ public abstract class EvaluationBeanMapper {
 
                         questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
                         int t = 0;
-                        if (questionScore.getTime() == null) {
+                        if (questionScore.getTime() == null || questionScore.getTime().equals("")) {
                             t = 0;
                         } else {
                             t = Integer.parseInt(questionScore.getTime());
@@ -2320,7 +2320,7 @@ public abstract class EvaluationBeanMapper {
 
             groupQuestionProtocol.setMark(Double.valueOf(questionScore.getScore()));
             int t = 0;
-            if (questionScore.getTime() == null) {
+            if (questionScore.getTime() == null || questionScore.getTime().equals("")) {
                 t = 0;
             } else {
                 t = Integer.parseInt(questionScore.getTime());

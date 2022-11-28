@@ -122,10 +122,17 @@ public class MessageContactService implements IMessageContactService {
 
         if (optionalMessage.isPresent()) {
             String track = optionalMessage.get().getTrackingNumber();
-            SmsDeliveryResponse s = smsFeignClient.delivery(track);
-            if (s.getState().equals("delivered")) {
-                return "پیامک به کاربر تحویل داده شد";
-            } else return "پیامک به کاربر تحویل داده نشد";
+            SmsDeliveryResponse response;
+            try{
+                  response = smsFeignClient.delivery(track);
+                if (response.getState().equals("delivered")) {
+                    return "پیامک به کاربر تحویل داده شد";
+                } else return "پیامک به کاربر تحویل داده نشد";
+            }catch (Exception e){
+                return "پیامک به کاربر تحویل داده نشد";
+
+            }
+
         }
 
         return "پیامک به کاربر تحویل داده نشد";

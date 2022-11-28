@@ -4120,19 +4120,18 @@
                                 classTypeStatus.setValue(oldValue);
                                 highlightClassStauts(oldValue, 10);
                             } else {
-                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/evaluatedPercent/" + record.id, "GET", null, function(response) {
+                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/endDate/" + record.id, "GET", null, function(response) {
                                     if (JSON.parse(response.httpResponseText) === false) {
                                         wait.close();
-                                        createDialog("info", "به دلیل به حدنصاب نرسیدن تکمیل پرسشنامه های ارزیابی واکنشی، امکان پایان کلاس وجود ندارد");
+                                        createDialog("info", "مدت زمان لازم جهت ثبت ارزیابی واکنشی به پایان نرسیده است، بنابراین امکان پایان کلاس وجود ندارد");
                                         classTypeStatus.setValue(oldValue);
                                         highlightClassStauts(oldValue, 10);
                                     } else {
-                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/endDate/" + record.id, "GET", null, function(response) {
+                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/notFilled/" + record.id, "GET", null, function(response) {
                                             wait.close();
-                                            if (JSON.parse(response.httpResponseText) === false) {
-                                                createDialog("info", "مدت زمان لازم جهت ثبت ارزیابی واکنشی به پایان نرسیده است، بنابراین امکان پایان کلاس وجود ندارد");
-                                                classTypeStatus.setValue(oldValue);
-                                                highlightClassStauts(oldValue, 10);
+                                            let data = JSON.parse(response.httpResponseText);
+                                            if (data.size() !== 0) {
+                                                showNotFilledStudents(data, oldValue, record.id);
                                             }
                                         }));
                                     }
@@ -4145,6 +4144,83 @@
                 }
             }));
         }
+    }
+    function showNotFilledStudents(data, oldValue, classId) {
+
+        let DynamicForm_Not_Filled_Students = isc.DynamicForm.create({
+            width: 600,
+            height: 100,
+            padding: 6,
+            titleAlign: "right",
+            fields: [
+                {
+                    name: "text",
+                    width: "100%",
+                    colSpan: 2,
+                    value: "فراگیران با اسامی زیر ارزیابی واکنشی را پر نکرده اند، بنابراین وضعیت قبولی آنها به مردود به علت پر نکردن ارزیابی واکنشی تغییر می کند، ادامه می دهید؟",
+                    showTitle: false,
+                    editorType: 'staticText'
+                },
+                {
+                    type: "RowSpacerItem"
+                },
+                {
+                    name: "notFilledNames",
+                    width: "100%",
+                    colSpan: 2,
+                    title: "<spring:message code="title"/>",
+                    showTitle: false,
+                    editorType: 'textArea',
+                    canEdit: false
+                }
+            ]
+        });
+
+        let names = "";
+        for (let j = 0; j < data.length; j++) {
+            names = names.concat(data[j].firstName + " " + data[j].lastName  + "\n");
+        }
+        DynamicForm_Not_Filled_Students.setValue("notFilledNames", names);
+
+        let Window_Not_Filled_Students = isc.Window.create({
+            width: 600,
+            height: 150,
+            numCols: 2,
+            title: "<spring:message code='warning'/>",
+            items: [
+                DynamicForm_Not_Filled_Students,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonSave.create({
+                            title: "<spring:message code="continue"/>",
+                            click: function () {
+                                changeStudentsStatus(data.map(item => item.id), classId, oldValue);
+                                Window_Not_Filled_Students.close();
+                            }}),
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="cancel"/>",
+                            click: function () {
+                                classTypeStatus.setValue(oldValue);
+                                highlightClassStauts(oldValue, 10);
+                                Window_Not_Filled_Students.close();
+                            }
+                        })],
+                })]
+        });
+        Window_Not_Filled_Students.show();
+    }
+    function changeStudentsStatus(studentIds, classId, oldValue) {
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeStudentsStatus/notFilled/" + classId, "PUT", JSON.stringify(studentIds), function(response) {
+            wait.close();
+            let result = JSON.parse(response.httpResponseText);
+            if (result.status === 200) {
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+            } else {
+                classTypeStatus.setValue(oldValue);
+                highlightClassStauts(oldValue, 10);
+            }
+        }));
     }
     function hasClassStarted(oldValue) {
         let record = ListGrid_Class_JspClass.getSelectedRecord();

@@ -179,17 +179,6 @@
                     }
                 }
             },
-            {
-                width: "200",
-                mask: "###",
-                name: "minQusForClassEnd",
-                title: "حداقل تعداد پرسشنامه های تکمیل شده برای پایان کلاس %",
-                change: function (form, item, value) {
-                    if (value > 100) {
-                        item.setValue()
-                    }
-                }
-            },
 //=================================================================================================
             {type: "RowSpacerItem"},
             {type: "BlurbItem",

@@ -160,8 +160,9 @@ public class SendMessageService implements ISendMessageService {
             }
 
             try {
+//job
 
-                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId,id);
+                 List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId,id);
                 Long returnMessageId = null;
 
                 MessageContactLog log = new MessageContactLog();
@@ -562,7 +563,8 @@ if (classStudent.isPresent()){
                     break;
             }
 
-            messageContact.setMessageParameterList(parameters);
+
+            messageContact.setMessageParameterList(convertMessageParameterToMapV2(parameters, parameterValue.getDescription()));
 
             oMessageModel.getMessageContactList().add(messageContact);
         }
@@ -643,6 +645,28 @@ if (classStudent.isPresent()){
 
         }
         return parameters;
+
+    }
+
+    private List<MessageParameterDTO.Create>  convertMessageParameterToMapV2(List<MessageParameterDTO.Create> model, String message) {
+        List<MessageParameterDTO.Create> convertData=new ArrayList<>();
+        int count = 0;
+
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) == '%')
+                count++;
+        }
+        String[] parts = message.split("%");
+        Map<String, String> parameters = new HashMap<>();
+
+        for (int z = 0; z <= count; z++) {
+            if (z % 2 != 0) {
+                String data = parts[z];
+                convertData.add(new MessageParameterDTO.Create(data.trim(), Objects.requireNonNull(model.stream().filter(p -> p.getName().equals(data.trim())).findFirst().orElse(null)).getValue()));
+            }
+        }
+
+      return   convertData;
 
     }
 }
