@@ -1177,7 +1177,8 @@
                 name: "address",
                 title: "<spring:message code='home.address'/>",
                 type: "textArea",
-                length: "255"
+                length: "255",
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords]
             },
             {
                 name: "phone",
