@@ -49,7 +49,15 @@
             {
                 name: "langName",
                 title: "<spring:message code="foreign.language"/>",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "langLevelId",
@@ -73,7 +81,15 @@
             },
             {
                 name: "instituteName",
-                title: "<spring:message code="institute.place"/>"
+                title: "<spring:message code="institute.place"/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "duration",

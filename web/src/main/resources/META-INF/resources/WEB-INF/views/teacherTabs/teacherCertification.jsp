@@ -56,15 +56,39 @@
             {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "companyName",
-                title: "<spring:message code='company.name'/>"
+                title: "<spring:message code='company.name'/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "companyLocation",
-                title: "<spring:message code='location.name'/>"
+                title: "<spring:message code='location.name'/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "categories",

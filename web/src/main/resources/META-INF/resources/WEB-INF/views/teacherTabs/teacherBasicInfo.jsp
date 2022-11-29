@@ -604,7 +604,13 @@
                 name: "personality.description",
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
-                colSpan: 3
+                colSpan: 3,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+                    }]
             },
             {
                 name: "evaluation",

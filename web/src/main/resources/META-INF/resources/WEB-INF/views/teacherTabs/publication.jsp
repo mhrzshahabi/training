@@ -59,7 +59,15 @@
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "publicationSubjectTypeId",
@@ -155,11 +163,27 @@
             },
             {
                 name: "publicationLocation",
-                title:"<spring:message code='publication.location'/>"
+                title:"<spring:message code='publication.location'/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "publisher",
-                title: "<spring:message code='publisher'/>"
+                title: "<spring:message code='publisher'/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             },
             {
                 name: "publicationDate",

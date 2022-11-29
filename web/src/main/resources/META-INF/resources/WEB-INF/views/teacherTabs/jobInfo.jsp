@@ -126,7 +126,15 @@
                 title: "<spring:message code='address.rest'/>",
                 type: "textArea",
                 length: "255",
-                height: "100"
+                height: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
+
             }
         ],
         itemChanged: function (item, newValue) {
