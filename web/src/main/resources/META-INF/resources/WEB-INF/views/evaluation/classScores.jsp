@@ -172,9 +172,7 @@
                                             type: "regexp",
                                             errorMessage: "<spring:message code="msg.field.length"/>",
                                             expression: /^.{2,150}$/
-
-                                        } ]
-                                    ,
+                                        } ],
                                     change(form, item, value) {
 
                                         if (ListGrid_Class_Student_Eval.getSelectedRecord().scoringMethod == "2") {
