@@ -160,6 +160,7 @@
                 title: "<spring:message code="email"/>",
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                validators: [ TrValidators.NotContainSpecialWords]
             }
         ]
     });
@@ -283,6 +284,7 @@
                 validateOnExit: true,
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                validators: [ TrValidators.NotContainSpecialWords]
             },
         ]
     });
