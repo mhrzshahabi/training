@@ -793,6 +793,8 @@
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255"
+                ,validators: [ TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "titleEn",
@@ -881,8 +883,10 @@
                 width: "*",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "255"
-            },
+                length: "255",
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "manager.nationalCode",
                 title: "مدیر موسسه",
@@ -911,8 +915,10 @@
                 width: "10%",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "30"
-            },
+                length: "30",
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='cart.number'/>",
@@ -922,6 +928,8 @@
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
+                ,validators: [ TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "companyTypeId",
@@ -3106,7 +3114,9 @@
                 title: "<spring:message code='account.owner.name'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
-            },
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "description",
                 title: "<spring:message code='description'/>",
@@ -3114,7 +3124,9 @@
                 length: "500",
                 colSpan: 2,
                 width: "*",
-            },
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "isEnableVal",
                 title: "<spring:message code='isEnable'/>",
