@@ -299,12 +299,14 @@
                 name: "personality.firstNameEn",
                 title: "<spring:message code='firstName.latin'/>",
                 keyPressFilter: "[a-z|A-Z |]"
+                ,validators: [ TrValidators.NotContainSpecialWords]
             },
 
             {
                 name: "personality.lastNameEn",
                 title: "<spring:message code='lastName.latin'/>",
                 keyPressFilter: "[a-z|A-Z |]"
+                ,validators: [ TrValidators.NotContainSpecialWords]
             },
 
             {
