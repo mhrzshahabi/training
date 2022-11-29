@@ -70,7 +70,7 @@
                 required: true,
                 readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                validators: [TrValidators.NotEmpty,{
+                validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialWords,{
                     type: "regexp",
                     errorMessage: "<spring:message code="msg.field.length"/>",
                     expression: /^.{2,150}$/
@@ -81,7 +81,7 @@
                 name: "titleEn",
                 title: "نام لاتین ",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                validators: [{
+                validators: [ TrValidators.NotContainSpecialWords,{
                     type: "regexp",
                     errorMessage: "<spring:message code="msg.field.length"/>",
                     expression: /^.{2,150}$/
@@ -166,7 +166,7 @@
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                validators: [{
+                validators: [ TrValidators.NotContainSpecialWords,{
                     type: "isString",
                     validateOnExit: true,
                     stopOnError: true,
@@ -179,7 +179,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 hint: "Latin",
                 showHintInField: true,
-                validators: [{
+                validators: [ TrValidators.NotContainSpecialWords,{
                     type: "isString",
                     validateOnExit: true,
                     type: "lengthRange",
