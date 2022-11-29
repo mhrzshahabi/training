@@ -210,6 +210,8 @@
                 required: false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
+                ,validators: [ TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "titleFa",
