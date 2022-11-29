@@ -38,8 +38,10 @@
                 name: "personality.contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
                 keyPressFilter: "[a-z|A-Z |]",
-                length: "30"
-            },
+                length: "30",
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
 
             {
                 name: "personality.contactInfo.workAddress.stateId",
