@@ -662,7 +662,7 @@
                 name: "titleEn",
                 title: "<spring:message code='global.titleEn'/>",
                 keyPressFilter: "[a-z|A-Z|0-9 |]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,
+                validators: [TrValidators.NotContainSpecialWords, TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,
                     {
                         type: "regexp",
                         errorMessage: "<spring:message code="msg.field.length"/>",
