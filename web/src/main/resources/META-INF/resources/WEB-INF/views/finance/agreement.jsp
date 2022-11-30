@@ -743,7 +743,8 @@
                 type: "textArea",
                 height: "100",
                 enforceLength: true,
-                length: 150
+                length: 150,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "teacherEvaluation",
