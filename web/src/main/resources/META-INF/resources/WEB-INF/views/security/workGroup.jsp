@@ -531,12 +531,14 @@
                 title: "<spring:message code="title"/>",
                 required: true,
                 validateOnExit: true,
-                length: 255
+                length: 255,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "description",
                 title: "<spring:message code="description"/>",
-                length: 255
+                length: 255,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "userIds",
