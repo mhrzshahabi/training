@@ -1189,4 +1189,32 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "WHERE\n" +
             "    cl.id =:classId",nativeQuery = true)
     List<String> findClassStudentsNationalCodeByTclassId(long classId);
+
+
+    @Query(value = " SELECT\n" +
+            "    tbl_contact_info.c_mobile,\n" +
+            "    concat(concat(tbl_student1.first_name, ' '), tbl_student1.last_name) fullname,\n" +
+            "    tbl_course.c_title_fa,\n" +
+            "    tbl_class_student.id,\n" +
+            "    tbl_class_student.class_id,\n" +
+            "    tbl_class.c_code\n" +
+            "FROM\n" +
+            "         tbl_class_student\n" +
+            "    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
+            "    INNER JOIN tbl_contact_info ON tbl_student.f_contact_info = tbl_contact_info.id\n" +
+            "    LEFT JOIN tbl_evaluation ON tbl_class.id = tbl_evaluation.f_class_id\n" +
+            "                                AND tbl_class_student.id = tbl_evaluation.f_evaluator_id\n" +
+            "                                AND ( tbl_evaluation.f_evaluator_type_id = 188\n" +
+            "                                      AND tbl_evaluation.f_evaluation_level_id = 154 )\n" +
+            "    INNER JOIN tbl_student tbl_student1 ON tbl_class_student.student_id = tbl_student1.id\n" +
+            "    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "      outer apply ( select c_value  from TBL_PARAMETER_VALUE v where v.C_CODE = 'classBasisDate' ) classBasisDate\n" +
+            "WHERE\n" +
+            "    tbl_contact_info.c_mobile IS NOT NULL\n" +
+            "    AND tbl_class.student_online_eval_status = 1\n" +
+            "    AND tbl_class_student.evaluation_status_reaction = 1\n" +
+            "                    and\n" +
+            "                tbl_class.c_end_date > = classBasisDate.c_value",nativeQuery = true)
+    List<?> findAllUsersForSenSmsForUnCompleteReactionEvaluation();
 }

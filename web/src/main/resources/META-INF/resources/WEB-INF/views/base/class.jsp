@@ -5280,6 +5280,7 @@
                             title: "جزییات پیام",
                             margin: 3,
                             click: function () {
+                                wait.show();
                                 showSmsDetailInClass(record.id);
                             }
                         });
@@ -5311,10 +5312,11 @@
 
         isc.RPCManager.sendRequest(TrDSRequest(smsService+"sms-detail/" + requestId , "GET", null, function (resp) {
             if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+                wait.close();
                 createDialog("info", resp.httpResponseText, "جزییات");
 
             } else {
+                wait.close();
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));

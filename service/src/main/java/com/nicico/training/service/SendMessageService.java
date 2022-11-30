@@ -257,6 +257,52 @@ public class SendMessageService implements ISendMessageService {
 
     }
 
+
+
+    @Scheduled(cron = "0 0 12 * * ?")
+//    @Scheduled(cron = "*/1 * * * * ?")  every minute
+    public void sendSmsForUnCompleteReactionEvaluation() throws IOException {
+        ParameterValueDTO.Info parameterValue = parameterValueService.getInfoByCode("sendSmsForUnCompleteReactionEvaluation");
+        ParameterValueDTO.Info smsPid = parameterValueService.getInfoByCode("message-evaluation-student2");
+        if (parameterValue.getValue().trim().equals("بله")){
+            List<?> list=classStudentDAO.findAllUsersForSenSmsForUnCompleteReactionEvaluation();
+
+            if (list != null) {
+                Map<String, String> paramValMap = new HashMap<>();
+
+
+                for (Object o : list) {
+                    Object[] data = (Object[]) o;
+
+                    if (data[0] != null && (data[0].toString().length() == 10 || data[0].toString().length() == 11)) {
+                        String mobile = data[0].toString();
+                        if (!mobile.startsWith("0") && mobile.length() == 10) {
+                            mobile = "0" + mobile;
+                        }
+                        paramValMap.put("prefix-full_name", "جناب آقای / سرکار خانم ");
+                        paramValMap.put("full-name", (data[1] != null ? data[1].toString() : " "));
+                        paramValMap.put("course-name", (data[2] != null ? data[2].toString() : " "));
+                        paramValMap.put("personnel-address", elsSmsUrl);
+
+                        syncEnqueue(smsPid.getValue(),
+                                paramValMap,
+                                Collections.singletonList(mobile),
+                                null,
+                                (data[4] != null ? Long.parseLong(data[4].toString()) : null),
+                                (data[3] != null ? Long.parseLong(data[3].toString()) : null));
+
+                    }
+
+
+                }
+            }
+
+        }
+
+
+
+    }
+
     public ResponseEntity sendMessage(@RequestBody String data) throws IOException {
         List<Long> ids = new ArrayList<>();
         String type = "";
