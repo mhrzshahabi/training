@@ -208,6 +208,13 @@
                             titleOrientation: "top",
                             title: "لطفاً علت افزودن به لیست سیاه  را در کادر زیر وارد کنید:",
                             suppressBrowserClearIcon:true,
+                            validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                                {
+                                    type: "regexp",
+                                    errorMessage: "<spring:message code="msg.field.length"/>",
+                                    expression: /^.{2,150}$/
+
+                                }],
                             icons: [
                             //     {
                             //     name: "view",
@@ -243,7 +250,11 @@
                         isc.IButton.create({
                             title: "تایید",
                             click: function () {
-                            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id +"?reason=" +(typeof (blackListForm.getField('reason').getValue())=='undefined'? '' :blackListForm.getField('reason').getValue() ), "GET", null,blackListCloseForm));
+                                debugger
+                                if (!blackListForm.validate())
+                                    return;
+
+                                    isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id +"?reason=" +(typeof (blackListForm.getField('reason').getValue())=='undefined'? '' :blackListForm.getField('reason').getValue() ), "GET", null,blackListCloseForm));
 
                             }
                         }),
@@ -285,3 +296,5 @@
     }
 
 
+
+    //</script>

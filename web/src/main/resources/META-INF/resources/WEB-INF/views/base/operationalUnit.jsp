@@ -200,6 +200,7 @@
     {
         //*****create fields*****
         var DynamicForm_OperationalUnit = isc.DynamicForm.create({
+            ID: "operationalUnitForm",
             fields:
                 [
                     {
@@ -215,10 +216,20 @@
                         type: "text",
                         required: true,
                         requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                        validators: [TrValidators.NotEmpty],
+                        validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                            {
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.field.length"/>",
+                                expression: /^.{2,150}$/
+
+                            }],
                         length: 100
                     }
-                ]
+                ],
+            click: function (){
+                if(!operationalUnitForm.validate())
+                    return;
+            }
         });
 
         //*****create buttons*****

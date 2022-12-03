@@ -121,6 +121,16 @@
         return DF;
     }
 
+    function setValidatorSpecialCharacterAndWords (){
+        return  [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+            {
+                type: "regexp",
+                errorMessage: "<spring:message code="msg.field.length"/>",
+                expression: /^.{2,150}$/
+
+            } ]
+    }
+
     function setValidators(type) {
         switch (type) {
             case "percent":
@@ -130,7 +140,9 @@
                     expression: /^(([0-9]?[0-9])|100)$/,
                 }];
             default:
-                return null;
+                // return null;
+                return [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords ];
+
         }
     }
 
