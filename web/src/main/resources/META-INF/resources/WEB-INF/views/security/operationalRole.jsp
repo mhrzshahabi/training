@@ -372,6 +372,7 @@
         height: "100%",
         maxWidth: 800,
         titleAlign: "left",
+        ID: "operationalRoleForm",
         fields: [
             {name: "id", hidden: true},
             {
@@ -379,7 +380,13 @@
                 title: "<spring:message code="title"/>",
                 required: true,
                 validateOnExit: true,
-                length: 255
+                length: 255,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords, {
+                    type: "regexp",
+                    errorMessage: "<spring:message code="msg.field.length"/>",
+                    expression: /^.{2,150}$/
+
+                }]
             },
             {
                 name: "complexId",
@@ -578,7 +585,14 @@
             {
                 name: "description",
                 title: "<spring:message code="description"/>",
-                length: 255
+                length: 255,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
             {
                 name: "objectType",
@@ -643,6 +657,8 @@
                                         icon: "[SKIN]/actions/approve.png",
                                         title: "<spring:message code='select.all'/>",
                                         click: function () {
+                                            if(!operationalRoleForm.validate())
+                                                return;
                                             let fItem = DynamicForm_JspOperationalRole.getField("userIds");
                                             fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));
                                             fItem.comboBox.pickList.hide();
