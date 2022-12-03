@@ -58,7 +58,8 @@
                 name: "question",
                 title: "<spring:message code='question'/>",
                 required: true,
-                length: 150
+                length: 150,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "domainId",
