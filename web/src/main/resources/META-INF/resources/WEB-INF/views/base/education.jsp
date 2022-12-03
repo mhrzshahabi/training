@@ -174,11 +174,25 @@
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
                 validateOnExit: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             },
             {
@@ -193,6 +207,7 @@
                 valueField: "id",
                 filterFields: ["titleFa"],
                 filterOperator: "iContains",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                 pickListFields: [{name: "titleFa"}]
             },
             {
@@ -207,6 +222,7 @@
                 valueField: "id",
                 filterFields: ["titleFa"],
                 filterOperator: "iContains",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                 pickListFields: [{name: "titleFa"}],
             }
         ]
@@ -467,12 +483,26 @@
                 required: true,
                 validateOnExit: true,
                 length: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
                 length: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             }
         ]
@@ -740,6 +770,13 @@
                 validateOnExit: true,
                 type: 'text',
                 length: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
             },
             {
@@ -747,6 +784,13 @@
                 title: "<spring:message code="global.titleEn"/>",
                 type: 'text',
                 length: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             },
             {
@@ -755,6 +799,7 @@
                 required: true,
                 validateOnExit: true,
                 length: "5",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                 keyPressFilter: "[0-9]"
             },
         ]

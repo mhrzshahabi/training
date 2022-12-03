@@ -125,10 +125,29 @@
         ID: "ParameterDF_parameter",
         fields: [
             {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "type", title: "<spring:message code="type"/>"},
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ],},
+            {name: "code", title: "<spring:message code="code"/>", required: true, validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords
+                   ],},
+            {name: "type", title: "<spring:message code="type"/>", validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]},
+            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem", validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]},
         ]
     });
 
@@ -149,11 +168,36 @@
             {name: "id", hidden: true},
             {name: "parameter.id", dataPath: "parameterId", hidden: true,},
             {name: "parameter.title", title: "<spring:message code="parameter.type"/>", canEdit: false},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>", required: true,},
-            {name: "value", title: "<spring:message code="value"/>",},
-            {name: "type", title: "<spring:message code="type"/>",},
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],},
+            {name: "code", title: "<spring:message code="code"/>", required: true,validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords
+                   ]},
+            {name: "value", title: "<spring:message code="value"/>",validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]},
+            {name: "type", title: "<spring:message code="type"/>",validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]},
+            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]},
         ]
     });
 

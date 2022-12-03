@@ -123,11 +123,14 @@
                 name: "title",
                 title: "عنوان",
                 length: 200,
-                required: true},
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
+            },
             {
                 name: "address",
                 title: "آدرس",
-                length: 150
+                length: 150,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "phone",
@@ -147,6 +150,7 @@
                 length: 150,
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                validators: [TrValidators.NotContainSpecialWords]
             },
 
         ]

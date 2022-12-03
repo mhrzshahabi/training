@@ -708,7 +708,14 @@
                 name: "postName",
                 canEdit: false,
                 title: "پست انتخاب شده : ",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
 
 
@@ -783,7 +790,8 @@
                 name: "letterNumber",
                 length: 10,
                 title: "شماره نامه کارگزینی",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "complex",
@@ -809,7 +817,8 @@
                 name: "title",
                 length: 50,
                 title: "عنوان",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "acceptor",
@@ -851,7 +860,8 @@
                 name: "description",
                 title: "توضیحات",
                 length: 100,
-                required: false
+                required: false,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             }
         ]
     });

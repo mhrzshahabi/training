@@ -74,6 +74,13 @@
                 title: "جستجو در عناوین",
                 width: 400,
                 suppressBrowserClearIcon: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 icons: [
                     {
                     name: "view",

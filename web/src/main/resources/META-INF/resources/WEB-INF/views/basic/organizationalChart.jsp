@@ -139,6 +139,13 @@
             title: "<spring:message code="search"/>",
             width: 400,
             suppressBrowserClearIcon: true,
+            validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                {
+                    type: "regexp",
+                    errorMessage: "<spring:message code="msg.field.length"/>",
+                    expression: /^.{2,150}$/
+
+                }],
             icons: [{
                 name: "view",
                 src: "[SKINIMG]actions/view.png",

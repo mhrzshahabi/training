@@ -164,6 +164,13 @@
             {
                 name: "fileName",
                 title: "<spring:message code="file.name"/>",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 required: true
             },
             {
@@ -188,6 +195,13 @@
                 name: "description",
                 title: "<spring:message code="description"/>",
                 type: "textArea",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 height: "*",
             },
             {name: "group_id", hidden: true},

@@ -280,7 +280,14 @@
             {
                 name: "letterNumber",
                 title: "شماره نامه کارگزینی",
-                required: true
+                required: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             }
         ]
     });
