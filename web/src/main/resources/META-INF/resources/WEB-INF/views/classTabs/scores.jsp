@@ -86,10 +86,6 @@
                 autoFitWidth: true
             },
             {
-                name: "evaluationStatusReaction",
-                hidden:true
-            },
-            {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
@@ -103,8 +99,19 @@
                 filterOperator: "iContains"
             },
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false}
-        ]
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false},
+            {name: "evaluationStatusReaction", title: "وضعیت ارزیابی واکنشی"}
+        ],
+        transformResponse: function (dsResponse, dsRequest, data) {
+            let records = dsResponse.data;
+            if (records) {
+                for (let i = 0; i < records.length; i++) {
+                    if (records[i].evaluationStatusReaction === undefined)
+                        records[i].evaluationStatusReaction = 0;
+                }
+            }
+            return this.Super("transformResponse", arguments);
+        }
     });
     //**********************************************************************************
     //ToolStripButton
@@ -365,11 +372,6 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-             {
-                name: "evaluationStatusReaction",
-                hidden:true
-            },
-
             {
                 name: "scoresStateId",
                 title: "<spring:message code="pass.mode"/>",
@@ -605,7 +607,6 @@
                  }
 
             },
-
             {
                 name: "score",
                 ID: "score_id",
@@ -646,7 +647,6 @@
                         }
                     }
                 },
-
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid, item) {
                     // if (record.evaluationStatusReaction!==1){
                         if (newValue != null) {
@@ -711,8 +711,17 @@
                     // }
 
                 }
+            },
+            {
+                name: "evaluationStatusReaction",
+                canFilter: false,
+                valueMap: {
+                    "0": "صادر نشده",
+                    "1": "صادر شده",
+                    "2": "تکمیل شده و کامل",
+                    "3": "تکمیل شده و ناقص"
+                }
             }
-
         ],
         sortChanged:function(sortField) {
             let arr = ["valence", "failureReasonId", "scoresStateId"]
@@ -816,24 +825,18 @@
                 return !(arr.includes(record.scoresStateId))
             }
 
-            if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo") {
+            if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo" || fieldName === "evaluationStatusReaction") {
                 return false
             }
             return true;
         },
         </sec:authorize>
         getCellCSSText:function (record,rowNum,colNum) {
-
             if (record.save==true)
             {
                 return "background-color:#98B334;font-size: 12px;";
             }
-
         },
-
-
-
-
     });
 
 
