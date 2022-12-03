@@ -180,8 +180,7 @@ public class ElsRestController {
     private final IPublicationService iPublicationService;
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
-    private final TestQuestionMapper testQuestionMapper;
-    private final QuestionProtocolMapper questionProtocolMapper;
+    private final IElsService elsService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -3024,100 +3023,15 @@ public class ElsRestController {
     @PostMapping("/teacher/send-exam-to-training")
     public ElsSendExamToTrainingResponse sendExamToTraining(HttpServletRequest header, @RequestBody ElsImportedExam importedExam) {
         ElsSendExamToTrainingResponse response = new ElsSendExamToTrainingResponse();
-        ElsExamCreateDTO.Info info;
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
-                TestQuestionDTO.Import testQuestionDTO = testQuestionMapper.toTestQuestionDto(importedExam);
-
-                long tclassId = tclassService.getClassByCode(testQuestionDTO.getClassCode()).getId();
-                testQuestionDTO.setTclassId(tclassId);
-
-                // assign questions to the created exam
-                Long teacherId = tclassService.get(tclassId).getTeacherId();
-                List<QuestionBank> allByTeacherId = questionBankService.findAllTeacherId(teacherId);
-
-                Set<QuestionBank> filteredQuestions = new HashSet<>();
-                if (testQuestionDTO.getQuestionProtocols() != null && !testQuestionDTO.getQuestionProtocols().isEmpty()) {
-                    for (ElsImportedQuestionProtocol qp : testQuestionDTO.getQuestionProtocols()) {
-                        Optional<QuestionBank> questionBank = allByTeacherId.stream()
-                                .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
-                                .findFirst();
-
-                        questionBank.ifPresent(filteredQuestions::add);
-
-                    }
-                }
-                info= saveExam(testQuestionDTO);
-                // ----------------------------------
-
-
-
-                List<QuestionBankTestQuestion> questionBankTestQuestions = new ArrayList<>();
-                List<QuestionProtocol> questionProtocols = new ArrayList<>();
-
-                filteredQuestions.forEach(question -> {
-                    ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
-                            .filter(questionProtocol -> questionProtocol.getQuestion().getTitle().equals(question.getQuestion()) && questionProtocol.getQuestion().getType().getValue().equals(convertQuestionType(question.getQuestionTypeId()).getValue()))
-                            .findFirst()
-                            .orElse(null);
-
-                    if (qp != null) {
-                        QuestionBankTestQuestion questionBankTestQuestion = new QuestionBankTestQuestion();
-                        QuestionProtocol questionProtocol = new QuestionProtocol();
-
-                        questionBankTestQuestion.setQuestionBankId(question.getId());
-                        questionBankTestQuestion.setTestQuestionId(info.getId());
-                        questionBankTestQuestions.add(questionBankTestQuestion);
-                        questionProtocol.setQuestionId(question.getId());
-                        questionProtocol.setExamId(info.getId());
-                        questionProtocol.setTime(qp.getTime());
-                        questionProtocol.setCorrectAnswerTitle(question.getDescriptiveAnswer());
-                        questionProtocol.setQuestionMark(Float.valueOf(qp.getMark().toString()));
-                        questionProtocols.add(questionProtocol);
-                    }
-
-                });
-                if (!questionBankTestQuestions.isEmpty()){
-                    try {
-                        questionBankTestQuestionService.saveAll(questionBankTestQuestions);
-                        questionProtocolService.saveAll(questionProtocols);
-
-                    }catch (Exception e){
-                        testQuestionService.delete(info.getId());
-                    }
-                }
-                else
-                    testQuestionService.delete(info.getId());
-
-
-                // -----------------------------------
-
-                response.setStatus(200);
-                response.setMessage("Exam successfully created");
-                response.setInfo(info);
-
-            } catch (Exception ex) {
-                response.setStatus(HttpStatus.CONFLICT.value());
-                response.setMessage("بروز خطا در سیستم: " + ex.getMessage());
-            }
+            response = elsService.submitExamFromEls(importedExam);
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("خطای شناسایی");
         }
         return response;
     }
-
-    private ElsExamCreateDTO.Info saveExam(TestQuestionDTO.Import testQuestionDTO) {
-        if (testQuestionDTO.getTestQuestionType().equals("FinalTest")) {
-            TestQuestionDTO.Info createdTestQuestion = testQuestionService.create(testQuestionMapper.toCreate(testQuestionDTO));
-           return testQuestionMapper.toInfo(createdTestQuestion);
-        } else {
-            TestQuestion testQuestion = testQuestionService.createPreTest(testQuestionDTO.getTclassId());
-            return testQuestionMapper.toInfo(testQuestion);
-        }
-    }
-
 
     @GetMapping("/user-classes-filter/v3/{page}/{size}")
     public ElsClassListV2Dto getUserClassesV2WithFilterForExamOrPre(HttpServletRequest header
@@ -3144,15 +3058,4 @@ public class ElsRestController {
         }
     }
 
-
-
-    private EQuestionType convertQuestionType(Long questionTypeId) {
-        ParameterValueDTO.TupleInfo info = parameterValueService.getInfo(questionTypeId);
-        return switch (info.getTitle()) {
-            case "چند گزینه ای" -> MULTI_CHOICES;
-            case "تشریحی" -> DESCRIPTIVE;
-            case "سوالات گروهی" -> GROUPQUESTION;
-            default -> null;
-        };
-    }
 }
