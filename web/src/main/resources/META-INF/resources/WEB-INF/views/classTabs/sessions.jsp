@@ -668,7 +668,14 @@
                     {
                         name: "description",
                         title: "<spring:message code="description"/>",
-                        textAlign: "center"
+                        textAlign: "center",
+                        validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                            {
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.field.length"/>",
+                                expression: /^.{2,150}$/
+
+                            }]
                     }
                 ]
         });

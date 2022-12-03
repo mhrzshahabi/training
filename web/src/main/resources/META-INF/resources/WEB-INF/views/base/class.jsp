@@ -959,6 +959,13 @@
                 required: true,
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 changed: function (_1, _2, _3) {
                     convertEn2Fa(_1, _2, _3, ["+", "*", "/"]);
                 }
@@ -1410,6 +1417,13 @@
                 title: "حد نمره قبولی",
                 textAlign: "center",
                 required: true,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
             },
             {
                 name: "acceptancelimit_a",

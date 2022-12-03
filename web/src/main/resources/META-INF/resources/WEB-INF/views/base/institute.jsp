@@ -793,6 +793,8 @@
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255"
+                ,validators: [ TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "titleEn",
@@ -881,8 +883,10 @@
                 width: "*",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "255"
-            },
+                length: "255",
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "manager.nationalCode",
                 title: "مدیر موسسه",
@@ -911,8 +915,10 @@
                 width: "10%",
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "30"
-            },
+                length: "30",
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='cart.number'/>",
@@ -922,6 +928,8 @@
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
+                ,validators: [ TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "companyTypeId",
@@ -1245,7 +1253,9 @@
                 name: "contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
                 width: "*",
-                length: "100"
+                length: "100",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
+
             },
             {
                 name: "contactInfo.workAddress.restAddr",
@@ -1255,7 +1265,8 @@
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
                 type: 'textArea',
-                length: "255"
+                length: "255",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             }
         ],
 
@@ -2141,13 +2152,27 @@
                 title: "<spring:message code='bank'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
-                required:true
+                required:true,
+                validators: [TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "bankBranch",
                 title: "<spring:message code='bank.branch'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
+                validators: [TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "bankBranchCode",
@@ -2173,6 +2198,13 @@
                 title: "<spring:message code='shaba.number'/>",
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
+                validators: [TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
         ],
     });
@@ -2454,6 +2486,13 @@
                 required: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
+                validators: [ TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "titleEn",
@@ -2461,6 +2500,13 @@
                 keyPressFilter: "[0-9|-| ]",
                 keyPressFilter: "[0-9|A-Z|a-z| ]",
                 width: "*",
+                validators: [ TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "eplaceTypeId",
@@ -2528,6 +2574,8 @@
                 length: "500",
                 colSpan: 3,
                 width: "*",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
+
             }
         ]
     });
@@ -3067,7 +3115,9 @@
                 title: "<spring:message code='account.owner.name'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
-            },
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "description",
                 title: "<spring:message code='description'/>",
@@ -3075,7 +3125,9 @@
                 length: "500",
                 colSpan: 2,
                 width: "*",
-            },
+                validators: [ TrValidators.NotContainSpecialWords]
+
+    },
             {
                 name: "isEnableVal",
                 title: "<spring:message code='isEnable'/>",

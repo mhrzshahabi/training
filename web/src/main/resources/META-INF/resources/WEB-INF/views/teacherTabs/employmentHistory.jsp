@@ -66,12 +66,27 @@
                 name: "jobTitle",
                 title: "سمت یا موضوع همکاری",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                validators: [
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
+
             },
             {
                 name: "companyName",
                 title: "نام سازمان / امور",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                validators: [
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
             {
                 name: "categories",
