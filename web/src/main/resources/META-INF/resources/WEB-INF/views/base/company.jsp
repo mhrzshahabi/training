@@ -262,7 +262,7 @@
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
                 validateOnExit: true,
-                // validators: [TrValidators.MobileValidate]
+                validators: [TrValidators.MobileValidate]
 
             },
             {

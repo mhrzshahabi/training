@@ -1198,6 +1198,7 @@
                 title: "<spring:message code='mobile'/>",
                 width: "*",
                 validators: [TrValidators.MobileValidate],
+                validateOnExit: true,
                 blur: function () {
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_Institute_Institute_Address.getValue("mobile"));
