@@ -1686,7 +1686,13 @@
                 // keyPressFilter: "[a-z|A-Z|0-9-|' '|'_']",
                 hidden:true,
                 width: "*",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 changed: function (_1, _2, _3) {
                     convertFa2En(_1, _2, _3, []);
                 },
@@ -1704,7 +1710,14 @@
                 length: "*",
                 required: false,
                 endRow: true,
-                wrapTitle: true
+                wrapTitle: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    } ]
             },
             {
                 name: "description",
@@ -1715,6 +1728,7 @@
                 title: "توضیحات",
                 width: "100%",
                 length: 5000,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             }
         ],
         valuesManager: "vm_JspCourse"
