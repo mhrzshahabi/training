@@ -794,6 +794,69 @@
             Detail_Tab_Evaluation
         ]
     });
+    let departmentFilter_form =   isc.DynamicForm.create({
+        padding: 0,
+        fields: [
+            {
+                name: "departmentFilter",
+                type: "SelectItem",
+                multiple: true,
+                title: "<spring:message code='complex'/>",
+                width: "300",
+                height: 25,
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+                    cacheAllData: true,
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+                }),
+                autoFetchData: true,
+                displayField: "title",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+                    debugger
+                    load_classList_by_department(value);
+                },
+                dataArrived: function (startRow, endRow, data) {
+                    let list = [];
+                    let listId = [];
+
+                    for (let i = 0; i < data.allRows.size(); i++) {
+                        list.push(data.allRows[i].title);
+                        listId.push(data.allRows[i].id);
+                    }
+                        departmentFilter_form.getField("departmentFilter").setValue(listId);
+                        load_classList_by_department(listId);
+
+                }
+                // icons: [
+                //     {
+                //         name: "clear",
+                //         src: "[SKIN]actions/remove.png",
+                //         width: 15,
+                //         height: 15,
+                //         inline: true,
+                //         prompt: "پاک کردن",
+                //         click: function (form, item) {
+                //             item.clearValue();
+                //             item.focusInItem();
+                //             departmentCriteria = [];
+                //             let mainCriteria = createMainCriteria();
+                //             ListGrid_class_Evaluation.invalidateCache();
+                //             ListGrid_class_Evaluation.fetchData(mainCriteria);
+                //         }
+                //     }
+                // ],
+            }]
+    })
 
     var VLayout_Body_Evaluation = isc.VLayout.create({
         width: "100%",
@@ -806,56 +869,7 @@
                 members: [
                     labelGuide(ListGrid_class_Evaluation.getFieldByName("evaluation").valueMap),
                     <sec:authorize access="hasAuthority('Evaluation_R')">
-                    isc.DynamicForm.create({
-                        padding: 0,
-                        fields: [
-                            {
-                                name: "departmentFilter",
-                                type: "SelectItem",
-                                multiple: true,
-                                title: "<spring:message code='complex'/>",
-                                width: "300",
-                                height: 25,
-                                optionDataSource: isc.TrDS.create({
-                                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
-                                    cacheAllData: true,
-                                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
-                                }),
-                                autoFetchData: false,
-                                displayField: "title",
-                                valueField: "id",
-                                textAlign: "center",
-                                pickListFields: [
-                                    {
-                                        name: "title",
-                                        title: "<spring:message code="title"/>",
-                                        filterOperator: "iContains",
-                                        autoFitWidth: true
-                                    }
-                                ],
-                                changed: function (form, item, value) {
-                                    load_classList_by_department(value);
-                                },
-                                // icons: [
-                                //     {
-                                //         name: "clear",
-                                //         src: "[SKIN]actions/remove.png",
-                                //         width: 15,
-                                //         height: 15,
-                                //         inline: true,
-                                //         prompt: "پاک کردن",
-                                //         click: function (form, item) {
-                                //             item.clearValue();
-                                //             item.focusInItem();
-                                //             departmentCriteria = [];
-                                //             let mainCriteria = createMainCriteria();
-                                //             ListGrid_class_Evaluation.invalidateCache();
-                                //             ListGrid_class_Evaluation.fetchData(mainCriteria);
-                                //         }
-                                //     }
-                                // ],
-                            }]
-                    })
+                    departmentFilter_form
                     </sec:authorize>
                 ]
             }),

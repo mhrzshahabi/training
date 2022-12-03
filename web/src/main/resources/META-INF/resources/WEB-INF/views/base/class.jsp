@@ -2632,6 +2632,8 @@
             },
             {
                 name: "departmentFilter",
+                type: "SelectItem",
+                multiple: true,
                 title: "<spring:message code='complex'/>",
                 width: "300",
                 height: 30,
@@ -2649,14 +2651,15 @@
                     }
                 ],
                 dataArrived: function (startRow, endRow, data) {
+                    let list = [];
+                    let listId = [];
 
                     for (let i = 0; i < data.allRows.size(); i++) {
-                        if (data.allRows[i].title !== undefined && data.allRows[i].title.contains("سرچشمه")) {
-                            DynamicForm_Term_Filter.getField("departmentFilter").setValue(data.allRows[i].title);
-                            load_classes_by_department(data.allRows[i].id);
-                            break;
-                        }
+                        list.push(data.allRows[i].title);
+                        listId.push(data.allRows[i].id);
                     }
+                    DynamicForm_Term_Filter.getField("departmentFilter").setValue(listId);
+                    load_classes_by_department(listId);
 
                 },
                 changed: function (form, item, value) {
