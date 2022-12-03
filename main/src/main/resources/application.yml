@@ -51,8 +51,6 @@ server:
     session:
       cookie:
         name: App_${spring.application.name}
-        http-only: true
-        secure: true
       timeout: 30m
 
 management:
