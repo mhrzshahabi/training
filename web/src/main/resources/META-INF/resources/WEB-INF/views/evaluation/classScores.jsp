@@ -205,8 +205,9 @@
                                     title: "تایید",
                                     click: function () {
                                         let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                                        let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
                                         let checkBasisDate = classEndDate >= classBasisDate_Eval;
-                                        if(isScoreDependent_Eval && checkBasisDate) {
+                                        if(isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
 
                                             if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
 
@@ -746,8 +747,9 @@
 
             if (fieldName === "score") {
                 let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
                 let checkBasisDate = classEndDate >= classBasisDate_Eval;
-                if (isScoreDependent_Eval && checkBasisDate) {
+                if (isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
 
                     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;
