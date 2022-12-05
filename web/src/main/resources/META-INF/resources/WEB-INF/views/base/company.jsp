@@ -158,9 +158,8 @@
             {
                 name: "email",
                 title: "<spring:message code="email"/>",
-                validators: [TrValidators.EmailValidate],
+                validators: [TrValidators.EmailValidate, TrValidators.NotContainSpecialWords],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
-                validators: [ TrValidators.NotContainSpecialWords]
             }
         ]
     });
@@ -282,9 +281,8 @@
                 name: "manager.contactInfo.email",
                 title: "<spring:message code='email'/>",
                 validateOnExit: true,
-                validators: [TrValidators.EmailValidate],
+                validators: [TrValidators.EmailValidate, TrValidators.NotContainSpecialWords],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
-                validators: [ TrValidators.NotContainSpecialWords]
             },
         ]
     });
