@@ -4137,22 +4137,26 @@
                                 classTypeStatus.setValue(oldValue);
                                 highlightClassStauts(oldValue, 10);
                             } else {
-                                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/endDate/" + record.id, "GET", null, function(response) {
-                                    if (JSON.parse(response.httpResponseText) === false) {
-                                        wait.close();
-                                        createDialog("info", "مدت زمان لازم جهت ثبت ارزیابی واکنشی به پایان نرسیده است، بنابراین امکان پایان کلاس وجود ندارد");
-                                        classTypeStatus.setValue(oldValue);
-                                        highlightClassStauts(oldValue, 10);
-                                    } else {
-                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/notFilled/" + record.id, "GET", null, function(response) {
+                                wait.close();
+                                if (record.teachingMethod.code !== 'intraOrganizationalRemotelyClass') {
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/endDate/" + record.id, "GET", null, function(response) {
+                                        if (JSON.parse(response.httpResponseText) === false) {
                                             wait.close();
-                                            let data = JSON.parse(response.httpResponseText);
-                                            if (data.size() !== 0) {
-                                                showNotFilledStudents(data, oldValue, record.id);
-                                            }
-                                        }));
-                                    }
-                                }));
+                                            createDialog("info", "مدت زمان لازم جهت ثبت ارزیابی واکنشی به پایان نرسیده است، بنابراین امکان پایان کلاس وجود ندارد");
+                                            classTypeStatus.setValue(oldValue);
+                                            highlightClassStauts(oldValue, 10);
+                                        } else {
+                                            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEvaluationsForEndingClass/notFilled/" + record.id, "GET", null, function(response) {
+                                                wait.close();
+                                                let data = JSON.parse(response.httpResponseText);
+                                                if (data.size() !== 0) {
+                                                    showNotFilledStudents(data, oldValue, record.id);
+                                                }
+                                            }));
+                                        }
+                                    }));
+                                }
                             }
                         }));
                     }

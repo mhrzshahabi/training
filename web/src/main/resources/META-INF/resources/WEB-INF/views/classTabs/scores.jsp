@@ -198,9 +198,10 @@
                                     isc.IButton.create({
                                         title: "تایید",
                                         click: function () {
-                                            let classEndDate = ListGrid_Class_JspClass.getSelectedRecord().endDate;
+                                            let classEndDate = classRecord.endDate;
+                                            let isNotTeachingMethodRemotely = classRecord.teachingMethod.code !== 'intraOrganizationalRemotelyClass';
                                             let checkBasisDate = classEndDate >= classBasisDate;
-                                            if (isScoreDependent && checkBasisDate) {
+                                            if (isScoreDependent && checkBasisDate && isNotTeachingMethodRemotely) {
 
                                                 if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
 
@@ -780,9 +781,10 @@
             }
 
             if (fieldName === "score") {
-                let classEndDate = ListGrid_Class_JspClass.getSelectedRecord().endDate;
+                let classEndDate = classRecord.endDate;
+                let isNotTeachingMethodRemotely = classRecord.teachingMethod.code !== 'intraOrganizationalRemotelyClass';
                 let checkBasisDate = classEndDate >= classBasisDate;
-                if (isScoreDependent && checkBasisDate) {
+                if (isScoreDependent && checkBasisDate && isNotTeachingMethodRemotely) {
 
                     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
                         return false;

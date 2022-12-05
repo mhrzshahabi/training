@@ -8391,6 +8391,13 @@ DECLARE
 
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-106">
+        <sql>
+            <![CDATA[
+            UPDATE TBL_PARAMETER_VALUE SET c_title = 'مردود به علت عدم پر کردن ارزیابی واکنشی' where c_code = 'TotalFailedForNotAnsweredReaction';
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 
