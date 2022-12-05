@@ -378,7 +378,13 @@
                 type: 'text',
                 height: 35,
                 width: "171",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber, TrValidators.NotContainSpecialChar]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
         ]
     });
@@ -399,8 +405,24 @@
                     required: true,
                     height: 35,
                     width: "*",
+                    validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                        {
+                            type: "regexp",
+                            errorMessage: "<spring:message code="msg.field.length"/>",
+                            expression: /^.{2,150}$/
+
+                        }]
                 },
-                {name: "group", title: "<spring:message code="group"/>", type: 'text', height: 35, width: "*"},
+                {
+                    name: "group", title: "<spring:message code="group"/>", type: 'text', height: 35, width: "*",
+                    validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                        {
+                            type: "regexp",
+                            errorMessage: "<spring:message code="msg.field.length"/>",
+                            expression: /^.{2,150}$/
+
+                        }]
+                },
             ]
     });
 
@@ -730,7 +752,14 @@
                     {
                         name: "titleFa",
                         changeOnKeypress: true,
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                            {
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.field.length"/>",
+                                expression: /^.{2,150}$/
+
+                            } ]
                     }
                 ],
                 changed: function (form, item, value) {

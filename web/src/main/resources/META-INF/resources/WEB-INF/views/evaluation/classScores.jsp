@@ -98,10 +98,6 @@
                 autoFitWidth: true
             },
             {
-                name: "evaluationStatusReaction",
-                hidden:true
-            },
-            {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
@@ -115,8 +111,19 @@
                 filterOperator: "iContains"
             },
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false}
-        ]
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false},
+            {name: "evaluationStatusReaction", title: "وضعیت ارزیابی واکنشی"}
+        ],
+        transformResponse: function (dsResponse, dsRequest, data) {
+            let records = dsResponse.data;
+            if (records) {
+                for (let i = 0; i < records.length; i++) {
+                    if (records[i].evaluationStatusReaction === undefined)
+                        records[i].evaluationStatusReaction = 0;
+                }
+            }
+            return this.Super("transformResponse", arguments);
+        }
     });
 
     //------------------------------------------- Layout
@@ -167,6 +174,12 @@
                                     suppressBrowserClearIcon: true,
                                     iconWidth: 16,
                                     iconHeight: 16,
+                                    validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                                        {
+                                            type: "regexp",
+                                            errorMessage: "<spring:message code="msg.field.length"/>",
+                                            expression: /^.{2,150}$/
+                                        } ],
                                     change(form, item, value) {
 
                                         if (ListGrid_Class_Student_Eval.getSelectedRecord().scoringMethod == "2") {
@@ -333,10 +346,6 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
-            },
-            {
-                name: "evaluationStatusReaction",
-                hidden:true
             },
             {
                 name: "student.personnelNo",
@@ -676,6 +685,16 @@
 
 
                 }
+            },
+            {
+                name: "evaluationStatusReaction",
+                canFilter: false,
+                valueMap: {
+                    "0": "صادر نشده",
+                    "1": "صادر شده",
+                    "2": "تکمیل شده و کامل",
+                    "3": "تکمیل شده و ناقص"
+                }
             }
         ],
         sortChanged: function (sortField) {
@@ -775,7 +794,7 @@
                 return !(arr.includes(record.scoresStateId));
             }
 
-            if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo") {
+            if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo" || fieldName === "evaluationStatusReaction") {
                 return false;
             }
             return true;

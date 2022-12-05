@@ -959,6 +959,13 @@
                 required: true,
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 changed: function (_1, _2, _3) {
                     convertEn2Fa(_1, _2, _3, ["+", "*", "/"]);
                 }
@@ -1410,6 +1417,13 @@
                 title: "حد نمره قبولی",
                 textAlign: "center",
                 required: true,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
             },
             {
                 name: "acceptancelimit_a",
@@ -2618,6 +2632,8 @@
             },
             {
                 name: "departmentFilter",
+                type: "SelectItem",
+                multiple: true,
                 title: "<spring:message code='complex'/>",
                 width: "300",
                 height: 30,
@@ -2635,14 +2651,15 @@
                     }
                 ],
                 dataArrived: function (startRow, endRow, data) {
+                    let list = [];
+                    let listId = [];
 
                     for (let i = 0; i < data.allRows.size(); i++) {
-                        if (data.allRows[i].title !== undefined && data.allRows[i].title.contains("سرچشمه")) {
-                            DynamicForm_Term_Filter.getField("departmentFilter").setValue(data.allRows[i].title);
-                            load_classes_by_department(data.allRows[i].id);
-                            break;
-                        }
+                        list.push(data.allRows[i].title);
+                        listId.push(data.allRows[i].id);
                     }
+                    DynamicForm_Term_Filter.getField("departmentFilter").setValue(listId);
+                    load_classes_by_department(listId);
 
                 },
                 changed: function (form, item, value) {
@@ -5280,6 +5297,7 @@
                             title: "جزییات پیام",
                             margin: 3,
                             click: function () {
+                                wait.show();
                                 showSmsDetailInClass(record.id);
                             }
                         });
@@ -5311,10 +5329,11 @@
 
         isc.RPCManager.sendRequest(TrDSRequest(smsService+"sms-detail/" + requestId , "GET", null, function (resp) {
             if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+                wait.close();
                 createDialog("info", resp.httpResponseText, "جزییات");
 
             } else {
+                wait.close();
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));

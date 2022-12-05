@@ -286,6 +286,8 @@
                 length: "10",
                 hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true,
+                validators: [TrValidators.NationalCodeValidate],
+                validateOnExit: true,
                 blur: function () {
                     var codeCheck;
                     codeCheck = checkNationalCode(DynamicForm_CriteriaForm_JspTeacherReport.getValue("nationalCode"));

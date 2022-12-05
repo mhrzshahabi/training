@@ -61,8 +61,15 @@
                 width: "100%",
                 height: 100,
                 title: "توضیحات",
-                editorType: 'textArea'
-            }
+                editorType: 'textArea',
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                {
+                type: "regexp",
+                errorMessage: "<spring:message code="msg.field.length"/>",
+                expression: /^.{2,150}$/
+
+                } ]
+}
         ]
     });
 

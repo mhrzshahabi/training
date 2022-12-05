@@ -84,7 +84,14 @@ var saveActionUrlClassDocument;
                 title: "<spring:message code='description'/>",
                 height: "40",
                 length: "350", width: "*",
-                type: 'areaText'
+                type: 'areaText',
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }]
             },
             {
                 name: "classId",

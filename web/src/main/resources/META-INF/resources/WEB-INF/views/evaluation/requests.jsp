@@ -104,7 +104,13 @@
                 editorType: "textArea",
                 width: "100%",
                 height: 200,
-                colSpan: 4
+                colSpan: 4,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+                    } ]
             },
             {
                 name: "text",

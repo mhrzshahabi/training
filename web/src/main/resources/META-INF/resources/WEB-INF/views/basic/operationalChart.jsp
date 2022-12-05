@@ -675,6 +675,7 @@
                 title: "<spring:message code="title"/>",
                 required: true,
                 validateOnExit: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                 length: 255
             },
             {
@@ -682,6 +683,7 @@
                 title: "<spring:message code="code"/>",
                 required: true,
                 validateOnExit: true,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                 length: 255
             },
             {

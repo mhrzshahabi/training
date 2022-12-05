@@ -180,7 +180,6 @@ public class ElsRestController {
     private final IPublicationService iPublicationService;
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
-    private final TestQuestionMapper testQuestionMapper;
     private final IElsService elsService;
 
 

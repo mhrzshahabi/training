@@ -220,6 +220,14 @@
         ],
         <sec:authorize access="hasAuthority('EvaluationAnalysis_R')">
         rowDoubleClick: function(record, recordNum, fieldNum) {
+            let Window_Evaluation_Analysis = isc.Window.create({
+                title: "پنجره ی نتایج ارزیابی",
+                overflow: "auto",
+                placement: "fillScreen",
+                items: [
+                    Hlayout_Tab_Evaluation_Analysis
+                ]
+            });
             Window_Evaluation_Analysis.title = "نتایج ارزیابی کلاس " + record.courseTitleFa;
             Window_Evaluation_Analysis.show();
             evalWait_JspEvaluationAnalysis = createDialog("wait");
@@ -369,14 +377,7 @@
         ]
     });
 
-    var Window_Evaluation_Analysis = isc.Window.create({
-        title: "پنجره ی نتایج ارزیابی",
-        overflow: "auto",
-        placement: "fillScreen",
-        items: [
-            Hlayout_Tab_Evaluation_Analysis
-        ]
-    });
+
 
 
     var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
@@ -607,7 +608,6 @@
         load_behavioral_evluation_analysis_data(JSON.parse(resp.data));
     }
 
-    Window_Evaluation_Analysis.hide();
 
     // </script>
 

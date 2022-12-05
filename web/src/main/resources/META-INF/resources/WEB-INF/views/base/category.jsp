@@ -50,7 +50,7 @@
                 width: "33%",
                 height: "30",
                 length: 2,
-                validators: [{
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 2,
@@ -74,7 +74,7 @@
                 width: "100%",
                 height: 30,
 //paddingTop:9,
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 1,
@@ -91,7 +91,7 @@
                 length: "200",
                 width: "100%",
                 height: 30,
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,
@@ -106,6 +106,7 @@
                 length: "200",
                 width: "100%",
                 height: 30,
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
 //paddingTop:9,
                 type: 'text'
             }
@@ -518,7 +519,8 @@
                 type: 'staticText',
                 readonly: true,
                 width: "150",
-                height: 30
+                height: 30,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "codeNumber",
@@ -530,7 +532,7 @@
                 length: 1,
                 width: "33%",
                 height: 30,
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 1,
@@ -545,7 +547,8 @@
                 type: 'staticText',
                 readonly: true,
                 width: "150",
-                height: 30
+                height: 30,
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords]
             },
             {
                 name: "titleFa",
@@ -557,7 +560,7 @@
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z| ]",
                 length: "200",
                 width: "100%",
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 1,
@@ -574,7 +577,7 @@
                 length: "200",
                 height: 30,
                 width: "100%",
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,

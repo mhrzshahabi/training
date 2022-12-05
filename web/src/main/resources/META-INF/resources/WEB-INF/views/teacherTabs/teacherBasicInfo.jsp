@@ -299,12 +299,14 @@
                 name: "personality.firstNameEn",
                 title: "<spring:message code='firstName.latin'/>",
                 keyPressFilter: "[a-z|A-Z |]"
+                ,validators: [ TrValidators.NotContainSpecialWords]
             },
 
             {
                 name: "personality.lastNameEn",
                 title: "<spring:message code='lastName.latin'/>",
                 keyPressFilter: "[a-z|A-Z |]"
+                ,validators: [ TrValidators.NotContainSpecialWords]
             },
 
             {
@@ -604,7 +606,13 @@
                 name: "personality.description",
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
-                colSpan: 3
+                colSpan: 3,
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+                    }]
             },
             {
                 name: "evaluation",

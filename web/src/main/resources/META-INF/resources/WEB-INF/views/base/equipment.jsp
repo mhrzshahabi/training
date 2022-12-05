@@ -121,6 +121,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "10",
                 width: "300",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords ],
                 required: true,
             },
             {
@@ -131,7 +132,7 @@
                 hint: "Persian/فارسی",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
                 length: "255",
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 1,
@@ -149,7 +150,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "255",
                 hint: "Latin",
-                validators: [{
+                validators: [TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,
@@ -165,6 +166,13 @@
                 title: "<spring:message code='description'/>",
                 length: "500",
                 width: "300",
+                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
+                    {
+                        type: "regexp",
+                        errorMessage: "<spring:message code="msg.field.length"/>",
+                        expression: /^.{2,150}$/
+
+                    }],
                 type: 'areaText'
             }
         ]

@@ -161,7 +161,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "250",
                 hint: "Latin",
-                validators: [{
+                validators: [ TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,
@@ -177,7 +177,7 @@
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
                 length: "250",
-                validators: [{
+                validators: [TrValidators.NotContainSpecialWords,{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,

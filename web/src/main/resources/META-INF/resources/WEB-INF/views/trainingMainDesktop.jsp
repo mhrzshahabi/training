@@ -135,6 +135,7 @@
                                     type: "TextItem",
                                     length: 10000,
                                     controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
+                                    validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords],
                                     transformPastedValue:function(item, form, pastedValue)
                                     {
                                         item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
@@ -1499,6 +1500,11 @@
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
+        },
+        NotContainSpecialWords: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.field.can't.contains.special.words"/>",
+            expression: /^((?!script)(?!img)(?!svg)(?!h1)(?!h2)(?!h3)(?!h4)(?!h5)(?!h6)(?!onload)(?!onerror)(?!onmouseover)(?!onsubmit)(?!onmousemove)(?!onkeyup)(?!onkeypress)(?!onkeydown)(?!alert)(?!prompt)(?!href)(?!src)(?!javascript)(?!iframe)(?!title)(?!style)(?!link)(?!span)(?!table)(?!xml)(?!database)(?!column)(?!version)(?!union)(?!select)(?!where)(?!order)(?!information_schema)(?!substr)(?!db_name)(?!xp_cmdshell)(?!benchmark)(?!sleep)(?!delay).)*$/,
         },
         NotAllowedInFileNameChar: {
             type: "regexp",

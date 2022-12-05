@@ -474,6 +474,7 @@
                 required: true,
                 keyPressFilter: "[0-9]",
                 // length: "10",
+                validators: [TrValidators.NationalCodeValidate],
                 blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
 
@@ -1177,7 +1178,8 @@
                 name: "address",
                 title: "<spring:message code='home.address'/>",
                 type: "textArea",
-                length: "255"
+                length: "255",
+                validators: [TrValidators.NotContainSpecialChar, TrValidators.NotContainSpecialWords]
             },
             {
                 name: "phone",
