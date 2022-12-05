@@ -1595,8 +1595,14 @@
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
         //add synonym for choose teachers
         // isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
-        isc.RPCManager.sendRequest(TrDSRequest(synonymPersonnel + "/byPersonnelCode/" + personnelCode, "GET", null,
-            "callback: personnel_findOne_result(rpcResponse)"));
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(synonymPersonnel + "/byPersonnelCode/" + personnelCode, "GET", null,async function (resp) {
+            let finishWork = await personnel_findOne_result(resp);
+            if (finishWork)
+                wait.close();
+
+        }));
+
     }
     function fillWorkAddressFields(postalCode) {
         if (postalCode !== undefined)
@@ -1688,7 +1694,7 @@
             DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
     }
 
-    function personnel_findOne_result(resp) {
+    async function personnel_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
             vm.clearValues();
             var personnel = JSON.parse(resp.data);
@@ -1748,9 +1754,12 @@
             var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
             if (restAddress != "")
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
+
         }
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+        return true;
+
     }
 
     function clearTabFilters(oLoadAttachments_Teacher) {
