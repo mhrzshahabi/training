@@ -1094,6 +1094,7 @@
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
     }
     function ListGrid_teacher_edit(teacherRecordId = null,tab) {
+        wait.show();
         editTeacherMode = true;
         tab_selected=tab
         // console.log(teacherRecordId)
@@ -1509,6 +1510,7 @@
         }
     }
     function teacher_get_one_result(rpcResponse) {
+        wait.close();
         selected_record = JSON.parse(rpcResponse.data);
         Edit_teacher();
     }

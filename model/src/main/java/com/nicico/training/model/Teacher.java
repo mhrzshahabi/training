@@ -117,4 +117,10 @@ public class Teacher extends Auditable {
 
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     private Set<Tclass> tclasse;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "TBL_TEACHER_COMPLEX", joinColumns = @JoinColumn(name = "f_teacher"))
+    @Column(name = "f_complex")
+    private Set<Long> complexes;
+
 }

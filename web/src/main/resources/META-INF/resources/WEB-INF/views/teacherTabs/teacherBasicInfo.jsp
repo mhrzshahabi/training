@@ -733,6 +733,31 @@
                     "خارج از کشور": "خارج از کشور"
                 },
                 type: "ComboBoxItem",
+            }, {
+                name: "complexes",
+                type: "SelectItem",
+                multiple: true,
+                required: true,
+                title: "حوزه فعالیت استاد",
+                width: "300",
+                height: 25,
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+                    cacheAllData: true,
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+                }),
+                autoFetchData: true,
+                displayField: "title",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
             }
         ],
         itemChanged: function (item, newValue) {

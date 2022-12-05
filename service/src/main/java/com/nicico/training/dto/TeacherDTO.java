@@ -32,6 +32,8 @@ public class TeacherDTO {
     private Long personalityId;
     private Long majorCategoryId;
     private Long majorSubCategoryId;
+    private Set<Long> complexes;
+
 
     @Getter
     @Setter

@@ -8399,6 +8399,18 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet author="kasehpour_t" id="1670148064-01">
+        <createTable tableName="tbl_teacher_complex">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_complex" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 
