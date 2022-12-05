@@ -1515,7 +1515,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
             "         --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -1547,7 +1547,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
             "        and p.CCP_AFFAIRS like '%آموزش%'--\n" +
             "        --         and view_complex.id =@\n" +
@@ -3389,7 +3389,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
             "    --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -3584,25 +3584,12 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED =0\n" +
             "         and ( \n" +
             "            p.POST_GRADE_TITLE is not null\n" +
-            "            and p.POST_GRADE_TITLE not like '%سرپرست و کارشناس ارشد%' --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like '%رئیس%'  --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like '%معاون مدیرعامل%'  --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like  '%اجرایی%' --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like  '%مدیرعامل%' --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like  '%مسئول و کارشناس%' --farsi\n" +
-            "            and p.POST_GRADE_TITLE not like  '%مدیر%' --farsi\n" +
-            "           \n" +
-            "           and p.POST_GRADE_TITLE not like '%سرپرست و کارشناس ارشد%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%رئیس%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%معاون مدیرعامل%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%اجرایی%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%مدیرعامل%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%مسئول و کارشناس%' --arabic\n" +
-            "           and p.POST_GRADE_TITLE not like '%مدیر%' --arabic\n" +
+            "            and p.post_grade_code not in (0,10,20,21,22,23,30,31,32,33,50,51,52,60,61,62,70,71,72,73,90,91,92)--farsi\n" +
+
             "            )\n" +
             "    --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -3786,11 +3773,9 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED =0\n" +
-            "         and ( p.POST_GRADE_TITLE like '%سرپرست و کارشناس ارشد%' --farsi\n" +
-            "               or\n" +
-            "               p.POST_GRADE_TITLE like '%سرپرست و کارشناس ارشد%' --arabic\n" +
+            "         and ( p.post_grade_code in (60,61,62) --farsi\n" +
             "             )\n" +
             "    --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -3975,11 +3960,9 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED =0\n" +
-            "         and ( p.POST_GRADE_TITLE like '%مدیر%' --farsi\n" +
-            "               or\n" +
-            "               p.POST_GRADE_TITLE like '%مدیر%' --arabic\n" +
+            "         and ( p.post_grade_code in (30,31,32,33) --farsi\n" +
             "             )\n" +
             "    --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -4171,7 +4154,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         AND p.DELETED =0\n" +
             "         AND p.POST_GRADE_TITLE is null\n" +
             "         AND R.E_DELETED is null\n" +
@@ -4358,7 +4341,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED =0\n" +
             "    --         and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -8424,7 +8407,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
             "    --       and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -8579,11 +8562,9 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
-            "         and ( p.POST_GRADE_TITLE like '%مدیر%' --farsi\n" +
-            "               or\n" +
-            "               p.POST_GRADE_TITLE like '%مدیر%' --arabic\n" +
+            "         and ( p.post_grade_code in (30,31,32,33) --farsi\n" +
             "             )\n" +
             "    --       and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +
@@ -8745,7 +8726,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
             "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
             "        where \n" +
-            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         p.employment_status_code = 1 --eshteghal\n" +
             "         and p.DELETED = 0\n" +
             "    --       and view_complex.id =@\n" +
             "    --       and view_affairs.id =@\n" +

@@ -154,4 +154,7 @@ public class SynonymPersonnel implements Serializable {
 
     @Column(name = "complex_title")
     private String complexTitle;
+
+    @Column(name = "employment_status_code")
+    private String employmentStatusCode;
 }
