@@ -213,13 +213,7 @@
         fields: [
             {name: "id", hidden: true},
             {name: "code", title: "کد", canEdit: false, textAlign: "center"},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty, TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
-                    {
-                        type: "regexp",
-                        errorMessage: "<spring:message code="msg.field.length"/>",
-                        expression: /^.{2,150}$/
-
-                    }], textAlign: "center"},
+            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty], textAlign: "center"},
             {
                 name: "competenceTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: CompetenceTypeDS_competence,
                 textAlign: "center",
@@ -289,13 +283,7 @@
                     createCompetenceCode()
                 }
             },
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
-                    {
-                        type: "regexp",
-                        errorMessage: "<spring:message code="msg.field.length"/>",
-                        expression: /^.{2,150}$/
-
-                    }]},
+            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
         ]
     });
 
