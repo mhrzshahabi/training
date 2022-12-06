@@ -20217,5 +20217,219 @@ rowNum as id,
         </createView>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1670327290368">
+        <createView viewName="VIEW_BEHAVIORAL_EVALUATION_FORMULA_REPORT" replaceIfExists="true">
+            SELECT
+            ROWNUM AS id,
+            tbl_evaluation.id                   evaluation_id,
+            result.avg                          AS evaluation_score,
+            CAST(AVG(result.avg) OVER(
+            PARTITION BY evaluated_student.id , tbl_class.id
+            ) AS DECIMAL(10, 2)) AS evaluation_avg_per_student,
+            CASE
+            WHEN students.counts IS NULL THEN
+            0
+            ELSE
+            students.counts
+            END AS students_count,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            concat(concat(evaluator_student.first_name, ' '), evaluator_student.last_name)
+            WHEN tbl_evaluation.f_evaluator_type_id = 187 THEN
+            concat(concat(evaluator_personnel_teacher.c_first_name_fa, ' '), evaluator_personnel_teacher.c_last_name_fa)
+            ELSE
+            concat(concat(evaluator_personnel.first_name, ' '), evaluator_personnel.last_name)
+            END AS evaluator_name,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN -- faragir
+            concat(concat(evaluated_student.first_name, ' '), evaluated_student.last_name)
+            WHEN tbl_evaluation.f_evaluated_type_id = 187 THEN -- teacher
+            concat(concat(evaluated_personnel_teacher.c_first_name_fa, ' '), evaluated_personnel_teacher.c_last_name_fa)
+            ELSE
+            concat(concat(evaluated_personnel.first_name, ' '), evaluated_personnel.last_name)
+            END AS evaluated_name,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.personnel_no
+            WHEN tbl_evaluation.f_evaluator_type_id = 187 THEN
+            evaluator_teacher.c_personnel_code
+            ELSE
+            evaluator_personnel.personnel_no
+            END AS evaluator_personnel_no,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.personnel_no
+            WHEN tbl_evaluation.f_evaluated_type_id = 187 THEN
+            evaluated_teacher.c_personnel_code
+            ELSE
+            evaluated_personnel.personnel_no
+            END AS evaluated_personnel_no,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.post_code
+            ELSE
+            evaluator_personnel.post_code
+            END AS evaluator_post_code,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.post_code
+            ELSE
+            evaluated_personnel.post_code
+            END AS evaluated_post_code,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.post_title
+            ELSE
+            evaluator_personnel.post_title
+            END AS evaluator_post_title,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.post_title
+            ELSE
+            evaluated_personnel.post_title
+            END AS evaluated_post_title,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.ccp_area
+            ELSE
+            evaluator_personnel.ccp_area
+            END AS evaluator_hoze,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.ccp_affairs
+            ELSE
+            evaluator_personnel.ccp_affairs
+            END AS evaluator_omoor,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.ccp_area
+            ELSE
+            evaluated_personnel.ccp_area
+            END AS evaluated_hoze,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.ccp_affairs
+            ELSE
+            evaluated_personnel.ccp_affairs
+            END AS evaluated_omoor,
+            tbl_class.id                        AS class_id,
+            tbl_class.c_code                    AS class_code,
+            view_complex.c_title                AS complex_title,
+            tbl_class.c_start_date              AS class_start_date,
+            tbl_class.c_end_date                AS class_end_date,
+            (
+            CASE
+            WHEN tbl_class.c_status = 1 THEN
+            ' برنامه ریزی'
+            WHEN tbl_class.c_status = 2 THEN
+            ' در حال اجرا'
+            WHEN tbl_class.c_status = 3 THEN
+            ' پایان یافته'
+            WHEN tbl_class.c_status = 4 THEN
+            ' لغو شده'
+            WHEN tbl_class.c_status = 5 THEN
+            'اختتام'
+            END
+            ) AS class_status,
+            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher_name,
+            tbl_personal_info.c_national_code   AS teacher_national_code,
+            CASE
+            WHEN tbl_teacher.b_personnel = 0 THEN
+            'برون سازمانی'
+            ELSE
+            'دورن سازمانی'
+            END AS teacher_type,
+            tbl_course.id                       AS course_id,
+            tbl_course.c_code                   AS course_code,
+            tbl_course.c_title_fa               AS course_title,
+            tbl_category.id                     AS category_id,
+            tbl_category.c_title_fa             AS course_category_title,
+            tbl_sub_category.id                 AS sub_category_id,
+            tbl_sub_category.c_title_fa         AS course_sub_category_title,
+            CASE
+            WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+            evaluator_student.national_code
+            WHEN tbl_evaluation.f_evaluator_type_id = 187 THEN
+            evaluator_personnel_teacher.c_national_code
+            ELSE
+            evaluator_personnel.national_code
+            END AS evaluator_national_code,
+            (
+            SELECT
+            pv.c_title
+            FROM
+            tbl_parameter_value pv
+            WHERE
+            pv.id = tbl_evaluation.f_evaluator_type_id
+            ) AS evaluator_type,
+            CASE
+            WHEN tbl_evaluation.f_evaluated_type_id = 188 THEN
+            evaluated_student.national_code
+            WHEN tbl_evaluation.f_evaluated_type_id = 187 THEN
+            evaluated_personnel_teacher.c_national_code
+            ELSE
+            evaluated_personnel.national_code
+            END AS evaluated_national_code,
+            concat(concat(supervisor.first_name, ' '), supervisor.last_name) AS class_supervisor,
+            tbl_parameter_value.c_value         AS acceptance_score_limit
+            FROM
+            tbl_evaluation
+            INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+            INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+            INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+            INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+            LEFT JOIN tbl_class_student   evaluator_cs ON tbl_evaluation.f_evaluator_id = evaluator_cs.id
+            LEFT JOIN tbl_class_student   evaluated_cs ON tbl_evaluation.f_evaluated_id = evaluated_cs.id
+            LEFT JOIN tbl_student         evaluator_student ON evaluator_cs.student_id = evaluator_student.id
+            LEFT JOIN tbl_student         evaluated_student ON evaluated_cs.student_id = evaluated_student.id
+            LEFT JOIN tbl_personnel       evaluator_personnel ON tbl_evaluation.f_evaluator_id = evaluator_personnel.id
+            LEFT JOIN tbl_personnel       evaluated_personnel ON tbl_evaluation.f_evaluated_id = evaluated_personnel.id
+            LEFT JOIN tbl_teacher         evaluator_teacher ON tbl_evaluation.f_evaluator_id = evaluator_teacher.id
+            LEFT JOIN tbl_teacher         evaluated_teacher ON tbl_evaluation.f_evaluated_id = evaluated_teacher.id
+            LEFT JOIN tbl_personal_info   evaluator_personnel_teacher ON evaluator_teacher.f_personality = evaluator_personnel_teacher.id
+            LEFT JOIN tbl_personal_info   evaluated_personnel_teacher ON evaluated_teacher.f_personality = evaluated_personnel_teacher.id
+            LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id
+            LEFT JOIN tbl_parameter_value ON tbl_parameter_value.c_code = 'minScoreEB'
+            LEFT JOIN tbl_personnel       supervisor ON supervisor.id = tbl_class.f_supervisor
+            INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+            INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+            LEFT JOIN (
+            SELECT
+            tbl_class_student.class_id,
+            COUNT(tbl_class_student.id) AS counts
+            FROM
+            tbl_class_student
+            GROUP BY
+            tbl_class_student.class_id
+            ) students ON students.class_id = tbl_class.id
+            LEFT JOIN (
+            SELECT
+            f_evaluation_id,
+            CAST(SUM(c_value * f_weight1) / SUM(f_weight1) AS DECIMAL(10, 2)) AS avg
+            FROM
+            (
+            SELECT
+            tbl_evaluation_answer.f_evaluation_id,
+            CASE
+            WHEN tbl_evaluation_answer.f_question_source_id = 199 THEN
+            tbl_questionnaire_question.f_weight
+            ELSE
+            tbl_dynamic_question.f_weight
+            END AS f_weight1,
+            tbl_parameter_value.c_value
+            FROM
+            tbl_evaluation_answer
+            left JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question.id
+            INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id
+            LEFT JOIN tbl_dynamic_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_dynamic_question.id
+            )
+            GROUP BY
+            f_evaluation_id
+            ) result ON result.f_evaluation_id = tbl_evaluation.id
+            WHERE
+            tbl_evaluation.f_evaluation_level_id = 156
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>

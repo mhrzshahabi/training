@@ -28,10 +28,10 @@ public class ViewBehavioralEvaluationFormulaReport implements Serializable {
     @Column(name = "evaluation_id")
     private Long evaluationId;
 
-//    @Column(name = "evaluation_score")
-//    private Double evaluationScore;
+    @Column(name = "evaluation_score")
+    private Double evaluationScore;
 
-    @Column(name = "evaluation_avg")
+    @Column(name = "evaluation_avg_per_student")
     private Double evaluationAverage;
 
     @Column(name = "students_count")

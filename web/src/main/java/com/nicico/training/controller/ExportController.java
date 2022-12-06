@@ -2593,7 +2593,7 @@ public class ExportController {
                         case "category_titlefa" -> row.createCell(i).setCellValue(map.getCourseCategoryTitle());
                         case "sub_category_titlefa" -> row.createCell(i).setCellValue(map.getCourseSubCategoryTitle());
                         case "total_std" -> row.createCell(i).setCellValue(map.getStudentsCount());
-                        case "std_score" -> row.createCell(i).setCellValue(0);
+                        case "std_score" -> row.createCell(i).setCellValue(map.getEvaluationScore() != null ? map.getEvaluationScore() : 0);
                         case "std_avg_score" -> row.createCell(i).setCellValue(map.getEvaluationAverage() != null ? map.getEvaluationAverage() : 0);
                         case "acc_score_limit" -> row.createCell(i).setCellValue(map.getAcceptanceScoreLimit());
                     }
