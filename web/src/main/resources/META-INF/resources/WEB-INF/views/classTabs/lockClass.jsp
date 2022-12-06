@@ -85,6 +85,8 @@
                     isc.IButtonSave.create({
                         title: "<spring:message code="save"/>",
                         click: function () {
+                            if (!DynamicForm_Finish_Reason.validate())
+                            return;
                            let data = {};
                             data.reason = Window_Class_Finish.items[0].getField("reason").getValue();
                             data.classId=classIdForFinish;
