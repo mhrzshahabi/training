@@ -2771,6 +2771,12 @@
                                 }
                             },
                             {
+                                title:  "<spring:message code="behavioral.evaluation.formula.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/behavioralEvaluationFormulaReport"/>");
+                                }
+                            },
+                            {
                                 title:  "<spring:message code="reaction.evaluation.comment.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/reactionEvaluationCommentsReport"/>");

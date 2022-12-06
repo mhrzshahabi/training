@@ -11,10 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCoursePassedOrNotPaseedNAReportViewService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.ViewLearningEvaluationCourseReportDAO;
-import com.nicico.training.repository.ViewLearningEvaluationStudentReportDAO;
-import com.nicico.training.repository.ViewReactionEvaluationFormulaReportDAO;
-import com.nicico.training.repository.ViewReactionEvaluationFormulaReportForCourseDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -55,6 +52,7 @@ public class ExportController {
     private final ViewLearningEvaluationStudentReportDAO studentReportDAO;
     private final IPersonnelCoursePassedOrNotPaseedNAReportViewService personnelCoursePassedOrNotPaseedNAReportViewService;
     private final ViewReactionEvaluationFormulaReportForCourseDAO daoForCourse;
+    private final ViewBehavioralEvaluationFormulaReportDAO viewBehavioralEvaluationFormulaReportDAO;
 
     @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -2319,6 +2317,327 @@ public class ExportController {
             in.close();
 
         } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @PostMapping(value = {"/excel/formula/behavioral"})
+    public void getExcelDataForCourseBehavioralFormulaReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+        SearchDTO.CriteriaRq criteriaRq;
+
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        try {
+            criteriaRq.setOperator(EOperator.valueOf("and"))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String startDate = null;
+        String endDate = null;
+        String classCode = null;
+        List<Long> categoryList = null;
+        List<Long> subCategoryList = null;
+
+        for (int i = 0; i < criteriaRq.getCriteria().get(0).getCriteria().size(); i++) {
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(i).getFieldName().equals("classStartDate"))
+                startDate = criteriaRq.getCriteria().get(0).getCriteria().get(i).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(i).getFieldName().equals("classEndDate"))
+                endDate = criteriaRq.getCriteria().get(0).getCriteria().get(i).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(i).getFieldName().equals("categoryId")) {
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(i).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(i).getFieldName().equals("subCategoryId")) {
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(i).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(i).getFieldName().equals("classCode")) {
+                classCode = criteriaRq.getCriteria().get(0).getCriteria().get(i).getValue().get(0).toString();
+            }
+
+        }
+
+        int catsNullCheck = categoryList == null ? 1 : 0;
+        int subCatsNullCheck = subCategoryList == null ? 1 : 0;
+        int classCodeNullCheck = classCode == null ? 1 : 0;
+
+        if (categoryList == null) {
+            categoryList = new ArrayList<>();
+            categoryList.add(-1L);
+        }
+
+        if (subCategoryList == null) {
+            subCategoryList = new ArrayList<>();
+            subCategoryList.add(-1L);
+        }
+
+        List<ViewBehavioralEvaluationFormulaReport> data = viewBehavioralEvaluationFormulaReportDAO
+                .getAllByAllParams(startDate, endDate, categoryList, catsNullCheck, subCategoryList, subCatsNullCheck, classCode, classCodeNullCheck);
+
+        String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
+        try {
+            String[] headers = new String[32];
+            String[] columns = new String[32];
+
+            for (int z = 0; z < 32; z++) {
+                switch (z) {
+                    case 0 -> {
+                        headers[z] = "شماره پرسنلی فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_per_number";
+                    }
+                    case 1 -> {
+                        headers[z] = "شماره پرسنلی ارزیابی کننده";
+                        columns[z] = "evaluator_per_number";
+                    }
+                    case 2 -> {
+                        headers[z] = "فراگیر(ارزیابی شونده)";
+                        columns[z] = "student";
+                    }
+                    case 3 -> {
+                        headers[z] = "کد ملی فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_national_code";
+                    }
+                    case 4 -> {
+                        headers[z] = "ارزیابی کننده";
+                        columns[z] = "evaluator_name";
+                    }
+                    case 5 -> {
+                        headers[z] = "کد ملی ارزیابی کننده";
+                        columns[z] = "evaluator_national_code";
+                    }
+                    case 6 -> {
+                        headers[z] = "نوع ارزیاب";
+                        columns[z] = "evaluator_type";
+                    }
+                    case 7 -> {
+                        headers[z] = "کد پست فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_post_code";
+                    }
+                    case 8 -> {
+                        headers[z] = "کد پست ارزیابی کننده";
+                        columns[z] = "evaluator_post_code";
+                    }
+                    case 9 -> {
+                        headers[z] = "عنوان پست فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_post_title";
+                    }
+                    case 10 -> {
+                        headers[z] = "عنوان پست ارزیابی کننده";
+                        columns[z] = "evaluator_post_title";
+                    }
+                    case 11 -> {
+                        headers[z] = "حوزه فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_hoze";
+                    }
+                    case 12 -> {
+                        headers[z] = "حوزه ارزیابی کننده";
+                        columns[z] = "evaluator_hoze";
+                    }
+                    case 13 -> {
+                        headers[z] = "امور فراگیر(ارزیابی شونده)";
+                        columns[z] = "student_omor";
+                    }
+                    case 14 -> {
+                        headers[z] = "امور ارزیابی کننده";
+                        columns[z] = "evaluator_omor";
+                    }
+                    case 15 -> {
+                        headers[z] = "کد کلاس";
+                        columns[z] = "class_code";
+                    }
+                    case 16 -> {
+                        headers[z] = "مجتمع کلاس";
+                        columns[z] = "complex";
+                    }
+                    case 17 -> {
+                        headers[z] = "مسئول اجرای کلاس";
+                        columns[z] = "class_supervisor";
+                    }
+                    case 18 -> {
+                        headers[z] = "تاریخ شروع کلاس";
+                        columns[z] = "class_start_date";
+                    }
+                    case 19 -> {
+                        headers[z] = "تاریخ انتهای کلاس";
+                        columns[z] = "class_end_date";
+                    }
+                    case 20 -> {
+                        headers[z] = "وضعیت کلاس";
+                        columns[z] = "class_status";
+                    }
+                    case 21 -> {
+                        headers[z] = "استاد";
+                        columns[z] = "teacher";
+                    }
+                    case 22 -> {
+                        headers[z] = "کد ملی استاد";
+                        columns[z] = "teacher_national_code";
+                    }
+                    case 23 -> {
+                        headers[z] = "نوع استاد";
+                        columns[z] = "is_personnel";
+                    }
+                    case 24 -> {
+                        headers[z] = "کد دوره";
+                        columns[z] = "course_code";
+                    }
+                    case 25 -> {
+                        headers[z] = "عنوان دوره";
+                        columns[z] = "course_titlefa";
+                    }
+                    case 26 -> {
+                        headers[z] = "گروه";
+                        columns[z] = "category_titlefa";
+                    }
+                    case 27 -> {
+                        headers[z] = "زیرگروه";
+                        columns[z] = "sub_category_titlefa";
+                    }
+                    case 28 -> {
+                        headers[z] = "تعداد فراگیر این کلاس";
+                        columns[z] = "total_std";
+                    }
+                    case 29 -> {
+                        headers[z] = "نمره ارزیابی داده شده به فراگیر";
+                        columns[z] = "std_score";
+                    }
+                    case 30 -> {
+                        headers[z] = "میانگین نمرات داده شده به فراگیر";
+                        columns[z] = "std_avg_score";
+                    }
+                    case 31 -> {
+                        headers[z] = "حد قابل قبول ارزیابی رفتاری";
+                        columns[z] = "acc_score_limit";
+                    }
+                }
+            }
+
+            workbook = new XSSFWorkbook();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            Sheet sheet = workbook.createSheet("گزارش excel");
+            sheet.setRightToLeft(true);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setFontHeightInPoints((short) 12);
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue("گزارش ارزیابی رفتاری");
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+            int rowNum = 1;
+            for (ViewBehavioralEvaluationFormulaReport map : data) {
+                Row row = sheet.createRow(++rowNum);
+
+                for (int i = 0; i < columns.length; i++) {
+                    switch (columns[i]) {
+                        case "student_per_number" -> row.createCell(i).setCellValue(map.getEvaluatedPersonnelNo());
+                        case "evaluator_per_number" -> row.createCell(i).setCellValue(map.getEvaluatorPersonnelNo());
+                        case "student" -> row.createCell(i).setCellValue(map.getEvaluatedName());
+                        case "student_national_code" -> row.createCell(i).setCellValue(map.getEvaluatedNationalCode());
+                        case "evaluator_name" -> row.createCell(i).setCellValue(map.getEvaluatorName());
+                        case "evaluator_national_code" -> row.createCell(i).setCellValue(map.getEvaluatorNationalCode());
+                        case "evaluator_type" -> row.createCell(i).setCellValue(map.getEvaluatorType());
+                        case "student_post_code" -> row.createCell(i).setCellValue(map.getEvaluatedPostCode());
+                        case "evaluator_post_code" -> row.createCell(i).setCellValue(map.getEvaluatorPostCode());
+                        case "student_post_title" -> row.createCell(i).setCellValue(map.getEvaluatedPostTitle());
+                        case "evaluator_post_title" -> row.createCell(i).setCellValue(map.getEvaluatorPostTitle());
+                        case "student_hoze" -> row.createCell(i).setCellValue(map.getEvaluatedArea());
+                        case "evaluator_hoze" -> row.createCell(i).setCellValue(map.getEvaluatorArea());
+                        case "student_omor" -> row.createCell(i).setCellValue(map.getEvaluatedAffairs());
+                        case "evaluator_omor" -> row.createCell(i).setCellValue(map.getEvaluatorAffairs());
+                        case "class_code" -> row.createCell(i).setCellValue(map.getClassCode());
+                        case "complex" -> row.createCell(i).setCellValue(map.getComplexTitle());
+                        case "class_supervisor" -> row.createCell(i).setCellValue(map.getClassSupervisor());
+                        case "class_start_date" -> row.createCell(i).setCellValue(map.getClassStartDate());
+                        case "class_end_date" -> row.createCell(i).setCellValue(map.getClassEndDate());
+                        case "class_status" -> row.createCell(i).setCellValue(map.getClassStatus());
+                        case "teacher" -> row.createCell(i).setCellValue(map.getTeacherName());
+                        case "teacher_national_code" -> row.createCell(i).setCellValue(map.getTeacherNationalCode());
+                        case "is_personnel" -> row.createCell(i).setCellValue(map.getTeacherType());
+                        case "course_code" -> row.createCell(i).setCellValue(map.getCourseCode());
+                        case "course_titlefa" -> row.createCell(i).setCellValue(map.getCourseTitle());
+                        case "category_titlefa" -> row.createCell(i).setCellValue(map.getCourseCategoryTitle());
+                        case "sub_category_titlefa" -> row.createCell(i).setCellValue(map.getCourseSubCategoryTitle());
+                        case "total_std" -> row.createCell(i).setCellValue(map.getStudentsCount());
+                        case "std_score" -> row.createCell(i).setCellValue(map.getEvaluationScore() != null ? map.getEvaluationScore() : 0);
+                        case "std_avg_score" -> row.createCell(i).setCellValue(map.getEvaluationAverage() != null ? map.getEvaluationAverage() : 0);
+                        case "acc_score_limit" -> row.createCell(i).setCellValue(map.getAcceptanceScoreLimit());
+                    }
+                }
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
+            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            File file = new File(fileFullPath);
+            in = new FileInputStream(file);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            response.setContentLength((int) file.length());
+            OutputStream outStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            outStream.flush();
+            in.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
             if (workbook != null) {
                 try {

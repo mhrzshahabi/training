@@ -567,6 +567,12 @@ public class MainFormController {
         return "report/learningEvaluationFormulaReport";
     }
 
+    @RequestMapping("/behavioralEvaluationFormulaReport")
+    public String behavioralEvaluationFormulaReport() {
+        return "report/behavioralEvaluationFormulaReport";
+    }
+
+
     @RequestMapping("/reactionEvaluationCommentsReport")
     public String reactionEvaluationCommentsReport() {
         return "report/reactionEvaluationCommentsReport";
