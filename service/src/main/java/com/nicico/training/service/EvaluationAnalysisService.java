@@ -22,15 +22,12 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.utility.PersianCharachtersUnicode;
-import io.netty.util.internal.MathUtil;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.apache.commons.math3.util.MathUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.modelmapper.TypeToken;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -871,7 +868,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
             else
                 resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت  چشمگیر منفی داشته اند.");
-        } else
+        }
 //            resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
 
         if (scoringMethod.equalsIgnoreCase("3")) {
