@@ -55,6 +55,10 @@
         height: 120,
         padding: 6,
         titleAlign: "right",
+        focus: function (){
+            if (!DynamicForm_Finish_Reason.validate())
+            return;
+        },
         fields: [
             {
                 name: "reason",
