@@ -822,7 +822,6 @@
                     }
                 ],
                 changed: function (form, item, value) {
-                    debugger
                     load_classList_by_department(value);
                 },
                 dataArrived: function (startRow, endRow, data) {

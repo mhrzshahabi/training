@@ -250,7 +250,6 @@
                         isc.IButton.create({
                             title: "تایید",
                             click: function () {
-                                debugger
                                 if (!blackListForm.validate())
                                     return;
 

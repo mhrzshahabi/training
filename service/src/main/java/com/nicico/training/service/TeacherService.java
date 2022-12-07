@@ -148,6 +148,7 @@ public class TeacherService implements ITeacherService {
         }
 
         teacher.getCategories().clear();
+        teacher.getComplexes().clear();
         teacher.getSubCategories().clear();
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
