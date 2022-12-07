@@ -112,4 +112,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
 
     @Query(value = "select t.residence from TBL_TEACHER t where t.ID =:teacherId", nativeQuery = true)
     String getTeacherResidence(Long teacherId);
+
+    @EntityGraph(attributePaths = {"complexes"}, type= EntityGraph.EntityGraphType.FETCH)
+    Optional<Teacher> getTeacherById(Long teacherId);
 }

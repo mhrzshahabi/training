@@ -923,6 +923,23 @@
         }
     });
 
+    let ToolStripButton_DownLoad_Excel_Teacher_Complex = isc.ToolStripButton.create({
+        title: "دریافت فایل خام اکسل حوزه فعالیت اساتید",
+        width: "10%",
+        height: 25,
+        click: function () {
+            window.open("excel/teacher-complexes.xlsx");
+        }
+    });
+    let ToolStripButton_Upload_Excel_Teacher_Complex = isc.ToolStripButtonAdd.create({
+        title: "افزودن حوزه فعالیت استاد اساتید",
+        width: "10%",
+        height: 30,
+        click: function () {
+            uploadTeacherComplexExcelFile();
+        }
+    });
+
     var ToolStripButton_Print_InfoForm_JspTeacher = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print.teacher.detail'/>",
         click: function () {
@@ -967,6 +984,8 @@
             </sec:authorize>
             ToolStripButton_DownLoad_Excel_JspTeacher,
             ToolStripButton_Upload_Excel_JspTeacher,
+            ToolStripButton_DownLoad_Excel_Teacher_Complex,
+            ToolStripButton_Upload_Excel_Teacher_Complex,
             <sec:authorize access="hasAuthority('Teacher_R')">
             isc.ToolStrip.create({
                 width: "100%",
@@ -1986,6 +2005,172 @@
 
         ListGrid_Return_Teacher_Info.setData(result);
         Window_Return_Teacher_Info.show();
+    }
+
+    function uploadTeacherComplexExcelFile() {
+
+        let HLayout_Upload_Excel_TeacherComplex = isc.HLayout.create({
+            width: "100%",
+            members: [
+                isc.DynamicForm.create({
+                    width: "100%",
+                    fields: [
+                        {
+                            ID: "TeacherComplexExcelFile",
+                            name: "TeacherComplexExcelFile",
+                            type: "file",
+                            title: "",
+                            endRow: false
+                        },
+                        {
+                            name: "import",
+                            title: "وارد کردن حوزه فعالیت اساتید",
+                            type: "ButtonItem",
+                            startRow: false,
+                            click: function () {
+                                addTeacherComplexFromExcelToTeacher(Window_Upload_Excel_TeacherComplex);
+                            }
+                        }
+                    ]
+                })
+            ]
+        });
+        let Window_Upload_Excel_TeacherComplex = isc.Window.create({
+            title: "انتخاب فایل",
+            align: "center",
+            width: "15%",
+            height: "10%",
+            isModal: true,
+            showModalMask: true,
+            dismissOnEscape: true,
+            closeClick: function () {
+                this.destroy()
+            },
+            items: [
+                HLayout_Upload_Excel_TeacherComplex
+            ]
+        });
+        Window_Upload_Excel_TeacherComplex.show();
+    }
+
+    function addTeacherComplexFromExcelToTeacher(window) {
+
+        window.close();
+        let address = TeacherComplexExcelFile.getValue();
+        if (address == null) {
+            createDialog("info", "فايل خود را انتخاب نماييد.");
+        } else {
+            let ExcelToJSON = function () {
+
+                this.parseExcel = function (file) {
+                    let reader = new FileReader();
+                    let records = [];
+
+                    reader.onload = function (e) {
+                        let data = e.target.result;
+                        let workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        workbook.SheetNames.forEach(function (sheetName) {
+
+                            let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                            for (let i = 0; i < XL_row_object.length; i++) {
+
+                                let current = {
+                                    nationalCode: XL_row_object[i]["کد ملی استاد"],
+                                    complex: XL_row_object[i]["حوزه فعالیت استاد"]
+                                };
+                                records.add(current);
+                            }
+                            TeacherComplexExcelFile.setValue('');
+                        });
+
+                        if (records.length > 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addTeacherComplexes", "POST", JSON.stringify(records), function (resp) {
+                                wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    let result = JSON.parse(resp.httpResponseText);
+                                    ListGrid_teacher_refresh();
+                                    if (result.size() !== 0)
+                                        showReturnTeacherComplex(result);
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                }
+                            }));
+                        } else {
+                            createDialog("info", "حوزه فعالیت جدیدی برای اضافه کردن وجود ندارد.");
+                        }
+                    };
+                    reader.onerror = function (ex) {
+                        createDialog("info", "خطا در باز کردن فایل");
+                    };
+                    reader.readAsBinaryString(file);
+                };
+            };
+
+            let split = $('[name = "TeacherComplexExcelFile"]')[0].files[0].name.split('.');
+            if (split[split.length - 1] === 'xls' || split[split.length - 1] === 'csv' || split[split.length - 1] === 'xlsx') {
+                let xl2json = new ExcelToJSON();
+                xl2json.parseExcel($('[name="TeacherComplexExcelFile"]')[0].files[0]);
+            } else {
+                createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+            }
+        }
+    }
+
+    function showReturnTeacherComplex(result) {
+
+        let RestDataSource_Return_Teacher_Complex = isc.TrDS.create({
+            fields: [
+                {name: "nationalCode", title: "کد ملی مدرس", filterOperator: "iContains"},
+                {name: "complex", title: "حوزه فعالیت استاد", filterOperator: "iContains"}
+            ]
+        });
+
+        let ListGrid_Return_Teacher_Complex = isc.ListGrid.create({
+            width: "100%",
+            height: "350",
+            autoFetchData: false,
+            showRowNumbers: true,
+            showFilterEditor: false,
+            selectCellTextOnClick: true,
+            dataSource: RestDataSource_Return_Teacher_Complex,
+            fields: [
+                {
+                    name: "nationalCode",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "complex",
+                    width: "10%",
+                    align: "center"
+                }
+            ]
+        });
+
+        let Window_Return_Teacher_Complex = isc.Window.create({
+            width: "25%",
+            height: "300",
+            title: "لیست رکوردهایی که اضافه نشده اند",
+            items: [
+                ListGrid_Return_Teacher_Complex,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="close"/>",
+                            click: function () {
+                                Window_Return_Teacher_Complex.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+
+        ListGrid_Return_Teacher_Complex.setData(result);
+        Window_Return_Teacher_Complex.show();
     }
 
     // </script>

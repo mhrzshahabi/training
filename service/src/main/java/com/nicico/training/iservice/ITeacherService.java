@@ -83,4 +83,6 @@ public interface ITeacherService {
     String getTeacherResidence(Long teacherId);
 
     boolean changeTeacherPersonnel(long id, String personnel_code);
+
+    List<TeacherDTO.TeacherComplex> addTeacherComplexesList (List<TeacherDTO.TeacherComplex> createList);
 }
