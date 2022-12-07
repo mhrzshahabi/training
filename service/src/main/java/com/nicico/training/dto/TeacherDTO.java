@@ -372,4 +372,14 @@ public class TeacherDTO {
         }
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherComplex")
+    public static class TeacherComplex {
+        private String nationalCode;
+        private String complex;
+
+    }
+
 }

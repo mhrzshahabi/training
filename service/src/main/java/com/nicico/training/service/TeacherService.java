@@ -12,6 +12,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,7 @@ public class TeacherService implements ITeacherService {
     private final IEducationOrientationService educationOrientationService;
     private final ITeacherRoleService iTeacherRoleService;
     private final IPersonalInfoService iPersonalInfoService;
+    private final ComplexDAO complexDAO;
 
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -1060,5 +1062,35 @@ public class TeacherService implements ITeacherService {
             teacherDAO.save(teacher);
         }
         return false;
+    }
+
+    @Override
+    public List<TeacherDTO.TeacherComplex> addTeacherComplexesList(List<TeacherDTO.TeacherComplex> createList) {
+        List<TeacherDTO.TeacherComplex> returnTeacherList = new ArrayList<>();
+
+        createList.forEach(create -> {
+            if (create.getNationalCode() != null && create.getComplex() != null) {
+                Teacher teacher = teacherDAO.getTeacherByNationalCode(create.getNationalCode());
+
+                if (teacher != null) {
+                    Long complexId = complexDAO.getComplexIdByComplexTitle(create.getComplex());
+
+                    if (complexId != null) {
+                        Optional<Teacher> teacherWithComplexes = teacherDAO.getTeacherById(teacher.getId());
+
+                         if (teacherWithComplexes.isPresent()) {
+                             Set<Long> complexes = teacherWithComplexes.get().getComplexes();
+                             complexes.add(complexId);
+                             teacher.setComplexes(complexes);
+                             teacherDAO.save(teacher);
+                         }
+                    }
+
+                } else
+                    returnTeacherList.add(create);
+            } else
+                returnTeacherList.add(create);
+        });
+        return returnTeacherList;
     }
 }

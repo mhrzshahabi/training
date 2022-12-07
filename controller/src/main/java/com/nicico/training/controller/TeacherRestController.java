@@ -1277,4 +1277,11 @@ public class TeacherRestController {
         return teacherService.changeTeacherPersonnel(id,personnel_code);
     }
 
+    @PostMapping("/addTeacherComplexes")
+    public ResponseEntity<List<TeacherDTO.TeacherComplex>> addTeacherComplexesToTeacher(@RequestBody List<TeacherDTO.TeacherComplex> createList) {
+        List<TeacherDTO.TeacherComplex> returnTeacherNationalCodes = new ArrayList<>();
+        returnTeacherNationalCodes = teacherService.addTeacherComplexesList(createList);
+            return new ResponseEntity<>(returnTeacherNationalCodes, HttpStatus.OK);
+    }
+
 }
