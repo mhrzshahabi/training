@@ -16,9 +16,6 @@ import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -1079,7 +1076,7 @@ public class TeacherService implements ITeacherService {
 
                     if (complexId != null) {
                         Optional<Teacher> teacherWithComplexes = teacherDAO.getTeacherById(teacher.getId());
-                        
+
                          if (teacherWithComplexes.isPresent()) {
                              Set<Long> complexes = teacherWithComplexes.get().getComplexes();
                              complexes.add(complexId);
