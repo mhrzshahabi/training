@@ -364,110 +364,7 @@
         title: "درخواست گزارش اکسل(براساس دوره)",
         width: 300,
         click: function () {
-            reportCriteria_BEFR = null;
-            let form = DynamicForm_CriteriaForm_BEFR;
-
-            if(form.getValue("endDate") == null || form.getValue("startDate") == null) {
-                createDialog("info","بازه کلاس مشخص نشده است");
-                return;
-            }
-
-            if(form.getValue("endDate") < form.getValue("startDate")) {
-                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
-                return;
-            }
-            data_values = DynamicForm_CriteriaForm_BEFR.getValuesAsAdvancedCriteria();
-
-            for (let i = 0; i < data_values.criteria.size(); i++) {
-                if (data_values.criteria[i].fieldName === "courseCategory") {
-                    data_values.criteria[i].fieldName = "categoryId";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryId";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "startDate") {
-                    data_values.criteria[i].fieldName = "classStartDate";
-                    data_values.criteria[i].operator = "greaterOrEqual";
-                } else if (data_values.criteria[i].fieldName === "endDate") {
-                    data_values.criteria[i].fieldName = "classEndDate";
-                    data_values.criteria[i].operator = "lessOrEqual";
-                } else if (data_values.criteria[i].fieldName === "tclassId") {
-                    data_values.criteria[i].fieldName = "classCode"
-                    data_values.criteria[i].operator = "equals";
-                }
-            }
-            let downloadForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/training/export/excel/formula/behavioral",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "criteria", type: "hidden"},
-                    ]
-            });
-            downloadForm.setValue("criteria", JSON.stringify(data_values));
-            downloadForm.show();
-            downloadForm.submitForm();
-        }
-    });
-
-    IButton_Excel_Student_Report = isc.IButtonSave.create({
-        top: 260,
-        baseStyle: 'MSG-btn-orange',
-        icon: "<spring:url value="excel.png"/>",
-        title: "درخواست گزارش اکسل(براساس فراگیر)",
-        width: 300,
-        click: function () {
-
-            reportCriteria_BEFR = null;
-            let form = DynamicForm_CriteriaForm_BEFR;
-
-            if(form.getValue("endDate") == null || form.getValue("startDate") == null) {
-                createDialog("info","بازه کلاس مشخص نشده است");
-                return;
-            }
-
-            if(form.getValue("endDate") < form.getValue("startDate")) {
-                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
-                return;
-            }
-            data_values = DynamicForm_CriteriaForm_BEFR.getValuesAsAdvancedCriteria();
-
-            for (let i = 0; i < data_values.criteria.size(); i++) {
-
-                if (data_values.criteria[i].fieldName === "courseCategory") {
-                    data_values.criteria[i].fieldName = "categoryTitleFa";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryId";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "startDate") {
-                    data_values.criteria[i].fieldName = "classStartDate";
-                    data_values.criteria[i].operator = "greaterOrEqual";
-                } else if (data_values.criteria[i].fieldName === "endDate") {
-                    data_values.criteria[i].fieldName = "classEndDate";
-                    data_values.criteria[i].operator = "lessOrEqual";
-                } else if (data_values.criteria[i].fieldName === "tclassId") {
-                    data_values.criteria[i].fieldName = "code"
-                    data_values.criteria[i].operator = "equals";
-                }
-            }
-
-            let downloadForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/training/export/excel/behavioral2",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "criteria", type: "hidden"},
-                    ]
-            });
-            downloadForm.setValue("criteria", JSON.stringify(data_values));
-            downloadForm.show();
-            downloadForm.submitForm();
-
+            printReports("excel");
         }
     });
 
@@ -480,6 +377,14 @@
             DynamicForm_CriteriaForm_BEFR.clearErrors();
         }
     });
+
+    let ToolStripButton_Print_Report = isc.ToolStripButtonPrint.create({
+        title: "<spring:message code='print.pdf'/>",
+        click: function () {
+            printReports("pdf");
+        }
+    });
+
 
     //----------------------------------- layOut -----------------------------------------------------------------------
     let VLayOut_CriteriaForm_BEFR = isc.VLayout.create({
@@ -502,7 +407,8 @@
         members: [
             IButton_Clear_BEFR,
             // IButton_Excel_Student_Report,
-            IButton_Excel_Course_Report
+            IButton_Excel_Course_Report,
+            ToolStripButton_Print_Report
         ]
     });
     let VLayout_Body_BEFR = isc.TrVLayout.create({
@@ -513,5 +419,55 @@
             HLayOut_Confirm_BEFR,
         ]
     });
+
+    function printReports(type) {
+        reportCriteria_BEFR = null;
+        let form = DynamicForm_CriteriaForm_BEFR;
+
+        if (form.getValue("endDate") == null || form.getValue("startDate") == null) {
+            createDialog("info", "بازه کلاس مشخص نشده است");
+            return;
+        }
+
+        if (form.getValue("endDate") < form.getValue("startDate")) {
+            createDialog("info", "تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+            return;
+        }
+        let data_values = DynamicForm_CriteriaForm_BEFR.getValuesAsAdvancedCriteria();
+
+        for (let i = 0; i < data_values.criteria.size(); i++) {
+            if (data_values.criteria[i].fieldName === "courseCategory") {
+                data_values.criteria[i].fieldName = "categoryId";
+                data_values.criteria[i].operator = "inSet";
+            } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
+                data_values.criteria[i].fieldName = "subCategoryId";
+                data_values.criteria[i].operator = "inSet";
+            } else if (data_values.criteria[i].fieldName === "startDate") {
+                data_values.criteria[i].fieldName = "classStartDate";
+                data_values.criteria[i].operator = "greaterOrEqual";
+            } else if (data_values.criteria[i].fieldName === "endDate") {
+                data_values.criteria[i].fieldName = "classEndDate";
+                data_values.criteria[i].operator = "lessOrEqual";
+            } else if (data_values.criteria[i].fieldName === "tclassId") {
+                data_values.criteria[i].fieldName = "classCode"
+                data_values.criteria[i].operator = "equals";
+            }
+        }
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/export/formula/behavioral/" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "criteria", type: "hidden"},
+                ]
+        });
+        downloadForm.setValue("criteria", JSON.stringify(data_values));
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+
 
     // </script>

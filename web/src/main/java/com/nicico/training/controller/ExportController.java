@@ -29,7 +29,6 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -2335,8 +2334,8 @@ public class ExportController {
         }
     }
 
-    @PostMapping(value = {"/excel/formula/behavioral"})
-    public void getExcelDataForCourseBehavioralFormulaReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+    @PostMapping(value = {"/formula/behavioral/{type}"})
+    public void getExcelDataForCourseBehavioralFormulaReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria, @PathVariable String type) throws Exception {
         SearchDTO.CriteriaRq criteriaRq;
 
         criteria = "[" + criteria + "]";
@@ -2386,273 +2385,321 @@ public class ExportController {
             subCategoryList.add(-1L);
         }
 
-        List<ViewBehavioralEvaluationFormulaReport> data = viewBehavioralEvaluationFormulaReportDAO
+        List<ViewBehavioralEvaluationFormulaReport> list = viewBehavioralEvaluationFormulaReportDAO
                 .getAllByAllParams(startDate, endDate, categoryList, catsNullCheck, subCategoryList, subCatsNullCheck, classCode, classCodeNullCheck);
 
-        String fileFullPath = "export.xlsx";
-        Workbook workbook = null;
-        FileInputStream in = null;
-        try {
-            String[] headers = new String[32];
-            String[] columns = new String[32];
+        if (type.equals("excel")) {
+            String fileFullPath = "export.xlsx";
+            Workbook workbook = null;
+            FileInputStream in = null;
+            try {
+                String[] headers = new String[32];
+                String[] columns = new String[32];
 
-            for (int z = 0; z < 32; z++) {
-                switch (z) {
-                    case 0 -> {
-                        headers[z] = "شماره پرسنلی فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_per_number";
-                    }
-                    case 1 -> {
-                        headers[z] = "شماره پرسنلی ارزیابی کننده";
-                        columns[z] = "evaluator_per_number";
-                    }
-                    case 2 -> {
-                        headers[z] = "فراگیر(ارزیابی شونده)";
-                        columns[z] = "student";
-                    }
-                    case 3 -> {
-                        headers[z] = "کد ملی فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_national_code";
-                    }
-                    case 4 -> {
-                        headers[z] = "ارزیابی کننده";
-                        columns[z] = "evaluator_name";
-                    }
-                    case 5 -> {
-                        headers[z] = "کد ملی ارزیابی کننده";
-                        columns[z] = "evaluator_national_code";
-                    }
-                    case 6 -> {
-                        headers[z] = "نوع ارزیاب";
-                        columns[z] = "evaluator_type";
-                    }
-                    case 7 -> {
-                        headers[z] = "کد پست فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_post_code";
-                    }
-                    case 8 -> {
-                        headers[z] = "کد پست ارزیابی کننده";
-                        columns[z] = "evaluator_post_code";
-                    }
-                    case 9 -> {
-                        headers[z] = "عنوان پست فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_post_title";
-                    }
-                    case 10 -> {
-                        headers[z] = "عنوان پست ارزیابی کننده";
-                        columns[z] = "evaluator_post_title";
-                    }
-                    case 11 -> {
-                        headers[z] = "حوزه فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_hoze";
-                    }
-                    case 12 -> {
-                        headers[z] = "حوزه ارزیابی کننده";
-                        columns[z] = "evaluator_hoze";
-                    }
-                    case 13 -> {
-                        headers[z] = "امور فراگیر(ارزیابی شونده)";
-                        columns[z] = "student_omor";
-                    }
-                    case 14 -> {
-                        headers[z] = "امور ارزیابی کننده";
-                        columns[z] = "evaluator_omor";
-                    }
-                    case 15 -> {
-                        headers[z] = "کد کلاس";
-                        columns[z] = "class_code";
-                    }
-                    case 16 -> {
-                        headers[z] = "مجتمع کلاس";
-                        columns[z] = "complex";
-                    }
-                    case 17 -> {
-                        headers[z] = "مسئول اجرای کلاس";
-                        columns[z] = "class_supervisor";
-                    }
-                    case 18 -> {
-                        headers[z] = "تاریخ شروع کلاس";
-                        columns[z] = "class_start_date";
-                    }
-                    case 19 -> {
-                        headers[z] = "تاریخ انتهای کلاس";
-                        columns[z] = "class_end_date";
-                    }
-                    case 20 -> {
-                        headers[z] = "وضعیت کلاس";
-                        columns[z] = "class_status";
-                    }
-                    case 21 -> {
-                        headers[z] = "استاد";
-                        columns[z] = "teacher";
-                    }
-                    case 22 -> {
-                        headers[z] = "کد ملی استاد";
-                        columns[z] = "teacher_national_code";
-                    }
-                    case 23 -> {
-                        headers[z] = "نوع استاد";
-                        columns[z] = "is_personnel";
-                    }
-                    case 24 -> {
-                        headers[z] = "کد دوره";
-                        columns[z] = "course_code";
-                    }
-                    case 25 -> {
-                        headers[z] = "عنوان دوره";
-                        columns[z] = "course_titlefa";
-                    }
-                    case 26 -> {
-                        headers[z] = "گروه";
-                        columns[z] = "category_titlefa";
-                    }
-                    case 27 -> {
-                        headers[z] = "زیرگروه";
-                        columns[z] = "sub_category_titlefa";
-                    }
-                    case 28 -> {
-                        headers[z] = "تعداد فراگیر این کلاس";
-                        columns[z] = "total_std";
-                    }
-                    case 29 -> {
-                        headers[z] = "نمره ارزیابی داده شده به فراگیر";
-                        columns[z] = "std_score";
-                    }
-                    case 30 -> {
-                        headers[z] = "میانگین نمرات داده شده به فراگیر";
-                        columns[z] = "std_avg_score";
-                    }
-                    case 31 -> {
-                        headers[z] = "حد قابل قبول ارزیابی رفتاری";
-                        columns[z] = "acc_score_limit";
+                for (int z = 0; z < 32; z++) {
+                    switch (z) {
+                        case 0 -> {
+                            headers[z] = "شماره پرسنلی فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_per_number";
+                        }
+                        case 1 -> {
+                            headers[z] = "شماره پرسنلی ارزیابی کننده";
+                            columns[z] = "evaluator_per_number";
+                        }
+                        case 2 -> {
+                            headers[z] = "فراگیر(ارزیابی شونده)";
+                            columns[z] = "student";
+                        }
+                        case 3 -> {
+                            headers[z] = "کد ملی فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_national_code";
+                        }
+                        case 4 -> {
+                            headers[z] = "ارزیابی کننده";
+                            columns[z] = "evaluator_name";
+                        }
+                        case 5 -> {
+                            headers[z] = "کد ملی ارزیابی کننده";
+                            columns[z] = "evaluator_national_code";
+                        }
+                        case 6 -> {
+                            headers[z] = "نوع ارزیاب";
+                            columns[z] = "evaluator_type";
+                        }
+                        case 7 -> {
+                            headers[z] = "کد پست فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_post_code";
+                        }
+                        case 8 -> {
+                            headers[z] = "کد پست ارزیابی کننده";
+                            columns[z] = "evaluator_post_code";
+                        }
+                        case 9 -> {
+                            headers[z] = "عنوان پست فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_post_title";
+                        }
+                        case 10 -> {
+                            headers[z] = "عنوان پست ارزیابی کننده";
+                            columns[z] = "evaluator_post_title";
+                        }
+                        case 11 -> {
+                            headers[z] = "حوزه فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_hoze";
+                        }
+                        case 12 -> {
+                            headers[z] = "حوزه ارزیابی کننده";
+                            columns[z] = "evaluator_hoze";
+                        }
+                        case 13 -> {
+                            headers[z] = "امور فراگیر(ارزیابی شونده)";
+                            columns[z] = "student_omor";
+                        }
+                        case 14 -> {
+                            headers[z] = "امور ارزیابی کننده";
+                            columns[z] = "evaluator_omor";
+                        }
+                        case 15 -> {
+                            headers[z] = "کد کلاس";
+                            columns[z] = "class_code";
+                        }
+                        case 16 -> {
+                            headers[z] = "مجتمع کلاس";
+                            columns[z] = "complex";
+                        }
+                        case 17 -> {
+                            headers[z] = "مسئول اجرای کلاس";
+                            columns[z] = "class_supervisor";
+                        }
+                        case 18 -> {
+                            headers[z] = "تاریخ شروع کلاس";
+                            columns[z] = "class_start_date";
+                        }
+                        case 19 -> {
+                            headers[z] = "تاریخ انتهای کلاس";
+                            columns[z] = "class_end_date";
+                        }
+                        case 20 -> {
+                            headers[z] = "وضعیت کلاس";
+                            columns[z] = "class_status";
+                        }
+                        case 21 -> {
+                            headers[z] = "استاد";
+                            columns[z] = "teacher";
+                        }
+                        case 22 -> {
+                            headers[z] = "کد ملی استاد";
+                            columns[z] = "teacher_national_code";
+                        }
+                        case 23 -> {
+                            headers[z] = "نوع استاد";
+                            columns[z] = "is_personnel";
+                        }
+                        case 24 -> {
+                            headers[z] = "کد دوره";
+                            columns[z] = "course_code";
+                        }
+                        case 25 -> {
+                            headers[z] = "عنوان دوره";
+                            columns[z] = "course_titlefa";
+                        }
+                        case 26 -> {
+                            headers[z] = "گروه";
+                            columns[z] = "category_titlefa";
+                        }
+                        case 27 -> {
+                            headers[z] = "زیرگروه";
+                            columns[z] = "sub_category_titlefa";
+                        }
+                        case 28 -> {
+                            headers[z] = "تعداد فراگیر این کلاس";
+                            columns[z] = "total_std";
+                        }
+                        case 29 -> {
+                            headers[z] = "نمره ارزیابی داده شده به فراگیر";
+                            columns[z] = "std_score";
+                        }
+                        case 30 -> {
+                            headers[z] = "میانگین نمرات داده شده به فراگیر";
+                            columns[z] = "std_avg_score";
+                        }
+                        case 31 -> {
+                            headers[z] = "حد قابل قبول ارزیابی رفتاری";
+                            columns[z] = "acc_score_limit";
+                        }
                     }
                 }
-            }
 
-            workbook = new XSSFWorkbook();
-            CreationHelper createHelper = workbook.getCreationHelper();
-            Sheet sheet = workbook.createSheet("گزارش excel");
-            sheet.setRightToLeft(true);
+                workbook = new XSSFWorkbook();
+                CreationHelper createHelper = workbook.getCreationHelper();
+                Sheet sheet = workbook.createSheet("گزارش excel");
+                sheet.setRightToLeft(true);
 
-            Font headerFont = workbook.createFont();
-            headerFont.setFontHeightInPoints((short) 12);
-            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+                Font headerFont = workbook.createFont();
+                headerFont.setFontHeightInPoints((short) 12);
+                headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
 
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
+                CellStyle headerCellStyle = workbook.createCellStyle();
+                headerCellStyle.setFont(headerFont);
 
-            Row headerRow2 = sheet.createRow(0);
-            Cell cell2 = headerRow2.createCell(0);
-            cell2.setCellValue("گزارش ارزیابی رفتاری");
+                Row headerRow2 = sheet.createRow(0);
+                Cell cell2 = headerRow2.createCell(0);
+                cell2.setCellValue("گزارش ارزیابی رفتاری");
 
-            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+                sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
-            Row headerRow = sheet.createRow(1);
-
-            for (int i = 0; i < columns.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerCellStyle);
-            }
-
-            CellStyle dateCellStyle = workbook.createCellStyle();
-            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-
-            int rowNum = 1;
-            for (ViewBehavioralEvaluationFormulaReport map : data) {
-                Row row = sheet.createRow(++rowNum);
+                Row headerRow = sheet.createRow(1);
 
                 for (int i = 0; i < columns.length; i++) {
-                    switch (columns[i]) {
-                        case "student_per_number" -> row.createCell(i).setCellValue(map.getEvaluatedPersonnelNo());
-                        case "evaluator_per_number" -> row.createCell(i).setCellValue(map.getEvaluatorPersonnelNo());
-                        case "student" -> row.createCell(i).setCellValue(map.getEvaluatedName());
-                        case "student_national_code" -> row.createCell(i).setCellValue(map.getEvaluatedNationalCode());
-                        case "evaluator_name" -> row.createCell(i).setCellValue(map.getEvaluatorName());
-                        case "evaluator_national_code" -> row.createCell(i).setCellValue(map.getEvaluatorNationalCode());
-                        case "evaluator_type" -> row.createCell(i).setCellValue(map.getEvaluatorType());
-                        case "student_post_code" -> row.createCell(i).setCellValue(map.getEvaluatedPostCode());
-                        case "evaluator_post_code" -> row.createCell(i).setCellValue(map.getEvaluatorPostCode());
-                        case "student_post_title" -> row.createCell(i).setCellValue(map.getEvaluatedPostTitle());
-                        case "evaluator_post_title" -> row.createCell(i).setCellValue(map.getEvaluatorPostTitle());
-                        case "student_hoze" -> row.createCell(i).setCellValue(map.getEvaluatedArea());
-                        case "evaluator_hoze" -> row.createCell(i).setCellValue(map.getEvaluatorArea());
-                        case "student_omor" -> row.createCell(i).setCellValue(map.getEvaluatedAffairs());
-                        case "evaluator_omor" -> row.createCell(i).setCellValue(map.getEvaluatorAffairs());
-                        case "class_code" -> row.createCell(i).setCellValue(map.getClassCode());
-                        case "complex" -> row.createCell(i).setCellValue(map.getComplexTitle());
-                        case "class_supervisor" -> row.createCell(i).setCellValue(map.getClassSupervisor());
-                        case "class_start_date" -> row.createCell(i).setCellValue(map.getClassStartDate());
-                        case "class_end_date" -> row.createCell(i).setCellValue(map.getClassEndDate());
-                        case "class_status" -> row.createCell(i).setCellValue(map.getClassStatus());
-                        case "teacher" -> row.createCell(i).setCellValue(map.getTeacherName());
-                        case "teacher_national_code" -> row.createCell(i).setCellValue(map.getTeacherNationalCode());
-                        case "is_personnel" -> row.createCell(i).setCellValue(map.getTeacherType());
-                        case "course_code" -> row.createCell(i).setCellValue(map.getCourseCode());
-                        case "course_titlefa" -> row.createCell(i).setCellValue(map.getCourseTitle());
-                        case "category_titlefa" -> row.createCell(i).setCellValue(map.getCourseCategoryTitle());
-                        case "sub_category_titlefa" -> row.createCell(i).setCellValue(map.getCourseSubCategoryTitle());
-                        case "total_std" -> row.createCell(i).setCellValue(map.getStudentsCount());
-                        case "std_score" -> row.createCell(i).setCellValue(map.getEvaluationScore() != null ? map.getEvaluationScore() : 0);
-                        case "std_avg_score" -> row.createCell(i).setCellValue(map.getEvaluationAverage() != null ? map.getEvaluationAverage() : 0);
-                        case "acc_score_limit" -> row.createCell(i).setCellValue(map.getAcceptanceScoreLimit());
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerCellStyle);
+                }
+
+                CellStyle dateCellStyle = workbook.createCellStyle();
+                dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+                int rowNum = 1;
+                for (ViewBehavioralEvaluationFormulaReport map : list) {
+                    Row row = sheet.createRow(++rowNum);
+
+                    for (int i = 0; i < columns.length; i++) {
+                        switch (columns[i]) {
+                            case "student_per_number" -> row.createCell(i).setCellValue(map.getEvaluatedPersonnelNo());
+                            case "evaluator_per_number" -> row.createCell(i).setCellValue(map.getEvaluatorPersonnelNo());
+                            case "student" -> row.createCell(i).setCellValue(map.getEvaluatedName());
+                            case "student_national_code" -> row.createCell(i).setCellValue(map.getEvaluatedNationalCode());
+                            case "evaluator_name" -> row.createCell(i).setCellValue(map.getEvaluatorName());
+                            case "evaluator_national_code" -> row.createCell(i).setCellValue(map.getEvaluatorNationalCode());
+                            case "evaluator_type" -> row.createCell(i).setCellValue(map.getEvaluatorType());
+                            case "student_post_code" -> row.createCell(i).setCellValue(map.getEvaluatedPostCode());
+                            case "evaluator_post_code" -> row.createCell(i).setCellValue(map.getEvaluatorPostCode());
+                            case "student_post_title" -> row.createCell(i).setCellValue(map.getEvaluatedPostTitle());
+                            case "evaluator_post_title" -> row.createCell(i).setCellValue(map.getEvaluatorPostTitle());
+                            case "student_hoze" -> row.createCell(i).setCellValue(map.getEvaluatedArea());
+                            case "evaluator_hoze" -> row.createCell(i).setCellValue(map.getEvaluatorArea());
+                            case "student_omor" -> row.createCell(i).setCellValue(map.getEvaluatedAffairs());
+                            case "evaluator_omor" -> row.createCell(i).setCellValue(map.getEvaluatorAffairs());
+                            case "class_code" -> row.createCell(i).setCellValue(map.getClassCode());
+                            case "complex" -> row.createCell(i).setCellValue(map.getComplexTitle());
+                            case "class_supervisor" -> row.createCell(i).setCellValue(map.getClassSupervisor());
+                            case "class_start_date" -> row.createCell(i).setCellValue(map.getClassStartDate());
+                            case "class_end_date" -> row.createCell(i).setCellValue(map.getClassEndDate());
+                            case "class_status" -> row.createCell(i).setCellValue(map.getClassStatus());
+                            case "teacher" -> row.createCell(i).setCellValue(map.getTeacherName());
+                            case "teacher_national_code" -> row.createCell(i).setCellValue(map.getTeacherNationalCode());
+                            case "is_personnel" -> row.createCell(i).setCellValue(map.getTeacherType());
+                            case "course_code" -> row.createCell(i).setCellValue(map.getCourseCode());
+                            case "course_titlefa" -> row.createCell(i).setCellValue(map.getCourseTitle());
+                            case "category_titlefa" -> row.createCell(i).setCellValue(map.getCourseCategoryTitle());
+                            case "sub_category_titlefa" -> row.createCell(i).setCellValue(map.getCourseSubCategoryTitle());
+                            case "total_std" -> row.createCell(i).setCellValue(map.getStudentsCount());
+                            case "std_score" -> row.createCell(i).setCellValue(map.getEvaluationScore() != null ? map.getEvaluationScore() : 0);
+                            case "std_avg_score" -> row.createCell(i).setCellValue(map.getEvaluationAverage() != null ? map.getEvaluationAverage() : 0);
+                            case "acc_score_limit" -> row.createCell(i).setCellValue(map.getAcceptanceScoreLimit());
+                        }
+                    }
+                }
+
+                for (int i = 0; i < columns.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                CellStyle mine = workbook.createCellStyle();
+                mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+                mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+                sheet.getRow(0).setRowStyle(mine);
+
+
+                FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+                workbook.write(fileOut);
+                fileOut.close();
+
+                File file = new File(fileFullPath);
+                in = new FileInputStream(file);
+                String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+                String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+                if (mimeType == null) {
+                    mimeType = "application/octet-stream";
+                }
+                String headerKey = "Content-Disposition";
+                String headerValue;
+                response.setContentType(mimeType);
+                headerValue = String.format("attachment; filename=\"%s\"", fileName);
+                response.setHeader(headerKey, headerValue);
+                response.setContentLength((int) file.length());
+                OutputStream outStream = response.getOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, bytesRead);
+                }
+                outStream.flush();
+                in.close();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                if (workbook != null) {
+                    try {
+                        workbook.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
+        } else {
+            // type is pdf
+            List<Map<String, Object>> persons = new ArrayList<>();
 
-            for (int i = 0; i < columns.length; i++) {
-                sheet.autoSizeColumn(i);
-            }
+            list.forEach(listItem -> {
+                Map<String, Object> person = new HashMap<>();
+                person.put("studentPersonnelNo", listItem.getEvaluatedPersonnelNo());
+                person.put("evaluatorPersonnelNo", listItem.getEvaluatorPersonnelNo());
+                person.put("studentName", listItem.getEvaluatedName());
+                person.put("studentNationalCode", listItem.getEvaluatedNationalCode());
+                person.put("evaluatorName", listItem.getEvaluatorName());
+                person.put("evaluatorNationalCode", listItem.getEvaluatorNationalCode());
+                person.put("evaluatorType", listItem.getEvaluatorType());
+                person.put("evaluatorPostCode", listItem.getEvaluatorPostCode());
+                person.put("studentArea", listItem.getEvaluatedArea());
+                person.put("evaluatorArea", listItem.getEvaluatorArea());
+                person.put("studentAffairs", listItem.getEvaluatedAffairs());
+                person.put("evaluatorAffairs", listItem.getEvaluatorAffairs());
+                person.put("classCode", listItem.getClassCode());
+                person.put("complex", listItem.getComplexTitle());
+                person.put("supervisor", listItem.getClassSupervisor());
+                person.put("classStartDate", listItem.getClassStartDate());
+                person.put("classEndDate", listItem.getClassEndDate());
+                person.put("classStatus", listItem.getClassStatus());
+                person.put("teacher", listItem.getTeacherName());
+                person.put("teacherNationalCode", listItem.getTeacherNationalCode());
+                person.put("teacherType", listItem.getTeacherType());
+                person.put("courseCode", listItem.getCourseCode());
+                person.put("courseTitle", listItem.getCourseTitle());
+                person.put("category", listItem.getCourseCategoryTitle());
+                person.put("subcategory", listItem.getCourseSubCategoryTitle());
+                person.put("studentsCount", listItem.getStudentsCount());
+                person.put("studentScore", listItem.getEvaluationScore());
+                person.put("studentAvgScour", listItem.getEvaluationAverage());
+                person.put("acceptanceLimit", listItem.getAcceptanceScoreLimit());
 
-            CellStyle mine = workbook.createCellStyle();
-            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
-            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
-            sheet.getRow(0).setRowStyle(mine);
+                persons.add(person);
+            });
 
+            String data = "{" + "\"content\": " + objectMapper.writeValueAsString(persons) + "}";
+            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
-            workbook.write(fileOut);
-            fileOut.close();
+            HashMap<String, Object> params = new HashMap<>();
+            params.put(ConstantVARs.REPORT_TYPE, type);
 
-            File file = new File(fileFullPath);
-            in = new FileInputStream(file);
-            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
-            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
-            }
-            String headerKey = "Content-Disposition";
-            String headerValue;
-            response.setContentType(mimeType);
-            headerValue = String.format("attachment; filename=\"%s\"", fileName);
-            response.setHeader(headerKey, headerValue);
-            response.setContentLength((int) file.length());
-            OutputStream outStream = response.getOutputStream();
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
-            }
-            outStream.flush();
-            in.close();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (workbook != null) {
-                try {
-                    workbook.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            reportUtil.export("/reports/behavioralEvaluation.jasper", params, jsonDataSource, response);
         }
     }
 
