@@ -180,15 +180,15 @@
                     load_teacherList_by_department(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
-                    let list = [];
-                    let listId = [];
-
-                    for (let i = 0; i < data.allRows.size(); i++) {
-                        list.push(data.allRows[i].title);
-                        listId.push(data.allRows[i].id);
-                    }
-                    departmentFilter_form_teacher.getField("teacherDepartmentFilter").setValue(listId);
-                    load_teacherList_by_department(listId);
+                    // let list = [];
+                    // let listId = [];
+                    //
+                    // for (let i = 0; i < data.allRows.size(); i++) {
+                    //     list.push(data.allRows[i].title);
+                    //     listId.push(data.allRows[i].id);
+                    // }
+                    // departmentFilter_form_teacher.getField("teacherDepartmentFilter").setValue(listId);
+                    // load_teacherList_by_department(listId);
 
                 }
              }]
@@ -559,7 +559,7 @@
         },
 
         filterOnKeypress: false,
-        autoFetchData: false,
+        autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
