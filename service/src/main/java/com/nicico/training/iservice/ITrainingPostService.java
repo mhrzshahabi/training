@@ -36,6 +36,7 @@ public interface ITrainingPostService {
 
     boolean delete (Long id);
     boolean updateToUnDeleted (Long id);
+    boolean updateToUnDeleted (String code);
 
     List<String> getAllArea();
 

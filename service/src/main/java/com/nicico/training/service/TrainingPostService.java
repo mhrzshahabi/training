@@ -220,6 +220,20 @@ public class TrainingPostService implements ITrainingPostService {
 
     }
 
+    @Override
+    public boolean updateToUnDeleted(String code) {
+        try {
+            TrainingPost currentEntity = trainingPostDAO.findFirstByCode(code).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            currentEntity.setId(currentEntity.getId());
+            currentEntity.setDeleted(null);
+            currentEntity.setEnabled(null);
+            trainingPostDAO.save(currentEntity);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
     private TrainingPost convertDTO2Obj(TrainingPostDTO trainingPostDTO) throws Exception {
         Department department = trainingPostDTO.getDepartmentId() == null ? null : departmentDAO.findById(trainingPostDTO.getDepartmentId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.DepartmentNotFound));
         Job job = trainingPostDTO.getJobId() == null ? null : jobDAO.findById(trainingPostDTO.getJobId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));

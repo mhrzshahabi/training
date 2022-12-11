@@ -1,15 +1,14 @@
 package com.nicico.training.controller;
 
 
-
-import com.nicico.training.iservice.*;
-
-import com.nicico.training.service.*;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.needsassessment.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -39,6 +38,11 @@ public class AnonymRestController {
    @GetMapping("/changePost/{id}")
     public boolean changePost(@PathVariable long id) {
        return iTrainingPostService.updateToUnDeleted(id);
+    }
+
+    @GetMapping("/changePostByCode/{code}")
+    public boolean changePost(@PathVariable String code) {
+        return iTrainingPostService.updateToUnDeleted(code);
     }
 
 
