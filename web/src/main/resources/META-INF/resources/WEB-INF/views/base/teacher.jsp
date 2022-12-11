@@ -24,6 +24,7 @@
     var editTeacherMode = false;
     let oLoadAttachments_Teacher = null;
     var vm = isc.ValuesManager.create({});
+    let departmentCriteriaTeacher = [];
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -147,6 +148,79 @@
         ],
         fetchDataURL: termUrl + "spec-list"
     });
+
+    let departmentFilter_form_teacher =   isc.DynamicForm.create({
+        padding: 0,
+        fields: [
+            {
+                name: "teacherDepartmentFilter",
+                type: "SelectItem",
+                multiple: true,
+                title: "<spring:message code='complex'/>",
+                width: "300",
+                height: 25,
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+                    cacheAllData: true,
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+                }),
+                autoFetchData: true,
+                displayField: "title",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_teacherList_by_department(value);
+                },
+                dataArrived: function (startRow, endRow, data) {
+                    let list = [];
+                    let listId = [];
+
+                    for (let i = 0; i < data.allRows.size(); i++) {
+                        list.push(data.allRows[i].title);
+                        listId.push(data.allRows[i].id);
+                    }
+                    departmentFilter_form_teacher.getField("teacherDepartmentFilter").setValue(listId);
+                    load_teacherList_by_department(listId);
+
+                }
+             }]
+    })
+
+    function load_teacherList_by_department(value) {
+
+        if (value !== undefined) {
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {
+                        fieldName: "complexId", operator: "inSet", value: value
+                    }
+                ]
+            };
+
+            if (ListGrid_Teacher_JspTeacher.implicitCriteria) {
+                let termCriteria = ListGrid_Teacher_JspTeacher.implicitCriteria.criteria.filter(c => c.fieldName != "complexId");
+                if (termCriteria.size() > 0) {
+                    criteria.criteria.push(termCriteria[0]);
+                }
+            }
+            RestDataSource_Teacher_JspTeacher.fetchDataURL = teacherUrl + "spec-list-grid";
+            departmentCriteriaTeacher = criteria;
+            ListGrid_Teacher_JspTeacher.invalidateCache();
+            ListGrid_Teacher_JspTeacher.fetchData(departmentCriteriaTeacher);
+        } else {
+            createDialog("info", "لطفا مجتمع را انتخاب کنید.")
+        }
+    }
 
     //----------------------------------------------------Menu-------------------------------------------------------
     let ToolStripExcel_JspTeacher = isc.ToolStripButtonExcel.create({
@@ -482,7 +556,7 @@
         },
 
         filterOnKeypress: false,
-        autoFetchData: true,
+        autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
@@ -1011,6 +1085,15 @@
     var VLayout_Body_Teacher_JspTeacher = isc.TrVLayout.create({
         members: [
             HLayout_Actions_Teacher,
+            isc.HLayout.create({
+                width: "75%",
+                height: "1%",
+                members: [
+                    <sec:authorize access="hasAuthority('Teacher_R')">
+                    departmentFilter_form_teacher
+                    </sec:authorize>
+                ]
+            }),
             HLayout_Grid_Teacher_JspTeacher
         ]
     });
