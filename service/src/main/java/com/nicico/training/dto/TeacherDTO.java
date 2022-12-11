@@ -216,6 +216,8 @@ public class TeacherDTO {
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
         private String personnelCode2;
+        private Set<Long> complexes;
+
     }
 
     @Getter
@@ -226,6 +228,8 @@ public class TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
+        private Set<Long> complexes;
+
     }
 
     @Getter
