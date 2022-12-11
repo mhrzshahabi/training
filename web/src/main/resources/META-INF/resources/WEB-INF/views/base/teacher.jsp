@@ -196,7 +196,7 @@
 
     function load_teacherList_by_department(value) {
 
-        if (value !== undefined) {
+        if (value !== undefined && value !== null) {
             let criteria = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
@@ -217,8 +217,11 @@
             departmentCriteriaTeacher = criteria;
             ListGrid_Teacher_JspTeacher.invalidateCache();
             ListGrid_Teacher_JspTeacher.fetchData(departmentCriteriaTeacher);
-        } else {
-            createDialog("info", "لطفا مجتمع را انتخاب کنید.")
+        }
+        else {
+            RestDataSource_Teacher_JspTeacher.fetchDataURL = teacherUrl + "spec-list-grid";
+            ListGrid_Teacher_JspTeacher.invalidateCache();
+            ListGrid_Teacher_JspTeacher.fetchData();
         }
     }
 
