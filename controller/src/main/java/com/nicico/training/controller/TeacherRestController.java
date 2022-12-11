@@ -270,18 +270,20 @@ public class TeacherRestController {
         SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
         for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
-            if(o.getFieldName().equalsIgnoreCase("categories"))
-                o.setValue(Long.parseLong(o.getValue().get(0)+""));
-            if(o.getFieldName().equalsIgnoreCase("subCategories"))
-                o.setValue(Long.parseLong(o.getValue().get(0)+""));
-            if(o.getFieldName().equalsIgnoreCase("personnelStatus")) {
-                if (o.getValue().get(0).equals("false")){
-                    o.setValue(0);
-                } else if (o.getValue().get(0).equals("true")){
-                    o.setValue(1);
+            if (o.getFieldName() != null) {
+
+                if (o.getFieldName().equalsIgnoreCase("categories"))
+                    o.setValue(Long.parseLong(o.getValue().get(0) + ""));
+                if (o.getFieldName().equalsIgnoreCase("subCategories"))
+                    o.setValue(Long.parseLong(o.getValue().get(0) + ""));
+                if (o.getFieldName().equalsIgnoreCase("personnelStatus")) {
+                    if (o.getValue().get(0).equals("false")) {
+                        o.setValue(0);
+                    } else if (o.getValue().get(0).equals("true")) {
+                        o.setValue(1);
+                    }
                 }
             }
-
         }
 
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);

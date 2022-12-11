@@ -246,6 +246,14 @@ public class TeacherService implements ITeacherService {
 
         List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
         if (request.getCriteria() != null) {
+
+             for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
+                 if (o.getFieldName().equalsIgnoreCase("complexId"))
+                 {
+                     o.setFieldName("complexes");
+                  }
+             }
+
             if (request.getCriteria().getCriteria() != null)
                 request.getCriteria().getCriteria().add(criteriaRq);
             else {
