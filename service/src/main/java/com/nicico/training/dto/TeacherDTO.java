@@ -32,7 +32,6 @@ public class TeacherDTO {
     private Long personalityId;
     private Long majorCategoryId;
     private Long majorSubCategoryId;
-    private Set<Long> complexes;
 
 
     @Getter
@@ -56,6 +55,15 @@ public class TeacherDTO {
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();
         }
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherInfoWithComplexes")
+    public static class TeacherInfoWithComplexes extends Info {
+        private Set<Long> complexes;
+    }
+
 
     @Getter
     @Setter

@@ -248,8 +248,8 @@ public class TeacherRestController {
 
     @GetMapping(value = "/info/{id}")
     //@PreAuthorize("hasAuthority('Teacher_R')")
-    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id) {
-        TeacherDTO.Info response = teacherService.get(id);
+    public ResponseEntity<TeacherDTO.TeacherInfoWithComplexes> info(@PathVariable Long id) {
+        TeacherDTO.TeacherInfoWithComplexes response = teacherService.getWitComplexes(id);
         List<Long> roleIds = iTeacherRoleService.findAllRoleByTeacherId(id).stream().map(Role::getId).collect(Collectors.toList());
         response.setRoles(roleIds);
         return new ResponseEntity<>(response, HttpStatus.OK);

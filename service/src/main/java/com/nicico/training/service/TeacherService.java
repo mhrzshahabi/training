@@ -80,6 +80,13 @@ public class TeacherService implements ITeacherService {
         return info;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public TeacherDTO.TeacherInfoWithComplexes getWitComplexes(Long id) {
+        return modelMapper.map(getTeacher(id), TeacherDTO.TeacherInfoWithComplexes.class);
+    }
+
+
 
 
 

@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface ITeacherService {
 
     TeacherDTO.Info get(Long id);
+    TeacherDTO.TeacherInfoWithComplexes getWitComplexes(Long id);
 
     Teacher getTeacher(Long id);
 
