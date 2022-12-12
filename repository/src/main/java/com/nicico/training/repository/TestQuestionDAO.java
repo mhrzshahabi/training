@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +29,17 @@ public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaS
 
     List<TestQuestion> findByTclassId(Long id);
 
+    @Query(value = """
+            SELECT
+                tq.*
+            FROM
+                tbl_test_question   tq
+                INNER JOIN tbl_class           c ON tq.f_class = c.id
+                INNER JOIN tbl_teacher         t ON c.f_teacher = t.id
+            WHERE
+                ( tq.b_online_final_exam_status = 0
+                  OR tq.b_online_final_exam_status IS NULL )
+                AND t.c_teacher_code = :nationalCode
+            """, nativeQuery = true)
+    List<TestQuestion> getTeacherExamsNotSentToEls(@Param("nationalCode") String nationalCode);
 }
