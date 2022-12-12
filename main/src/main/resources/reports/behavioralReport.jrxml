@@ -376,7 +376,7 @@
 						<valueExpression><![CDATA[$F{scoreVal}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<barPlot>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="false">
 					<plot backgroundAlpha="1.0" labelRotation="45.0"/>
 					<itemLabel>
 						<font fontName="Shabnam-FD"/>
