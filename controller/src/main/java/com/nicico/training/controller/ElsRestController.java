@@ -3055,7 +3055,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/teacher/exam-to-els/{nationalcode}")
-    public ExamNotSentToElsResponse sendClassToEls(HttpServletRequest header, @PathVariable("nationalcode") String nationalCode) {
+    public ExamNotSentToElsResponse sendExamsNotSentToEls(HttpServletRequest header, @PathVariable("nationalcode") String nationalCode) {
         ExamNotSentToElsResponse response = new ExamNotSentToElsResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
