@@ -10,11 +10,9 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
-import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ITestQuestionService;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.model.TargetSociety;
 import com.nicico.training.model.TestQuestion;
 import com.nicico.training.repository.QuestionBankDAO;
 import com.nicico.training.repository.TclassDAO;
@@ -322,5 +320,9 @@ public class TestQuestionService implements ITestQuestionService {
         }
 
         return testQuestion;
+    }
+
+    public List<TestQuestion> getTeacherExamsNotSentToEls(String teacherNationalCode) {
+        return testQuestionDAO.getTeacherExamsNotSentToEls(teacherNationalCode);
     }
 }
