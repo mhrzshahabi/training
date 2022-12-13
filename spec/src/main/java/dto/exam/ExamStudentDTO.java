@@ -35,6 +35,9 @@ public class ExamStudentDTO {
         @ApiModelProperty
         private String scoreStateTitle;
 
+        @ApiModelProperty
+        private Long classStudentId;
+
     }
 
 }

@@ -240,7 +240,8 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
                     WHEN tq.c_test_question_type = 'PreTest'   THEN
                         cs.pre_test_score
                 END AS score,
-                pv.c_title AS score_state
+                pv.c_title   AS score_state,
+                cs.id        AS class_student_id
             FROM
                 tbl_student           s
                 INNER JOIN tbl_class_student     cs ON s.id = cs.student_id
