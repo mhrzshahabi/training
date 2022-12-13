@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import dto.exam.ElsImportedExam;
 import dto.exam.ExamNotSentToElsDTO;
+import dto.exam.ExamStudentDTO;
 import request.exam.ElsSendExamToTrainingResponse;
 import request.exam.ExamNotSentToElsResponse;
 import request.exam.ExamResult;
@@ -15,4 +16,6 @@ public interface IElsService {
     ElsSendExamToTrainingResponse submitExamFromEls(ElsImportedExam importedExam);
 
     List<ExamNotSentToElsDTO.Info> getAllExamsNotSentToElsByTeacherNationalCode(String nationalCode);
+
+    List<ExamStudentDTO.Info> getAllStudentsOfExam(Long examId);
 }
