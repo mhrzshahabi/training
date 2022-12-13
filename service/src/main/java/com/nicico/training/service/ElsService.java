@@ -180,6 +180,7 @@ public class ElsService implements IElsService {
                 dto.setNationalCode(fields[2] != null ? fields[2].toString() : null);
                 dto.setScore(fields[3] != null ? Double.valueOf(fields[3].toString()) : null);
                 dto.setScoreStateTitle(fields[4] != null ? fields[4].toString() : null);
+                dto.setClassStudentId(fields[5] != null ? Long.valueOf(fields[5].toString()) : null);
 
                 infos.add(dto);
             }

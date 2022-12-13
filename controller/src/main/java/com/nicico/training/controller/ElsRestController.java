@@ -3092,7 +3092,6 @@ public class ElsRestController {
                 response.setData(data);
                 response.setStatus(200);
                 response.setMessage("successful");
-                return response;
             } catch (TrainingException e1) {
                 response.setStatus(HttpStatus.NOT_FOUND.value());
                 response.setMessage("آزمون مورد نظر یافت نشد");
