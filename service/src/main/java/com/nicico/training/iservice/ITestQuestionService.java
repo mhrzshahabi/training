@@ -7,6 +7,7 @@ import com.nicico.training.model.TestQuestion;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Set;
 
 public interface ITestQuestionService {
@@ -35,5 +36,7 @@ public interface ITestQuestionService {
     TestQuestion findByTestQuestionTypeAndTclassId(String testQuestionType, Long classId);
 
     TestQuestion createPreTest(Long classId);
+
+    List<TestQuestion> getTeacherExamsNotSentToEls(String teacherNationalCode);
 
 }

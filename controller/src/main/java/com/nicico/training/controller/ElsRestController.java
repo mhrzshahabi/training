@@ -26,7 +26,6 @@ import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.employmentHistory.EmploymentHistoryBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
-import com.nicico.training.mapper.question_protocol.QuestionProtocolMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
@@ -39,10 +38,7 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.EQuestionType;
-import dto.exam.ElsExamCreateDTO;
-import dto.exam.ElsImportedExam;
-import dto.exam.ElsImportedQuestionProtocol;
+import dto.exam.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -105,7 +101,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
-import static dto.exam.EQuestionType.*;
 
 @Slf4j
 @RestController
@@ -181,6 +176,7 @@ public class ElsRestController {
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
     private final IElsService elsService;
+    private final TestQuestionMapper testQuestionMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -3057,5 +3053,59 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
+
+    @GetMapping("/teacher/exam-to-els/{national-code}")
+    public ExamNotSentToElsResponse sendExamsNotSentToEls(HttpServletRequest header, @PathVariable("national-code") String nationalCode) {
+        ExamNotSentToElsResponse response = new ExamNotSentToElsResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<ExamNotSentToElsDTO.Info> examNotSentToElsDTOS =
+                        elsService.getAllExamsNotSentToElsByTeacherNationalCode(nationalCode);
+
+                response.setExamNotSentToElsDTOS(examNotSentToElsDTOS);
+                response.setStatus(200);
+                response.setMessage("successful");
+                return response;
+            } catch (TrainingException e1) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("استادی با این کدملی یافت نشد");
+            } catch (Exception e2) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("اطلاعاتی از سیستم آموزش دریافت نشد");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
+    }
+
+    @GetMapping("/teacher/exam-student-to-els/{exam-id}")
+    public ExamStudentToElsResponse sendExamStudentsToEls(HttpServletRequest header, @PathVariable("exam-id") Long examId) {
+        ExamStudentToElsResponse response = new ExamStudentToElsResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<ExamStudentDTO.Info> data = elsService.getAllStudentsOfExam(examId);
+                response.setData(data);
+                response.setStatus(200);
+                response.setMessage("successful");
+            } catch (TrainingException e1) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("آزمون مورد نظر یافت نشد");
+            } catch (Exception e2) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("اطلاعاتی از سیستم آموزش دریافت نشد");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
+    }
+
 
 }

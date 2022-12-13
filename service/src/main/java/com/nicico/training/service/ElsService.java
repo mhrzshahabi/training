@@ -1,17 +1,14 @@
 package com.nicico.training.service;
 
 
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
-import com.nicico.training.model.QuestionBank;
-import com.nicico.training.model.QuestionBankTestQuestion;
-import com.nicico.training.model.QuestionProtocol;
-import com.nicico.training.model.TestQuestion;
+import com.nicico.training.model.*;
 import com.nicico.training.utility.persianDate.MyUtils;
-import dto.exam.ElsExamCreateDTO;
-import dto.exam.ElsImportedExam;
-import dto.exam.ElsImportedQuestionProtocol;
+import dto.exam.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,8 @@ public class ElsService implements IElsService {
     private final ITclassService tclassService;
     private final IParameterValueService parameterValueService;
     private final TestQuestionMapper testQuestionMapper;
+    private final ITeacherService teacherService;
+    private final IStudentService studentService;
 
   @Override
     public BaseResponse checkValidScores(Long id, List<ExamResult> examResults) {
@@ -142,4 +141,51 @@ public class ElsService implements IElsService {
         }
     }
 
+    @Override
+    public List<ExamNotSentToElsDTO.Info> getAllExamsNotSentToElsByTeacherNationalCode(String nationalCode) {
+        Teacher teacher = teacherService.getTeacherByNationalCode(nationalCode);
+
+        if (teacher == null) {
+            throw new TrainingException(TrainingException.ErrorType.TeacherNotFound);
+        }
+
+        // find all test-questions(exams) not sent to els
+        List<TestQuestion> allNotSentToEls = testQuestionService.getTeacherExamsNotSentToEls(nationalCode);
+
+        // map exams to dto
+        List<ExamNotSentToElsDTO.Info> examNotSentToElsDTOS = testQuestionMapper.toExamNotSentDto(allNotSentToEls);
+
+        return examNotSentToElsDTOS;
+    }
+
+    @Override
+    public List<ExamStudentDTO.Info> getAllStudentsOfExam(Long examId) {
+        TestQuestion exam = testQuestionService.getById(examId);
+
+        if (exam == null) {
+            throw new TrainingException(TrainingException.ErrorType.TestQuestionNotFound);
+        }
+
+        List<?> allStudentsOfExam = studentService.getAllStudentsOfExam(examId);
+        List<ExamStudentDTO.Info> infos = new ArrayList<>();
+
+        if (allStudentsOfExam != null) {
+            for (Object o : allStudentsOfExam) {
+                Object[] fields = (Object[]) o;
+
+                ExamStudentDTO.Info dto = new ExamStudentDTO.Info();
+
+                dto.setFirstName(fields[0] != null ? fields[0].toString() : null);
+                dto.setLastName(fields[1] != null ? fields[1].toString() : null);
+                dto.setNationalCode(fields[2] != null ? fields[2].toString() : null);
+                dto.setScore(fields[3] != null ? Double.valueOf(fields[3].toString()) : null);
+                dto.setScoreStateTitle(fields[4] != null ? fields[4].toString() : null);
+                dto.setClassStudentId(fields[5] != null ? Long.valueOf(fields[5].toString()) : null);
+
+                infos.add(dto);
+            }
+        }
+
+        return infos;
+    }
 }

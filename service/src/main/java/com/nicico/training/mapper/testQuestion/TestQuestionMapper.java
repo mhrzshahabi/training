@@ -4,10 +4,13 @@ import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.model.TestQuestion;
 import dto.exam.ElsExamCreateDTO;
 import dto.exam.ElsImportedExam;
+import dto.exam.ExamNotSentToElsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface TestQuestionMapper {
@@ -34,5 +37,9 @@ public interface TestQuestionMapper {
     ElsExamCreateDTO.Info toInfo(TestQuestion testQuestion);
 
     TestQuestionDTO.Create toCreate(TestQuestionDTO.Import dto);
+
+    ExamNotSentToElsDTO.Info toExamNotSentDto(TestQuestion testQuestion);
+
+    List<ExamNotSentToElsDTO.Info> toExamNotSentDto(List<TestQuestion> testQuestions);
 
 }
