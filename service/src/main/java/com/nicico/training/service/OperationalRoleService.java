@@ -11,7 +11,10 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.repository.ComplexDAO;
+import com.nicico.training.repository.OperationalRoleDAO;
+import com.nicico.training.repository.OperationalUnitDAO;
+import com.nicico.training.repository.ViewTrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -165,6 +168,40 @@ public class OperationalRoleService implements IOperationalRoleService {
         if (operationalRoles.size() != 0)
             return operationalRoles;
         else return new ArrayList<>();
+    }
+
+    @Override
+    public boolean getOperationalRolesByByComplexIdAndObjectTypeWithCheckDepartment(String objectType) {
+
+        String complexTitle;
+        Long complexId;
+        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+        if (departmentId != null) {
+            complexTitle = departmentService.getComplexTitleById(departmentId);
+            if (complexTitle == null) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
+
+        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByComplexIdAndObjectType(complexId, objectType);
+        return operationalRoles.size() <= 1;
+
+
+    }
+
+    @Override
+    public Set<Long> findAllByObjectType(String objectType) {
+        Set<Long>users=new HashSet<>();
+        if (objectType!=null){
+            List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByObjectType(objectType);
+            if (operationalRoles.size() != 0){
+                operationalRoles.stream().map(OperationalRole::getUserIds).collect(Collectors.toSet()).forEach(users::addAll);
+            }
+        }
+        return users;
     }
 
     @Override

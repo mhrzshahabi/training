@@ -8411,6 +8411,71 @@ DECLARE
     </changeSet>
 
 
+
+
+    <changeSet author="namdari" id="1633842708000-23">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code,C_TYPE)
+            VALUES (l_parameter_id,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'تنظیمات نیازسنجی',
+                    'needAssessmentConfig','config');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,C_DESCRIPTION, C_TYPE, C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'انتخاب رییس نیازسنجی توسط کاربر',
+                    'chooseUser','در صورتیکه جلوگیری از شروع فرایند انتخاب شده باشد و مجتمع کاربر فرستنده خالی باشد سیستم جلوی شروع فرایند را میگیرد','text','بله');
+            END;
+            END;
+
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 

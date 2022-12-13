@@ -1518,7 +1518,6 @@
                 ],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    //zaza
                     if (value == 520) {
                         QuestionBankDF_questionBank.getItem("displayTypeId").enable();
 

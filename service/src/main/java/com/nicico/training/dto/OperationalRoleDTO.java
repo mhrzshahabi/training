@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +63,14 @@ public class OperationalRoleDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("OathUserSpecRs")
+    public static class OathUserSpecRs {
+        private OperationalRoleDTO.SpecOauthRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private List<OperationalRoleDTO.Info> data;
@@ -71,5 +78,29 @@ public class OperationalRoleDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecOauthRs {
+        private List<OperationalRoleDTO.OathInfo> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("OperationalRole - Info")
+    public static class OathInfo  {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String nationalCode;
+
     }
 }

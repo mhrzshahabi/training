@@ -8,12 +8,16 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.ISynonymOAUserService;
 import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.model.OperationalRole;
 import com.nicico.training.model.Subcategory;
+import com.nicico.training.model.SynonymOAUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +36,10 @@ import java.util.Set;
 public class OperationalRoleRestController {
 
     private final IOperationalRoleService operationalRoleService;
+    private final ISynonymOAUserService synonymOAUserService;
     private final ObjectMapper objectMapper;
     private final OperationalRoleBeanMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @PostMapping
@@ -154,5 +160,28 @@ public class OperationalRoleRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/findAllByObjectType/{type}")
+    public ResponseEntity<OperationalRoleDTO.OathUserSpecRs> findAllByObjectType( @PathVariable String type) throws IOException {
+        final OperationalRoleDTO.SpecOauthRs specResponse = new OperationalRoleDTO.SpecOauthRs();
+        Set<Long>  data=operationalRoleService.findAllByObjectType(type);
+        List<SynonymOAUser> list=  synonymOAUserService.listOfUser(data.stream().toList());
+          List<OperationalRoleDTO.OathInfo> dtoList=modelMapper.map(list, new TypeToken<List<OperationalRoleDTO.OathInfo>>() {
+          }.getType());
+        specResponse.setData(dtoList)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final OperationalRoleDTO.OathUserSpecRs specRs = new OperationalRoleDTO.OathUserSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+
+    }
+
+
+
 
 }

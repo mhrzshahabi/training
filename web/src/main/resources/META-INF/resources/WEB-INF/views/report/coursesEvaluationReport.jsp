@@ -418,7 +418,6 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelOutput() {
-//zaza print excel
         if (ListGrid_CER.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else

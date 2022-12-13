@@ -22,6 +22,7 @@
     let isFromEdit=false;
     let canInsert;
     let limit=0;
+    let innerMustSend=null;
     let selectedRecordForGap;
     var hasChanged = false;
     var canSendToWorkFlowNA = false;
@@ -135,6 +136,17 @@
             {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true}
         ],
         fetchDataURL: skillUrl + "/spec-list"
+    });
+
+    var RestDataSource_AllHeads = isc.TrDS.create({
+        ID: "RestDataSource_AllHeads",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "nationalCode", hidden: true},
+            {name: "firstName", title: "نام"},
+            {name: "lastName", title: "نام خانوادگی"},
+        ],
+        fetchDataURL: operationalRoleUrl + "/findAllByObjectType/"+"HEAD_OF_PLANNING"
     });
     var RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment = isc.TrDS.create({
         fields:[
@@ -1145,6 +1157,27 @@
             }
         }
     });
+    let ListGrid_AllHeads = isc.TrLG.create({
+        ID: "ListGrid_AllHeads",
+        dataSource: RestDataSource_AllHeads,
+        showHeaderContextMenu: false,
+        selectionType: "single",
+        filterOnKeypress: true,
+        autoFetchData:true,
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        canAcceptDroppedRecords: true,
+        fields: [
+            {name: "id", title: "کد", autoFitData: true, autoFitWidthApproach: true,hidden: true},
+            {name: "firstName", title: "نام"},
+            {name: "lastName", title: "نام خانوادگی"},
+            {name: "nationalCode",hidden: true},
+        ],
+        gridComponents: ["filterEditor", "header", "body"],
+
+    });
+
+
     let ListGrid_NeedsAssessment_JspENA = isc.TrLG.create({
         dataSource: RestDataSource_NeedsAssessment_JspENA,
         showHeaderContextMenu: false,
@@ -1588,6 +1621,65 @@
             ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
             ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
         }
+    });
+
+    let ChooseHeadlayout = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height:"10%",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [
+            isc.IButton.create({
+                title: "تایید",
+                click: function () {
+                    if (ListGrid_AllHeads.getSelectedRecord() !== undefined && ListGrid_AllHeads.getSelectedRecord() !== null) {
+                        sendApi(innerMustSend,ListGrid_AllHeads.getSelectedRecord().nationalCode)
+                        Window_showHeads.close()
+
+                    }else {
+                        isc.Dialog.create({
+                            message: "رکوردی انتخاب نشده است!",
+                            icon: "[SKIN]ask.png",
+                            title: "توجه",
+                            buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    }
+                }
+            })
+            , isc.IButtonCancel.create({
+             title: "<spring:message code='cancel'/>",
+            prompt: "",
+            width: 100,
+//icon: "<spring:url value="remove.png"/>",
+            orientation: "vertical",
+            click: function () {
+                Window_showHeads.close()
+            }
+        })]
+    });
+
+
+    let Window_showHeads = isc.Window.create({
+        title: "انتخاب رییس برنامه ریزی",
+        width: "50%",
+        height: "50%",
+        keepInParentRect: true,
+        isModal: false,
+        autoSize: false,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    ListGrid_AllHeads,
+                    ChooseHeadlayout
+                ]
+            })]
     });
 
     let DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({
@@ -2610,76 +2702,27 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow(mustSend) {
-        wait.close();
-        isc.MyYesNoDialog.create({
-            message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
-            title: "<spring:message code="message"/>",
-            buttonClick: function (button, index) {
-                this.close();
-                if (index === 0) {
-                    if (mustSend) {
-                        let param={}
-                        param.data={
-                            "processDefinitionKey": "نیازسنجی",
-                            "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
-                        }
-                        param.rq= {
-                            "id": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                            "type": DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
-                            "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
-                            // "competenceTypeId": record.competenceTypeId,
-                            // "code": record.code,
-                            // "categoryId": record.categoryId,
-                            // "subCategoryId": record.subCategoryId,
-                            // "description": record.description,
-                            // "workFlowStatusCode": method !== "POST" ? 4 : 0,
-                        };
+        if (mustSend){
+            innerMustSend=null;
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/checkHasHead/"+"HEAD_OF_PLANNING", "GET", null, (resp) => {
+                if (resp.httpResponseCode === 200 ) {
+                    wait.close();
+                    sendApi(mustSend,null)
 
-                        let varParams = [{
-                            "processKey": "needAssessment_MainWorkflow",
-                            "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                            "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : ""),
-                            "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
-                            "needAssessmentCreatorId": "${username}",
-                            "needAssessmentCreator": userFullName,
-                            "REJECTVAL": "",
-                            "REJECT": "",
-                            "target": "/course/show-form",
-                            "targetTitleFa": "نیازسنجی",
-                            "workflowStatus": "ثبت اولیه",
-                            "workflowStatusCode": "0",
-                            "workFlowName": "NeedAssessment",
-                            "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
-                        }];
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
-                    } else {
-                        let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
-                            .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
-                            .concat("&objectType=")
-                            .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
-                        fetch(url, {headers: apiHeader, method: "POST"})
-                            .then(resp => {
-                                if(resp.status === 500) {
-                                    createDialog("info", resp.errors[0].field);
-                                    canSendToWorkFlowNA = true;
-                                    return;
-                                }
-                                if(resp.status === 200) {
-                                    simpleDialog("<spring:message code="message"/>", "<spring:message code='course.changes.set.on.workflow.engine'/>", 3000, "say");
-                                    Window_NeedsAssessment_Edit.close(0);
-                                    canSendToWorkFlowNA = false;
-                                    return ;
-                                }
-                                else {
-                                    canSendToWorkFlowNA = true;
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                }
-                            });
-                    }
+                } else if (resp.httpResponseCode === 400 ) {
+                    wait.close();
+                    innerMustSend=mustSend
+                    showAllHeadOfPlaning();
                 }
-            }
-        });
+
+            }));
+        }else {
+            sendApi(mustSend,null)
+        }
+
+
+
     }
 
     async function sendNeedsAssessmentForSaving() {
@@ -2722,10 +2765,82 @@
     }
 
 
-    async    function addNewSkillForChangePriority(data) {
+         function showAllHeadOfPlaning() {
+             Window_showHeads.show();
+         }
 
+         function sendApi(mustSend,nationalCode) {
+             isc.MyYesNoDialog.create({
+                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
+                 title: "<spring:message code="message"/>",
+                 buttonClick: function (button, index) {
+                     this.close();
+                     if (index === 0) {
+                         if (mustSend) {
+                             let param={}
+                             param.data={
+                                 "HeadNationalCode": nationalCode,
+                                 "processDefinitionKey": "نیازسنجی",
+                                 "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                             }
+                             param.rq= {
+                                 "id": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
+                                 "type": DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
+                                 "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                                 // "competenceTypeId": record.competenceTypeId,
+                                 // "code": record.code,
+                                 // "categoryId": record.categoryId,
+                                 // "subCategoryId": record.subCategoryId,
+                                 // "description": record.description,
+                                 // "workFlowStatusCode": method !== "POST" ? 4 : 0,
+                             };
 
-    }
+                             <%--let varParams = [{--%>
+                             <%--    "processKey": "needAssessment_MainWorkflow",--%>
+                             <%--    "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),--%>
+                             <%--    "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : ""),--%>
+                             <%--    "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],--%>
+                             <%--    "needAssessmentCreatorId": "${username}",--%>
+                             <%--    "needAssessmentCreator": userFullName,--%>
+                             <%--    "REJECTVAL": "",--%>
+                             <%--    "REJECT": "",--%>
+                             <%--    "target": "/course/show-form",--%>
+                             <%--    "targetTitleFa": "نیازسنجی",--%>
+                             <%--    "workflowStatus": "ثبت اولیه",--%>
+                             <%--    "workflowStatusCode": "0",--%>
+                             <%--    "workFlowName": "NeedAssessment",--%>
+                             <%--    "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")--%>
+                             <%--}];--%>
+                             wait.show();
+                             isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
+                         } else {
+                             let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
+                                 .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
+                                 .concat("&objectType=")
+                                 .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                             fetch(url, {headers: apiHeader, method: "POST"})
+                                 .then(resp => {
+                                     if(resp.status === 500) {
+                                         createDialog("info", resp.errors[0].field);
+                                         canSendToWorkFlowNA = true;
+                                         return;
+                                     }
+                                     if(resp.status === 200) {
+                                         simpleDialog("<spring:message code="message"/>", "<spring:message code='course.changes.set.on.workflow.engine'/>", 3000, "say");
+                                         Window_NeedsAssessment_Edit.close(0);
+                                         canSendToWorkFlowNA = false;
+                                         return ;
+                                     }
+                                     else {
+                                         canSendToWorkFlowNA = true;
+                                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     }
+                                 });
+                         }
+                     }
+                 }
+             });
+         }
 
     function changePriority(id,updating,record,viewer ) {
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" +id, "PUT", JSON.stringify(updating), function (resp) {

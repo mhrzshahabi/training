@@ -3,25 +3,27 @@ package com.nicico.training.controller.client.bpms;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstanceHistory;
 import com.nicico.bpmsclient.model.flowable.task.TaskHistory;
 import com.nicico.bpmsclient.model.flowable.task.TaskInfo;
-import com.nicico.bpmsclient.model.request.TaskSearchDto;
-import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
+import com.nicico.bpmsclient.model.request.TaskSearchDto;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
-import com.nicico.training.iservice.INeedsAssessmentTempService;
-import com.nicico.training.mapper.bpms.BPMSBeanMapper;
-import dto.bpms.*;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.iservice.IBpmsService;
+import com.nicico.training.iservice.INeedsAssessmentTempService;
+import com.nicico.training.mapper.bpms.BPMSBeanMapper;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
 import com.nicico.training.service.CompetenceService;
+import dto.bpms.BPMSUserTasksContentDto;
+import dto.bpms.BPMSUserTasksDto;
+import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +33,8 @@ import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
-
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -221,6 +222,14 @@ public class BpmsRestController {
     @PostMapping({"/needAssessment/processes/reAssign-process"})
     public BaseResponse reAssignNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {
         return service.reAssignNeedAssessmentProcessInstance(value.getReviewTaskRequest(), value);
+    }
+
+    @Loggable
+    @GetMapping({"/checkHasHead/{type}"})
+    public ResponseEntity<BaseResponse> checkHasHead(@PathVariable String type) {
+        BaseResponse res= service.checkHasHead(type);
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+
     }
 
 }

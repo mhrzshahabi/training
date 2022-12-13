@@ -157,16 +157,16 @@ public class RequestItemService implements IRequestItemService {
     @Override
     @Transactional
     public RequestItemDto createList(List<RequestItem> requestItems) {
-        List<RequestItem> temp=new ArrayList<>();
-        if (!requestItems.isEmpty()){
-          Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
+        List<RequestItem> temp = new ArrayList<>();
+        if (!requestItems.isEmpty()) {
+            Long competenceReqId = requestItems.get(0).getCompetenceReqId();
             List<RequestItem> list = getListWithCompetenceRequest(competenceReqId);
-            for (RequestItem requestItem:requestItems) {
+            for (RequestItem requestItem : requestItems) {
                 if (!(!list.isEmpty() && list.stream().anyMatch(q -> q.getNationalCode().equals(requestItem.getNationalCode()))))
                     temp.add(requestItem);
             }
             if (list.isEmpty())
-                temp=requestItems;
+                temp = requestItems;
         }
         RequestItemDto res = new RequestItemDto();
         List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
@@ -894,7 +894,7 @@ public class RequestItemService implements IRequestItemService {
             requestItem.setDateSent(bpmsReqItemSentLetterDto.getDateSent());
             if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) ||
                     (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
-                    courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
+                            courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
                 requestItem.setProcessStatusId(parameterValueService.getId("terminationOfTheProcess"));
             }
             requestItemDAO.saveAndFlush(requestItem);
@@ -937,6 +937,11 @@ public class RequestItemService implements IRequestItemService {
             response.setMessage(synonymOAUserService.getNationalCodeByUserId(userIds.stream().findFirst().get()));
         }
         return response;
+    }
+
+    @Override
+    public boolean getPlanningChiefNationalCodeWithCheckDepartment() {
+        return operationalRoleService.getOperationalRolesByByComplexIdAndObjectTypeWithCheckDepartment("HEAD_OF_PLANNING");
     }
 
     @Override
@@ -1179,7 +1184,7 @@ public class RequestItemService implements IRequestItemService {
         return requestItemWithDiff;
     }
 
-    private RequestItemState getRequestState(String personnelNumber, boolean isPostExist,String post, String nationalCode) {
+    private RequestItemState getRequestState(String personnelNumber, boolean isPostExist, String post, String nationalCode) {
         if (isPostExist) {
             List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = iNeedsAssessmentReportsService.getCourseListForBpms(post, "Post", nationalCode, personnelNumber);
             if (needsAssessmentReportList.isEmpty()) {

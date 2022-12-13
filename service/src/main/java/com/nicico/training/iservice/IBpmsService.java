@@ -24,4 +24,6 @@ public interface IBpmsService {
     void cancelNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
 
     BaseResponse reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
+
+    BaseResponse checkHasHead(String type);
 }

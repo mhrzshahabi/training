@@ -31,4 +31,18 @@ public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long> {
             "    f_training_post_id FROM tbl_post_training_post \n" +
             "    WHERE f_post_id = :id", nativeQuery = true)
     List<Long> getAllTrainingPostIdByPostId(Long id);
+
+
+    @Modifying
+    @Query(value = "SELECT\n" +
+            " DISTINCT\n" +
+            "    z.id AS id\n" +
+            "FROM\n" +
+            "    tbl_post\n" +
+            "    LEFT JOIN tbl_training_post z   ON regexp_substr(tbl_post.c_code, '\\d*') = z.c_code\n" +
+            "WHERE\n" +
+            "    tbl_post.e_deleted IS NULL\n" +
+            "    and\n" +
+            "    z.e_deleted = 75", nativeQuery = true)
+    List<Long> getDeletedPost();
 }

@@ -9,7 +9,9 @@ import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.iservice.*;
+import com.nicico.training.iservice.IBpmsService;
+import com.nicico.training.iservice.INeedsAssessmentTempService;
+import com.nicico.training.iservice.IRequestItemService;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
@@ -19,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,11 +70,18 @@ public class BpmsService implements IBpmsService {
 
     @Override
     public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId, String process) {
-
-        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
-        if (planningChiefResponse.getStatus() == 200) {
+        BaseResponse planningChiefResponse=new BaseResponse();
+        String userToAssignTo = params.getData().get("HeadNationalCode") != null ? params.getData().get("HeadNationalCode").toString() : null;
+        if (userToAssignTo == null){
+            planningChiefResponse  = requestItemService.getPlanningChiefNationalCode();
+        }
+        if (userToAssignTo != null || planningChiefResponse.getStatus() == 200 ) {
             Map<String, Object> map = new HashMap<>();
-            map.put("assignTo", planningChiefResponse.getMessage());
+            if (userToAssignTo == null)
+                map.put("assignTo", planningChiefResponse.getMessage());
+            else
+                map.put("assignTo", userToAssignTo);
+
             map.put("userId", SecurityUtil.getUserId());
             map.put("assignFrom", SecurityUtil.getNationalCode());
             map.put("tenantId", tenantId);
@@ -137,8 +148,8 @@ public class BpmsService implements IBpmsService {
     @Override
     public void cancelNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
 
-        iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), -1, "عدم تایید اصلی",data.getReason());
-         client.reviewTask(reviewTaskRequest);
+        iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), -1, "عدم تایید اصلی", data.getReason());
+        client.reviewTask(reviewTaskRequest);
     }
 
     @Override
@@ -147,7 +158,7 @@ public class BpmsService implements IBpmsService {
         BaseResponse response = new BaseResponse();
         BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
         if (planningChiefResponse.getStatus() == 200) {
-            iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی",data.getReason());
+            iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی", data.getReason());
             Map<String, Object> map = reviewTaskRequest.getVariables();
             map.put("assignTo", planningChiefResponse.getMessage());
             map.put("approved", true);
@@ -157,6 +168,21 @@ public class BpmsService implements IBpmsService {
         } else {
             response.setStatus(planningChiefResponse.getStatus());
             response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+        }
+        return response;
+    }
+
+    @Override
+    public BaseResponse checkHasHead(String type) {
+        BaseResponse response = new BaseResponse();
+        try {
+            boolean planningChiefResponse = requestItemService.getPlanningChiefNationalCodeWithCheckDepartment();
+            if (planningChiefResponse)
+                response.setStatus(200);
+            else
+                response.setStatus(400);
+        } catch (Exception e) {
+            response.setStatus(400);
         }
         return response;
     }

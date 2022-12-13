@@ -49,6 +49,7 @@ public interface IOperationalRoleService {
     List<OperationalRole> getOperationalRolesByByPostIdsAndComplexIdAndObjectType(Long postId, String objectType);
 
     List<OperationalRole> getOperationalRolesByByComplexIdAndObjectType(String objectType);
+    boolean getOperationalRolesByByComplexIdAndObjectTypeWithCheckDepartment(String objectType);
 
     List<String> getOperationalRoleTitlesByIds(List<Long> ids);
 
@@ -58,4 +59,6 @@ public interface IOperationalRoleService {
 
     Set<Category> getCategories(Long id);
     Set<Subcategory> getSubCategories(Long id);
+
+    Set<Long> findAllByObjectType(String objectType);
 }

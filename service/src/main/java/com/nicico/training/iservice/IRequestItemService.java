@@ -99,4 +99,5 @@ public interface IRequestItemService {
     void updateProcessStatus(Long requestItemId, String processStatus);
 
     List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId);
+    boolean getPlanningChiefNationalCodeWithCheckDepartment();
 }

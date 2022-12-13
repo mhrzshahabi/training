@@ -6,6 +6,7 @@ import com.nicico.training.repository.SynonymOAUserDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,11 @@ public class SynonymOAUserService implements ISynonymOAUserService {
         }
 
         return  (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
+    }
+
+    @Override
+    public List<SynonymOAUser> listOfUser(List<Long> ids) {
+        return synonymOAUserDAO.findAllByIdIn(ids);
     }
 
 }

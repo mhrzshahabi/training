@@ -25,6 +25,8 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
 
    List<OperationalRole> findAllByComplexIdAndObjectType(Long complexId, String objectType);
 
+   List<OperationalRole> findAllByObjectType( String objectType);
+
     @Query(value = "SELECT \n" +
             "DISTINCT\n" +
             "post.ID \n" +

@@ -15,6 +15,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -300,4 +301,20 @@ public class TrainingPostService implements ITrainingPostService {
         List<Long> ids = trainingPostDAO.getAllTrainingPostIdByPostId(id);
         return trainingPostDAO.findAllById(ids);
     }
+
+
+        @Scheduled(cron = "0 30 17 1/1 * ?")
+    public void changeTrainingPostStatus() {
+
+        try {
+            List<Long> postIds=    trainingPostDAO.getDeletedPost();
+            if (postIds.size()>0){
+                postIds.forEach(this::updateToUnDeleted);
+            }
+         } catch (Exception e) {
+             e.printStackTrace();
+        }
+
+    }
+
 }
