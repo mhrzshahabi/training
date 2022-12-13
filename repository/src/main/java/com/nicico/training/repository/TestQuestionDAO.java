@@ -39,7 +39,8 @@ public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaS
             WHERE
                 ( tq.b_online_final_exam_status = 0
                   OR tq.b_online_final_exam_status IS NULL )
-                AND t.c_teacher_code = :nationalCode
+                AND tq.c_test_question_type != 'Preparation'
+                AND t.c_teacher_code = :nationalcode
             """, nativeQuery = true)
-    List<TestQuestion> getTeacherExamsNotSentToEls(@Param("nationalCode") String nationalCode);
+    List<TestQuestion> getTeacherExamsNotSentToEls(@Param("nationalcode") String nationalCode);
 }

@@ -3054,8 +3054,8 @@ public class ElsRestController {
         }
     }
 
-    @GetMapping("/teacher/exam-to-els/{nationalcode}")
-    public ExamNotSentToElsResponse sendExamsNotSentToEls(HttpServletRequest header, @PathVariable("nationalcode") String nationalCode) {
+    @GetMapping("/teacher/exam-to-els/{national-code}")
+    public ExamNotSentToElsResponse sendExamsNotSentToEls(HttpServletRequest header, @PathVariable("national-code") String nationalCode) {
         ExamNotSentToElsResponse response = new ExamNotSentToElsResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
@@ -3070,6 +3070,32 @@ public class ElsRestController {
             } catch (TrainingException e1) {
                 response.setStatus(HttpStatus.NOT_FOUND.value());
                 response.setMessage("استادی با این کدملی یافت نشد");
+            } catch (Exception e2) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("اطلاعاتی از سیستم آموزش دریافت نشد");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
+    }
+
+    @GetMapping("/teacher/exam-student-to-els/{exam-id}")
+    public ExamStudentToElsResponse sendExamStudentsToEls(HttpServletRequest header, @PathVariable("exam-id") Long examId) {
+        ExamStudentToElsResponse response = new ExamStudentToElsResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<ExamStudentDTO.Info> data = elsService.getAllStudentsOfExam(examId);
+                response.setData(data);
+                response.setStatus(200);
+                response.setMessage("successful");
+                return response;
+            } catch (TrainingException e1) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("آزمون مورد نظر یافت نشد");
             } catch (Exception e2) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 response.setMessage("اطلاعاتی از سیستم آموزش دریافت نشد");

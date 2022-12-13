@@ -290,4 +290,9 @@ public class StudentService implements IStudentService {
         return optionalStudent.map(student -> modelMapper.map(student, StudentDTO.TrainingCertificationDetail.class)).orElse(null);
     }
 
+    @Override
+    public List<?> getAllStudentsOfExam(Long testQuestionId) {
+        return studentDAO.getAllStudentsOfExam(testQuestionId);
+    }
+
 }

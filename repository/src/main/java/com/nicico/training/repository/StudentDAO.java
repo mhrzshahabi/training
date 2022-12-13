@@ -228,4 +228,27 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "cl.id =:classId " +
             "AND std.national_code =:nationalCode", nativeQuery = true)
     Optional<Student> getTrainingCertificationDetail(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
+
+    @Query(value = """
+            SELECT
+                s.first_name,
+                s.last_name,
+                s.national_code,
+                CASE
+                    WHEN tq.c_test_question_type = 'FinalTest' THEN
+                        cs.score
+                    WHEN tq.c_test_question_type = 'PreTest'   THEN
+                        cs.pre_test_score
+                END AS score,
+                pv.c_title AS score_state
+            FROM
+                tbl_student           s
+                INNER JOIN tbl_class_student     cs ON s.id = cs.student_id
+                INNER JOIN tbl_class             c ON c.id = cs.class_id
+                INNER JOIN tbl_test_question     tq ON c.id = tq.f_class
+                INNER JOIN tbl_parameter_value   pv ON cs.scores_state_id = pv.id
+            WHERE
+                tq.id = :examId
+            """, nativeQuery = true)
+    List<?> getAllStudentsOfExam(@Param("examId") Long testQuestionId);
 }
