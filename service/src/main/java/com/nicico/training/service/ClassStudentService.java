@@ -154,6 +154,11 @@ public class ClassStudentService implements IClassStudentService {
         evaluationAnalysisService.updateLearningEvaluation(tclass.getTclassId(), tclass.getTclass().getScoringMethod());
     }
 
+    @Override
+    public ClassStudent save(ClassStudent classStudent) {
+        return classStudentDAO.save(classStudent);
+    }
+
     @Transactional
     @Override
     public String delete(Long id) {

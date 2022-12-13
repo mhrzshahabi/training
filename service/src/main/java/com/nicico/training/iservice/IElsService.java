@@ -18,4 +18,6 @@ public interface IElsService {
     List<ExamNotSentToElsDTO.Info> getAllExamsNotSentToElsByTeacherNationalCode(String nationalCode);
 
     List<ExamStudentDTO.Info> getAllStudentsOfExam(Long examId);
+
+    List<String> updateScores(List<ExamStudentDTO.Score> list);
 }
