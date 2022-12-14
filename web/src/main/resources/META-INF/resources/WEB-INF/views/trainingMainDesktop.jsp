@@ -907,13 +907,20 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
-                                                createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
+                                            if(Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
+                                                createDialog("info", " سطر شروع بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
-                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) - Number(trTrim(exportExcelForm.getValue("startRow"))) > size){
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
-                                            }*/
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > Number(listgrid.getOriginalData().size())){
+                                                createDialog("info", " سطر پایان بيشتر از تعداد کل سطرهاي موجود است");
+                                                return;
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) < Number(trTrim(exportExcelForm.getValue("startRow")))){
+                                                createDialog("info", " سطر پایان کمتر از سطر شروع است");
+                                                return;
+                                            }
+
 
                                             if(maxCount < size){
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
@@ -1036,13 +1043,20 @@
                                     title: "تایید",
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
-                                                createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
+                                            if(Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
+                                                createDialog("info", " سطر شروع بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
-                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) - Number(trTrim(exportExcelForm.getValue("startRow"))) > size){
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
-                                            }*/
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > Number(listgrid.getOriginalData().size())){
+                                                createDialog("info", " سطر پایان بيشتر از تعداد کل سطرهاي موجود است");
+                                                return;
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) < Number(trTrim(exportExcelForm.getValue("startRow")))){
+                                                createDialog("info", " سطر پایان کمتر از سطر شروع است");
+                                                return;
+                                            }
+
 
                                             if(maxCount < size){
 
