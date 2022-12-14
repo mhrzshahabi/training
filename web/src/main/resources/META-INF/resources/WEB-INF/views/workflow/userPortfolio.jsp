@@ -15,7 +15,11 @@
 
 // <script>
 
-//-------------------------------------------------- Rest DataSources --------------------------------------------------
+    let interalBaseUrl="";
+    let interalUrl="";
+    let interalRecord=null;
+    let interalMap_data = {};
+ //-------------------------------------------------- Rest DataSources --------------------------------------------------
 
     let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
         fields: [
@@ -3368,52 +3372,156 @@
                 return name.split('_').last();
         }
     }
-    function reAssignTask(record) {
+
+
+
+    let RestDataSource_AllHeadsPortfolio = isc.TrDS.create({
+        ID: "RestDataSource_AllHeadsPortfolio",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "nationalCode", hidden: true},
+            {name: "firstName", title: "نام"},
+            {name: "lastName", title: "نام خانوادگی"},
+        ],
+        fetchDataURL: operationalRoleUrl + "/findAllByObjectType/"+"HEAD_OF_PLANNING"
+    });
+
+
+
+
+
+function reAssignTask(record) {
 
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let baseUrl = "";
+              interalBaseUrl = "";
             let url = ""
+              interalUrl = ""
             let map_data = {};
-            let reviewTaskRequest = {}
-            let data = {}
+            interalMap_data = {};
+            interalRecord=record
 
             if (record.title.includes("نیازسنجی")) {
                 baseUrl = bpmsUrl;
+                interalBaseUrl = bpmsUrl;
                 url = "/needAssessment/processes/reAssign-process/";
+                interalUrl = "/needAssessment/processes/reAssign-process/";
                 map_data = {
                     "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
                     "returnReason": null,
                     "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType
                 };
+                interalMap_data = {
+                    "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
+                    "returnReason": null,
+                    "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType
+                };
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/checkHasHead/"+"HEAD_OF_PLANNING", "GET", null, (resp) => {
+                    if (resp.httpResponseCode === 200 ) {
+                        wait.close();
+                        doReAssignFunction(map_data,record,baseUrl,url,null);
+                    } else if (resp.httpResponseCode === 400 ) {
+                        wait.close();
+
+                        let Window_showHeadsPortfolio = isc.Window.create({
+                            title: "انتخاب رییس برنامه ریزی",
+                            width: "50%",
+                            height: "50%",
+                            keepInParentRect: true,
+                            isModal: false,
+                            autoSize: false,
+                            items: [
+                                isc.TrVLayout.create({
+                                    members: [
+                                        isc.TrLG.create({
+                                            ID: "ListGrid_AllHeadsPortfolio",
+                                            dataSource: RestDataSource_AllHeadsPortfolio,
+                                            showHeaderContextMenu: false,
+                                            selectionType: "single",
+                                            filterOnKeypress: true,
+                                            autoFetchData:true,
+                                            canDragRecordsOut: true,
+                                            dragDataAction: "none",
+                                            canAcceptDroppedRecords: true,
+                                            fields: [
+                                                {name: "id", title: "کد", autoFitData: true, autoFitWidthApproach: true,hidden: true},
+                                                {name: "firstName", title: "نام"},
+                                                {name: "lastName", title: "نام خانوادگی"},
+                                                {name: "nationalCode",hidden: true},
+                                            ],
+                                            gridComponents: ["filterEditor", "header", "body"],
+
+                                        }),
+                                        isc.HLayout.create({
+                                            layoutMargin: 5,
+                                            showEdges: false,
+                                            edgeImage: "",
+                                            width: "100%",
+                                            height:"10%",
+                                            align: "center",
+                                            padding: 10,
+                                            membersMargin: 10,
+                                            members: [
+                                                isc.IButton.create({
+                                                    title: "تایید",
+                                                    click: function () {
+                                                        if (ListGrid_AllHeadsPortfolio.getSelectedRecord() !== undefined && ListGrid_AllHeadsPortfolio.getSelectedRecord() !== null) {
+                                                            doReAssignFunction(interalMap_data,interalRecord,interalBaseUrl,interalUrl,ListGrid_AllHeadsPortfolio.getSelectedRecord().nationalCode);
+
+                                                            Window_showHeadsPortfolio.close()
+
+                                                        }else {
+                                                            isc.Dialog.create({
+                                                                message: "رکوردی انتخاب نشده است!",
+                                                                icon: "[SKIN]ask.png",
+                                                                title: "توجه",
+                                                                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                                                                buttonClick: function (button, index) {
+                                                                    this.close();
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                })
+                                                , isc.IButtonCancel.create({
+                                                    title: "<spring:message code='cancel'/>",
+                                                    prompt: "",
+                                                    width: 100,
+//icon: "<spring:url value="remove.png"/>",
+                                                    orientation: "vertical",
+                                                    click: function () {
+                                                        Window_showHeadsPortfolio.close()
+                                                    }
+                                                })]
+                                        })
+                                    ]
+                                })]
+                        });
+                        Window_showHeadsPortfolio.show();
+
+                    }
+                    else if (resp.httpResponseCode === 402 ) {
+                        wait.close();
+                        createDialog("info", "کاربر محترم .. دپارتمان شما در سیستم منابع انسانی مس ثبت نشده است..برای به جریان انداختن فرایند ابتدا دپارتمان خود را بروز کنید");
+                    }
+
+
+                }));
+
             } else if (record.title.includes("صلاحیت علمی و فنی")) {
                 baseUrl = requestItemBPMSUrl;
                 url = "/processes/request-item/reAssign-process/";
                 map_data = {
                     "returnReason": null,
                 };
+
+                doReAssignFunction(map_data,record,baseUrl,url,null)
             }
 
-            reviewTaskRequest = {
-                variables: map_data,
-                processInstanceId: record.processInstanceId,
-                taskId: record.taskId,
-                approve: false,
-                userName: userUserName,
-            };
-            data = {
-                reviewTaskRequest: reviewTaskRequest,
-                reason: null,
-            }
 
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
-                wait.close();
-                let response = JSON.parse(resp.httpResponseText);
-                createDialog("info", response.message);
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
-            }));
         }
     }
     function reAssignTrainingCertificationTask(record) {
@@ -3442,6 +3550,31 @@
             createDialog("info", response.message);
             ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
+    }
+    function doReAssignFunction( map_data,record,baseUrl,url,HeadNationalCode) {
+        let reviewTaskRequest = {}
+        let data = {}
+        reviewTaskRequest = {
+            variables: map_data,
+            processInstanceId: record.processInstanceId,
+            taskId: record.taskId,
+            approve: false,
+            userName: userUserName,
+        };
+        data = {
+            reviewTaskRequest: reviewTaskRequest,
+            reason: null,
+            HeadNationalCode: HeadNationalCode,
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+
     }
     function showExpertsOpinion(processRecord) {
 
@@ -3584,4 +3717,5 @@
         }
     }
 
-// </script>
+
+    // </script>

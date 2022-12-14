@@ -2715,6 +2715,11 @@
                     innerMustSend=mustSend
                     showAllHeadOfPlaning();
                 }
+                else if (resp.httpResponseCode === 402 ) {
+                    wait.close();
+                    createDialog("info", "کاربر محترم .. دپارتمان شما در سیستم منابع انسانی مس ثبت نشده است..برای ثبت نیازسنجی ابتدا دپارتمان خود را بروز کنید");
+                }
+
 
             }));
         }else {

@@ -7,10 +7,13 @@ import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
+import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.iservice.IRequestItemService;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsContent;
@@ -34,6 +37,7 @@ public class BpmsService implements IBpmsService {
     private final CompetenceService competenceService;
     private final IRequestItemService requestItemService;
     private final INeedsAssessmentTempService iNeedsAssessmentTempService;
+    private final IParameterService parameterService;
 
 
     @Override
@@ -70,12 +74,12 @@ public class BpmsService implements IBpmsService {
 
     @Override
     public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId, String process) {
-        BaseResponse planningChiefResponse=new BaseResponse();
+        BaseResponse planningChiefResponse = new BaseResponse();
         String userToAssignTo = params.getData().get("HeadNationalCode") != null ? params.getData().get("HeadNationalCode").toString() : null;
-        if (userToAssignTo == null){
-            planningChiefResponse  = requestItemService.getPlanningChiefNationalCode();
+        if (userToAssignTo == null) {
+            planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
         }
-        if (userToAssignTo != null || planningChiefResponse.getStatus() == 200 ) {
+        if (userToAssignTo != null || planningChiefResponse.getStatus() == 200) {
             Map<String, Object> map = new HashMap<>();
             if (userToAssignTo == null)
                 map.put("assignTo", planningChiefResponse.getMessage());
@@ -157,10 +161,17 @@ public class BpmsService implements IBpmsService {
 
         BaseResponse response = new BaseResponse();
         BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
-        if (planningChiefResponse.getStatus() == 200) {
+        String userToAssignTo = data.getHeadNationalCode() != null ? data.getHeadNationalCode() : null;
+
+
+        if (userToAssignTo!=null || planningChiefResponse.getStatus() == 200 ) {
             iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی", data.getReason());
             Map<String, Object> map = reviewTaskRequest.getVariables();
-            map.put("assignTo", planningChiefResponse.getMessage());
+            if (userToAssignTo == null)
+                map.put("assignTo", planningChiefResponse.getMessage());
+            else
+                map.put("assignTo", userToAssignTo);
+
             map.put("approved", true);
             client.reviewTask(reviewTaskRequest);
             response.setStatus(planningChiefResponse.getStatus());
@@ -179,11 +190,30 @@ public class BpmsService implements IBpmsService {
             boolean planningChiefResponse = requestItemService.getPlanningChiefNationalCodeWithCheckDepartment();
             if (planningChiefResponse)
                 response.setStatus(200);
-            else
-                response.setStatus(400);
+            else {
+                if (checkConfig())
+                    response.setStatus(400);
+                else
+                    response.setStatus(402);
+
+
+            }
         } catch (Exception e) {
             response.setStatus(400);
         }
         return response;
+    }
+
+    private boolean checkConfig() {
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("needAssessmentConfig");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("chooseUser")).findFirst().orElse(null);
+        if (info != null) {
+            return switch (info.getValue()) {
+                case "بله" -> true;
+                case "خیر" -> false;
+                default -> true;
+            };
+        } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+
     }
 }
