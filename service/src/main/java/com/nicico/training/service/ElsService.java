@@ -4,7 +4,6 @@ package com.nicico.training.service;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
-import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.utility.persianDate.MyUtils;
@@ -35,7 +34,6 @@ public class ElsService implements IElsService {
   @Override
     public BaseResponse checkValidScores(Long id, List<ExamResult> examResults) {
         BaseResponse baseResponse =new BaseResponse();
-
 
 
         return baseResponse;
@@ -202,14 +200,7 @@ public class ElsService implements IElsService {
             String testQuestionType = testQuestionService.getById(item.getExamId()).getTestQuestionType();
 
             try {
-                if ("FinalTest".equals(testQuestionType)) {
-                    classStudent.setScore(item.getScore());
-                } else if ("PreTest".equals(testQuestionType)) {
-                    classStudent.setPreTestScore(item.getScore());
-                }
-
-                classStudentService.save(classStudent);
-
+                validateAndSaveScore(notUpdatedNationalCodes, item, classStudent, testQuestionType);
             } catch (Exception e) {
                 notUpdatedNationalCodes.add(item.getNationalCode());
             }
@@ -218,4 +209,62 @@ public class ElsService implements IElsService {
         return notUpdatedNationalCodes;
 
     }
+
+    private void validateAndSaveScore(List<String> notUpdatedNationalCodes, ExamStudentDTO.Score item, ClassStudent classStudent, String testQuestionType) {
+        Float score = item.getScore();
+        String scoringMethod = tclassService.get(classStudent.getTclassId()).getScoringMethod();
+        String acceptanceLimit = tclassService.get(classStudent.getTclassId()).getAcceptancelimit();
+
+        if (testQuestionType.equals("FinalTest")) {
+            boolean scoreInValidRange = isScoreInValidRange(score, scoringMethod);
+            boolean passedAcceptanceLimit = passedAcceptanceLimit(score, acceptanceLimit);
+            boolean updatedScoreState = updateStudentScoreState(classStudent, passedAcceptanceLimit);
+
+            if (scoreInValidRange && updatedScoreState) {
+                classStudent.setScore(score);
+                classStudentService.save(classStudent);
+            } else {
+                notUpdatedNationalCodes.add(item.getNationalCode());
+            }
+        } else if (testQuestionType.equals("PreTest")) {
+            classStudent.setPreTestScore(score);
+        }
+    }
+
+    private boolean isScoreInValidRange(Float score, String scoringMethod) {
+        if (scoringMethod.equals("2")) { // از 100 نمره
+            return score >= 0 && score <= 100;
+        }
+        if (scoringMethod.equals("3")) { // از 20 نمره
+            return score >= 0 && score <= 20;
+        }
+        return false;
+    }
+
+    private boolean passedAcceptanceLimit(Float score, String acceptanceLimit) {
+        return score >= Float.parseFloat(acceptanceLimit);
+    }
+
+    private boolean updateStudentScoreState(ClassStudent classStudent, boolean passedAcceptanceLimit) {
+        Long passedCodeId = parameterValueService.getId("PassdByGrade"); // 400 - قبول با نمره
+        Long notPassedCodeId = parameterValueService.getId("TotalFailed"); // 403 - مردود
+
+        ParameterValue parameterValue;
+
+        if (passedAcceptanceLimit) {
+            parameterValue = parameterValueService.findById(passedCodeId).orElse(null);
+        } else {
+            parameterValue = parameterValueService.findById(notPassedCodeId).orElse(null);
+        }
+
+        if (parameterValue == null) {
+            return false;
+        }
+
+        classStudent.setScoresState(parameterValue);
+
+        return true;
+
+    }
+
 }
