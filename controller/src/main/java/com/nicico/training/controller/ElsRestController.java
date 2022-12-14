@@ -3107,5 +3107,33 @@ public class ElsRestController {
         return response;
     }
 
+    @PostMapping("/teacher/update-score")
+    public UpdateScoreResponse updateScore(HttpServletRequest header, @RequestBody List<ExamStudentDTO.Score> scoreList) {
+        UpdateScoreResponse response = new UpdateScoreResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            List<String> notUpdatedNationalCodes = new ArrayList<>();
+            try {
+                notUpdatedNationalCodes = elsService.updateScores(scoreList);
+                response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
+                response.setStatus(200);
+                response.setMessage("successful");
+            } catch (TrainingException e1) {
+                response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("آزمون مورد نظر یافت نشد");
+            } catch (Exception e2) {
+                response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("اطلاعاتی از سیستم آموزش دریافت نشد");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+
+        return response;
+    }
+
 
 }

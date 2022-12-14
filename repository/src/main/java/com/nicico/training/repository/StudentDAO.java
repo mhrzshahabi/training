@@ -241,7 +241,8 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
                         cs.pre_test_score
                 END AS score,
                 pv.c_title   AS score_state,
-                cs.id        AS class_student_id
+                cs.id        AS class_student_id,
+                tq.id        AS exam_id
             FROM
                 tbl_student           s
                 INNER JOIN tbl_class_student     cs ON s.id = cs.student_id

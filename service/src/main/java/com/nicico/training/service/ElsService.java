@@ -30,6 +30,7 @@ public class ElsService implements IElsService {
     private final TestQuestionMapper testQuestionMapper;
     private final ITeacherService teacherService;
     private final IStudentService studentService;
+    private final IClassStudentService classStudentService;
 
   @Override
     public BaseResponse checkValidScores(Long id, List<ExamResult> examResults) {
@@ -178,14 +179,43 @@ public class ElsService implements IElsService {
                 dto.setFirstName(fields[0] != null ? fields[0].toString() : null);
                 dto.setLastName(fields[1] != null ? fields[1].toString() : null);
                 dto.setNationalCode(fields[2] != null ? fields[2].toString() : null);
-                dto.setScore(fields[3] != null ? Double.valueOf(fields[3].toString()) : null);
+                dto.setScore(fields[3] != null ? Float.valueOf(fields[3].toString()) : null);
                 dto.setScoreStateTitle(fields[4] != null ? fields[4].toString() : null);
                 dto.setClassStudentId(fields[5] != null ? Long.valueOf(fields[5].toString()) : null);
+                dto.setExamId(fields[6] != null ? Long.valueOf(fields[6].toString()) : null);
 
                 infos.add(dto);
             }
         }
 
         return infos;
+    }
+
+    @Override
+    public List<String> updateScores(List<ExamStudentDTO.Score> list) {
+        List<String> notUpdatedNationalCodes = new ArrayList<>();
+
+        list.forEach(item -> {
+            ClassStudent classStudent = classStudentService.findById(item.getClassStudentId())
+                    .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            String testQuestionType = testQuestionService.getById(item.getExamId()).getTestQuestionType();
+
+            try {
+                if ("FinalTest".equals(testQuestionType)) {
+                    classStudent.setScore(item.getScore());
+                } else if ("PreTest".equals(testQuestionType)) {
+                    classStudent.setPreTestScore(item.getScore());
+                }
+
+                classStudentService.save(classStudent);
+
+            } catch (Exception e) {
+                notUpdatedNationalCodes.add(item.getNationalCode());
+            }
+        });
+
+        return notUpdatedNationalCodes;
+
     }
 }

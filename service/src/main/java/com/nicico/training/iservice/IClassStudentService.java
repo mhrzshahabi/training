@@ -73,5 +73,6 @@ public interface IClassStudentService {
 
    Boolean getSessionConflictViaClassStudent(String nationalCode,List<ClassSessionDTO.ClassStudentSession> classStudentSessions);
 
+    ClassStudent save(ClassStudent classStudent);
 
 }

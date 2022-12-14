@@ -30,13 +30,37 @@ public class ExamStudentDTO {
         private String nationalCode;
 
         @ApiModelProperty
-        private Double score;
+        private Float score;
 
         @ApiModelProperty
         private String scoreStateTitle;
 
         @ApiModelProperty
         private Long classStudentId;
+
+        @ApiModelProperty
+        private Long examId;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ExamStudentDTO.Score")
+    public static class Score {
+
+        @ApiModelProperty
+        private Float score;
+
+        @ApiModelProperty
+        private Long classStudentId;
+
+        @ApiModelProperty
+        private Long examId;
+
+        @ApiModelProperty
+        private String nationalCode;
 
     }
 
