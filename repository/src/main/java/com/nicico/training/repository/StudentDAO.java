@@ -253,4 +253,7 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
                 tq.id = :examId
             """, nativeQuery = true)
     List<?> getAllStudentsOfExam(@Param("examId") Long testQuestionId);
+
+    @Query(value = "update  TBL_STUDENT set f_contact_info=null where f_contact_info IN(:ids)" , nativeQuery = true)
+    List<Student> setNullToContactInfo(List<Long> ids);
 }

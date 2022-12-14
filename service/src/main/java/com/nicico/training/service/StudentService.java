@@ -295,4 +295,10 @@ public class StudentService implements IStudentService {
         return studentDAO.getAllStudentsOfExam(testQuestionId);
     }
 
+    @Override
+    public void changeContactInfo(List<Long> ids) {
+        studentDAO.setNullToContactInfo(ids);
+
+    }
+
 }

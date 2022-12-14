@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.needsassessment.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,18 @@ import java.util.Map;
 public class AnonymRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final IStudentService iStudentService;
     private final ITrainingPostService iTrainingPostService;
 //    private final IClassStudentService classStudentService;
 
     @PostMapping("/changeContactInfo")
     public void changeContactInfo(@RequestBody List<Long> ids) {
         personnelRegisteredService.changeContactInfo(ids);
+    }
+
+    @PostMapping("/changeContactInfoForStudent")
+    public void changeContactInfoForStudent(@RequestBody List<Long> ids) {
+        iStudentService.changeContactInfo(ids);
     }
 
     @PostMapping("/remove-un-complete-na")

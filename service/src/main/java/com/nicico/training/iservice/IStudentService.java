@@ -55,6 +55,8 @@ public interface IStudentService {
 
     StudentDTO.TrainingCertificationDetail getTrainingCertificationDetail(String nationalCode, Long classId);
 
+    void changeContactInfo(List<Long> id);
+
     List<?> getAllStudentsOfExam(Long testQuestionId);
 
 }
