@@ -77,4 +77,52 @@ public abstract class SearchableResource<T, V> {
         return new ResponseEntity<>(targetMapping(result, startRow, endRow), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/excel-search", produces = "application/json")
+    public ResponseEntity<V> excelSearch(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                    @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                    @RequestParam(value = "_constructor", required = false) String constructor,
+                                    @RequestParam(value = "operator", required = false) String operator,
+                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                    @RequestParam(value = "id", required = false) Long id,
+                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+
+        Integer endOfRow = endRow - startRow;
+
+        request.setStartIndex(startRow)
+                .setCount(endOfRow - startRow);
+        if (getPermission(request) != null) {
+            request.setCriteria(getPermission(request));
+        }
+        if (request.getCriteria() != null && mappedValues(request) != null) {
+            request = mappedValues(request);
+        }
+        Page<T> result = repository.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+
+        return new ResponseEntity<>(targetMapping(result, startRow, endOfRow), HttpStatus.OK);
+    }
+
 }
