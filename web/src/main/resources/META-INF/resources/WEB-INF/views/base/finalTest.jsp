@@ -1459,6 +1459,36 @@
                 }
             }));
     }
+    function validateTime(item) {
+        let timeVal = item.getValue("time");
+        if (timeVal.contains(":")) {
+            let hour = timeVal.split(":")[0];
+            let minute = timeVal.split(":")[1];
+
+            if (Number(hour) > 23 || Number(minute) > 59) {
+                item.setErrors("مقدار وارد شده اشتباه است");
+            }
+            if (hour.length === 1 && !hour.startsWith("0")) {
+                hour = "0" + hour;
+            }
+            if (minute.length === 1 && !minute.startsWith("0")) {
+                minute = "0" + minute;
+            }
+            item.setValue(hour + ":" + minute);
+        } else {
+            if (Number(timeVal) > 23) {
+                item.setErrors("مقدار وارد شده اشتباه است");
+            }
+            if (timeVal.length === 1) {
+                item.setValue("0" + item.getValue("time") + ":00")
+            } else if (timeVal.length === 2) {
+                item.setValue(timeVal + ":00")
+            } else {
+                item.setErrors("فرمت تاریخ ورودی اشتباه است");
+            }
+        }
+    }
+
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let FinalTestDF_finalTest = isc.DynamicForm.create({
         ID: "FinalTestDF_finalTest",
@@ -1621,31 +1651,32 @@
                 showHintInField: true,
                 textAlign: "center",
                 validateOnChange: true,
-                validators: [{
-                    type: "isString",
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 5,
-                    max: 5,
-                    stopOnError: true,
-                    errorMessage: "زمان مجاز بصورت 08:30 است"
-                },
-                {
-                    type: "regexp",
-                    expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
-                    validateOnChange: true,
-                    errorMessage: "ساعت 23-0 و دقیقه 59-0"
-                }
-                ],
+                // validators: [{
+                //     type: "isString",
+                //     validateOnExit: true,
+                //     type: "lengthRange",
+                //     min: 2,
+                //     max: 5,
+                //     stopOnError: true,
+                //     errorMessage: "زمان مجاز بصورت 08:30 است"
+                // },
+                // {
+                    // type: "regexp",
+                    // expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
+                    // validateOnChange: true,
+                    // errorMessage: "ساعت 23-0 و دقیقه 59-0"
+                // }
+                // ],
                 length:5,
-                editorExit:function(){
-                    DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));
-                    let val=DynamicForm_Session.getValue("time");
-                    if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
-                        DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);
-                    }else{
-                        DynamicForm_Session.clearFieldErrors("time", true);
-                    }
+                editorExit: function () {
+                    validateTime(this);
+                    <%--DynamicForm_Session.setValue("time", arrangeDate(DynamicForm_Session.getValue("time")));--%>
+                    <%--let val = DynamicForm_Session.getValue("time");--%>
+                    <%--if (val === null || val === '' || typeof (val) === 'undefined' || !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)) {--%>
+                    <%--    DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);--%>
+                    <%--} else {--%>
+                    <%--    DynamicForm_Session.clearFieldErrors("time", true);--%>
+                    <%--}--%>
                 }
             },
             {
@@ -1682,31 +1713,32 @@
                 showHintInField: true,
                 textAlign: "center",
                 validateOnChange: true,
-                validators: [{
-                    type: "isString",
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 5,
-                    max: 5,
-                    stopOnError: true,
-                    errorMessage: "زمان مجاز بصورت 08:30 است"
-                },
-                    {
-                        type: "regexp",
-                        expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
-                        validateOnChange: true,
-                        errorMessage: "ساعت 23-0 و دقیقه 59-0"
-                    }
-                ],
+                // validators: [{
+                //     type: "isString",
+                //     validateOnExit: true,
+                //     type: "lengthRange",
+                //     min: 5,
+                //     max: 5,
+                //     stopOnError: true,
+                //     errorMessage: "زمان مجاز بصورت 08:30 است"
+                // },
+                //     {
+                //         type: "regexp",
+                //         expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
+                //         validateOnChange: true,
+                //         errorMessage: "ساعت 23-0 و دقیقه 59-0"
+                //     }
+                // ],
                 length:5,
-                editorExit:function(){
-                    DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));
-                    let val=DynamicForm_Session.getValue("time");
-                    if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
-                        DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);
-                    }else{
-                        DynamicForm_Session.clearFieldErrors("time", true);
-                    }
+                editorExit: function () {
+                    validateTime(this);
+                    <%--DynamicForm_Session.setValue("time", arrangeDate(DynamicForm_Session.getValue("time")));--%>
+                    <%--let val = DynamicForm_Session.getValue("time");--%>
+                    <%--if (val === null || val === '' || typeof (val) === 'undefined' || !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)) {--%>
+                    <%--    DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);--%>
+                    <%--} else {--%>
+                    <%--    DynamicForm_Session.clearFieldErrors("time", true);--%>
+                    <%--}--%>
                 }
             },
             {
