@@ -215,19 +215,20 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                                         idmodares
                                 ) mianginmasol ON masol.id = mianginmasol.idmodares
                                 LEFT JOIN (
-                                    SELECT
-                                        COUNT(*) AS javabdade,
-                                        tbl_evaluation.f_class_id AS classid
-                                    FROM
-                                        tbl_evaluation
-                                    WHERE
-                                        tbl_evaluation.b_status = 1
-                                        AND tbl_evaluation.f_evaluator_type_id = 188
-                                         and f_evaluation_level_id =154
-                                    GROUP BY
-                                        tbl_evaluation.f_class_id,
-                                        tbl_evaluation.b_status,
-                                        tbl_evaluation.f_evaluator_type_id
+                                   SELECT  COUNT(*) AS javabdade,
+                                                                          tbl_evaluation.f_class_id AS classid
+                                                                      FROM
+                                                                          tbl_evaluation
+                                                                       LEFT JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id
+                                  WHERE
+                                  tbl_class_student.id is not null and
+                                                                          tbl_evaluation.b_status = 1
+                                                                          AND tbl_evaluation.f_evaluator_type_id = 188
+                                                                           and f_evaluation_level_id =154
+                                                                      GROUP BY
+                                                                          tbl_evaluation.f_class_id,
+                                                                          tbl_evaluation.b_status,
+                                                                          tbl_evaluation.f_evaluator_type_id
                                 ) darsadjavab ON z.class_id = darsadjavab.classid
                                 LEFT JOIN (
                                     SELECT

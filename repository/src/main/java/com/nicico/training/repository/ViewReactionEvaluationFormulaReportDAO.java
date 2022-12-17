@@ -170,8 +170,9 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
                                     tbl_evaluation.f_class_id AS classid
                                 FROM
                                     tbl_evaluation
+                                    LEFT JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id
                                 WHERE
-                                    ( b_status = 1
+                                    ( tbl_class_student.id is not null and b_status = 1
                                       AND f_evaluator_type_id = 188  and f_evaluation_level_id =154)
                                 GROUP BY
                                     tbl_evaluation.f_class_id,
