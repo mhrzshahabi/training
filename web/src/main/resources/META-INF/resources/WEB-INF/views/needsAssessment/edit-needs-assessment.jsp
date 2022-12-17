@@ -2746,6 +2746,7 @@
             return [false ,false];
         }
         if(f.status === 200) {
+            wait.close();
             return [true ,(hasAlreadySentToWorkFlow == false)];
         }
         else {

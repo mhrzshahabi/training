@@ -187,7 +187,7 @@ public class OperationalRoleService implements IOperationalRoleService {
         complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
         List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByComplexIdAndObjectType(complexId, objectType);
-        return operationalRoles.size() <= 1;
+        return operationalRoles.size() != 0 && operationalRoles.size() <= 1;
 
 
     }
