@@ -30,4 +30,15 @@ public class ViewJobRestController {
         SearchDTO.SearchRs<ViewjobDTO.Info> searchRs = viewJobService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/excel-search")
+    public ResponseEntity<ISC<ViewjobDTO.Info>> excelSearch(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        Integer count = searchRq.getCount()- searchRq.getStartIndex();
+        searchRq.setCount(count);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewjobDTO.Info> searchRs = viewJobService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+
+    }
 }

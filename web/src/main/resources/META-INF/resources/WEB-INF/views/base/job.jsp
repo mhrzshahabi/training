@@ -96,7 +96,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         let criteria = JobLG_job.getCriteria();
-                        ExportToFile.downloadExcelRestUrl(null, JobLG_job, viewJobUrl + "/iscList", 0, null, '', "لیست شغل ها", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, JobLG_job,viewJobUrl + "/excel-search", 0, null, '', "لیست شغل ها", criteria, null);
                     }
                 })
             ]
