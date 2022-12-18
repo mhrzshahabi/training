@@ -1468,11 +1468,23 @@
             if (Number(hour) > 23 || Number(minute) > 59) {
                 item.setErrors("مقدار وارد شده اشتباه است");
             }
-            if (hour.length === 1 && !hour.startsWith("0")) {
-                hour = "0" + hour;
+            if (hour.length === 1) {
+                if (!hour.startsWith("0")) {
+                    hour = "0" + hour;
+                }
+                if (hour === "0") {
+                    hour = "0" + hour;
+                }
+                item.setValue(hour + ":" + minute);
             }
-            if (minute.length === 1 && !minute.startsWith("0")) {
-                minute = "0" + minute;
+            if (minute.length === 1) {
+                if (!minute.startsWith("0")) {
+                    minute = "0" + minute;
+                }
+                if (minute === "0") {
+                    minute = "0" + minute;
+                }
+                item.setValue(hour + ":" + minute);
             }
             item.setValue(hour + ":" + minute);
         } else {
@@ -1486,6 +1498,9 @@
             } else {
                 item.setErrors("فرمت تاریخ ورودی اشتباه است");
             }
+        }
+        if (item.getValue() === "00:00") {
+            item.setErrors("مقدار وارد شده اشتباه است");
         }
     }
 
