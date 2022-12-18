@@ -498,7 +498,8 @@
                 isc.IButton.create({
                     baseStyle: 'MSG-btn-orange',
                     icon: '../static/img/msg/mail.svg',
-                    title: "سینک اطلاعات پرسنل از سیستم منابع انسانی ",
+                    width: 260,
+                    title: "سینک اطلاعات پرسنل با سیستم منابع انسانی ",
                     click: function () {
 
                          let studentRecord = StudentsLG_student.getSelectedRecords();
