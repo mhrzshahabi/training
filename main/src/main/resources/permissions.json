@@ -850,7 +850,8 @@
       "title": "حذف تغییرات نیازسنجی بلاتکلیف"
     },
 
-    {"code": "Admin_Post_Access", "title": "مشاهده تمامی پست ها"}
+    {"code": "Admin_Post_Access", "title": "مشاهده تمامی پست ها"},
+    {"code": "Admin_SyncHrPersonnelData_Access", "title": "سینک کردن دیتای پرسنل "}
 
   ]
 }

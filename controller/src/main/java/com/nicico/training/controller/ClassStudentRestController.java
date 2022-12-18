@@ -18,9 +18,7 @@ import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.ParameterValue;
-import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.ParameterValueDAO;
-import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.CalendarTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +31,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.student.UpdatePreTestScoreRequest;
 import request.student.UpdateStudentScoreRequest;
+import response.BaseResponse;
 import response.exam.ExtendedUserDto;
 import response.exam.ResendExamTimes;
 import response.student.UpdatePreTestScoreResponse;
 import response.student.UpdateStudentScoreResponse;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -50,8 +50,10 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 import static com.nicico.training.utility.persianDate.PersianDate.convertFtomTimeZone;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -482,7 +484,7 @@ public class ClassStudentRestController {
                             Calendar cal = Calendar.getInstance();
                             cal.setTimeInMillis(data.getStartDate());
                             cal.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
-                            ParameterValue zone=parameterValueDAO.findByCode("gmtTime");
+                            ParameterValue zone = parameterValueDAO.findByCode("gmtTime");
                             String newTime = convertFtomTimeZone(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE), Integer.parseInt(zone.getValue()));
                             classStudentInfo.setExtendTime(" ( " + newTime + " ) " + " --- " + calendarTool.getIranianDate());
                         }
@@ -535,15 +537,31 @@ public class ClassStudentRestController {
 
     @Loggable
     @PostMapping(value = "/getSessionConflict")
-    public ResponseEntity<String> getSessionConflictViaClassStudent(@RequestParam(value = "nationalCode") String nationalCode,@RequestBody List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
-       List<ClassSessionDTO.ClassStudentSession> classStudentSessionsMap=new ArrayList<>();
+    public ResponseEntity<String> getSessionConflictViaClassStudent(@RequestParam(value = "nationalCode") String nationalCode, @RequestBody List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
+        List<ClassSessionDTO.ClassStudentSession> classStudentSessionsMap = new ArrayList<>();
         classStudentSessions.stream().forEach(classStudentSession -> {
-            classStudentSessionsMap.add( modelMapper.map(classStudentSession, ClassSessionDTO.ClassStudentSession.class));
+            classStudentSessionsMap.add(modelMapper.map(classStudentSession, ClassSessionDTO.ClassStudentSession.class));
         });
 
-        Boolean  flag = iClassStudentService.getSessionConflictViaClassStudent(nationalCode,classStudentSessionsMap);
+        Boolean flag = iClassStudentService.getSessionConflictViaClassStudent(nationalCode, classStudentSessionsMap);
 
-            return new ResponseEntity<>(flag.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(flag.toString(), HttpStatus.OK);
 
     }
+
+    @Loggable
+    @PutMapping(value = "/sync-personnel-data/{id}")
+    public ResponseEntity<BaseResponse> syncPersonnelData(@PathVariable Long id) {
+        BaseResponse response = new BaseResponse();
+        try {
+            response = iClassStudentService.syncPersonnelData(id);
+
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        } catch (TrainingException ex) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("بروز خطا در سیستم");
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        }
+    }
+
 }

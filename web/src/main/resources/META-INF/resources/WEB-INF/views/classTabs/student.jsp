@@ -493,6 +493,44 @@
                     }
                 }),
                 </sec:authorize>
+                <sec:authorize access="hasAuthority('Admin_SyncHrPersonnelData_Access')">
+
+                isc.IButton.create({
+                    baseStyle: 'MSG-btn-orange',
+                    icon: '../static/img/msg/mail.svg',
+                    title: "سینک اطلاعات پرسنل از سیستم منابع انسانی ",
+                    click: function () {
+
+                         let studentRecord = StudentsLG_student.getSelectedRecords();
+
+                        if (studentRecord.length < 1 || studentRecord.length >1) {
+                            createDialog("info", "لطفا فقط روی یک فراگیر کلیک کنید");
+                        } else {
+                            isc.Dialog.create({
+                                message: "آیا از سینک اطلاعات پرسنل از سیستم منابع انسانی مطمن هستید ؟ ",
+                                icon: "[SKIN]ask.png",
+                                title: "تایید سینک دیتا",
+                                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
+                                    title: "<spring:message code='no'/>"
+                                })],
+                                buttonClick: function (button, index) {
+                                    this.close();
+
+                                    if (index == 0) {
+                                      wait.show();
+                                        let studentIds = new Array();
+
+                                        for (let i = 0; i < studentRecord.getLength(); i++) {
+                                            studentIds.add(studentRecord[i].id)
+                                        }
+                                      isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/sync-personnel-data/" + studentIds, "PUT", null, class_sync_student_result));
+                                     }
+                                }
+                            });
+                        }
+                    }
+                }),
+                </sec:authorize>
 
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "StudentsCount_student"}),
@@ -2742,6 +2780,18 @@
                 }, 3000);
             }
         };
+        function class_sync_student_result(resp) {
+            wait.close();
+            if (resp.httpResponseCode == 200) {
+                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                refreshLG(StudentsLG_student);
+            } else {
+                let mesageResult =   JSON.parse(resp.httpResponseText).message;
+
+                createDialog('info',mesageResult, 'خطا در سینک دیتای فراگير');
+                refreshLG(StudentsLG_student);
+            }
+        }
 
         function ListGrid_Cell_Update_Student(record, newValue, item) {
             // var updating = {};

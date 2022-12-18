@@ -3,15 +3,9 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.dto.TestQuestionDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.PersonnelDAO;
@@ -54,6 +48,7 @@ public class ClassStudentService implements IClassStudentService {
     private final ITestQuestionService testQuestionService;
     private final ParameterValueService parameterValueService;
     private final PersonnelDAO personnelDAO;
+    private final ISynonymPersonnelService synonymPersonnelService;
 
     @Transactional(readOnly = true)
     @Override
@@ -157,6 +152,48 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public ClassStudent save(ClassStudent classStudent) {
         return classStudentDAO.save(classStudent);
+    }
+
+    @Override
+    public BaseResponse syncPersonnelData(Long id) {
+        BaseResponse response = new BaseResponse();
+
+        ClassStudent classStudent = getClassStudent(id);
+        String nationalCode = classStudent.getStudent().getNationalCode();
+        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
+        if (synonymPersonnel != null) {
+            Student student = classStudent.getStudent();
+            StudentDTO.Update updateStudent = new StudentDTO.Update();
+            updateStudent.setPostCode(synonymPersonnel.getPostCode());
+            updateStudent.setFirstName(synonymPersonnel.getFirstName());
+            updateStudent.setLastName(synonymPersonnel.getLastName());
+            updateStudent.setNationalCode(synonymPersonnel.getNationalCode());
+            updateStudent.setBirthCertificateNo(synonymPersonnel.getBirthCertificateNo());
+            updateStudent.setPersonnelNo(synonymPersonnel.getPersonnelNo());
+            updateStudent.setPersonnelNo2(synonymPersonnel.getPersonnelNo2());
+            updateStudent.setCompanyName(synonymPersonnel.getCompanyName());
+            updateStudent.setPostTitle(synonymPersonnel.getPostTitle());
+            updateStudent.setPostGradeCode(synonymPersonnel.getPostGradeCode());
+            updateStudent.setPostGradeTitle(synonymPersonnel.getPostGradeTitle());
+            updateStudent.setCcpAffairs(synonymPersonnel.getCcpAffairs());
+            updateStudent.setCcpArea(synonymPersonnel.getCcpArea());
+            updateStudent.setCcpAssistant(synonymPersonnel.getCcpAssistant());
+            updateStudent.setCcpTitle(synonymPersonnel.getCcpTitle());
+            updateStudent.setCcpCode(synonymPersonnel.getCcpCode());
+            updateStudent.setCcpUnit(synonymPersonnel.getCcpUnit());
+            updateStudent.setCcpSection(synonymPersonnel.getCcpSection());
+            updateStudent.setDepartmentCode(synonymPersonnel.getDepartmentCode());
+            updateStudent.setDepartmentTitle(synonymPersonnel.getDepartmentTitle());
+            updateStudent.setJobTitle(synonymPersonnel.getJobTitle());
+            updateStudent.setComplexTitle(synonymPersonnel.getComplexTitle());
+            studentService.update(student.getId(), updateStudent);
+            response.setStatus(200);
+        } else {
+            response.setStatus(406);
+            response.setMessage("کاربر با این کد ملی در سیستم منابع انسانی یافت نشد");
+        }
+        return response;
+
     }
 
     @Transactional
@@ -351,12 +388,12 @@ public class ClassStudentService implements IClassStudentService {
             if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
                 classStudent.setScore(Float.valueOf(examResult1.getFinalResult()));
 
-                if (examResult1.getClassScore()!=null && !Objects.equals(examResult1.getClassScore(), "-"))
-                classStudent.setClassScore(Double.parseDouble(examResult1.getClassScore()));
+                if (examResult1.getClassScore() != null && !Objects.equals(examResult1.getClassScore(), "-"))
+                    classStudent.setClassScore(Double.parseDouble(examResult1.getClassScore()));
                 else
                     classStudent.setClassScore(null);
 
-                if (examResult1.getPracticalScore()!=null && !Objects.equals(examResult1.getPracticalScore(), "-"))
+                if (examResult1.getPracticalScore() != null && !Objects.equals(examResult1.getPracticalScore(), "-"))
                     classStudent.setPracticalScore(Double.parseDouble(examResult1.getPracticalScore()));
                 else
                     classStudent.setPracticalScore(null);
@@ -367,7 +404,8 @@ public class ClassStudentService implements IClassStudentService {
             }
         }
         response.setStatus(200);
-        return response;    }
+        return response;
+    }
 
 
     @Override
@@ -532,24 +570,24 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos) {
-        List<String>nationalCodes=new ArrayList<>();
+    public List<String> getStudentBetWeenRangeTime(String startDate, String endDate, String personnelNos) {
+        List<String> nationalCodes = new ArrayList<>();
         String[] pesonnels = personnelNos.split(",");
-        for (String personnelCod:pesonnels){
+        for (String personnelCod : pesonnels) {
 
-            Optional<Personnel> personnelOptional =   personnelDAO.findFirstByPersonnelNo(personnelCod.trim());
+            Optional<Personnel> personnelOptional = personnelDAO.findFirstByPersonnelNo(personnelCod.trim());
             personnelOptional.ifPresent(personnel -> nationalCodes.add(personnel.getNationalCode()));
         }
-        return classStudentDAO.getStudentBetWeenRangeTime(startDate,endDate,nationalCodes);
+        return classStudentDAO.getStudentBetWeenRangeTime(startDate, endDate, nationalCodes);
     }
 
     @Override
     public Boolean getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
         final boolean[] flag = {false};
-        if(classStudentSessions!=null && classStudentSessions.size()>0){
+        if (classStudentSessions != null && classStudentSessions.size() > 0) {
             for (int i = 0; i < classStudentSessions.size() && !flag[0]; i++) {
 
-                List<Long> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(),nationalCode);
+                List<Long> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(), nationalCode);
                 if (conflicts.size() > 0) {
                     flag[0] = true;
 
@@ -671,12 +709,12 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public ElsClassListV2Dto getTeacherClassesV2WithFilter(String nationalCode, String search, Integer page, Integer size) {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
-        List<Object> list=new ArrayList<>();
-        long count=0;
-        if(search==null || search.equals("")) {
+        List<Object> list = new ArrayList<>();
+        long count = 0;
+        if (search == null || search.equals("")) {
             list = classStudentDAO.findAllClassByTeacher(nationalCode, page + 1, size);
             count = classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
-        }else{
+        } else {
             list = classStudentDAO.findAllClassByTeacherFilter(nationalCode, search, page + 1, size);
             count = classStudentDAO.findAllCountClassByTeacherFilter(nationalCode, search).size();
 
@@ -721,24 +759,24 @@ public class ClassStudentService implements IClassStudentService {
 
 
     @Override
-    public ElsClassListV2Dto getTeacherClassesV3WithFilter(String examType,String nationalCode, String search, Integer page, Integer size) {
+    public ElsClassListV2Dto getTeacherClassesV3WithFilter(String examType, String nationalCode, String search, Integer page, Integer size) {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
-        List<Object> list=new ArrayList<>();
-        long count=0;
-        if(search==null || search.equals("")) {
-            if (examType.equals("preTest")){
+        List<Object> list = new ArrayList<>();
+        long count = 0;
+        if (search == null || search.equals("")) {
+            if (examType.equals("preTest")) {
                 list = classStudentDAO.findAllClassByTeacherForPre(nationalCode, page + 1, size);
                 count = classStudentDAO.findAllCountClassByTeacherForPre(nationalCode).size();
-            }else {
+            } else {
                 list = classStudentDAO.findAllClassByTeacherForExam(nationalCode, page + 1, size);
                 count = classStudentDAO.findAllCountClassByTeacherForExam(nationalCode).size();
             }
 
-        }else{
-            if (examType.equals("preTest")){
-            list = classStudentDAO.findAllClassByTeacherFilterForPre(nationalCode, search, page + 1, size);
-            count = classStudentDAO.findAllCountClassByTeacherFilterForPre(nationalCode, search).size();
-            }else {
+        } else {
+            if (examType.equals("preTest")) {
+                list = classStudentDAO.findAllClassByTeacherFilterForPre(nationalCode, search, page + 1, size);
+                count = classStudentDAO.findAllCountClassByTeacherFilterForPre(nationalCode, search).size();
+            } else {
                 list = classStudentDAO.findAllClassByTeacherFilterForExam(nationalCode, search, page + 1, size);
                 count = classStudentDAO.findAllCountClassByTeacherFilterForExam(nationalCode, search).size();
             }
@@ -824,14 +862,14 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public ElsClassListV2Dto getStudentClassesV2WithFilter(String nationalCode,String search, Integer page, Integer size) {
+    public ElsClassListV2Dto getStudentClassesV2WithFilter(String nationalCode, String search, Integer page, Integer size) {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
-        List<Object> list=new ArrayList<>();
-        long count=0;
-        if(search==null || search==""){
-             list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
-             count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
-        }else {
+        List<Object> list = new ArrayList<>();
+        long count = 0;
+        if (search == null || search == "") {
+            list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
+            count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        } else {
             list = classStudentDAO.findAllClassByStudentFilter(nationalCode, search, page + 1, size);
             count = classStudentDAO.findAllCountClassByStudentFilter(nationalCode, search).size();
         }
@@ -869,4 +907,4 @@ public class ClassStudentService implements IClassStudentService {
 
         return dto;
     }
- }
+}
