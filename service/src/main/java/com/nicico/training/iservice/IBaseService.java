@@ -27,4 +27,6 @@ public interface IBaseService<E, ID extends Serializable, INFO, CREATE, UPDATE, 
     Boolean isExist(ID id);
 
     E get(ID id);
+
+    SearchDTO.SearchRs<INFO> excelSearch(SearchDTO.SearchRq rq);
 }

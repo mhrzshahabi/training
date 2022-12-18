@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -276,6 +277,32 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         if (request.getCriteria() != null)
             criteria.getCriteria().add(request.getCriteria());
         request.setCriteria(criteria);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<INFO> excelSearch(SearchDTO.SearchRq rq) {
+        return getExcelSearchData(dao, rq, e -> modelMapper.map(e, infoType));
+    }
+
+    public static <E, D> SearchDTO.SearchRs<D>getExcelSearchData(JpaSpecificationExecutor<E> repository, SearchDTO.SearchRq request, Function<E, D> converter) {
+        List result;
+        long totalCount;
+        if (request.getStartIndex() != null) {
+            request.setCount(request.getCount() - request.getStartIndex());
+            Page<E> all = repository.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+            totalCount = all.getTotalElements();
+            result = (List)all.getContent().stream().map(converter).collect(Collectors.toList());
+        } else {
+            List<E> all = repository.findAll(NICICOSpecification.of(request));
+            result = (List)all.stream().map(converter).collect(Collectors.toList());
+            totalCount = (long)all.size();
+        }
+
+        SearchDTO.SearchRs<D> response = new SearchDTO.SearchRs();
+        response.setList(result);
+        response.setTotalCount(totalCount);
+        return response;
     }
 
 }
