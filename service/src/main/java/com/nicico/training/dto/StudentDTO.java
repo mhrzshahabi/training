@@ -117,6 +117,24 @@ public class StudentDTO {
     @ApiModel("Student - Update")
     public static class Update extends StudentDTO {
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Student - UpdateForSyncData")
+    public static class UpdateForSyncData extends StudentDTO {
+        private Long postId;
+        private Long departmentId;
+        private boolean hasPreparationTest;
+        private Long contactInfoId;
+        private String userName;
+        private Long geoWorkId;
+        private String peopleType;
+
+
+
+
+
+    }
 
     @Getter
     @Setter

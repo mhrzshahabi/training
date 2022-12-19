@@ -147,6 +147,16 @@ public class StudentService implements IStudentService {
         modelMapper.map(request, updating);
         return save(updating);
     }
+    @Transactional
+    @Override
+    public StudentDTO.Info update(Long id, StudentDTO.UpdateForSyncData request) {
+        final Optional<Student> cById = studentDAO.findById(id);
+        final Student student = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        Student updating = new Student();
+        modelMapper.map(student, updating);
+        modelMapper.map(request, updating);
+        return save(updating);
+    }
 
     @Transactional
     @Override

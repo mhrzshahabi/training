@@ -59,4 +59,6 @@ public interface IStudentService {
 
     List<?> getAllStudentsOfExam(Long testQuestionId);
 
+    StudentDTO.Info update(Long id, StudentDTO.UpdateForSyncData request);
+
 }

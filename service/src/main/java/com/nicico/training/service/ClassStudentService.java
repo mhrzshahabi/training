@@ -163,7 +163,7 @@ public class ClassStudentService implements IClassStudentService {
         SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
         if (synonymPersonnel != null) {
             Student student = classStudent.getStudent();
-            StudentDTO.Update updateStudent = new StudentDTO.Update();
+            StudentDTO.UpdateForSyncData updateStudent = new StudentDTO.UpdateForSyncData();
             updateStudent.setPostCode(synonymPersonnel.getPostCode());
             updateStudent.setFirstName(synonymPersonnel.getFirstName());
             updateStudent.setLastName(synonymPersonnel.getLastName());
@@ -186,6 +186,15 @@ public class ClassStudentService implements IClassStudentService {
             updateStudent.setDepartmentTitle(synonymPersonnel.getDepartmentTitle());
             updateStudent.setJobTitle(synonymPersonnel.getJobTitle());
             updateStudent.setComplexTitle(synonymPersonnel.getComplexTitle());
+            updateStudent.setPostId(synonymPersonnel.getPostId());
+            updateStudent.setDepartmentId(synonymPersonnel.getDepartmentId());
+            updateStudent.setHasPreparationTest(student.isHasPreparationTest());
+            updateStudent.setContactInfoId(student.getContactInfoId());
+            updateStudent.setUserName(student.getUserName());
+            updateStudent.setGeoWorkId(student.getGeoWorkId());
+            updateStudent.setPeopleType(student.getPeopleType());
+            updateStudent.setGender(student.getGender());
+            updateStudent.setCompanyName(student.getCompanyName());
             studentService.update(student.getId(), updateStudent);
             response.setStatus(200);
         } else {
