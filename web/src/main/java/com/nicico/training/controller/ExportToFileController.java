@@ -122,6 +122,7 @@ public class ExportToFileController {
     @Autowired
     protected EntityManager entityManager;
 
+    private IBaseService baseService;
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
@@ -524,11 +525,11 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post":
-                generalList = (List<Object>) ((Object) viewPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostService.excelSearch(searchRq).getList());
                 break;
 
             case "Post":
