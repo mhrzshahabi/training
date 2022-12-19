@@ -122,6 +122,7 @@ public class ExportToFileController {
     @Autowired
     protected EntityManager entityManager;
 
+    private IBaseService baseService;
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
@@ -497,7 +498,7 @@ public class ExportToFileController {
                 }
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", postList.stream().filter(post -> post.getDeleted() == null).map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
-                generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "trainingPostPersonnel":
@@ -524,7 +525,7 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post":
@@ -532,11 +533,11 @@ public class ExportToFileController {
                 break;
 
             case "Post":
-                generalList = (List<Object>) ((Object) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post_Grade":
-                generalList = (List<Object>) ((Object) viewPostGradeService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGradeService.excelSearch(searchRq).getList());
                 break;
 
             case "Post_Grade_Without_Permission":
