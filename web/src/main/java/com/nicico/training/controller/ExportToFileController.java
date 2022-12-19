@@ -122,6 +122,8 @@ public class ExportToFileController {
     @Autowired
     protected EntityManager entityManager;
 
+    private IBaseService baseService;
+
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
@@ -466,7 +468,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Job":
-                generalList = (List<Object>) ((Object) viewJobService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewJobService.excelSearch(searchRq).getList());
                 break;
 
             case "jobPersonnel":
@@ -524,7 +526,7 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post":
@@ -545,7 +547,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Job_Group":
-                generalList = (List<Object>) ((Object) viewJobGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "Job_Group_Personnel":
@@ -574,7 +576,7 @@ public class ExportToFileController {
                 jobGroupSearchRq = ISC.convertToSearchRq(req, jobGrouptList.getList().stream().map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
                 jobGroupSearchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
                 jobGroupSearchRq.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
-                generalList = (List<Object>) ((Object) personnelService.search(jobGroupSearchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(jobGroupSearchRq).getList());
                 break;
 
             case "Job_Group_Post":
@@ -589,7 +591,7 @@ public class ExportToFileController {
                 }
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("job", jobsPosts.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 BaseService.setCriteriaToNotSearchDeleted(searchRq);
-                generalList = (List<Object>) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post_Grade_Group":
