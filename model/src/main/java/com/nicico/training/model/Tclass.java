@@ -337,4 +337,9 @@ public class Tclass extends Auditable {
     private Long educationalCalenderId;
 
 
+    @OneToMany(mappedBy = "tclass", cascade = CascadeType.REMOVE)
+    @NotAudited
+    private Set<Message> messageSet;
+
+
 }
