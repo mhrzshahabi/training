@@ -316,7 +316,7 @@ public class PostGroupRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{postGroupId}/get-excel-search-Personnel")
+    @GetMapping(value = "/{postGroupId}/get-excel-search-personnel")
     public ResponseEntity<ISC<PersonnelDTO.Info>> getExcelSearchPersonnel(@PathVariable Long postGroupId, HttpServletRequest iscRq) throws IOException {
         List<ViewAllPostDTO.Info> postList = iViewAllPostService.getAllPosts(postGroupId);
         if (postList == null || postList.isEmpty()) {
