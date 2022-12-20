@@ -122,6 +122,7 @@ public class ExportToFileController {
     @Autowired
     protected EntityManager entityManager;
 
+    private IBaseService baseService;
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
@@ -524,7 +525,9 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
+                List<NeedsAssessmentReportsDTO.ReportInfo> list = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList();
+                generalList = (List<Object>) ((Object) baseService.excelSearch(convertToSearchRq((HttpServletRequest) list)).getList());
+
                 break;
 
             case "View_Post":
@@ -642,7 +645,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Post_Group":
-                generalList = (List<Object>) ((Object) viewPostGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGroupService.excelSearch(searchRq).getList());
                 break;
 
             case "Post_Group":
@@ -660,7 +663,8 @@ public class ExportToFileController {
 
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "postGroup");
 
-                generalList = (List<Object>) ((Object) postGroupService.getPosts(group));
+                List<PostDTO.Info> posts = postGroupService.getPosts(group);
+                generalList = (List<Object>) ((Object) baseService.excelSearch(convertToSearchRq((HttpServletRequest) posts)).getList());
                 break;
 
             case "trainingPost":
@@ -674,7 +678,7 @@ public class ExportToFileController {
                 break;
 
             case "Training_Post_Group_Post":
-                generalList = (List<Object>) ((Object) trainingPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "viewPersonnelTrainingStatusReport":
