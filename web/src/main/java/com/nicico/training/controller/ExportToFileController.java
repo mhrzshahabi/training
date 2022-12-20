@@ -525,7 +525,9 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
+                List<NeedsAssessmentReportsDTO.ReportInfo> list = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList();
+                generalList = (List<Object>) ((Object) baseService.excelSearch(convertToSearchRq((HttpServletRequest) list)).getList());
+
                 break;
 
             case "View_Post":
@@ -623,7 +625,7 @@ public class ExportToFileController {
                 coustomSearchRq2 = ISC.convertToSearchRq(req, postGradeGroupPersonnelPostList.getList().stream().map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
                 coustomSearchRq2.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
-                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(coustomSearchRq2).getList());
                 break;
 
             case "Post_Grade_Group_Post":
