@@ -122,6 +122,7 @@ public class ExportToFileController {
     @Autowired
     protected EntityManager entityManager;
 
+    private IBaseService baseService;
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
@@ -512,7 +513,7 @@ public class ExportToFileController {
                 }
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", trainingPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
-                generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "NeedsAssessmentReport":
@@ -665,12 +666,12 @@ public class ExportToFileController {
 
             case "trainingPost":
                 BaseService.setCriteriaToNotSearchDeleted(searchRq);
-                generalList = (List<Object>) ((Object) viewTrainingPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewTrainingPostService.excelSearch(searchRq).getList());
                 break;
 
             case "trainingPost_Post":
                 BaseService.setCriteriaToNotSearchDeleted(searchRq);
-                generalList = (List<Object>) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "Training_Post_Group_Post":
