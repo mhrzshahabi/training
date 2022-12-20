@@ -526,7 +526,9 @@ public class ExportToFileController {
                 Long objectId = ((Integer) NeedsAssessmentParams.get("objectId")[0]).longValue();
                 String objectType = (String) NeedsAssessmentParams.get("objectType")[0];
                 Long personnelId = NeedsAssessmentParams.get("personnelId") == null ? null : ((Integer) NeedsAssessmentParams.get("personnelId")[0]).longValue();
-                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
+                List<NeedsAssessmentReportsDTO.ReportInfo> list = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList();
+                generalList = (List<Object>) ((Object) baseService.excelSearch(convertToSearchRq((HttpServletRequest) list)).getList());
+
                 break;
 
             case "View_Post":
