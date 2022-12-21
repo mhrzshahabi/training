@@ -223,7 +223,13 @@
             {
                 name: "modifiedDate",
                 title: "تاریخ ویرایش",
-                hidden: true
+                hidden: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }
             }
         ]
     });
