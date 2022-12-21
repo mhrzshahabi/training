@@ -2,10 +2,14 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewjobDTO;
+import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.iservice.IViewJobService;
 import com.nicico.training.service.BaseService;
+import com.nicico.training.service.ViewJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +25,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-job")
 public class ViewJobRestController {
 
-    private final IViewJobService viewJobService;
+    private final ViewJobService viewJobService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewjobDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -34,10 +38,8 @@ public class ViewJobRestController {
     @GetMapping(value = "/excel-search")
     public ResponseEntity<ISC<ViewjobDTO.Info>> excelSearch(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        Integer count = searchRq.getCount()- searchRq.getStartIndex();
-        searchRq.setCount(count);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        SearchDTO.SearchRs<ViewjobDTO.Info> searchRs = viewJobService.search(searchRq);
+        SearchDTO.SearchRs<ViewjobDTO.Info> searchRs = viewJobService.excelSearch(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
 
     }
