@@ -124,6 +124,9 @@ public class ExportToFileController {
 
     private IBaseService baseService;
 
+    public void setBaseService(BaseService baseService){
+        this.baseService = baseService;
+    }
 
     @PostMapping(value = {"/exportExcelFromClient"})
     public void exportExcelFromClient(final HttpServletResponse response,
