@@ -3406,8 +3406,8 @@ function reAssignTask(record) {
             if (record.title.includes("نیازسنجی")) {
                 baseUrl = bpmsUrl;
                 interalBaseUrl = bpmsUrl;
-                url = "/needAssessment/processes/reAssign-process/";
-                interalUrl = "/needAssessment/processes/reAssign-process/";
+                url = "/needAssessment/processes/reAssign-process";
+                interalUrl = "/needAssessment/processes/reAssign-process";
                 map_data = {
                     "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
                     "returnReason": null,
@@ -3564,9 +3564,8 @@ function reAssignTask(record) {
         data = {
             reviewTaskRequest: reviewTaskRequest,
             reason: null,
-            HeadNationalCode: HeadNationalCode,
+            headNationalCode: HeadNationalCode
         }
-
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
             wait.close();

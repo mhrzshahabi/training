@@ -10,6 +10,6 @@ import java.io.Serializable;
 @Getter
 public class BpmsCancelTaskDto implements Serializable {
     private String reason;
-    private String HeadNationalCode;
+    private String headNationalCode;
     private ReviewTaskRequest reviewTaskRequest;
 }
