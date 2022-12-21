@@ -50,6 +50,10 @@ public class PostGroupRestController {
 
     // ------------------------------
 
+    public void setBaseService(BaseService baseService){
+        this.baseService = baseService;
+    }
+
     @Loggable
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_post_group')")
