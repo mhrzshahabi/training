@@ -502,7 +502,7 @@ public class ExportToFileController {
                 }
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", postList.stream().filter(post -> post.getDeleted() == null).map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
-                generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "trainingPostPersonnel":
@@ -539,11 +539,11 @@ public class ExportToFileController {
                 break;
 
             case "Post":
-                generalList = (List<Object>) ((Object) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "View_Post_Grade":
-                generalList = (List<Object>) ((Object) viewPostGradeService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGradeService.excelSearch(searchRq).getList());
                 break;
 
             case "Post_Grade_Without_Permission":
