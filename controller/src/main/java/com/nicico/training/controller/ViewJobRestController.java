@@ -2,14 +2,10 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewjobDTO;
-import com.nicico.training.iservice.IBaseService;
-import com.nicico.training.iservice.IViewJobService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.ViewJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
