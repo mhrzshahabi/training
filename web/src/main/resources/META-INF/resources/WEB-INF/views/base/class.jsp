@@ -5309,8 +5309,9 @@
             let Window_Sms_History_in_class = isc.Window.create({
                 title: "تاریخچه ارسال sms",
                 autoSize: false,
-                width: "60%",
-                height: "60%",
+                placement: "fillScreen",
+                // width: "60%",
+                // height: "60%",
                 canDragReposition: true,
                 canDragResize: true,
                 autoDraw: false,
