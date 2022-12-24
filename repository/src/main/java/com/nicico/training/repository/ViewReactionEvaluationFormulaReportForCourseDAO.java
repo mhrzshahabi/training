@@ -133,7 +133,7 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                              tbl_parameter_value.c_code not IN ('DeleteStudentCauseOfPermittedAbcense','StudentCancellation','DeleteStudentCauseOfAffairRequest','DeleteStudentCauseOfAbcense','ClassDelete')
                   )
               WHERE
-                     \s
+                   
                    total_std > 0
                                               ) clsstu
                                               INNER JOIN (
@@ -171,8 +171,8 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                                                       LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
                                                   WHERE
                                                       tclass.c_status != '1'
-                                                      AND tclass.c_start_date >= '1401/08/01'
-                                                      AND tclass.c_end_date <= '1401/09/3'
+                                                      AND tclass.c_start_date >= :start
+                                                      AND tclass.c_end_date <= :end
                                               ) z ON clsstu.class_id = z.class_id
                                               LEFT JOIN tbl_student ON clsstu.student_id = tbl_student.id
                                               LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
@@ -238,8 +238,7 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                                                                                 and
                                                                                                tbl_parameter_value.c_code not IN ('DeleteStudentCauseOfPermittedAbcense','StudentCancellation','DeleteStudentCauseOfAffairRequest','DeleteStudentCauseOfAbcense','ClassDelete')
      
-                                                                             \s
-                                                                               \s
+                                                                            
                                                                            GROUP BY
                                                                                tbl_evaluation.f_class_id,
                                                                                tbl_evaluation.b_status,
@@ -297,7 +296,7 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
                                                      tbl_class_student   cs
                                                      INNER JOIN tbl_class           classx ON cs.class_id = classx.id
                                              )
-                                            \s
+                                            
                                      ) percent_ ON clsstu.class_id = percent_.class_id
                                  ORDER BY
                                      class_code
