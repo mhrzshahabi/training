@@ -9,10 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.IPostGroupService;
-import com.nicico.training.iservice.IPostService;
-import com.nicico.training.iservice.IViewAllPostService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGroupService;
 import com.nicico.training.service.ViewAllPostService;
@@ -49,7 +46,13 @@ public class PostGroupRestController {
     private final ObjectMapper objectMapper;
     private final IPersonnelService personnelService;
     private final IViewAllPostService iViewAllPostService;
+    private IBaseService baseService;
+
     // ------------------------------
+
+    public void setBaseService(BaseService baseService){
+        this.baseService = baseService;
+    }
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -314,6 +317,21 @@ public class PostGroupRestController {
         searchRq.setDistinct(true);
         SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{postGroupId}/get-excel-search-personnel")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> getExcelSearchPersonnel(@PathVariable Long postGroupId, HttpServletRequest iscRq) throws IOException {
+        List<ViewAllPostDTO.Info> postList = iViewAllPostService.getAllPosts(postGroupId);
+        if (postList == null || postList.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postList.stream().map(ViewAllPostDTO.Info::getPostId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = (SearchDTO.SearchRs<PersonnelDTO.Info>) baseService.excelSearch(searchRq).getList();
+        return new ResponseEntity<>(ISC.convertToIscRs( searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+
     }
 
     @Loggable

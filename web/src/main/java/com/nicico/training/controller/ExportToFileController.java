@@ -649,7 +649,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Post_Group":
-                generalList = (List<Object>) ((Object) viewPostGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGroupService.excelSearch(searchRq).getList());
                 break;
 
             case "Post_Group":
@@ -667,7 +667,8 @@ public class ExportToFileController {
 
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "postGroup");
 
-                generalList = (List<Object>) ((Object) postGroupService.getPosts(group));
+                List<PostDTO.Info> posts = postGroupService.getPosts(group);
+                generalList = (List<Object>) ((Object) baseService.excelSearch(convertToSearchRq((HttpServletRequest) posts)).getList());
                 break;
 
             case "trainingPost":
@@ -681,7 +682,7 @@ public class ExportToFileController {
                 break;
 
             case "Training_Post_Group_Post":
-                generalList = (List<Object>) ((Object) trainingPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) baseService.excelSearch(searchRq).getList());
                 break;
 
             case "viewPersonnelTrainingStatusReport":

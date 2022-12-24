@@ -1861,7 +1861,7 @@
                     if (postGroup == null && tab.pane != null){
                         return;
                     }
-                    ExportToFile.downloadExcelRestUrl(null, PersonnelLG_Post_Group_Jsp , postGroupUrl + "/" + postGroup.id + "/getPersonnel", 0, null, '',"گروه پستي - لیست پرسنل"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelLG_Post_Group_Jsp , postGroupUrl + "/" + postGroup.id + "/get-excel-search-Personnel", 0, null, '',"گروه پستي - لیست پرسنل"  , criteria, null);
                 }
             })
         ]
