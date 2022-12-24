@@ -188,21 +188,21 @@
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Training_Post_U')">
-            {
-                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-                    ListGrid_TrainingPost_edit();
-                }
-            },
-            </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Training_Post_U')">--%>
+//             {
+<%--                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {--%>
+//                     ListGrid_TrainingPost_edit();
+//                 }
+//             },
+<%--            </sec:authorize>--%>
 
-            <sec:authorize access="hasAuthority('Training_Post_D')">
-            {
-                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                    ListGrid_TrainingPost_remove();
-                }
-            },
-            </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Training_Post_D')">--%>
+<%--            {--%>
+<%--                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {--%>
+<%--                    ListGrid_TrainingPost_remove();--%>
+<%--                }--%>
+<%--            },--%>
+<%--            </sec:authorize>--%>
 
             {isSeparator: true},
 
@@ -265,7 +265,7 @@
             selectionUpdated_TrainingPost_Jsp();
         },
         doubleClick: function () {
-            ListGrid_TrainingPost_edit();
+            // ListGrid_TrainingPost_edit();
         },
         getCellCSSText: function (record) {
             return setColorForListGrid(record);
@@ -1297,7 +1297,7 @@
         title: "ویرایش",
         click: function () {
 
-            ListGrid_TrainingPost_edit();
+            // ListGrid_TrainingPost_edit();
         }
     });
     </sec:authorize>
@@ -1313,15 +1313,15 @@
     });
     </sec:authorize>
 
-    <sec:authorize access="hasAuthority('Training_Post_D')">
-    var ToolStripButton_Remove_TrainingPost_Jsp = isc.ToolStripButtonRemove.create({
-        // icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
-        click: function () {
-            ListGrid_TrainingPost_remove();
-        }
-    });
-    </sec:authorize>
+<%--    <sec:authorize access="hasAuthority('Training_Post_D')">--%>
+<%--    var ToolStripButton_Remove_TrainingPost_Jsp = isc.ToolStripButtonRemove.create({--%>
+<%--        // icon: "[SKIN]/actions/remove.png",--%>
+<%--        title: "حذف",--%>
+<%--        click: function () {--%>
+<%--            ListGrid_TrainingPost_remove();--%>
+<%--        }--%>
+<%--    });--%>
+<%--    </sec:authorize>--%>
 
     <sec:authorize access="hasAuthority('Training_Post_R')">
     var ToolStripButton_Add_TrainingPost_AddPost_Jsp = isc.ToolStripButton.create({
@@ -1402,13 +1402,13 @@
             ToolStripButton_Add_TrainingPost_Jsp,
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Training_Post_U')">
-            ToolStripButton_Edit_TrainingPost_Jsp,
-            </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Training_Post_U')">--%>
+//             ToolStripButton_Edit_TrainingPost_Jsp,
+<%--            </sec:authorize>--%>
 
-            <sec:authorize access="hasAuthority('Training_Post_D')">
-            ToolStripButton_Remove_TrainingPost_Jsp,
-            </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Training_Post_D')">--%>
+//             ToolStripButton_Remove_TrainingPost_Jsp,
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Training_Post_R')">
             ToolStripButton_Add_TrainingPost_AddPost_Jsp,
