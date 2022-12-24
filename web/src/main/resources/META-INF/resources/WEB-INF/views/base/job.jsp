@@ -774,7 +774,7 @@
                             return;
                         }
 
-                        ExportToFile.downloadExcelRestUrl(null, PostLG_Job, viewTrainingPostUrl + "/iscList", 0, JobLG_job, '', "شغل - ليست پست ها", null, null,0,true);
+                        ExportToFile.downloadExcelRestUrl(null, PostLG_Job, viewTrainingPostUrl + "/excel-search", 0, JobLG_job, '', "شغل - ليست پست ها", null, null,0,true);
                     }
                 })
             ]
