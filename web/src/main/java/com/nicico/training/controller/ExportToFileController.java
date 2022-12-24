@@ -535,7 +535,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Post":
-                generalList = (List<Object>) ((Object) viewPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostService.excelSearch(searchRq).getList());
                 break;
 
             case "Post":
