@@ -12,6 +12,7 @@ import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.service.BaseService;
+import com.nicico.training.service.ViewTrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ public class ViewTrainingPostRestController {
     private final ObjectMapper objectMapper;
     private final ITrainingPostService trainingPostService;
     private final IViewTrainingPostService viewTrainingPostService;
+    private final ViewTrainingPostService TrainingPostService;
     private final IJobGroupService jobGroupService;
     private final IPostGradeGroupService postGradeGroupService;
     private final IViewTrainingPostReportService viewTrainingPostReportService;
@@ -286,5 +288,13 @@ public class ViewTrainingPostRestController {
         } catch (Exception e) {
             return new ResponseEntity<>(returnPostCodes, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping(value = "/excel-search")
+    public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> excelSearch(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = TrainingPostService.excelSearch(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 }
