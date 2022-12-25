@@ -503,7 +503,7 @@ public class SkillRestController {
         return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/postsWithSameSkill/c")
+    @GetMapping(value = "/postsWithSameSkill/{skillId}")
     public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> getPostsContainsTheSkill(@PathVariable Long skillId) {
         SearchDTO.SearchRs<ViewTrainingPostDTO.Report> response = iSkillService.getPostsContainsTheSkill(skillId);
 
