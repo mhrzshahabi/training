@@ -503,7 +503,7 @@ public class SkillRestController {
         return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/postsWithSameSkill/{skillId}")
+    @GetMapping(value = "/postsWithSameSkill/c")
     public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> getPostsContainsTheSkill(@PathVariable Long skillId) {
         SearchDTO.SearchRs<ViewTrainingPostDTO.Report> response = iSkillService.getPostsContainsTheSkill(skillId);
 
@@ -519,8 +519,8 @@ public class SkillRestController {
     }
 
     @Loggable
-    @PutMapping(value = "/{id}")
-    public boolean updateMainObjectiveId(@PathVariable Long id, @PathVariable Long mainObjectiveId) {
-        return iSkillService.updateMainObjectiveId(id, mainObjectiveId);
+    @PutMapping(value = "/{skillId}/{mainObjectiveId}")
+    public boolean updateMainObjectiveId(@PathVariable Long skillId, @PathVariable Long mainObjectiveId) {
+        return iSkillService.updateMainObjectiveId(skillId, mainObjectiveId);
     }
 }
