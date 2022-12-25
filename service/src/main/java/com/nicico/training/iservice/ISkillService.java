@@ -75,5 +75,4 @@ public interface ISkillService {
     void addCourse(Long courseId, Long skillId, HttpServletResponse resp) throws IOException;
 
     boolean updateMainObjectiveId(Long id, Long mainObjectiveId);
-
 }
