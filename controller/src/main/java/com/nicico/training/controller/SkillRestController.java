@@ -518,4 +518,10 @@ public class SkillRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @PutMapping(value = "/{skillId}/{mainObjectiveId}")
+    public boolean updateMainObjectiveId(@PathVariable Long skillId, @PathVariable Long mainObjectiveId) {
+        return iSkillService.updateMainObjectiveId(skillId, mainObjectiveId);
+    }
 }
