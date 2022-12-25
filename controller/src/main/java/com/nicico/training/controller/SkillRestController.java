@@ -517,4 +517,11 @@ public class SkillRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @PutMapping(value = "/{id}")
+//    @PreAuthorize("hasAuthority('u_skill')")
+    public boolean updateMainObjectiveId(@PathVariable Long id, @PathVariable Long mainObjectiveId) {
+        return iSkillService.updateMainObjectiveId(id,mainObjectiveId);
+    }
 }

@@ -394,4 +394,22 @@ public class SkillService implements ISkillService {
         return rs;
     }
 
+    @Transactional
+    @Override
+    public boolean  updateMainObjectiveId(Long id,Long mainObjectiveId) {
+        final Optional<Skill> optionalSkill = skillDAO.findById(id);
+        final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+
+        if (currentSkill != null) {
+            try {
+                currentSkill.setCourseMainObjectiveId(mainObjectiveId);
+                skillDAO.saveAndFlush(currentSkill);
+
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotEditable);
+
+            }
+        }
+        return true;
+    }
 }
