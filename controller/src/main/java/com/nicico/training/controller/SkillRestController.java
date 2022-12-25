@@ -520,8 +520,7 @@ public class SkillRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('u_skill')")
     public boolean updateMainObjectiveId(@PathVariable Long id, @PathVariable Long mainObjectiveId) {
-        return iSkillService.updateMainObjectiveId(id,mainObjectiveId);
+        return iSkillService.updateMainObjectiveId(id, mainObjectiveId);
     }
 }

@@ -396,7 +396,7 @@ public class SkillService implements ISkillService {
 
     @Transactional
     @Override
-    public boolean  updateMainObjectiveId(Long id,Long mainObjectiveId) {
+    public boolean updateMainObjectiveId(Long id, Long mainObjectiveId) {
         final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
