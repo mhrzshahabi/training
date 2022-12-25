@@ -73,4 +73,6 @@ public interface ISkillService {
     <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType);
 
     void addCourse(Long courseId, Long skillId, HttpServletResponse resp) throws IOException;
+
+    boolean updateMainObjectiveId(Long id, Long mainObjectiveId);
 }
