@@ -18,9 +18,6 @@ import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
-import com.nicico.training.service.SkillService;
-
-import com.nicico.training.service.WorkGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -123,15 +120,19 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-//            flag = iSkillService.isSkillDeletable(id);
-//            if (flag)
-
-            if(workGroupService.isAllowUseId("Skill",id)){
-                iSkillService.delete(id);
-            }else{
-                flag = false;
-                httpStatus = HttpStatus.UNAUTHORIZED;
+            flag = iSkillService.isSkillDeletable(id);
+            if (flag){
+                if(workGroupService.isAllowUseId("Skill",id)){
+                    iSkillService.delete(id);
+                }else{
+                    flag = false;
+                    httpStatus = HttpStatus.UNAUTHORIZED;
+                }
+            }else {
+                httpStatus = HttpStatus.NO_CONTENT;
             }
+
+
 
         } catch (Exception e) {
             flag = false;

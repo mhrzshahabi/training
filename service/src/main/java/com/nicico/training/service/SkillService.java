@@ -6,18 +6,18 @@ com.nicico.training.service
     */
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
-//import com.nicico.training.iservice.ISkillGroupService;
 import com.nicico.training.iservice.ISkillService;
-import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.model.Course;
+import com.nicico.training.model.Skill;
+import com.nicico.training.model.ViewTrainingPost;
+import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.repository.SkillDAO;
+import com.nicico.training.repository.ViewTrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,10 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.nicico.training.service.BaseService.makeNewCriteria;
-import static com.nicico.training.service.BaseService.setCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -154,7 +150,15 @@ public class SkillService implements ISkillService {
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
         if (requestSkill.getCourseId() == null || !requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
-            updating.setCourseMainObjectiveId(null);
+            if (currentSkill.getCourseMainObjective()!=null){
+                CourseDTO.CourseDependence dependence= courseService.checkDependence(currentSkill.getCourseMainObjectiveId());
+                if (dependence.getNumClasses()==0 ){
+                    updating.setCourseMainObjectiveId(null);
+                }else {
+                    throw new TrainingException(TrainingException.ErrorType.NotFound, "skillHasCourse", "");
+
+                }
+            }
         }
         Skill skill = skillDAO.saveAndFlush(updating);
         if (skill.getCourseId() != null)
@@ -276,9 +280,12 @@ public class SkillService implements ISkillService {
     @Transactional(readOnly = true)
     @Override
     public boolean isSkillDeletable(Long skillId) {
-        if (skillDAO.getSkillUsedInOther(skillId) != null)
+        Skill skill= getSkill(skillId);
+        if (skill.getCourseId()==null)
             return true;
-        return true;
+        CourseDTO.CourseDependence dependence= courseService.checkDependence(skill.getCourseId());
+        return dependence.getNumClasses() == 0 && dependence.getNumSkills() == 0 && dependence.getNumGoals() == 0;
+
     }
 
 

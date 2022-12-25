@@ -210,7 +210,6 @@
                 required: false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
-                ,validators: [ TrValidators.NotContainSpecialWords]
 
             },
             {
@@ -221,12 +220,6 @@
                 validateOnExit:true,
                 readonly: true,
                 width: "300",
-                validators: [ TrValidators.NotContainSpecialChar,TrValidators.NotContainSpecialWords,
-        {
-            type: "regexp",
-            errorMessage: "<spring:message code="msg.field.length"/>",
-            expression: /^.{2,150}$/
-        }]
             },
             {
                 name: "titleEn",
@@ -234,14 +227,7 @@
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 showHintInField: true,
-                width: "300",
-                validators: [ TrValidators.NotContainSpecialWords,
-                    {
-                        type: "regexp",
-                        errorMessage: "<spring:message code="msg.field.length"/>",
-                        expression: /^.{2,150}$/
-
-                    }]
+                width: "300"
             },
             {
                 name: "categoryId",
@@ -838,7 +824,17 @@
             });
         }
         else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>");
+            if (JSON.parse(resp.httpResponseText)!==undefined &&
+                JSON.parse(resp.httpResponseText).errors !==undefined &&
+                JSON.parse(resp.httpResponseText).errors.size()>0 &&
+                JSON.parse(resp.httpResponseText).errors.get(0).field !== undefined &&
+                JSON.parse(resp.httpResponseText).errors.get(0).field === 'skillHasCourse'){
+                createDialog("info", "مهارت به دوره ای وصل است که کلاس دارد .به این دلیل امکان حذف یا ویرایش دوره وجود ندارد");
+
+            }else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+
+            }
         }
     }
 
