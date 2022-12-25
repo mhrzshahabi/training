@@ -535,6 +535,7 @@ public class ExportToFileController {
                 break;
 
             case "View_Post":
+                BaseService.setCriteriaToNotSearchDeleted(searchRq);
                 generalList = (List<Object>) ((Object) viewPostService.excelSearch(searchRq).getList());
                 break;
 
