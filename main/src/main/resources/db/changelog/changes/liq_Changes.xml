@@ -8487,6 +8487,7 @@ DECLARE
 
                             tbl_needs_assessment.id as rid ,
                             tbl_training_post.c_code AS postcode,
+                            tbl_training_post.c_title_fa AS postName,
                             tbl_needs_assessment.c_object_code
 
                         FROM
@@ -8498,7 +8499,8 @@ DECLARE
                     ) src
                     ON      (trg.id = src.rid)
                     WHEN MATCHED THEN UPDATE
-                        SET trg.c_object_code = src.postcode;
+                        SET trg.c_object_code = src.postcode,
+                            trg.c_object_name = src.postName;
               END;
             ]]>
         </sql>
@@ -8514,6 +8516,7 @@ DECLARE
 
                             tbl_needs_assessment_temp.id as rid ,
                             tbl_training_post.c_code AS postcode,
+                            tbl_training_post.c_title_fa AS postName,
                             tbl_needs_assessment_temp.c_object_code
 
                         FROM
@@ -8525,7 +8528,8 @@ DECLARE
                     ) src
                     ON      (trg.id = src.rid)
                     WHEN MATCHED THEN UPDATE
-                        SET trg.c_object_code = src.postcode;
+                        SET trg.c_object_code = src.postcode,
+                            trg.c_object_name = src.postName;
             END;
             ]]>
         </sql>
