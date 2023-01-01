@@ -149,6 +149,11 @@
                         name: "contactInfo.email",
                         title: "<spring:message code="email"/>",
                         filterOperator: "iContains"
+                    },
+                    {
+                        name: "workPlaceTitle",
+                        title: "<spring:message code="geographical.location.of.service"/>",
+                        filterOperator: "iContains"
                     }
                 ],
                 transformRequest: function (dsRequest) {
@@ -279,6 +284,11 @@
                     {
                         name: "email",
                         title: "<spring:message code="email"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "workPlaceTitle",
+                        title: "<spring:message code="geographical.location.of.service"/>",
                         filterOperator: "iContains"
                     }
                 ],
@@ -418,7 +428,8 @@
                     {name: "ccpSection"},
                     {name: "ccpUnit"},
                     {name: "contactInfo.smSMobileNumber"},
-                    {name: "contactInfo.email"}
+                    {name: "contactInfo.email"},
+                    {name: "workPlaceTitle"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
@@ -471,7 +482,8 @@
                     {name: "ccpSection"},
                     {name: "ccpUnit"},
                     {name: "phone"},
-                    {name: "email"}
+                    {name: "email"},
+                    {name: "workPlaceTitle"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
