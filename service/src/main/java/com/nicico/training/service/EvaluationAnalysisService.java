@@ -772,7 +772,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             resultSet.setPreTestMeanScore(null);
 
         if (FECRGrade != null)
-            resultSet.setFeclgrade(FECRGrade.toString());
+            resultSet.setFeclgrade( numberFormat.format(FECRGrade));
 
         if (FECRPass != null)
             resultSet.setFeclpass(FECRPass.toString());
