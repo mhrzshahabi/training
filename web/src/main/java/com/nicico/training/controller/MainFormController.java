@@ -208,10 +208,6 @@ public class MainFormController {
     public String showConfigForm() {
         return "security/config";
     }
-    @RequestMapping("/v2/config")
-    public String showNewConfigForm() {
-        return "security/newConfig";
-    }
 
     @RequestMapping("/usersLoginReport")
     public String showUsersLoginReportForm() { return "security/usersLoginReport"; }
