@@ -3206,6 +3206,11 @@
                     StudentTS_student.setVisibility(true)
 
                     </sec:authorize>
+
+                    if (classRecord.endDate < todayDate) {
+                        btnAdd_student_class.setVisibility(false);
+                        btnRemove_student_class.setVisibility(false);
+                    }
                 }
 
                 StudentsLG_student.invalidateCache();
