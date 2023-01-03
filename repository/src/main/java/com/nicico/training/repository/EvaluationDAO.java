@@ -4,7 +4,6 @@ import com.nicico.training.model.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -64,44 +63,58 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1  AND eval.f_evaluation_level_id != 156 ", nativeQuery = true)
     List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(String evaluatorNationalCode, Long evaluatorTypeId);
 
-    @Query(value = "SELECT eval.*  " +
-            "FROM tbl_EVALUATION eval  " +
-            "         INNER JOIN TBL_CLASS_STUDENT cs ON eval.F_EVALUATOR_ID = cs.ID  " +
-            "         INNER JOIN TBL_STUDENT student ON cs.STUDENT_ID = student.ID  " +
-            "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID  " +
-            "WHERE student.NATIONAL_CODE = ?1  " +
-            "  AND eval.F_EVALUATOR_TYPE_ID = ?2  " +
-            "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
-            "And cs.evaluation_status_reaction = 1 AND eval.f_evaluation_level_id != 156" +
-            "", nativeQuery = true)
+    @Query(value = """
+SELECT
+    eval.*
+FROM
+         tbl_evaluation eval
+    INNER JOIN tbl_class_student cs ON eval.f_evaluator_id = cs.id
+    INNER JOIN tbl_student       student ON cs.student_id = student.id
+    INNER JOIN tbl_class         class ON eval.f_class_id = class.id
+    INNER JOIN tbl_parameter_value ON cs.scores_state_id = tbl_parameter_value.id
+WHERE
+        student.national_code = ?1\s
+    AND eval.f_evaluator_type_id = ?2
+    AND class.student_online_eval_status = 1
+    AND cs.evaluation_status_reaction = 1
+    AND eval.f_evaluation_level_id != 156
+    AND eval.f_evaluation_level_id != 757
+    AND tbl_parameter_value.c_code NOT IN ( 'DeleteStudentCauseOfPermittedAbcense', 'StudentCancellation', 'DeleteStudentCauseOfAffairRequest',
+    'DeleteStudentCauseOfAbcense', 'ClassDelete' )
+""", nativeQuery = true)
     List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList( String evaluatorNationalCode, Long evaluatorTypeId);
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 
 
-    @Query(value = "SELECt\n" +
-            "             *\n" +
-            "         \n" +
-            "            FROM\n" +
-            "                     tbl_evaluation\n" +
-            "            WHERE\n" +
-            "                 tbl_evaluation.b_status = 0\n" +
-            "                 and\n" +
-            "                  tbl_evaluation.f_evaluation_level_id=156\n" +
-            "                  and \n" +
-            "                  b_behavioral_to_online_status = 1 ", nativeQuery = true)
-    List<Evaluation> getBehavioralEvaluations();
+    @Query(value = """
+       SELECT
+        *
+       FROM
+           tbl_evaluation
+           LEFT JOIN tbl_teacher ON tbl_evaluation.f_evaluator_id = tbl_teacher.id
+           LEFT JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id
+           LEFT JOIN view_active_personnel ON tbl_evaluation.f_evaluator_id = view_active_personnel.id
+           INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+       WHERE
+               tbl_evaluation.b_status = 0
+           AND tbl_evaluation.f_evaluation_level_id = :levelId
+           AND (
+               CASE
+                   WHEN tbl_evaluation.f_evaluator_type_id = 187 THEN
+                       tbl_teacher.c_teacher_code
+                   WHEN tbl_evaluation.f_evaluator_type_id = 188 THEN
+                       tbl_student.national_code
+                   ELSE
+                       view_active_personnel.national_code
+               END
+           ) = :nationalCode
+           and
+           b_behavioral_to_online_status = 1
+           """, nativeQuery = true)
+    List<Evaluation> getBehavioralEvaluations(String nationalCode,Long levelId);
 
-    @Query(value = "SELECT\n" +
-            "    *\n" +
-            "\n" +
-            "FROM\n" +
-            "         tbl_evaluation\n" +
-            "WHERE\n" +
-            "       tbl_evaluation.b_status = 0\n" +
-            "       and\n" +
-            "       tbl_evaluation.f_evaluation_level_id=757", nativeQuery = true)
-    List<Evaluation> getExecutionEvaluations();
+
 
     @Query(value = """
             SELECT TCLASS.C_CODE            AS class_code,

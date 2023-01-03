@@ -386,7 +386,7 @@ public class EvaluationService implements IEvaluationService {
 
     private Set<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
         Set<Evaluation> finalList = new HashSet<>(list);
-        List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations();
+        List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations(evaluatorNationalCode,156L);
         for (Evaluation evaluation : evaluationList){
             if (evaluation.getEvaluatorTypeId() == 187L) {
                 Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
@@ -407,13 +407,8 @@ public class EvaluationService implements IEvaluationService {
 
     private List<Evaluation> getExecutionEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
         Set<Evaluation> finalList = new HashSet<>(list);
-        List<Evaluation> evaluationList = evaluationDAO.getExecutionEvaluations();
+        List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations(evaluatorNationalCode,757L);
         for (Evaluation evaluation : evaluationList){
-//            if (evaluation.getEvaluatorTypeId() == 187L) {
-//                Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
-//                if (teacher.isPresent() && teacher.get().getTeacherCode() != null && teacher.get().getTeacherCode().equals(evaluatorNationalCode))
-//                    finalList.add(evaluation);
-//            } else
                 if (evaluation.getEvaluatorTypeId() == 188L ) {
                 Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
                 if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode()!=null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
