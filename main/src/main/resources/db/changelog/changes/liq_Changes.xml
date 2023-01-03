@@ -8536,6 +8536,195 @@ DECLARE
     </changeSet>
 
 
+    <changeSet author="kasehpour_t" id="1672728249-01">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code,C_TYPE,C_DESCRIPTION)
+            VALUES (l_parameter_id,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'روش آزمون',
+                    'testMethod','NULL',' برای تعیین روش آزمون در ایجاد دوره');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             C_DESCRIPTION,
+                                             C_TYPE,
+                                             C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'عملی کارگاهی',
+                    'practicalWorkshop',
+                    NULL,
+                    NULL,
+                    NULL);
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             C_DESCRIPTION,
+                                             C_TYPE,
+                                             C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'تئوری',
+                    'theory',
+                    NULL,
+                    NULL,
+                    NULL);
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             C_DESCRIPTION,
+                                             C_TYPE,
+                                             C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'کتبی',
+                    'written',
+                    NULL,
+                    NULL,
+                    NULL);
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             C_DESCRIPTION,
+                                             C_TYPE,
+                                             C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'شفاهی',
+                    'oral',
+                    NULL,
+                    NULL,
+                    NULL);
+            END;
+             BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             C_DESCRIPTION,
+                                             C_TYPE,
+                                             C_VALUE)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'kasehpour_t',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'تستی',
+                    'aTest',
+                    NULL,
+                    NULL,
+                    NULL);
+            END;
+            END;
+
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 
