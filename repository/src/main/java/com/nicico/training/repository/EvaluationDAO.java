@@ -129,7 +129,7 @@ WHERE
          INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
      WHERE
              tbl_evaluation.b_status = 0
-         AND tbl_evaluation.f_evaluation_level_id = :levelid
+         AND tbl_evaluation.f_evaluation_level_id = :levelId
          AND (
              CASE
                  WHEN tbl_evaluation.f_evaluator_type_id = 187 THEN
@@ -139,7 +139,7 @@ WHERE
                  ELSE
                      view_active_personnel.national_code
              END
-         ) = :nationalcode
+         ) = :nationalCode
          and
          tbl_class.student_online_eval_execution_status = 1
            """, nativeQuery = true)
