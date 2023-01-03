@@ -407,7 +407,7 @@ public class EvaluationService implements IEvaluationService {
 
     private List<Evaluation> getExecutionEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
         Set<Evaluation> finalList = new HashSet<>(list);
-        List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations(evaluatorNationalCode,757L);
+        List<Evaluation> evaluationList = evaluationDAO.getExecutionEvaluations(evaluatorNationalCode,757L);
         for (Evaluation evaluation : evaluationList){
                 if (evaluation.getEvaluatorTypeId() == 188L ) {
                 Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
