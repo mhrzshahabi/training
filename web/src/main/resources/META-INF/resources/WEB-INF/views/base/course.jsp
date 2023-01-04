@@ -32,7 +32,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/837"
+        fetchDataURL: parameterValueUrl + "/listByCode/testMethod"
     });
     var RestDataSource_category = isc.TrDS.create({
         ID: "categoryDS",

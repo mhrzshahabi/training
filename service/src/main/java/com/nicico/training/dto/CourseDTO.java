@@ -55,6 +55,7 @@ public class CourseDTO implements Serializable {
     @NotEmpty
     private String scoringMethod;
     private String acceptancelimit;
+    private Long testMethodId;
     private Integer startEvaluation;
 
     @Getter
