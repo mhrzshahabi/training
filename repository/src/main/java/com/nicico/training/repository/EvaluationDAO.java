@@ -118,7 +118,7 @@ WHERE
 
 
     @Query(value = """
-     SELECT
+  SELECT
          *
      FROM
          tbl_evaluation
@@ -126,7 +126,9 @@ WHERE
          LEFT JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id
          LEFT JOIN view_active_personnel ON tbl_evaluation.f_evaluator_id = view_active_personnel.id
          INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
-         INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+         LEFT JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+             INNER JOIN tbl_parameter_value ON tbl_class_student.scores_state_id = tbl_parameter_value.id
+
      WHERE
              tbl_evaluation.b_status = 0
          AND tbl_evaluation.f_evaluation_level_id = :levelId
@@ -142,6 +144,8 @@ WHERE
          ) = :nationalCode
          and
          tbl_class.student_online_eval_execution_status = 1
+          AND tbl_parameter_value.c_code NOT IN ( 'DeleteStudentCauseOfPermittedAbcense', 'StudentCancellation', 'DeleteStudentCauseOfAffairRequest',
+    'DeleteStudentCauseOfAbcense', 'ClassDelete' )
            """, nativeQuery = true)
     List<Evaluation> getExecutionEvaluations(String nationalCode,Long levelId);
 
