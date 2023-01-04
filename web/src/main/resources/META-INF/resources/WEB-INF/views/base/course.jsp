@@ -1694,8 +1694,6 @@
                 title: "روش آزمون",
                 filterOperator: "iContains",
                 canEdit: true,
-                // canSort:false,
-                // type: "SelectItem",
                 valueField: "id",
                 displayField: "title",
                 width: "*",
@@ -1821,7 +1819,7 @@
                 data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
                 data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
                 data.testMethodId = testMethod_value;
-  debugger
+
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data), function (resp) {
                     wait.close();
@@ -3141,28 +3139,5 @@
             labelSkill.redraw();
         }
     }
-
-<%--    function Edit_Cell_TestMethod_Update(resp) {--%>
-
-<%--        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-<%--            ListGrid_Course.endEditing();--%>
-<%--            ListGrid_Course.refreshFields()--%>
-<%--            ListGrid_Course.dataChanged()--%>
-<%--        } else {--%>
-<%--            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");--%>
-<%--            setTimeout(function () {--%>
-<%--                ListGrid_Course.fetchData()--%>
-<%--                ListGrid_Course.invalidateCache()--%>
-<%--                scores_wait.close()--%>
-<%--            },3000);--%>
-<%--            return;--%>
-<%--        }--%>
-<%--    }--%>
-<%--    function ListGrid_Cell_TestMethod_Update(record, newValue) {--%>
-<%--        record.testMethodId = newValue;--%>
-<%--        isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_TestMethod_Update(rpcResponse)"));--%>
-
-<%--    }--%>
-
 
     // </script>
