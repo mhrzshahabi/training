@@ -23,7 +23,7 @@
     var isFileAttached = false;
     var editTeacherMode = false;
     let oLoadAttachments_Teacher = null;
-    var vm = isc.ValuesManager.create({});
+    var vmTeacher = isc.ValuesManager.create({});
     let departmentCriteriaTeacher = [];
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
@@ -1115,8 +1115,8 @@
         code='msg.national.code.validation'/>", true);
             return;
         }
-        vm.validate();
-        if (vm.hasErrors()) {
+        vmTeacher.validate();
+        if (vmTeacher.hasErrors()) {
             return;
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
@@ -1132,7 +1132,7 @@
                 DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
         }
 
-        var data = vm.getValues();
+        var data = vmTeacher.getValues();
         var teacherSaveUrl = teacherUrl;
         teacherWait = createDialog("wait");
         if (teacherMethod.localeCompare("PUT") === 0) {
@@ -1156,8 +1156,8 @@
         code='msg.national.code.validation'/>", true);
             return;
         }
-        vm.validate();
-        if (vm.hasErrors()) {
+        vmTeacher.validate();
+        if (vmTeacher.hasErrors()) {
             return;
         }
         var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
@@ -1173,7 +1173,7 @@
                 DynamicForm_AccountInfo_JspTeacher.getField("personality.accountInfo.id").setValue(selected_record.personality.accountInfo.id);
         }
 
-        var data = vm.getValues();
+        var data = vmTeacher.getValues();
         var teacherSaveUrl = teacherUrl;
 
         if (teacherMethod.localeCompare("PUT") === 0) {
@@ -1219,8 +1219,8 @@
         showAttachViewLoader.setView();
         showAttachViewLoader.show();
         showAttach(selected_record.personalityId);
-        vm.clearValues();
-        vm.clearErrors(true);
+        vmTeacher.clearValues();
+        vmTeacher.clearErrors(true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
@@ -1235,7 +1235,7 @@
         clonedRecord.categories = null;
         clonedRecord.subCategories = null;
 
-        vm.editRecord(clonedRecord);
+        vmTeacher.editRecord(clonedRecord);
 
         var roleIds = selected_record.roles;
         DynamicForm_BasicInfo_JspTeacher.getField("role").setValue(roleIds);
@@ -1401,9 +1401,9 @@
     function ListGrid_teacher_add() {
         selected_record = null;
         ListGrid_Teacher_JspTeacher.invalidateCache();
-        vm.clearValues();
+        vmTeacher.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValues();
-        vm.clearErrors(true);
+        vmTeacher.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
@@ -1420,7 +1420,7 @@
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.stateId").enable();
 
         teacherMethod = "POST";
-        // vm.clearValues();
+        // vmTeacher.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
@@ -1554,7 +1554,7 @@
         teacherWait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             responseID = JSON.parse(resp.data).id;
-            vm.setValue("id", responseID);
+            vmTeacher.setValue("id", responseID);
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>");
             addAttach(JSON.parse(resp.data).personality.id);
             selectedRecordID = responseID;
@@ -1639,7 +1639,7 @@
         var personality = "";
         isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,(resp) => {
                 if (resp !== null && resp !== undefined && resp.data !== "") {
-                    vm.clearValues();
+                    vmTeacher.clearValues();
                     DynamicForm_BasicInfo_JspTeacher.clearValues();
                     DynamicForm_BasicInfo_JspTeacher.invalidateCache();
                     personality = JSON.parse(resp.data);
@@ -1803,7 +1803,7 @@
 
     async function personnel_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
-            vm.clearValues();
+            vmTeacher.clearValues();
             var personnel = JSON.parse(resp.data);
             if (personnel.firstName != undefined && personnel.firstName != null)
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);

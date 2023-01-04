@@ -102,7 +102,7 @@
         titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
-        valuesManager: "vm",
+        valuesManager: "vmTeacher",
         styleName: "teacher-form",
         numCols: 6,
         margin: 10,
