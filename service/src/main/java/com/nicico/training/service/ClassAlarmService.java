@@ -1963,7 +1963,7 @@ public class ClassAlarmService implements IClassAlarmService {
 
             Optional<Tclass> tClassById = tclassDAO.findById(class_id);
 
-            if (tClassById.get().getEvaluation().equals("2") && alarmForQuestion.isEmpty()) {
+            if (tClassById.get().getCourse().getEvaluation().equals("2") && alarmForQuestion.isEmpty()) {
 
                 List<TestQuestion> testQuestionList = testQuestionDAO.findByTclassId(class_id);
 
