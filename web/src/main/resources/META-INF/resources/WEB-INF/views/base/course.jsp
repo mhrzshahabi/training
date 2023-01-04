@@ -25,7 +25,6 @@
     var x;
     var ChangeEtechnicalType = false;
     var course_url = courseUrl;
-    let testMethod_change = false;
     let testMethod_value = null;
     let RestDataSource_testMethod_JSPCourse = isc.TrDS.create({
         fields: [
@@ -1693,6 +1692,7 @@
                 name: "testMethodId",
                 title: "روش آزمون",
                 filterOperator: "iContains",
+                required: true,
                 canEdit: true,
                 valueField: "id",
                 displayField: "title",
@@ -1703,9 +1703,6 @@
                         showFilterEditor: false,
                         autoFitWidthApproach: "both"
                     }
-                },
-                change: function (form, item, value) {
-                    testMethod_change = true;
                 },
                 changed: function (form, item, value) {
                     testMethod_value = value;
