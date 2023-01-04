@@ -37,4 +37,5 @@ public class CourseDto {
     private String minTeacherDegree;
     private Long minTeacherExpYears;
     private Float minTeacherEvalScore;
+    private Long testMethodId;
 }
