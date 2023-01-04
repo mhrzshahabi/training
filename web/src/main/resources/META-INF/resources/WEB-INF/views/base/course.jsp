@@ -25,6 +25,16 @@
     var x;
     var ChangeEtechnicalType = false;
     var course_url = courseUrl;
+    let testMethod_change = false;
+    let testMethod_value = null;
+    let RestDataSource_testMethod_JSPCourse = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/837"
+    });
     var RestDataSource_category = isc.TrDS.create({
         ID: "categoryDS",
         fields: [
@@ -1680,6 +1690,31 @@
                 },
             },
             {
+                name: "testMethodId",
+                title: "روش آزمون",
+                filterOperator: "iContains",
+                canEdit: true,
+                // canSort:false,
+                // type: "SelectItem",
+                valueField: "id",
+                displayField: "title",
+                width: "*",
+                optionDataSource: RestDataSource_testMethod_JSPCourse,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    }
+                },
+                change: function (form, item, value) {
+                    testMethod_change = true;
+                },
+                changed: function (form, item, value) {
+                    testMethod_value = value;
+                }
+
+            },
+            {
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
                 colSpan: 3,
@@ -1785,10 +1820,13 @@
                 data.theoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
                 data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
                 data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
+                data.testMethodId = testMethod_value;
+  debugger
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data), function (resp) {
                     wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        testMethod_value = null;
                         Window_course.close();
                         TabSet_Goal_JspCourse.enable();
                         simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
@@ -1839,11 +1877,13 @@
                 sendData.category = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord();
                 sendData.subCategory = DynamicForm_course_GroupTab.getItem("subCategory.id").getSelectedRecord();
                 sendData.duration = parseInt(DynamicForm_course_GroupTab.getValue("duration"));
+                sendData.testMethodId = testMethod_value;
 
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(sendData), function (resp) {
                     wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        testMethod_value = null;
                         let response = JSON.parse(resp.httpResponseText);
                         if(response.status != 200){
                             createDialog("warning", response.message);
@@ -1861,6 +1901,8 @@
             } else {
                 simpleDialog("<spring:message code="edit"/>", "<spring:message code="course_noEdit"/>", 3000, "say");
             }
+
+            testMethod_value = null;
 //-------------------------------------------
         },
     });
@@ -3100,6 +3142,27 @@
         }
     }
 
+<%--    function Edit_Cell_TestMethod_Update(resp) {--%>
+
+<%--        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+<%--            ListGrid_Course.endEditing();--%>
+<%--            ListGrid_Course.refreshFields()--%>
+<%--            ListGrid_Course.dataChanged()--%>
+<%--        } else {--%>
+<%--            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");--%>
+<%--            setTimeout(function () {--%>
+<%--                ListGrid_Course.fetchData()--%>
+<%--                ListGrid_Course.invalidateCache()--%>
+<%--                scores_wait.close()--%>
+<%--            },3000);--%>
+<%--            return;--%>
+<%--        }--%>
+<%--    }--%>
+<%--    function ListGrid_Cell_TestMethod_Update(record, newValue) {--%>
+<%--        record.testMethodId = newValue;--%>
+<%--        isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_TestMethod_Update(rpcResponse)"));--%>
+
+<%--    }--%>
 
 
     // </script>

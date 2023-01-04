@@ -1422,5 +1422,8 @@
         <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_personnel_in_group" constraintName="FK_personnel_id_in_tbl_personnel_in_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
     </changeSet>
 
+    <changeSet author="kasehpour_t" id="1672735669-01">
+        <addForeignKeyConstraint baseColumnNames="test_method_id" baseTableName="tbl_course" constraintName="FK_TEST_METHOD_ID" deferrable="false" initiallyDeferred="false" referencedColumnNames="id"  referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

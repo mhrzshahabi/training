@@ -159,6 +159,11 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             response.setStatus(409);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+        CourseUpdateResponse update = iCourseService.update(beanMapper.updateCourse(request,
+                iCourseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
+                .collect(Collectors.toList()));
+        System.out.println(update);
+
         return new ResponseEntity<>(iCourseService.update(beanMapper.updateCourse(request,
                 iCourseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
                 .collect(Collectors.toList())), HttpStatus.OK);

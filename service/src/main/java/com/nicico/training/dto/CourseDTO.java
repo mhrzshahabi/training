@@ -186,6 +186,7 @@ public class CourseDTO implements Serializable {
         private SubcategoryDTO.Info subCategory;
         @NotEmpty
         private List<Long> mainObjectiveIds;
+        private Long testMethodId;
     }
 
     @Getter
