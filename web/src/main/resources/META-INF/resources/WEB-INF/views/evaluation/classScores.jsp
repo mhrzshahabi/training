@@ -112,7 +112,9 @@
             },
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false},
-            {name: "evaluationStatusReaction", title: "وضعیت ارزیابی واکنشی"}
+            {name: "evaluationStatusReaction", title: "وضعیت ارزیابی واکنشی"},
+            {name: "isScoreEditable"}
+
         ],
         transformResponse: function (dsResponse, dsRequest, data) {
             let records = dsResponse.data;
@@ -696,7 +698,8 @@
                     "2": "تکمیل شده و کامل",
                     "3": "تکمیل شده و ناقص"
                 }
-            }
+            },
+            {name: "isScoreEditable", title: "isScoreEditable", hidden: true}
         ],
         sortChanged: function (sortField) {
             let arr = ["valence", "failureReasonId", "scoresStateId"];
@@ -746,32 +749,9 @@
             }
 
             if (fieldName === "score") {
-                let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
-                let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
-                let checkBasisDate = classEndDate >= classBasisDate_Eval;
-                if (isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
+                let isScoreEditable = this.getSelectedRecord().isScoreEditable;
 
-                    if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
-                        return false;
-                    } else {
-                        if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
-                            return true;
-                        }
-                        if (failureReason_value_Eval != null && record.scoresStateId == 403) {
-                            return true;
-                        }
-                        if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
-                            return false;
-                        }
-                        if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
-                            return true;
-                        }
-                        let arr = [448, 405, 449, 406, 404, 401, 450];
-                        return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
-                    }
-
-                } else {
-
+                if (isScoreEditable) {
                     if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
                         return true;
                     }
@@ -787,6 +767,50 @@
                     let arr = [448, 405, 449, 406, 404, 401, 450];
                     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
                 }
+
+                return false;
+
+                // let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                // let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
+                // let checkBasisDate = classEndDate >= classBasisDate_Eval;
+                // if (isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
+                //
+                //     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
+                //         return false;
+                //     } else {
+                //         if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
+                //             return true;
+                //         }
+                //         if (failureReason_value_Eval != null && record.scoresStateId == 403) {
+                //             return true;
+                //         }
+                //         if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                //             return false;
+                //         }
+                //         if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
+                //             return true;
+                //         }
+                //         let arr = [448, 405, 449, 406, 404, 401, 450];
+                //         return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+                //     }
+                //
+                // } else {
+                //
+                //     if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
+                //         return true;
+                //     }
+                //     if (failureReason_value_Eval != null && record.scoresStateId == 403) {
+                //         return true;
+                //     }
+                //     if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                //         return false;
+                //     }
+                //     if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
+                //         return true;
+                //     }
+                //     let arr = [448, 405, 449, 406, 404, 401, 450];
+                //     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+                // }
             }
 
             if (fieldName === "failureReasonId") {

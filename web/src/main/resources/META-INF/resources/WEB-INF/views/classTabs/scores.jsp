@@ -781,33 +781,9 @@
             }
 
             if (fieldName === "score") {
-                let classEndDate = classRecord.endDate;
-                let isNotTeachingMethodRemotely = classRecord.teachingMethod.code !== 'intraOrganizationalRemotelyClass';
-                let checkBasisDate = classEndDate >= classBasisDate;
-                if (isScoreDependent && checkBasisDate && isNotTeachingMethodRemotely) {
+                let isScoreEditable = this.getSelectedRecord().isScoreEditable;
 
-                    if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
-                        return false;
-                    } else {
-
-                        if (scoresState_value === 403 || scoresState_value === 400) {
-                            return true
-                        }
-                        if (failureReason_value != null && record.scoresStateId == 403) {
-                            return true
-                        }
-                        if (classRecord.scoringMethod == "1" || classRecord.scoringMethod == "4") {
-                            return false
-                        }
-                        if((scoresState_value === 403 || scoresState_value === 400) && (failureReason_value != null)) {
-                            return true
-                        }
-                        let arr = [448, 405, 449, 406, 404, 401, 450]
-                        return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
-                    }
-
-                } else {
-
+                if (isScoreEditable) {
                     if (scoresState_value === 403 || scoresState_value === 400) {
                         return true
                     }
@@ -823,6 +799,50 @@
                     let arr = [448, 405, 449, 406, 404, 401, 450]
                     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
                 }
+
+                return false;
+                // let classEndDate = classRecord.endDate;
+                // let isNotTeachingMethodRemotely = classRecord.teachingMethod.code !== 'intraOrganizationalRemotelyClass';
+                // let checkBasisDate = classEndDate >= classBasisDate;
+                // if (isScoreDependent && checkBasisDate && isNotTeachingMethodRemotely) {
+                //
+                //     if (record.evaluationStatusReaction === undefined || record.evaluationStatusReaction === null || record.evaluationStatusReaction===1 || record.evaluationStatusReaction===0) {
+                //         return false;
+                //     } else {
+                //
+                //         if (scoresState_value === 403 || scoresState_value === 400) {
+                //             return true
+                //         }
+                //         if (failureReason_value != null && record.scoresStateId == 403) {
+                //             return true
+                //         }
+                //         if (classRecord.scoringMethod == "1" || classRecord.scoringMethod == "4") {
+                //             return false
+                //         }
+                //         if((scoresState_value === 403 || scoresState_value === 400) && (failureReason_value != null)) {
+                //             return true
+                //         }
+                //         let arr = [448, 405, 449, 406, 404, 401, 450]
+                //         return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
+                //     }
+                //
+                // } else {
+                //
+                //     if (scoresState_value === 403 || scoresState_value === 400) {
+                //         return true
+                //     }
+                //     if (failureReason_value != null && record.scoresStateId == 403) {
+                //         return true
+                //     }
+                //     if (classRecord.scoringMethod == "1" || classRecord.scoringMethod == "4") {
+                //         return false
+                //     }
+                //     if((scoresState_value === 403 || scoresState_value === 400) && (failureReason_value != null)) {
+                //         return true
+                //     }
+                //     let arr = [448, 405, 449, 406, 404, 401, 450]
+                //     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
+                // }
 
             }
 
@@ -1178,3 +1198,4 @@
         }
 
     }
+// </script>

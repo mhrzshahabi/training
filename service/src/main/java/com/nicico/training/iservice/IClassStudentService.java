@@ -76,4 +76,6 @@ public interface IClassStudentService {
     ClassStudent save(ClassStudent classStudent);
 
     BaseResponse syncPersonnelData(Long id);
+
+    Boolean isScoreEditable(Long classStudentId);
 }
