@@ -191,7 +191,13 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/scores-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ScoresInfo>> scoresList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ScoresInfo.class));
+        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> {
+            ClassStudentDTO.ScoresInfo scoresInfo = modelMapper.map(c, ClassStudentDTO.ScoresInfo.class);
+            Long classStudentId = scoresInfo.getId();
+            Boolean isScoreEditable = iClassStudentService.isScoreEditable(classStudentId);
+            scoresInfo.setIsScoreEditable(isScoreEditable);
+            return scoresInfo;
+        });
     }
 
     @Loggable

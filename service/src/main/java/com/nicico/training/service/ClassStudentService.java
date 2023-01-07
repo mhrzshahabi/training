@@ -49,6 +49,7 @@ public class ClassStudentService implements IClassStudentService {
     private final ParameterValueService parameterValueService;
     private final PersonnelDAO personnelDAO;
     private final ISynonymPersonnelService synonymPersonnelService;
+    private final IParameterService parameterService;
 
     @Transactional(readOnly = true)
     @Override
@@ -916,4 +917,35 @@ public class ClassStudentService implements IClassStudentService {
 
         return dto;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Boolean isScoreEditable(Long classStudentId) {
+        ClassStudent classStudent = getClassStudent(classStudentId);
+        Tclass tclass = classStudent.getTclass();
+        String endDate = tclass.getEndDate();
+        Long classTeachingMethodId = tclass.getTeachingMethodId();
+        Integer evaluationStatusReaction = classStudent.getEvaluationStatusReaction();
+
+        String teachingMethodCode = parameterValueService.get(classTeachingMethodId).getCode();
+        String studentPresenceType = parameterValueService.get(classStudent.getPresenceTypeId()).getCode();
+
+        boolean isNonAttendanceClass = teachingMethodCode.equals("intraOrganizationalRemotelyClass"); // کلاس غیر حضوری
+        boolean isSelfTaughtStudent = studentPresenceType.equals("kh"); // فراگیر خود آموخته
+        boolean isScoreDependent = (boolean) tclassService.getScoreDependency().get("isScoreDependent"); // ثبت نمره وابسته به ارزیابی است؟
+        boolean checkClassBasisDate = checkClassBasisDate(endDate, parameterService.getByCode("ClassConfig")); // تاریخ مبنای کلاس
+        boolean isEvaluationStatusReactionNotComplete = evaluationStatusReaction == null || evaluationStatusReaction == 0 || evaluationStatusReaction == 1; // وضعیت تکمیل ارزیابی واکنشی
+
+        if (isNonAttendanceClass || isSelfTaughtStudent) {
+            return true;
+        }
+
+        if (checkClassBasisDate && isScoreDependent) {
+            return !isEvaluationStatusReactionNotComplete;
+        } else {
+            return true;
+        }
+
+    }
+
 }
