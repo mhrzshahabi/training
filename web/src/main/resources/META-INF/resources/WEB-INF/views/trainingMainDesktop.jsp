@@ -2842,6 +2842,13 @@
                                 }
 
                             },
+                            {
+                                title: "<spring:message code="evaluation.index.by.area.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluation-indexes-by-area-report"/>");
+                                }
+
+                            },
 
 
                         ]
