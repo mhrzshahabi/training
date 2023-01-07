@@ -924,7 +924,7 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public boolean IsStudentAttendanceAllowable(Long classStudentId) {
         try {
-            ClassStudent classStudentById = classStudentDAO.getClassStudentById(classStudentId);
+            ClassStudent classStudentById = getClassStudent(classStudentId);
             List<ClassSession> sessions = classSessionDAO.findByClassId(classStudentById.getTclassId());
             List<Attendance> attendances = attendanceDAO.findBySessionInAndStudentId(sessions, classStudentById.getStudentId());
             ParameterValueDTO.Info AllowedAbsencePercentage = iParameterValueService.getInfoByCode("evaluationAbsencePercentage");

@@ -268,6 +268,7 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
+            {name: "classAttendanceStatus", title: "وضعیت حضور در کلاس",valueMap: {"true":"حاضر","false":"غایب"}, align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             // {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",

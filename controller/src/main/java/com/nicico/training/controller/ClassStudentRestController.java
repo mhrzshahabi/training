@@ -134,6 +134,7 @@ public class ClassStudentRestController {
         Map<Long, ContactInfo> contactInfoMap = contactInfoService.fetchAndUpdateLastHrMobile(studentIds, "Student", iscRq.getHeader("Authorization"));
         for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
             studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfoMap.get(studentInfo.getStudentId()), ContactInfoDTO.Info.class));
+            studentInfo.setClassAttendanceStatus(iClassStudentService.IsStudentAttendanceAllowable(studentInfo.getId()));
         }
 
         if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
