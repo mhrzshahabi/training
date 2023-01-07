@@ -1967,7 +1967,7 @@ public class ClassAlarmService implements IClassAlarmService {
 
                 List<TestQuestion> testQuestionList = testQuestionDAO.findByTclassId(class_id);
 
-                if (testQuestionList.stream().anyMatch(t -> t.getTestQuestionType().equals("FinalTest"))) {
+                if (testQuestionList.stream().noneMatch(t -> t.getTestQuestionType().equals("FinalTest"))) {
                     endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.<br />");
                 }
 
