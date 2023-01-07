@@ -7,6 +7,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
+import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import response.tclass.dto.ElsClassV2Dto;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.utility.persianDate.MyUtils.*;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
@@ -50,6 +52,8 @@ public class ClassStudentService implements IClassStudentService {
     private final PersonnelDAO personnelDAO;
     private final ISynonymPersonnelService synonymPersonnelService;
     private final IParameterService parameterService;
+    private final ClassSessionDAO classSessionDAO;
+    private final IParameterValueService iParameterValueService;
 
     @Transactional(readOnly = true)
     @Override
@@ -948,4 +952,27 @@ public class ClassStudentService implements IClassStudentService {
 
     }
 
+
+    @Override
+    public boolean IsStudentAttendanceAllowable(Long classStudentId) {
+        try {
+            ClassStudent classStudentById = getClassStudent(classStudentId);
+            List<ClassSession> sessions = classSessionDAO.findByClassId(classStudentById.getTclassId());
+            List<Attendance> attendances = attendanceDAO.findBySessionInAndStudentId(sessions, classStudentById.getStudentId());
+            ParameterValueDTO.Info AllowedAbsencePercentage = iParameterValueService.getInfoByCode("evaluationAbsencePercentage");
+            List<Attendance> unjustifiedAbsence = attendances.stream().filter(a -> a.getState().equals("3")).collect(Collectors.toList());
+
+            if (!sessions.isEmpty()) {
+                int AbsencesCountPercentage = (100 * unjustifiedAbsence.size()) / sessions.size();
+                int allowedValue = Integer.parseInt(AllowedAbsencePercentage.getValue());
+
+                if (AbsencesCountPercentage >= allowedValue)
+                    return false;
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return true;
+    }
 }

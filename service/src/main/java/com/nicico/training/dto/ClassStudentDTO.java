@@ -25,6 +25,7 @@ public class ClassStudentDTO implements Serializable {
     private Long studentId;
     @ApiModelProperty(required = true)
     private Long tclassId;
+    private boolean classAttendanceStatus;
 
     @Getter
     @Setter

@@ -77,5 +77,7 @@ public interface IClassStudentService {
 
     BaseResponse syncPersonnelData(Long id);
 
+    boolean IsStudentAttendanceAllowable(Long classStudentId);
+
     Boolean isScoreEditable(Long classStudentId);
 }
