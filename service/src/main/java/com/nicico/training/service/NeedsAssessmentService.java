@@ -18,9 +18,11 @@ import com.nicico.training.repository.TrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,9 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     private NeedsAssessmentTempService needsAssessmentTempService;
     @Autowired
     private NeedAssessmentBeanMapper needAssessmentBeanMapper;
+
+    @Autowired
+    protected EntityManager entityManager;
 
     @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
@@ -247,5 +252,43 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         if (needsAssessments == null || needsAssessments.isEmpty())
             return true;
         return false;
+    }
+
+
+    @Scheduled(cron = "0 30 17 1/1 * ?")
+    @Transactional
+    public void changeClassStatus() {
+        try {
+            String query = "   BEGIN\n" +
+                    "            MERGE\n" +
+                    "                INTO    tbl_needs_assessment trg\n" +
+                    "                    USING   (\n" +
+                    "                        SELECT\n" +
+                    "\n" +
+                    "                            tbl_needs_assessment.id as rid ,\n" +
+                    "                            tbl_training_post.c_code AS postcode,\n" +
+                    "                            tbl_training_post.c_title_fa AS postName,\n" +
+                    "                            tbl_needs_assessment.c_object_code\n" +
+                    "\n" +
+                    "                        FROM\n" +
+                    "                            tbl_needs_assessment\n" +
+                    "                                INNER JOIN tbl_training_post ON tbl_needs_assessment.f_object = tbl_training_post.id\n" +
+                    "                        WHERE\n" +
+                    "                            tbl_needs_assessment.c_object_code != tbl_training_post.c_code\n" +
+                    "    AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
+                    "                    ) src\n" +
+                    "                    ON      (trg.id = src.rid)\n" +
+                    "                    WHEN MATCHED THEN UPDATE\n" +
+                    "                        SET trg.c_object_code = src.postcode,\n" +
+                    "                            trg.c_object_name = src.postName;\n" +
+                    "              END;";
+            entityManager.createNativeQuery(query).getResultList();
+
+        }catch (Exception e){
+
+        }
+
+
+
     }
 }

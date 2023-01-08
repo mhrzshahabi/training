@@ -24,9 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -34,6 +36,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp, Long, NeedsAssessmentDTO.Info, NeedsAssessmentDTO.Create, NeedsAssessmentDTO.Update, NeedsAssessmentDTO.Delete, NeedsAssessmentTempDAO> implements INeedsAssessmentTempService {
+
+
+    @Autowired
+    protected EntityManager entityManager;
+
 
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
@@ -460,5 +467,43 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             saveModifications(item.getObjectType(), item.getObjectId(), item.getCreatedBy());
         });
         dao.deleteAllByProcessInstanceId(processInstanceId);
+    }
+
+
+    @Scheduled(cron = "0 30 17 1/1 * ?")
+    @Transactional
+    public void changeClassStatus() {
+        try {
+            String query = " BEGIN\n" +
+                    "            MERGE\n" +
+                    "                INTO    tbl_needs_assessment_temp trg\n" +
+                    "                    USING   (\n" +
+                    "                        SELECT\n" +
+                    "\n" +
+                    "                            tbl_needs_assessment_temp.id as rid ,\n" +
+                    "                            tbl_training_post.c_code AS postcode,\n" +
+                    "                            tbl_training_post.c_title_fa AS postName,\n" +
+                    "                            tbl_needs_assessment_temp.c_object_code\n" +
+                    "\n" +
+                    "                        FROM\n" +
+                    "                            tbl_needs_assessment_temp\n" +
+                    "                                INNER JOIN tbl_training_post ON tbl_needs_assessment_temp.f_object = tbl_training_post.id\n" +
+                    "                        WHERE\n" +
+                    "                            tbl_needs_assessment_temp.c_object_code != tbl_training_post.c_code\n" +
+                    "    AND tbl_needs_assessment_temp.c_object_type = 'TrainingPost'\n" +
+                    "                    ) src\n" +
+                    "                    ON      (trg.id = src.rid)\n" +
+                    "                    WHEN MATCHED THEN UPDATE\n" +
+                    "                        SET trg.c_object_code = src.postcode,\n" +
+                    "                            trg.c_object_name = src.postName;\n" +
+                    "            END;";
+            entityManager.createNativeQuery(query).getResultList();
+
+        }catch (Exception e){
+
+        }
+
+
+
     }
 }
