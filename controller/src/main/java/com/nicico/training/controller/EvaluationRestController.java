@@ -372,7 +372,7 @@ public class EvaluationRestController {
             iTclassService.changeOnlineEvalTeacherStatus(Long.parseLong(req.get("classId").toString()), false);
         }
         if (req.get("classId") != null && req.get("questionnaireTypeId") != null && req.get("questionnaireTypeId").toString().equals("139")) {
-            iTclassService.changeOnlineEvalStudentStatus(Long.parseLong(req.get("classId").toString()), false);
+//            iTclassService.changeOnlineEvalStudentStatus(Long.parseLong(req.get("classId").toString()), false);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

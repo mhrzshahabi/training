@@ -269,7 +269,7 @@
                 filterOperator: "equals"
             },
             {name: "classAttendanceStatus", title: "وضعیت حضور در کلاس",valueMap: {"true":"حاضر","false":"غایب"}, align: "center", canSort: false, canFilter: false, autoFithWidth: true},
-            // {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+            {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",
                 title: " ",
@@ -278,7 +278,7 @@
                 canFilter: false,
                 autoFithWidth: true
             },
-            {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true, hidden: true},
+            {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
             {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
         <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
@@ -410,11 +410,11 @@
                                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                     classRecord_RE.id,"GET", null, null));
                                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                                if (classRecord_RE.classStudentOnlineEvalStatus) {
-                                                    ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
-                                                    classRecord_RE.classStudentOnlineEvalStatus= false;
-                                                    ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
-                                                }
+                                                // if (classRecord_RE.classStudentOnlineEvalStatus) {
+                                                //     ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                                                //     classRecord_RE.classStudentOnlineEvalStatus= false;
+                                                //     ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
+                                                // }
                                                 setTimeout(() => {
                                                     msg.close();
                                                 }, 3000);
@@ -429,7 +429,7 @@
                         }
                     }
                 });
-                // recordCanvas.addMember(removeIcon);
+                recordCanvas.addMember(removeIcon);
                 return recordCanvas;
                 </sec:authorize>
             } else if (fieldName == "printForm") {
@@ -3427,9 +3427,11 @@
         data.evaluationLevelId = evaluationLevel;
         data.evaluationFull = false;
         data.description = null;
+        wait.show();
 
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
                 if(check == true){}
                 else{
                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -3457,6 +3459,7 @@
                     ToolStrip_SendForms_RE.redraw();
                 }
             } else {
+                wait.close();
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));
