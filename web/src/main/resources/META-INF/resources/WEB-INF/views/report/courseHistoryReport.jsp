@@ -25,9 +25,7 @@
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
             {name: "evaluation"},
-            {name: "behavioralLevel"},
-            {name: "testMethodId"}
-        ],
+            {name: "behavioralLevel"}],
         fetchDataURL: courseUrl + "audit" + "/" + record.id,
     });
 
@@ -155,9 +153,6 @@
                     "2": "مصاحبه",
                     "3": "کار پروژه ای"
                 }
-            },{
-                name: "testMethodId",
-                title: "روش آزمون",
             }
         ]
     });
