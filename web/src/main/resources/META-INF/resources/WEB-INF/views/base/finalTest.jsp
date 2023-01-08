@@ -320,6 +320,7 @@
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
             {name: "course.theoryDuration"},
+            {name: "course.eTheoType"},
             {name: "scoringMethod"},
             {name: "evaluation"}
         ],
@@ -1553,6 +1554,13 @@
                         hidden: true
                     },
                     {
+                        name: "course.eTheoType",
+                        title: "eTheoType",
+                        align: "center",
+                        filterOperator: "iContains",
+                        hidden: true
+                    },
+                    {
                         name: "startDate",
                         title: "<spring:message code='start.date'/>",
                         align: "center",
@@ -1629,6 +1637,15 @@
 
                 changed: function (form, item, value) {
                     //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                },
+                change: function (form, item, value) {
+                    if (item.getSelectedRecord().course.etheoType.id == 1) { // Theory
+                        form.getItem("practicalScore").setValue(0);
+                        form.getItem("practicalScore").setDisabled(true);
+                    } else {
+                        form.getItem("practicalScore").setDisabled(false);
+                    }
+
                 }
             },
             {
