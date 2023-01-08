@@ -8535,17 +8535,6 @@ DECLARE
         </sql>
     </changeSet>
 
-    <changeSet author="kasehpour_t" id="1672735651-01">
-        <addColumn tableName="tbl_course">
-            <column name="test_method_id" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="kasehpour_t" id="1672735651-03">
-        <addColumn tableName="tbl_course_aud">
-            <column name="test_method_id" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
 
     <changeSet author="kasehpour_t" id="1672728249-01">
         <sql splitStatements="false" stripComments="false">

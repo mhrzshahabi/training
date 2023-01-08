@@ -34,5 +34,4 @@ public class CourseUpdateRequest implements Serializable {
     private Long minTeacherExpYears;
     private Float minTeacherEvalScore;
     private List<SkillDto> mainSkills;
-    private Long testMethodId;
 }

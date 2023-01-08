@@ -160,10 +160,4 @@ public class Course extends Auditable {
     @NotAudited
     private Boolean hasSkill;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_method_id", insertable = false, updatable = false)
-    private ParameterValue testMethod;
-
-    @Column(name = "test_method_id")
-    private Long testMethodId;
 }

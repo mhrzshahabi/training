@@ -1,15 +1,15 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.AuditCourseId;
-import com.nicico.training.model.enums.ELevelType;
-import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
-import com.nicico.training.model.enums.ETheoType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -86,7 +86,4 @@ public class CourseAudit implements Serializable {
 
     @Column(name = "e_deleted")
     private Long deleted;
-
-    @Column(name = "test_method_id")
-    private Long testMethodId;
 }

@@ -55,7 +55,6 @@ public class CourseDTO implements Serializable {
     @NotEmpty
     private String scoringMethod;
     private String acceptancelimit;
-    private Long testMethodId;
     private Integer startEvaluation;
 
     @Getter
@@ -189,7 +188,6 @@ public class CourseDTO implements Serializable {
         private SubcategoryDTO.Info subCategory;
         @NotEmpty
         private List<Long> mainObjectiveIds;
-        private Long testMethodId;
     }
 
     @Getter
