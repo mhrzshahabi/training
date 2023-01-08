@@ -946,7 +946,8 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                                  tbl_class.f_supervisor                                           AS supervisorId,\n" +
             "                                  tbl_class.f_planner                                              AS plannerId,\n" +
             "                                  concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME) AS supervisorNAME,\n" +
-            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME\n" +
+            "                                  concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)       AS plannerNAME,\n" +
+            "                                  tbl_course.E_THEO_TYPE as thoe\n" +
             "                  FROM tbl_class_student\n" +
             "                           INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
             "                           INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
@@ -1142,7 +1143,8 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                tbl_class.f_supervisor                                                                   AS supervisorId,\n" +
             "                tbl_class.f_planner                                                                      AS plannerId,\n" +
             "                concat(concat(supervisor.FIRST_NAME, ' '), supervisor.LAST_NAME)                         AS supervisorNAME,\n" +
-            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME\n" +
+            "                concat(concat(planner.FIRST_NAME, ' '), planner.LAST_NAME)                               AS plannerNAME,\n" +
+            "               tbl_course.E_THEO_TYPE as thoe\n" +
             "FROM tbl_class_student\n" +
             "         INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
             "         INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +

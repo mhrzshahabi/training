@@ -814,6 +814,7 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
             elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            elsClassDto.setCanEnterPractical(arr[20] == null ? null : getValueForEnterPractical(arr[20].toString()));
             result.add(elsClassDto);
         }
 
@@ -833,6 +834,10 @@ public class ClassStudentService implements IClassStudentService {
         dto.setData(result);
 
         return dto;
+    }
+
+    private Boolean getValueForEnterPractical(String toString) {
+        return true;
     }
 
     @Override
