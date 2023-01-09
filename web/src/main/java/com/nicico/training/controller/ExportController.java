@@ -1037,11 +1037,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[19];
-            String[] columns = new String[19];
+            String[] headers = new String[22];
+            String[] columns = new String[22];
 
 
-            for (int z = 0; z < 19; z++) {
+            for (int z = 0; z < 22; z++) {
 
                 switch (z) {
                     case 0: {
@@ -1138,6 +1138,21 @@ public class ExportController {
                     case 18: {
                         headers[z] = "درصد مشارکت فراگیران در ارزیابی";
                         columns[z] = "percent_reaction";
+                        break;
+                    }
+                    case 19: {
+                        headers[z] = "مدرس کلاس";
+                        columns[z] = "class_teacher";
+                        break;
+                    }
+                    case 20: {
+                        headers[z] = "امکانات و تجهیزات";
+                        columns[z] = "facilities_equipment";
+                        break;
+                    }
+                    case 21: {
+                        headers[z] = "محتوای کلاس";
+                        columns[z] = "class_content";
                         break;
                     }
                 }
@@ -1249,6 +1264,18 @@ public class ExportController {
                             break;
                         }  case "percent_reaction": {
                             row.createCell(i).setCellValue(map.getPercent_reaction());
+                            break;
+                        }
+                        case "class_teacher": {
+                            row.createCell(i).setCellValue(map.getClassTeacher());
+                            break;
+                        }
+                        case "facilities_equipment": {
+                            row.createCell(i).setCellValue(map.getFacilitiesEquipment());
+                            break;
+                        }
+                        case "class_content": {
+                            row.createCell(i).setCellValue(map.getClassContent());
                             break;
                         }
                     }

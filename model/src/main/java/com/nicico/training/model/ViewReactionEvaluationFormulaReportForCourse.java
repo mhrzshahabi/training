@@ -90,4 +90,13 @@ public class ViewReactionEvaluationFormulaReportForCourse implements Serializabl
 
     @Column(name = "percent_reaction")
     private String percent_reaction;
+
+    @Column(name = "class_teacher")
+    private String classTeacher;
+
+    @Column(name = "facilities_equipment")
+    private String facilitiesEquipment;
+
+    @Column(name = "class_content")
+    private String classContent;
 }
