@@ -5,7 +5,6 @@
 
 // <script>
 
-    let reportCriteria_EIBAR;
     let isCriteriaCategoriesChanged_EIBAR = false;
     let initialLayoutStyle_EIBAR = "vertical";
 
@@ -314,10 +313,12 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelOutput() {
-        if (ListGrid_Result_EIBAR.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_Result_EIBAR, viewCoursesEvaluationReportUrl + "/iscList", 0, null, '', "گزارش ارزیابی دوره ها", reportCriteria_EIBAR, null);
+        if (ListGrid_Result_EIBAR.getOriginalData().localData === undefined) {
+            createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
+        } else {
+            let url = evalAnswerUrl + "excel/evaluation-index-by-field";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Result_EIBAR, url, 0, null, '', "<spring:message code="evaluation.index.by.field.report"/>", ListGrid_Result_EIBAR.getCriteria(), null);
+        }
     }
 
 
