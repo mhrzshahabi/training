@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IExportToFileService;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
@@ -18,7 +15,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
+import java.awt.Color;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
@@ -124,7 +121,9 @@ public class ExportToFileService implements IExportToFileService {
                     /*if(tmpCell.matches(".*[ابپتثجچحخدذرزژصضسشطظکگفقعغونيي].*")){
                         tmpCell="\u200F" + tmpCell;
                     }*/
-                    //zaza excel
+
+                    //zaza
+                    cell.setCellType(CellType.NUMERIC);
                     cell.setCellValue(tmpCell);
                     cell.setCellStyle(bodyCellStyle);
                 }

@@ -2905,7 +2905,6 @@
 
 
     function updateRecord(record,limitSufficiency) {
-// zaza
         record.limitSufficiency = limitSufficiency;
         DataSource_Competence_JspNeedsAssessment.updateData(record);
 
