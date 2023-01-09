@@ -96,4 +96,42 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
         final EvaluationAnswer saved = evaluationAnswerDAO.saveAndFlush(evaluationAnswer);
         return modelMapper.map(saved, EvaluationAnswerDTO.Info.class);
     }
+
+
+//    @Override
+//    public List<EvaluationAnswerDTO.EvaluationIndexByField> getEvaluationIndexByField(List<Long> evaluationAreaIds, List<String> classCodes) {
+//        List<?> teacherEvaluation = evaluationAnswerDAO.getEvaluationIndexByField(
+//                evaluationAreaIds,
+//                evaluationAreaIds == null ? 1 : 0,
+//                classCodes,
+//                classCodes == null ? 1 : 0
+//        );
+//
+//        List<EvaluationAnswerDTO.EvaluationIndexByField> result = new ArrayList<>();
+//        for (Object o : teacherEvaluation) {
+//            Object[] fields = (Object[]) o;
+//
+//            EvaluationAnswerDTO.EvaluationIndexByField dto = new EvaluationAnswerDTO.EvaluationIndexByField();
+//
+//            dto.setCourseCode(fields[0] != null ? fields[0].toString() : null);
+//            dto.setClassCode(fields[1] != null ? fields[1].toString() : null);
+//            dto.setTeacherFirstName(fields[2] != null ? fields[2].toString() : null);
+//            dto.setTeacherLastName(fields[3] != null ? fields[3].toString() : null);
+//            dto.setTeacherNationalCode(fields[4] != null ? fields[4].toString() : null);
+//            dto.setEvaluationAffairs(fields[5] != null ? fields[5].toString() : null);
+//            dto.setPostTitle(fields[6] != null ? fields[6].toString() : null);
+//            dto.setPostCode(fields[7] != null ? fields[7].toString() : null);
+//            dto.setPersonnelNo2(fields[8] != null ? fields[8].toString() : null);
+//            dto.setStudentAcceptanceStatus(fields[9] != null ? fields[9].toString() : null);
+//            dto.setScore(fields[10] != null ? fields[10].toString() : null);
+//            dto.setEvaluationId(fields[11] != null ? (BigDecimal) fields[11] : null);
+//            dto.setEvaluationAverage(fields[12] != null ? (BigDecimal) fields[12] : null);
+//            dto.setEvaluationField(fields[13] != null ? fields[13].toString() : null);
+//
+//            result.add(dto);
+//        }
+//
+//        return result;
+//    }
+
 }

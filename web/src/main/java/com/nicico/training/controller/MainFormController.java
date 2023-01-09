@@ -583,9 +583,9 @@ public class MainFormController {
         return "report/personnelStatisticReport";
     }
 
-    @RequestMapping("/evaluation-indexes-by-area-report")
+    @RequestMapping("/evaluation-indexes-by-field-report")
     public String evaluationIndexesByAreaReport() {
-        return "report/evaluationIndexesByAreaReport";
+        return "report/evaluationIndexesByFieldReport";
     }
 
     @RequestMapping("/CoursePassedOrUnPassedInNAReport")

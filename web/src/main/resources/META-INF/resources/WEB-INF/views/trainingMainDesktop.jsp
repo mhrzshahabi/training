@@ -2843,9 +2843,9 @@
 
                             },
                             {
-                                title: "<spring:message code="evaluation.index.by.area.report"/>",
+                                title: "<spring:message code="evaluation.index.by.field.report"/>",
                                 click: function () {
-                                    createTab(this.title, "<spring:url value="web/evaluation-indexes-by-area-report"/>");
+                                    createTab(this.title, "<spring:url value="web/evaluation-indexes-by-field-report"/>");
                                 }
 
                             },
@@ -3797,6 +3797,7 @@
     const classEvalAuditUrl = rootUrl + "/tclass/evalAudit/";
     const smsService = rootUrl + "/messageContact/";
     const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
+    const evalAnswerUrl = rootUrl + "/evaluationAnswer/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";
     const classStudentAddHistoryUrl = rootUrl + "/class-student/add/history/";
     const classFinishUrl = rootUrl + "/tclass/finish/";

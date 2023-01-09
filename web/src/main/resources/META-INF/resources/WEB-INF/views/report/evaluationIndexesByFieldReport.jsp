@@ -32,24 +32,24 @@
     });
 
     let RestDataSource_Result_EIBAR = isc.TrDS.create({
-        ID: "classDS",
         fields: [
             {name: "id", primaryKey: true},
             {name: "courseCode"},
             {name: "classCode"},
-            {name: "name"},
-            {name: "family"},
-            {name: "nationalCode"},
-            {name: "affair"},
-            {name: "post"},
+            {name: "teacherFirstName"},
+            {name: "teacherLastName"},
+            {name: "teacherNationalCode"},
+            {name: "evaluationAffairs"},
+            {name: "postTitle"},
             {name: "postCode"},
-            {name: "empNo"},
+            {name: "personnelNo2"},
             {name: "studentAcceptanceStatus"},
             {name: "score"},
-            {name: "evalId"},
-            {name: "average"},
+            {name: "evaluationId"},
+            {name: "evaluationAverage"},
+            {name: "evaluationField"}
         ],
-        fetchDataURL: classUrl + "info-tuple-list"
+        fetchDataURL: evalAnswerUrl + "evaluation-index-by-field"
     });
     //------------------------------------------------- Dynamic Form ---------------------------------------------------
 
@@ -59,7 +59,7 @@
         showInlineErrors: true,
         showErrorText: false,
         numCols: 4,
-        colWidths: ["10%", "40%", "10%", "40%"],
+        colWidths: ["5%", "45%", "5%", "45%"],
         fields: [
             {
                 name: "tclassCode",
@@ -83,7 +83,7 @@
                 required: false,
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionDomain_EIBAR,
-                valueField: "id",
+                valueField: "title",
                 displayField: "title",
                 pickListFields: [
                     {name: "title"},
@@ -126,9 +126,9 @@
         width: 300,
         click: function () {
             let criteriaDisplayValues = "";
-            let selectorDisplayValues = DynamicForm_EIBAR.getItem("class.code").getValue();
-            if (DynamicForm_SelectClassesEIBAR.getField("tclassCode").getValue() != undefined
-                && DynamicForm_SelectClassesEIBAR.getField("tclassCode").getValue() != "") {
+            let selectorDisplayValues = DynamicForm_SelectClassesEIBAR.getItem("class.code").getValue();
+            if (DynamicForm_EIBAR.getField("tclassCode").getValue() != undefined
+                && DynamicForm_EIBAR.getField("tclassCode").getValue() != "") {
                 criteriaDisplayValues = DynamicForm_SelectClassesEIBAR.getItem("class.code").getValue().join(",");
                 let ALength = criteriaDisplayValues.length;
                 let lastChar = criteriaDisplayValues.charAt(ALength - 1);
@@ -153,7 +153,7 @@
 
             criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_SelectClassesEIBAR.getField("tclassCode").setValue(criteriaDisplayValues);
+            DynamicForm_EIBAR.getField("tclassCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_EIBAR.close();
         }
     });
@@ -210,44 +210,22 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-
-            reportCriteria_EIBAR = null;
-            let form = DynamicForm_EIBAR;
-
-            if (form.getValue("endDate") == null || form.getValue("startDate") == null) {
-                createDialog("info", "بازه خاتمه کلاس مشخص نشده است");
-                return;
-            }
-
-            if (form.getValue("endDate") < form.getValue("startDate")) {
-                createDialog("info", "تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
-                return;
-            }
-
-            data_values = DynamicForm_EIBAR.getValuesAsAdvancedCriteria();
-
-            for (let i = 0; i < data_values.criteria.size(); i++) {
-
-                if (data_values.criteria[i].fieldName === "courseCategory") {
-                    data_values.criteria[i].fieldName = "categoryTitleFa";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryId";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "startDate") {
-                    data_values.criteria[i].fieldName = "classEndDate";
-                    data_values.criteria[i].operator = "greaterOrEqual";
-                } else if (data_values.criteria[i].fieldName === "endDate") {
-                    data_values.criteria[i].fieldName = "classEndDate";
-                    data_values.criteria[i].operator = "lessOrEqual";
+            ListGrid_Result_EIBAR.invalidateCache();
+            let dataValues = DynamicForm_EIBAR.getValuesAsAdvancedCriteria();
+            if (dataValues !== undefined && dataValues !== null) {
+                for (let i = 0; i < dataValues.criteria.length; i++) {
+                    if (dataValues.criteria[i].fieldName == "tclassCode") {
+                        dataValues.criteria[i].fieldName = "classCode"
+                    }
+                    if (dataValues.criteria[i].fieldName == "domainId") {
+                        dataValues.criteria[i].fieldName = "evaluationField"
+                    }
                 }
             }
-
-            reportCriteria_EIBAR = data_values;
-            ListGrid_Result_EIBAR.invalidateCache();
-            ListGrid_Result_EIBAR.fetchData(reportCriteria_EIBAR);
+            ListGrid_Result_EIBAR.fetchData(dataValues);
         }
     });
+
     let IButton_Clear_EIBAR = isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
@@ -281,20 +259,46 @@
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_Result_EIBAR,
         fields: [
-            {name: "courseCode"},
-            {name: "classCode"},
-            {name: "name"},
-            {name: "family"},
-            {name: "nationalCode"},
-            {name: "affair"},
-            {name: "post"},
-            {name: "postCode"},
-            {name: "empNo"},
-            {name: "studentAcceptanceStatus"},
-            {name: "score"},
-            {name: "id"},
-            {name: "average"},
-        ]
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "courseCode", title: "<spring:message code="course.code"/>", filterOperator: "iContains"},
+            {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
+            {name: "teacherFirstName", title: "<spring:message code="teacher.name"/>", filterOperator: "iContains"},
+            {name: "teacherLastName", title: "<spring:message code="teacher.last.name"/>", filterOperator: "iContains"},
+            {
+                name: "teacherNationalCode",
+                title: "<spring:message code="teacher.national"/>",
+                filterOperator: "iContains"
+            },
+            {name: "evaluationAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
+            {name: "postTitle", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains"},
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "studentAcceptanceStatus",
+                title: "<spring:message code="acceptanceState.state"/>",
+                filterOperator: "iContains"
+            },
+            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
+            {
+                name: "evaluationId",
+                title: "<spring:message code="evaluation"/>",
+                filterOperator: "iContains",
+                hidden: true
+            },
+            {
+                name: "evaluationAverage",
+                title: "<spring:message code="average.student.evaluation.score"/>",
+                filterOperator: "iContains"
+            },
+            {name: "evaluationField", title: "<spring:message code="question.domain"/>", filterOperator: "iContains"}
+        ],
+        dataArrived: function (startRow, endRow, data) {
+            debugger
+        }
     });
 
     let VLayout_Body_EIBAR = isc.VLayout.create({
