@@ -4,9 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewStatisticsUnitReportDTO;
-import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.iservice.IViewStatisticsUnitReportService;
-import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,11 +26,6 @@ public class ViewStatisticsUnitReportRestController {
 
     private final IViewStatisticsUnitReportService iViewStatisticsUnitReportService;
     private final ModelMapper modelMapper;
-//    private BaseService baseService;
-//
-//    public void setBaseService(BaseService baseService){
-//        this.baseService = baseService;
-//    }
 
 
     @Loggable
