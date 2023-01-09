@@ -295,10 +295,7 @@
                 filterOperator: "iContains"
             },
             {name: "evaluationField", title: "<spring:message code="question.domain"/>", filterOperator: "iContains"}
-        ],
-        dataArrived: function (startRow, endRow, data) {
-            debugger
-        }
+        ]
     });
 
     let VLayout_Body_EIBAR = isc.VLayout.create({
