@@ -2879,13 +2879,18 @@
                                         wait.close();
 
                                         if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                                            hasConflict = JSON.parse(response.data);
-                                            if (hasConflict) {
-                                                if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
-                                                    warnSameSessionStudents.add(studentsDataArray[inx]);
 
+                                            hasConflict = JSON.parse(response.data);
+                                            if (hasConflict.size()>0) {
+                                                for (let j = 0; j < hasConflict.size(); j++) {
+                                                    if (!warnSameSessionStudents.contains(hasConflict[j])) {
+                                                        warnSameSessionStudents.add(hasConflict[j]);
+
+                                                    }
                                                 }
+
                                             }
+                                            debugger
                                         }
                                     }));
 
@@ -2897,6 +2902,11 @@
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
                                 wait.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+/////  لیست کل کلاس های کاربر اینجا رسیده
+                                    ///// personnelCourses  ->   لیست کلاس هایی که کاربر یا قبول شده یا ثبت نام شده است
+                                    ///// userInPersonnelTbl  ->   بعضی از کاربر ها هم توی متفرقه هستن هم توی پرسنل شرکتی که  هشدار میدیم درست انتخاب کنند
+                                    ///// warnPreCourseStudents  ->   پیش نیاز ها
+                                    ///// warnSameSessionStudents  ->   تداخل کلاس ها
 
                                     let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).filter(function(x){return (x.scoreStateId === 400 ||
                                         x.scoreStateId === 401 ||
@@ -2979,11 +2989,16 @@
             }
 
             if(warnSameSessionStudents.length>0){
-                for (var j = 0; j < warnSameSessionStudents.length; j++) {
+                for (let j = 0; j < warnSameSessionStudents.length; j++) {
 
-                   sessionNames= sessionNames.concat(warnSameSessionStudents[j].firstName + " " + warnSameSessionStudents[j].lastName);
-                    if (j !== warnSameSessionStudents.length - 1)
-                        sessionNames =sessionNames.concat(", ");
+                   sessionNames= sessionNames.concat(warnSameSessionStudents[j].firstName + " " + warnSameSessionStudents[j].lastName +"  در روز "+
+                    warnSameSessionStudents[j].date+"  در کلاس با کد  "+
+                    warnSameSessionStudents[j].classCode+"  در جلسه ساعت  "+
+                    warnSameSessionStudents[j].startHour+" تا "+
+                    warnSameSessionStudents[j].endHour+" تداخل زمانی دارد "
+                   )
+                                        if (j !== warnSameSessionStudents.length - 1)
+                        sessionNames =sessionNames.concat(", \n");
 
                 }
             }
@@ -3000,8 +3015,8 @@
             if (userInPersonnelTblList.length > 0  || warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0 || warnSameSessionStudents.length>0 || warnSameSessionStudents>0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
-                    width: 600,
-                    height: 50,
+                    width: "100%",
+                    height: "100%",
                     padding: 6,
                     titleAlign: "right",
                     fields: [
@@ -3054,7 +3069,7 @@
                             name: "text2",
                             width: "100%",
                             colSpan: 2,
-                            value: "فراگیران با اسامی زیر  هم در لیست فراگیران شرکتی و هم در لیست پرسنل متفرقه  وجود دارند ؛ آیا تمایل دارید آنها را اضافه کنید؟",
+                            value: "<pre><strong>*فراگیران با اسامی زیر  هم در لیست فراگیران شرکتی و هم در لیست پرسنل متفرقه  وجود دارند ؛ آیا تمایل دارید آنها را اضافه کنید؟ </strong></pre>",
                             showTitle: false,
                             editorType: 'staticText'
                         },
@@ -3071,8 +3086,8 @@
                 });
                 if(warnSameSessionStudents.length>0) {
                    var DynamicForm_Warn_Students_sessions = isc.DynamicForm.create({
-                        width: 600,
-                        height: 50,
+                        width: "100%",
+                        height: "100%",
                         padding: 6,
                         titleAlign: "right",
                         fields: [
@@ -3139,8 +3154,9 @@
                     }
 
                 let Window_Warn_Students = isc.Window.create({
-                    width: 600,
-                    height: 150,
+                    width: "60%",
+                    height: "50%",
+                    autoSize: false,
                     numCols: 2,
                     title: "<spring:message code='student.plural'/>",
                     items: [

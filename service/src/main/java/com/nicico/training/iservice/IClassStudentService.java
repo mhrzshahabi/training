@@ -10,6 +10,7 @@ import request.exam.ExamResult;
 import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
 import response.tclass.dto.ElsClassListV2Dto;
+import response.tclass.dto.SessionConflictDto;
 
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public interface IClassStudentService {
     List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos);
 
 
-   Boolean getSessionConflictViaClassStudent(String nationalCode,List<ClassSessionDTO.ClassStudentSession> classStudentSessions);
+    List<SessionConflictDto> getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions);
 
     ClassStudent save(ClassStudent classStudent);
 

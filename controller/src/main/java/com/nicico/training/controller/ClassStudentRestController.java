@@ -36,6 +36,7 @@ import response.exam.ExtendedUserDto;
 import response.exam.ResendExamTimes;
 import response.student.UpdatePreTestScoreResponse;
 import response.student.UpdateStudentScoreResponse;
+import response.tclass.dto.SessionConflictDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -544,15 +545,14 @@ public class ClassStudentRestController {
 
     @Loggable
     @PostMapping(value = "/getSessionConflict")
-    public ResponseEntity<String> getSessionConflictViaClassStudent(@RequestParam(value = "nationalCode") String nationalCode, @RequestBody List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
+    public ResponseEntity<List<SessionConflictDto>> getSessionConflictViaClassStudent(@RequestParam(value = "nationalCode") String nationalCode, @RequestBody List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
         List<ClassSessionDTO.ClassStudentSession> classStudentSessionsMap = new ArrayList<>();
-        classStudentSessions.stream().forEach(classStudentSession -> {
+        classStudentSessions.forEach(classStudentSession -> {
             classStudentSessionsMap.add(modelMapper.map(classStudentSession, ClassSessionDTO.ClassStudentSession.class));
         });
+        List<SessionConflictDto> sessionConflicts = iClassStudentService.getSessionConflictViaClassStudent(nationalCode, classStudentSessionsMap);
 
-        Boolean flag = iClassStudentService.getSessionConflictViaClassStudent(nationalCode, classStudentSessionsMap);
-
-        return new ResponseEntity<>(flag.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(sessionConflicts, HttpStatus.OK);
 
     }
 

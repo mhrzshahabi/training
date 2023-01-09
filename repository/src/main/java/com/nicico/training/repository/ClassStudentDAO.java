@@ -1174,13 +1174,30 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 
 
 
-    @Query(value = "select tbl_session.id \n" +
-            "from tbl_class_student inner join tbl_class on tbl_class_student.class_id=tbl_class.id inner join  tbl_session on tbl_session.f_class_id=tbl_class.id \n" +
-            "inner join tbl_student on tbl_student.id=tbl_class_student.student_id\n" +
-            "where tbl_session.c_session_date= :sessionDate \n" +
-            "and tbl_session.c_session_start_hour = :startHour and tbl_session.c_session_end_hour= :endHour\n" +
-            "and tbl_student.national_code= :nationalCode ",nativeQuery = true)
-    List<Long> getSessionsInterferencePerStudent(@Param("sessionDate") String sessionDate,@Param("startHour") String startHour,@Param("endHour") String endHour, @Param("nationalCode") String nationalCode);
+    @Query(value = """
+SELECT
+    tbl_session.id,
+    tbl_session.c_session_start_hour,
+    tbl_session.c_session_end_hour,
+    tbl_session.c_session_date,
+    tbl_class.c_code,
+    tbl_student.first_name,
+    tbl_student.last_name
+                
+FROM
+         tbl_class_student
+    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+    INNER JOIN tbl_session ON tbl_session.f_class_id = tbl_class.id
+    INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id
+WHERE
+    ( ( tbl_session.c_session_start_hour < :startHour
+        AND tbl_session.c_session_end_hour > :startHour )
+      OR ( tbl_session.c_session_start_hour < :endHour
+           AND tbl_session.c_session_end_hour > :endHour ) )
+    AND tbl_session.c_session_date = :sessionDate
+    AND tbl_student.national_code = :nationalCode
+""",nativeQuery = true)
+    List<?> getSessionsInterferencePerStudent(@Param("sessionDate") String sessionDate,@Param("startHour") String startHour,@Param("endHour") String endHour, @Param("nationalCode") String nationalCode);
 
     @Query(value = "SELECT\n" +
             "    st.national_code\n" +

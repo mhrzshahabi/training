@@ -21,10 +21,7 @@ import request.exam.ExamResult;
 import response.BaseResponse;
 import response.PaginationDto;
 import response.evaluation.dto.EvalAverageResult;
-import response.tclass.dto.ElsClassDto;
-import response.tclass.dto.ElsClassListDto;
-import response.tclass.dto.ElsClassListV2Dto;
-import response.tclass.dto.ElsClassV2Dto;
+import response.tclass.dto.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -596,20 +593,28 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public Boolean getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
-        final boolean[] flag = {false};
+    public List<SessionConflictDto> getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
+        List<SessionConflictDto> sessionConflict=new ArrayList<>();
         if (classStudentSessions != null && classStudentSessions.size() > 0) {
-            for (int i = 0; i < classStudentSessions.size() && !flag[0]; i++) {
-
-                List<Long> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(), nationalCode);
-                if (conflicts.size() > 0) {
-                    flag[0] = true;
-
+            for (int i = 0; i < classStudentSessions.size(); i++) {
+                List<?> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(), nationalCode);
+                if (conflicts != null) {
+                    for (int z = 0; z < conflicts.size(); z++) {
+                        Object[] conflict = (Object[]) conflicts.get(z);
+                        sessionConflict.add(new SessionConflictDto( (conflict[0] != null ? Long.parseLong(conflict[0].toString()) : 0),
+                                (conflict[1] != null ? (conflict[1].toString()) :""),
+                                (conflict[2] != null ? (conflict[2].toString()) :""),
+                                (conflict[3] != null ? (conflict[3].toString()) :""),
+                                (conflict[4] != null ? (conflict[4].toString()) :""),
+                                (conflict[5] != null ? (conflict[5].toString()) :""),
+                                (conflict[6] != null ? (conflict[6].toString()) :"")
+                                ));
+                    }
                 }
             }
 
         }
-        return flag[0];
+        return sessionConflict;
     }
 
 
