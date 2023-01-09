@@ -96,4 +96,5 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
         final EvaluationAnswer saved = evaluationAnswerDAO.saveAndFlush(evaluationAnswer);
         return modelMapper.map(saved, EvaluationAnswerDTO.Info.class);
     }
+
 }

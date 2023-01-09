@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnswerService;
+import com.nicico.training.iservice.IViewEvaluationIndexByFieldReportService;
 import com.nicico.training.mapper.evaluationAnswer.EvaluationAnswerAuditMapper;
 import com.nicico.training.model.*;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 
@@ -31,6 +33,7 @@ public class EvaluationAnswerRestController {
 
     private final IEvaluationAnswerService iEvaluationAnswerService;
     private final EvaluationAnswerAuditMapper evaluationAnswerAuditMapper;
+    private final IViewEvaluationIndexByFieldReportService viewEvaluationIndexByFieldReportService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -139,6 +142,15 @@ public class EvaluationAnswerRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/evaluation-index-by-field")
+    public ResponseEntity<ISC<ViewEvaluationIndexByFieldReportDTO.Info>> getEvaluationIndexByField(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ViewEvaluationIndexByFieldReportDTO.Info> searchRs = viewEvaluationIndexByFieldReportService.search(searchRq);
+        return ResponseEntity.ok(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()));
+
     }
 
 }
