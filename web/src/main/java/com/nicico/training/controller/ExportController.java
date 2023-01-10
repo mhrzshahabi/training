@@ -255,11 +255,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[26];
-            String[] columns = new String[26];
+            String[] headers = new String[29];
+            String[] columns = new String[29];
 
 
-            for (int z = 0; z < 26; z++) {
+            for (int z = 0; z < 29; z++) {
 
                 switch (z) {
                     case 0: {
@@ -393,6 +393,21 @@ public class ExportController {
                         columns[z] = "percent_reaction";
                         break;
                     }
+                    case 26: {
+                        headers[z] = "مدرس کلاس";
+                        columns[z] = "class_teacher";
+                        break;
+                    }
+                    case 27: {
+                        headers[z] = "امکانات و تجهیزات";
+                        columns[z] = "facilities_equipment";
+                        break;
+                    }
+                    case 28: {
+                        headers[z] = "محتوای کلاس";
+                        columns[z] = "class_content";
+                        break;
+                    }
 
                 }
             }
@@ -524,6 +539,15 @@ public class ExportController {
                             break;
                         }  case "percent_reaction": {
                             row.createCell(i).setCellValue(map.getPercent_reaction());
+                            break;
+                        }  case "class_teacher": {
+                            row.createCell(i).setCellValue(map.getClassTeacher());
+                            break;
+                        }  case "facilities_equipment": {
+                            row.createCell(i).setCellValue(map.getFacilitiesEquipment());
+                            break;
+                        }  case "class_content": {
+                            row.createCell(i).setCellValue(map.getClassContent());
                             break;
                         }
                     }
