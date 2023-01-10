@@ -20,6 +20,8 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Component
 @RequiredArgsConstructor
 public class MakeExcelOutputUtil {
@@ -473,5 +475,21 @@ public class MakeExcelOutputUtil {
         }
 
         return rowNum;
+    }
+
+    public static boolean isNumericWithDot(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        } else {
+            int sz = cs.length();
+
+            for(int i = 0; i < sz; ++i) {
+                if (!Character.isDigit(cs.charAt(i)) && cs.charAt(i)!='.' ) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
