@@ -88,7 +88,7 @@
             {name: "answeredReactionEvalPercent", title: "فرم های تکمیلی ارزیابی واکنشی(%)", filterOperator: "iContains"},
             {name: "answeredBehavioralEvalPercent", title: "فرم های تکمیلی ارزیابی رفتاری(%)", filterOperator: "iContains"},
         ],
-        fetchDataURL: statisticsUnitReportUrl
+        fetchDataURL: statisticsUnitReportUrl +"/list"
     });
 
     var RestDataSource_Course_JspUnitReport = isc.TrDS.create({
@@ -378,7 +378,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl , 0, null, '',  "گزارش اصلی واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl+ "/excel-search" , 0, null, '',  "گزارش اصلی واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
         }
     });
 
