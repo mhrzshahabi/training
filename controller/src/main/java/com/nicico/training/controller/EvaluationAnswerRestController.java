@@ -150,7 +150,14 @@ public class EvaluationAnswerRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ViewEvaluationIndexByFieldReportDTO.Info> searchRs = viewEvaluationIndexByFieldReportService.search(searchRq);
         return ResponseEntity.ok(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()));
+    }
 
+    @GetMapping("/excel/evaluation-index-by-field")
+    public ResponseEntity<ISC<ViewEvaluationIndexByFieldReportDTO.Info>> getEvaluationIndexByFieldExcel(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setCount(searchRq.getCount() - searchRq.getStartIndex());
+        SearchDTO.SearchRs<ViewEvaluationIndexByFieldReportDTO.Info> searchRs = viewEvaluationIndexByFieldReportService.search(searchRq);
+        return ResponseEntity.ok(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()));
     }
 
 }

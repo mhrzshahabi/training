@@ -31,17 +31,35 @@ public class ViewEvaluationIndexByFieldReport implements Serializable {
     @Column(name = "class_code")
     private String classCode;
 
-    @Column(name = "teacher_first_name")
-    private String teacherFirstName;
+    @Column(name = "class_start_date")
+    private String classStartDate;
 
-    @Column(name = "teacher_last_name")
-    private String teacherLastName;
+    @Column(name = "class_end_date")
+    private String classEndDate;
 
-    @Column(name = "teacher_national_code")
-    private String teacherNationalCode;
+    @Column(name = "student_first_name")
+    private String studentFirstName;
 
-    @Column(name = "evaluation_affair")
-    private String evaluationAffairs;
+    @Column(name = "student_last_name")
+    private String studentLastName;
+
+    @Column(name = "student_national_code")
+    private String studentNationalCode;
+
+    @Column(name = "student_complex")
+    private String studentComplex;
+
+    @Column(name = "student_assistant")
+    private String studentAssistant;
+
+    @Column(name = "student_affair")
+    private String studentAffairs;
+
+    @Column(name = "student_section")
+    private String studentSection;
+
+    @Column(name = "student_unit")
+    private String studentUnit;
 
     @Column(name = "post_title")
     private String postTitle;
@@ -64,8 +82,13 @@ public class ViewEvaluationIndexByFieldReport implements Serializable {
     @Column(name = "evaluation_average")
     private Double evaluationAverage;
 
+    @Column(name = "evaluation_field_id")
+    private Long evaluationFieldId;
+
     @Column(name = "evaluation_field")
     private String evaluationField;
 
+    @Column(name = "evaluation_field_average")
+    private Double evaluationFieldAverage;
 
 }
