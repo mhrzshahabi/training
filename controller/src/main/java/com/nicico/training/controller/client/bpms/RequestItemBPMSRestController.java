@@ -74,9 +74,21 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/processes/parallel/request-item/cancel-process"})
+    public BaseResponse cancelParallelRequestItemProcess(@RequestBody BpmsCancelTaskDto value) {
+        return requestItemService.cancelParallelRequestItemProcess(value.getReviewTaskRequest(), value.getReason());
+    }
+
+    @Loggable
     @PostMapping({"/processes/request-item/reAssign-process"})
     public BaseResponse reAssignRequestItemProcess(@RequestBody BpmsCancelTaskDto value) {
         return requestItemService.reAssignRequestItemProcess(value.getReviewTaskRequest());
+    }
+
+    @Loggable
+    @PostMapping({"/processes/parallel/request-item/reAssign-process"})
+    public BaseResponse reAssignParallelRequestItemProcess(@RequestBody BpmsCancelTaskDto value) {
+        return requestItemService.reAssignParallelRequestItemProcess(value.getReviewTaskRequest());
     }
 
     @Loggable
@@ -149,9 +161,9 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/run-supervisor/request-item/review"})
-    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest) {
-        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest);
+    @PostMapping({"/tasks/run-supervisor/request-item/review/{courseCode}"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String courseCode) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest, courseCode);
     }
 
     @Loggable
@@ -160,41 +172,47 @@ public class RequestItemBPMSRestController {
         return requestItemService.reviewRequestItemTaskByRunExperts(reviewTaskRequest);
     }
 
-    @Loggable
-    @PostMapping({"/tasks/run-supervisor-for-approval/request-item/review"})
-    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
-        return requestItemService.reviewRequestItemTaskByRunSupervisorForApproval(reviewTaskRequest);
-    }
+//    @Loggable
+//    @PostMapping({"/tasks/run-supervisor-for-approval/request-item/review"})
+//    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+//        return requestItemService.reviewRequestItemTaskByRunSupervisorForApproval(reviewTaskRequest);
+//    }
 
-    @Loggable
-    @PostMapping({"/tasks/run-chief-for-approval/request-item/review"})
-    public BaseResponse reviewRequestItemTaskByRunChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
-        return requestItemService.reviewRequestItemTaskByRunChiefForApproval(reviewTaskRequest);
-    }
+//    @Loggable
+//    @PostMapping({"/tasks/run-chief-for-approval/request-item/review"})
+//    public BaseResponse reviewRequestItemTaskByRunChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+//        return requestItemService.reviewRequestItemTaskByRunChiefForApproval(reviewTaskRequest);
+//    }
 
-    @Loggable
-    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review"})
-    public BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
-        return requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
-    }
+//    @Loggable
+//    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review"})
+//    public BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+//        return requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
+//    }
 
-    @Loggable
-    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review/group"})
-    public ResponseEntity reviewGroupRequestItemTaskByPlanningChiefForApproval(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList) {
-        boolean hasException = false;
-        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
-            BaseResponse response = requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
-            if (response.getStatus() != 200)
-                hasException = true;
-        }
-        return new ResponseEntity<>(hasException, HttpStatus.OK);
-    }
+//    @Loggable
+//    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review/group"})
+//    public ResponseEntity reviewGroupRequestItemTaskByPlanningChiefForApproval(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList) {
+//        boolean hasException = false;
+//        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+//            BaseResponse response = requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
+//            if (response.getStatus() != 200)
+//                hasException = true;
+//        }
+//        return new ResponseEntity<>(hasException, HttpStatus.OK);
+//    }
 
     @Loggable
     @PostMapping({"/tasks/appointment-expert/request-item/review"})
     public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
         return requestItemService.reviewRequestItemTaskByAppointmentExpert(bpmsReqItemSentLetterDto);
     }
+
+//    @Loggable
+//    @PostMapping({"/tasks/appointment-expert-no-letter/request-item/review"})
+//    public BaseResponse reviewRequestItemTaskByAppointmentExpertNoLetter(@RequestBody BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
+//        return requestItemService.reviewRequestItemTaskByAppointmentExpertNoLetter(bpmsReqItemSentLetterDto);
+//    }
 
     @Loggable
     @PostMapping({"/tasks/appointment-expert/request-item/review/group"})

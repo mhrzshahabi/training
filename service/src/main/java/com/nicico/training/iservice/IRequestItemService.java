@@ -60,7 +60,11 @@ public interface IRequestItemService {
 
     void cancelRequestItemProcess(ReviewTaskRequest reviewTaskRequest, String reason);
 
+    BaseResponse cancelParallelRequestItemProcess(ReviewTaskRequest reviewTaskRequest, String reason);
+
     BaseResponse reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reAssignParallelRequestItemProcess(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTask(ReviewTaskRequest reviewTaskRequestDto);
 
@@ -72,7 +76,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunChiefNeedToPass(ReviewTaskRequest reviewTaskRequest);
 
-    BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest);
+    BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String courseCode);
 
     BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
 
@@ -83,6 +87,8 @@ public interface IRequestItemService {
     BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto);
+
+    BaseResponse reviewRequestItemTaskByAppointmentExpertNoLetter(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto);
 
     List<BPMSReqItemProcessHistoryDto> getProcessInstanceHistoryById(String processInstanceId);
 

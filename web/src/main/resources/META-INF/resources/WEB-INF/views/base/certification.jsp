@@ -594,6 +594,7 @@
                                 name: "processStatusTitle",
                                 title: "وضعیت فرایند در گردش کار:",
                                 type: "staticText",
+                                hidden: true,
                                 colSpan: 2
                             }
                         ]
@@ -1566,11 +1567,20 @@
                                 let data = JSON.parse(response.httpResponseText);
                                 postTitle = data.titleFa;
                             }
-                            param.data = {
-                                "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
-                                "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
-                                "requestItemId": record.id,
-                                "requestNo": requestRecord.id
+                            if (record.personnelNo2 !== undefined) {
+                                param.data = {
+                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                    "requestItemId": record.id,
+                                    "requestNo": requestRecord.id
+                                }
+                            } else {
+                                param.data = {
+                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با کدملی " + record.nationalCode + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                    "requestItemId": record.id,
+                                    "requestNo": requestRecord.id
+                                }
                             }
                             isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation", "POST", JSON.stringify(param), function (resp) {
                                 wait.close();
@@ -1583,7 +1593,6 @@
                                     createDialog("info", "<spring:message code='msg.send.to.workflow.problem'/>");
                                 }
                             }));
-
                         }));
                     }
                 }

@@ -24,6 +24,7 @@ public interface BPMSBeanMapper {
     @Mapping(source = "processVariables", target = "requestItemId", qualifiedByName = "processVariablesToRequestItemId")
     @Mapping(source = "processVariables", target = "requestNo", qualifiedByName = "processVariablesToRequestNo")
     @Mapping(source = "processVariables", target = "assigneeList", qualifiedByName = "processVariablesToAssigneeList")
+    @Mapping(source = "bpmsUserTasksResponseDto", target = "courseCode", qualifiedByName = "processVariablesToCourseCode")
     BPMSUserTasksContentDto toUserTasksContent (BPMSUserTasksResponseDto bpmsUserTasksResponseDto);
 
     List<BPMSUserTasksContentDto> toUserTasksContentList(List<BPMSUserTasksResponseDto> bpmsUserTasksResponseDtoList);
@@ -101,6 +102,16 @@ public interface BPMSBeanMapper {
         if(variables!=null && variables.get("assigneeList")!=null)
             assigneeList.addAll((List<String>) variables.get("assigneeList"));
         return assigneeList;
+    }
+
+    @Named("processVariablesToCourseCode")
+    default String processVariablesToCourseCode(BPMSUserTasksResponseDto bpmsUserTasksResponseDto) {
+        String courseCode = "";
+        LinkedHashMap<String, Object> variables = bpmsUserTasksResponseDto.getProcessVariables();
+        String taskId = bpmsUserTasksResponseDto.getTaskId();
+        if(variables!=null && variables.containsKey("courseName_" + taskId))
+            courseCode = (String) variables.get("courseName_" + taskId);
+        return courseCode;
     }
 
 }
