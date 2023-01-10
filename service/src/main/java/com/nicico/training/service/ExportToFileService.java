@@ -19,11 +19,14 @@ import java.awt.Color;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Service
 @RequiredArgsConstructor
@@ -123,8 +126,14 @@ public class ExportToFileService implements IExportToFileService {
                     }*/
 
                     //zaza
-                    cell.setCellType(CellType.NUMERIC);
-                    cell.setCellValue(tmpCell);
+                    if (isNumeric(tmpCell)){
+                        Number number = NumberFormat.getInstance().parse(tmpCell);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellValue((Double) number);
+
+                    }else {
+                        cell.setCellValue(tmpCell);
+                    }
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
