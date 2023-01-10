@@ -129,7 +129,16 @@ public class ExportToFileService implements IExportToFileService {
                     if (isNumeric(tmpCell)){
                         Number number = NumberFormat.getInstance().parse(tmpCell);
                         cell.setCellType(CellType.NUMERIC);
-                        cell.setCellValue((Double) number);
+                        if (number instanceof  Integer){
+                            cell.setCellValue(number.intValue());
+
+                        }else if (number instanceof Long){
+                            cell.setCellValue(number.longValue());
+                        }else if (number instanceof Double){
+                            cell.setCellValue(number.doubleValue());
+                        }else if (number instanceof Float){
+                            cell.setCellValue(number.floatValue());
+                        }
 
                     }else {
                         cell.setCellValue(tmpCell);
