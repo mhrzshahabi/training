@@ -290,7 +290,7 @@
 			</staticText>
 			<barChart>
 				<chart isShowLegend="false" evaluationTime="Report">
-					<reportElement x="7" y="30" width="541" height="180" uuid="d38c4b5f-5569-456b-b801-283f922b9d05"/>
+					<reportElement x="0" y="30" width="555" height="180" uuid="d38c4b5f-5569-456b-b801-283f922b9d05"/>
 					<chartTitle>
 						<font fontName="Shabnam-FD"/>
 					</chartTitle>
@@ -314,14 +314,14 @@
 					</categorySeries>
 				</categoryDataset>
 				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="false">
-					<plot backgroundAlpha="1.0" labelRotation="360.0"/>
+					<plot backgroundAlpha="1.0" labelRotation="0.0"/>
 					<itemLabel>
 						<font fontName="Shabnam-FD"/>
 					</itemLabel>
-					<categoryAxisFormat labelRotation="360.0">
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+					<categoryAxisFormat labelRotation="0.0">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000">
 							<labelFont>
-								<font fontName="Shabnam-FD"/>
+								<font fontName="Shabnam-FD" size="10"/>
 							</labelFont>
 							<tickLabelFont>
 								<font fontName="Shabnam-FD"/>
