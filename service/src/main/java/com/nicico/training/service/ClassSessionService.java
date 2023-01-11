@@ -150,11 +150,11 @@ public class ClassSessionService implements IClassSessionService {
         try {
             if (request.getSessionStartHour().compareTo(request.getSessionEndHour()) >= 0) {
                 Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, locale));
+                response.sendError(503, messageSource.getMessage("session.start.hour.bigger.than.end.hour", null, LocaleContextHolder.getLocale()));
 
             } else if (!request.getSessionStartHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$") || !request.getSessionEndHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$")) {
                 Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
+                response.sendError(503, messageSource.getMessage("session.hour.invalid", null, LocaleContextHolder.getLocale()));
             } else if (classSessionDAO.checkHour(request.getClassId(),
                     request.getSessionDate(),
                     request.getSessionStartHour(),
@@ -162,7 +162,7 @@ public class ClassSessionService implements IClassSessionService {
                     0L) > 0) {
 
                 Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
+                response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, LocaleContextHolder.getLocale()));
 
             } else if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                     request.getClassId(),
@@ -209,7 +209,7 @@ public class ClassSessionService implements IClassSessionService {
 
             } else {
                 Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(406, messageSource.getMessage("msg.record.duplicate", null, locale));
+                response.sendError(406, messageSource.getMessage("msg.record.duplicate", null, LocaleContextHolder.getLocale()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
