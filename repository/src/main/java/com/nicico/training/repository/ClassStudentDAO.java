@@ -1183,7 +1183,7 @@ SELECT
     tbl_class.c_code,
     tbl_student.first_name,
     tbl_student.last_name
-                
+               \s
 FROM
          tbl_class_student
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
@@ -1193,7 +1193,10 @@ WHERE
     ( ( tbl_session.c_session_start_hour < :startHour
         AND tbl_session.c_session_end_hour > :startHour )
       OR ( tbl_session.c_session_start_hour < :endHour
-           AND tbl_session.c_session_end_hour > :endHour ) )
+           AND tbl_session.c_session_end_hour > :endHour )\s
+             OR ( tbl_session.c_session_start_hour = :startHour
+           AND tbl_session.c_session_end_hour = :endHour )
+           )
     AND tbl_session.c_session_date = :sessionDate
     AND tbl_student.national_code = :nationalCode
 """,nativeQuery = true)
