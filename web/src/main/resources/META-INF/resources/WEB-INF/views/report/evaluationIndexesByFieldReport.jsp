@@ -33,25 +33,14 @@
     let RestDataSource_Result_EIBAR = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {
-                name: "courseCode",
-                title: "<spring:message code="course.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
+            {name: "courseCode"},
             {name: "classCode"},
             {name: "classStartDate"},
             {name: "classEndDate"},
             {name: "fullName"},
-            {
-                name: "studentNationalCode"
-            },
-            {
-                name: "studentComplex"
-            },
-            {
-                name: "studentAssistant"
-            },
+            {name: "studentNationalCode"},
+            {name: "studentComplex"},
+            {name: "studentAssistant"},
             {name: "studentAffairs"},
             {name: "studentSection"},
             {name: "studentUnit"},
