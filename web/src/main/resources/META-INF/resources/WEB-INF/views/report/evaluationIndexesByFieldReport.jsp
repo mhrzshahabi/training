@@ -33,20 +33,36 @@
     let RestDataSource_Result_EIBAR = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "courseCode"},
+            {
+                name: "courseCode",
+                title: "<spring:message code="course.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "classCode"},
-            {name: "teacherFirstName"},
-            {name: "teacherLastName"},
-            {name: "teacherNationalCode"},
-            {name: "evaluationAffairs"},
+            {name: "classStartDate"},
+            {name: "classEndDate"},
+            {name: "fullName"},
+            {
+                name: "studentNationalCode"
+            },
+            {
+                name: "studentComplex"
+            },
+            {
+                name: "studentAssistant"
+            },
+            {name: "studentAffairs"},
+            {name: "studentSection"},
+            {name: "studentUnit"},
             {name: "postTitle"},
             {name: "postCode"},
             {name: "personnelNo2"},
             {name: "studentAcceptanceStatus"},
             {name: "score"},
-            {name: "evaluationId"},
+            {name: "evaluationField"},
             {name: "evaluationAverage"},
-            {name: "evaluationField"}
+            {name: "evaluationFieldAverage"}
         ],
         fetchDataURL: evalAnswerUrl + "evaluation-index-by-field"
     });
@@ -58,7 +74,7 @@
         showInlineErrors: true,
         showErrorText: false,
         numCols: 4,
-        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        colWidths: ["5%", "25%", "5%", "25%", "5%", "25%"],
         fields: [
             {
                 name: "tclassCode",
@@ -105,8 +121,8 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
-                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         form.clearFieldErrors("startDate1", true);
                         startDateCheck_Order_JspStaticalUnitReport = true;
                         startDate1Check_JspStaticalUnitReport = true;
@@ -126,8 +142,7 @@
                         startDate1Check_JspStaticalUnitReport = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    }
-                    else {
+                    } else {
                         startDate1Check_JspStaticalUnitReport = true;
                         startDateCheck_Order_JspStaticalUnitReport = true;
                         form.clearFieldErrors("startDate1", true);
@@ -150,8 +165,8 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
-                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                         form.clearFieldErrors("startDate2", true);
                         startDateCheck_Order_JspStaticalUnitReport = true;
                         startDate2Check_JspStaticalUnitReport = true;
@@ -194,8 +209,8 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
-                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         form.clearFieldErrors("endDate1", true);
                         endDateCheck_Order_JspStaticalUnitReport = true;
                         endDate1Check_JspStaticalUnitReport = true;
@@ -238,8 +253,8 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
-                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                         form.clearFieldErrors("endDate2", true);
                         endDateCheck_Order_JspStaticalUnitReport = true;
                         endDate2Check_JspStaticalUnitReport = true;
@@ -474,28 +489,78 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStartDate", title: "<spring:message code="class.start.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classEnd", title: "<spring:message code="class.end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "fullName", title: "<spring:message code="student.full.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "classCode",
+                title: "<spring:message code="class.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "classStartDate",
+                title: "<spring:message code="class.start.date"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "classEndDate",
+                title: "<spring:message code="class.end.date"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "fullName",
+                title: "<spring:message code="student.full.name"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "studentNationalCode",
                 title: "<spring:message code="student.national.code"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "studentComplex", title: "<spring:message code="student.complex"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "studentComplex",
+                title: "<spring:message code="student.complex"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "studentAssistant",
                 title: "<spring:message code="student.assistant"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "studentAffairs", title: "<spring:message code="student.affair"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentSection", title: "<spring:message code="student.section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentUnit", title: "<spring:message code="student.unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postTitle", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "studentAffairs",
+                title: "<spring:message code="student.affair"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "studentSection",
+                title: "<spring:message code="student.section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "studentUnit",
+                title: "<spring:message code="student.unit"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postCode",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "personnelNo2",
                 title: "<spring:message code="personnel.no.6.digits"/>",
@@ -509,7 +574,12 @@
                 autoFitWidth: true
             },
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "evaluationField", title: "<spring:message code="question.domain"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "evaluationField",
+                title: "<spring:message code="question.domain"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "evaluationAverage",
                 title: "<spring:message code="average.student.evaluation.score"/>",
@@ -525,11 +595,11 @@
         ]
     });
 
-    let organSegmentFilter = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit");
+    let organSegmentFilter = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle", "assistant", "affairs", "section", "unit");
 
     let VLayout_Body_EIBAR = isc.VLayout.create({
         align: "right",
-        titleAlign:"center",
+        titleAlign: "center",
         padding: 0,
         width: "100%",
         height: "100%",
