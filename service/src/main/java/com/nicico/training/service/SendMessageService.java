@@ -70,8 +70,18 @@ public class SendMessageService implements ISendMessageService {
 
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId,Long objectId) {
+        List<String> numbers=new ArrayList<>();
+        recipients.forEach(a->{
+            if (a!=null){
+                if (a.length()==11 && a.charAt(0)=='0'){
+                    numbers.add(a);
+                }else  if (a.length()==10 && a.charAt(0)!='0'){
+                    numbers.add("0"+a);
+                }
+            }
+        });
         JSONObject json = new JSONObject();
-        json.put("to", recipients);
+        json.put("to", numbers);
         json.put("pid", pid);
         json.put("params", new JSONObject(paramValMap));
 
