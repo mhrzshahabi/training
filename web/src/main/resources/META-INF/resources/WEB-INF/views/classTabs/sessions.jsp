@@ -1095,7 +1095,7 @@
                 if (resp.httpResponseCode === 409) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
-                        message: respText.message
+                        message: "بازه زماني انتخاب شده، با بازه هاي زماني موجود تداخل دارد"
                     });
 
                     close_MyOkDialog_Session()
@@ -1103,7 +1103,7 @@
                 } else if (resp.httpResponseCode === 406) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
-                        message: respText.message
+                        message: "اطلاعات وارد شده تکراری می باشد."
                     });
 
                     close_MyOkDialog_Session()
@@ -1111,7 +1111,7 @@
                 } else if (resp.httpResponseCode === 503) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
-                        message: respText.message,
+                        message: "فرمت ساعت نادرست است.",
                         icon: "[SKIN]stop.png"
                     });
 
