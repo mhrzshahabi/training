@@ -217,6 +217,22 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Override
+    public Boolean update(Long id, Boolean isActive) {
+        QuestionBank questionBank = getById(id);
+
+        if (questionBank == null) {
+            return false;
+        }
+
+        if (isActive) {
+            questionBank.setEnabled(null);
+        } else {
+            questionBank.setEnabled(74L);
+        }
+        return true;
+    }
+
+    @Override
     public Set<QuestionBank> getListOfGroupQuestions(Set<Long> groupQuestions) {
         if (groupQuestions != null) {
             List<QuestionBank> questionBanks = new ArrayList<>();
