@@ -8865,6 +8865,55 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet author="kasehpour_t" id="1673690632-02">
+        <createView viewName="view_last_md_employee_hr" replaceIfExists="true">
+            <![CDATA[
+
+                         SELECT
+                            c_id,
+                            c_national_code,
+                            c_dep_id,
+                            c_emp_date,
+                            ccp_complex,
+                            ccp_assistant,
+                            ccp_affairs,
+                            ccp_section,
+                            ccp_unit
+                        FROM
+                            (
+                                    select
+                                         row_number () over (PARTITION BY tbl_md_employee_mdms.c_national_code ORDER BY tbl_md_employee_mdms.c_emp_date DESC) AS ROWW_NUUM,
+                                                    tbl_md_employee_mdms.c_id,
+                                                    tbl_md_employee_mdms.c_national_code,
+                                                    tbl_md_employee_mdms.c_dep_id,
+                                                    tbl_md_employee_mdms.c_emp_date,
+                                                    vw_department.c_mojtame_title                   AS ccp_complex,
+                                                    vw_department.c_moavenat_title                  AS ccp_assistant,
+                                                    vw_department.c_omor_title                      AS ccp_affairs,
+                                                    vw_department.c_ghesmat_title                   AS ccp_section,
+                                                    vw_department.c_vahed_title                     AS ccp_unit
+
+                                    from  tbl_md_employee_mdms
+                                           LEFT JOIN vw_department ON tbl_md_employee_mdms.c_dep_id = vw_department.c_id
+
+                                   group by
+                                            tbl_md_employee_mdms.c_id,
+                                            tbl_md_employee_mdms.c_national_code,
+                                            tbl_md_employee_mdms.c_dep_id,
+                                            tbl_md_employee_mdms.c_emp_date,
+                                              vw_department.c_mojtame_title,
+                                            vw_department.c_moavenat_title,
+                                            vw_department.c_omor_title,
+                                             vw_department.c_ghesmat_title,
+                                             vw_department.c_vahed_title
+
+                            )
+                      WHERE ROWW_NUUM = 1
+
+    ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
 
