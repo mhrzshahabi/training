@@ -2957,6 +2957,7 @@
         function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents,userInPersonnelTblList) {
             let preCourseNames = "";
             let names = "";
+            let retiredNames = "";
             let sessionNames="";
             let duplicateUser="";
 
@@ -2978,7 +2979,6 @@
             }
 
             if (warnStudents.length > 0) {
-
                 for (var j = 0; j < warnStudents.length; j++) {
 
                     names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
@@ -3003,11 +3003,10 @@
             }
 
             if (inValidPersonnel.length > 0) {
-
                 for (let z = 0; z < inValidPersonnel.length; z++) {
-                    names = names.concat(inValidPersonnel[z].firstName + " " + inValidPersonnel[z].lastName);
+                    retiredNames = retiredNames.concat(inValidPersonnel[z].firstName + " " + inValidPersonnel[z].lastName);
                     if (z !== inValidPersonnel.length - 1)
-                        names = names.concat(", ");
+                        retiredNames = retiredNames.concat(", ");
                 }
             }
 
@@ -3149,7 +3148,7 @@
                         DynamicForm_Warn_Students.getItem("text").show();
                         DynamicForm_Warn_Students.getItem("warnNames").show();
                         DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
-                        DynamicForm_Warn_Students.setValue("warnNames", names);
+                        DynamicForm_Warn_Students.setValue("warnNames", retiredNames);
                     }
 
                 let Window_Warn_Students = isc.Window.create({

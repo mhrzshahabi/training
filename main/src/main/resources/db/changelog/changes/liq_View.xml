@@ -21914,4 +21914,103 @@ SELECT * FROM (
         </createView>
     </changeSet>
 
+    <changeSet author="namdari" id="1662793457-788">
+        <createView viewName="VIEW_TIME_INTERFERENCE_COMPREHENSIVE_CLASSES_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    rownum                                                  AS id,
+    res.count_TimeInterference                              AS count_time_interference ,
+    tbl_student.first_name || ' ' || tbl_student.last_name  AS student_full_name,
+    res.national_code1                                      AS national_code,
+    tbl_student.emp_no                                      AS student_work_code,
+    tbl_student.ccp_affairs                                 AS student_affairs,
+    tbl_class.c_title_class                                 AS concurrent_courses,
+    tbl_class.c_code                                        AS class_code,
+    tbl_class_student.c_created_by                          AS adding_user,
+    tbl_class_student.c_last_modified_by                    AS last_modified_by,
+    res.c_session_date1                                     AS session_date,
+    res.c_session_start_hour1                               AS session_start_hour,
+    res.c_session_end_hour1                                 AS session_end_hour,
+
+    res.session_id                                          AS session_id,
+    tbl_class_student.student_id                            AS student_id ,
+    tbl_class_student.d_created_date                        AS class_student_d_created_date,
+    tbl_class_student.d_last_modified_date                  AS class_student_d_last_modified_date
+
+FROM
+         (
+        SELECT
+            COUNT(national_code)
+            OVER(PARTITION BY national_code) AS count_TimeInterference,
+            national_code                                                              AS national_code1,
+            c_session_end_hour                                                         AS c_session_end_hour1,
+            c_session_start_hour                                                       AS c_session_start_hour1,
+            c_session_date                                                             AS c_session_date1,
+            session_id,
+            student_id
+        FROM
+            (
+               with cte as
+(
+
+SELECT
+                    tbl_session.c_session_date,
+                    tbl_session.c_session_start_hour,
+                    tbl_session.c_session_end_hour,
+                    tbl_student.national_code,
+                    tbl_student.id AS student_id,
+                    tbl_session.id AS session_id
+                FROM
+                         tbl_session
+                    INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id
+                    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+ )
+
+ select distinct
+ u2.*
+ from cte u
+
+ inner join cte  u2
+
+ on  u.national_code = u2.national_code and u.session_id != u2.session_id
+
+ WHERE
+                u.c_session_date = u2.c_session_date
+            AND u.national_code = u2.national_code
+            AND u.session_id != u2.session_id
+            AND 1 = 1
+            AND ( ( u.c_session_start_hour = u2.c_session_start_hour
+                    AND u.c_session_end_hour = u2.c_session_end_hour )
+                  OR ( u.c_session_start_hour < u2.c_session_end_hour
+                       AND u.c_session_end_hour > u2.c_session_end_hour )
+                  OR ( u.c_session_start_hour < u2.c_session_start_hour
+                       AND u.c_session_end_hour > u2.c_session_start_hour ) )
+
+
+
+            )
+        GROUP BY
+            national_code,
+            c_session_end_hour,
+            c_session_start_hour,
+            c_session_date,
+            session_id,
+            student_id
+    ) res
+    INNER JOIN tbl_session
+            ON res.session_id =tbl_session.id
+    INNER JOIN tbl_class
+            ON tbl_session.f_class_id =tbl_class.id
+    INNER JOIN tbl_student
+            ON res.student_id = tbl_student.id
+    INNER JOIN tbl_class_student
+            ON tbl_session.f_class_id = tbl_class_student.class_id
+            AND res.student_id = tbl_class_student.student_id
+WHERE
+      res.count_TimeInterference > 1
+    ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
