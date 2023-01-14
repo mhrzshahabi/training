@@ -103,6 +103,12 @@ public class RequestItemService implements IRequestItemService {
         return requestItemDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
+    @Override
+    public Long getIdByProcessInstanceId(String processInstanceId) {
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(processInstanceId);
+        return optionalRequestItem.map(RequestItem::getId).orElse(null);
+    }
+
     public String getNationalCode(String personnelNumber) {
         Personnel personnel = personnelService.getByPersonnelNumber(personnelNumber);
         return personnel.getNationalCode();

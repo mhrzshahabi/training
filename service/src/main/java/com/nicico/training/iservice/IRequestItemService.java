@@ -22,6 +22,8 @@ public interface IRequestItemService {
 
     RequestItem get(Long id);
 
+    Long getIdByProcessInstanceId(String processInstanceId);
+
     void delete(Long id);
 
     List<RequestItem> getList();
