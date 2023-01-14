@@ -378,7 +378,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl+ "/excel-search" , 0, null, '',  "گزارش اصلی واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(true,null, ListGrid_JspUnitReport, statisticsUnitReportUrl+ "/excel-search" , 0, null, '',  "گزارش اصلی واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
         }
     });
 
