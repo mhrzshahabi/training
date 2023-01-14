@@ -951,13 +951,14 @@
                 exportExcelWindow.show();
             }
 
-            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn,allowPrintAllData = false){
+            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn){
                 let size = listgrid.getOriginalData().size();
-                let maxCount=5000;
+                let maxCount=0
+                if (restUrl!==null && restUrl !== undefined && restUrl.contains('ViewStatisticsUnitReport'))
+                 maxCount=size;
+                else
+                    maxCount=5000;
 
-                if (allowPrintAllData){
-                    maxCount=size
-                }
 
                 size = Math.min(maxCount,size);
                 if(isValidate==null){
@@ -1119,7 +1120,7 @@
                 }
             }
 
-            static downloadExcelRestUrl(allowPrintAllData = false,title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
 
 
                 if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
@@ -1143,11 +1144,11 @@
                         showDialog.addProperties({
                             buttonClick: function (button, index) {
                                 this.close();
-                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn,allowPrintAllData);
+                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                             }
                         });
                     }else{
-                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn,allowPrintAllData);
+                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                     }
                 }else{
                     this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName, exceptColumn);
