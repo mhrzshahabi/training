@@ -8,11 +8,16 @@ import com.nicico.training.repository.RequestItemCoursesDetailDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -58,6 +63,34 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                 requestItemCoursesDetailSet.add(requestItemCoursesDetail);
         }
         return modelMapper.map(requestItemCoursesDetailSet, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
+    }
+
+    @Scheduled(cron = "0 30 17 1/1 * ?")
+//    @Scheduled(cron = "*/1 * * * * ?") //every minute
+    @Transactional
+    public void approveCompleteTasks() {
+        try {
+            List<RequestItemCoursesDetailDTO.CompleteTaskDto> list = new ArrayList<>();
+
+            List<?> completeTasks = requestItemCoursesDetailDAO.getCompleteTasks();
+
+            if (completeTasks != null) {
+                for (Object completeTask : completeTasks) {
+                    Object[] data = (Object[]) completeTask;
+                    list.add(new RequestItemCoursesDetailDTO.CompleteTaskDto((data[0] != null ? Long.parseLong(data[0].toString()) : 0),
+                            (data[1] != null ? (data[1].toString()) : ""),
+                            (data[2] != null ? (data[2].toString()) : "")
+                    ));
+                }
+            }
+            //todo shahabi approve Complete Tasks
+
+            }catch(Exception e){
+            Logger.getLogger(RequestItemCoursesDetailService.class.getName()).log(Level.SEVERE, null, e);
+            }
+
+
+
     }
 
 }
