@@ -3131,6 +3131,33 @@ public class ElsRestController {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("خطای شناسایی");
         }
+        return response;
+    }
+
+    @PutMapping("/teacher/update-question/{question-id}")
+    public UpdateQuestionActivationStateResponse updateQuestionActivationState(HttpServletRequest header,
+                                                                               @PathVariable("question-id") Long questionId,
+                                                                               @RequestParam Boolean isActive) {
+        UpdateQuestionActivationStateResponse response = new UpdateQuestionActivationStateResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Boolean updated = elsService.updateQuestionActivationState(questionId, isActive);
+                response.setUpdated(updated);
+                if (updated) {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("کلاس مورد نظر با موفقیت به روز رسانی شد");
+                } else {
+                    response.setStatus(HttpStatus.BAD_REQUEST.value());
+                    response.setMessage("خطا در به روز رسانی کلاس:");
+                }
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("خطا در به روز رسانی کلاس: " + e.getMessage());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
 
         return response;
     }

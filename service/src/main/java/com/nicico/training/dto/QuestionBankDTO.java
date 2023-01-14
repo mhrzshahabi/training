@@ -32,6 +32,7 @@ public class QuestionBankDTO {
     private Double proposedTimeValue;
     private Integer lines;
     private List<Integer> questionTargets;
+    private Long enabled;
 
     @Getter
     @Setter

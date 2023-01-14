@@ -20,4 +20,6 @@ public interface IElsService {
     List<ExamStudentDTO.Info> getAllStudentsOfExam(Long examId);
 
     List<String> updateScores(List<ExamStudentDTO.Score> list);
+
+    Boolean updateQuestionActivationState(Long questionId, Boolean isActive);
 }
