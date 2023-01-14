@@ -2237,8 +2237,13 @@ let inValidStudents = [];
             createDialog("warning", "<spring:message code='msg.can.not.edit.selected.record'/>", "<spring:message code="warning"/>");
         }
         else{
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "GET", null, result_EditFinalTest));
+            if (record.testQuestionType!==undefined && record.testQuestionType!== null && record.testQuestionType==='FinalTest'){
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "GET", null, result_EditFinalTest));
+            }else {
+                createDialog("warning", "آزمون از نوع پیش آزمون است و داده ای برای ویرایش ندارد.", "<spring:message code="warning"/>");
+            }
+
 
         }
     }
