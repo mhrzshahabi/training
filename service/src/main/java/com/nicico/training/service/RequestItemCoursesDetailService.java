@@ -2,14 +2,20 @@ package com.nicico.training.service;
 
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.iservice.IRequestItemCoursesDetailService;
+import com.nicico.training.iservice.IRequestItemProcessDetailService;
+import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.model.RequestItemCoursesDetail;
 import com.nicico.training.model.RequestItemProcessDetail;
 import com.nicico.training.repository.RequestItemCoursesDetailDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import response.BaseResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -26,8 +32,10 @@ import java.util.stream.Collectors;
 public class RequestItemCoursesDetailService implements IRequestItemCoursesDetailService {
 
     private final ModelMapper modelMapper;
+    @Autowired @Lazy
+    private IRequestItemService requestItemService;
     private final RequestItemCoursesDetailDAO requestItemCoursesDetailDAO;
-    private final RequestItemProcessDetailService requestItemProcessDetailService;
+    private final IRequestItemProcessDetailService requestItemProcessDetailService;
 
     @Override
     public RequestItemCoursesDetail create(RequestItemCoursesDetailDTO.Create create) {
@@ -65,13 +73,37 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
         return modelMapper.map(requestItemCoursesDetailSet, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
     }
 
+    @Override
+    public BaseResponse updateCoursesDetailAfterRunSupervisorReview(String processInstanceId, String taskId, String courseCode) {
+
+        BaseResponse baseResponse = new BaseResponse();
+        Long requestItemId = requestItemService.getIdByProcessInstanceId(processInstanceId);
+        if (requestItemId != null) {
+            Long requestItemProcessDetailId = requestItemProcessDetailService.findAllByRequestItemId(requestItemId).stream().filter(item -> item.getRoleName().equals("planningChief"))
+                    .findFirst().map(RequestItemProcessDetail::getId).orElse(null);
+            if (requestItemProcessDetailId != null) {
+                List<RequestItemCoursesDetail> requestItemCoursesDetails = requestItemCoursesDetailDAO.findAllByRequestItemProcessDetailId(requestItemProcessDetailId);
+                RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetails.stream().filter(item -> item.getCourseCode().equals(courseCode)).findFirst().orElse(null);
+                if (requestItemCoursesDetail != null) {
+                    requestItemCoursesDetail.setTaskIdPerCourse(taskId);
+                    requestItemCoursesDetail.setProcessState("بررسی کارشناس اجرا");
+                    requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
+                    baseResponse.setStatus(HttpStatus.OK.value());
+                } else
+                    baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            } else
+                baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        } else
+            baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        return baseResponse;
+    }
+
     @Scheduled(cron = "0 30 17 1/1 * ?")
 //    @Scheduled(cron = "*/1 * * * * ?") //every minute
     @Transactional
     public void approveCompleteTasks() {
         try {
             List<RequestItemCoursesDetailDTO.CompleteTaskDto> list = new ArrayList<>();
-
             List<?> completeTasks = requestItemCoursesDetailDAO.getCompleteTasks();
 
             if (completeTasks != null) {
@@ -85,12 +117,9 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
             }
             //todo shahabi approve Complete Tasks
 
-            }catch(Exception e){
+        } catch (Exception e) {
             Logger.getLogger(RequestItemCoursesDetailService.class.getName()).log(Level.SEVERE, null, e);
-            }
-
-
-
+        }
     }
 
 }

@@ -44,4 +44,10 @@ public class RequestItemCoursesDetail extends Auditable implements Serializable 
     @Column(name = "f_request_item_process_detail_id")
     private Long requestItemProcessDetailId;
 
+    @Column(name = "c_process_state")
+    private String processState;
+
+    @Column(name = "c_task_id_per_course")
+    private String taskIdPerCourse;
+
 }
