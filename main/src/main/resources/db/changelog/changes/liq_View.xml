@@ -22096,4 +22096,161 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="kasehpour_t" id="1673761671-01">
+        <createView viewName="view_synonym_personnel" replaceIfExists="true">
+            <![CDATA[
+              WITH tbl_md_employee_mdms_cte AS (
+                    (
+                         SELECT
+                            ROWW_NUUM,
+                            c_id,
+                            c_em_number,
+                            c_em_number_10,
+                            c_address,
+                            c_national_code,
+                            c_inc_dep_code,
+                            c_inc_dep_title,
+                            c_area_of_study,
+                            p_type,
+                            c_dep_id,
+                            c_geo_id,
+                            c_emp_date,
+                            c_work_place_title,
+                            c_edu_lvl_title,
+                            c_emp_status_id,
+                            c_job_code,
+                            c_people_id,
+                            c_post_id
+
+                        FROM
+                            (
+                                    select
+                                         row_number () over (PARTITION BY tbl_md_employee_mdms.c_national_code ORDER BY tbl_md_employee_mdms.c_emp_date DESC) AS ROWW_NUUM,
+                                                    tbl_md_employee_mdms.c_id,
+                                                    tbl_md_employee_mdms.c_em_number,
+                                                    tbl_md_employee_mdms.c_em_number_10,
+                                                    tbl_md_employee_mdms.c_address,
+                                                    tbl_md_employee_mdms.c_national_code,
+                                                    tbl_md_employee_mdms.c_inc_dep_code,
+                                                    tbl_md_employee_mdms.c_inc_dep_title,
+                                                    tbl_md_employee_mdms.c_area_of_study,
+                                                       tbl_md_employee_mdms.p_type,
+                                                    tbl_md_employee_mdms.c_dep_id,
+                                                    tbl_md_employee_mdms.c_geo_id,
+                                                       tbl_md_employee_mdms.c_emp_date,
+                                                    tbl_md_employee_mdms.c_work_place_title,
+                                                    tbl_md_employee_mdms.c_edu_lvl_title,
+                                                     tbl_md_employee_mdms.c_emp_status_id,
+                                                     tbl_md_employee_mdms.c_job_code,
+                                                     tbl_md_employee_mdms.c_people_id,
+                                                     tbl_md_employee_mdms.c_post_id
+
+                                    from  tbl_md_employee_mdms
+
+                                    GROUP  BY
+                                     tbl_md_employee_mdms.c_id,
+                                                    tbl_md_employee_mdms.c_em_number,
+                                                    tbl_md_employee_mdms.c_em_number_10,
+                                                    tbl_md_employee_mdms.c_address,
+                                                    tbl_md_employee_mdms.c_national_code,
+                                                    tbl_md_employee_mdms.c_inc_dep_code,
+                                                    tbl_md_employee_mdms.c_inc_dep_title,
+                                                    tbl_md_employee_mdms.c_area_of_study,
+                                                       tbl_md_employee_mdms.p_type,
+                                                    tbl_md_employee_mdms.c_dep_id,
+                                                    tbl_md_employee_mdms.c_geo_id,
+                                                       tbl_md_employee_mdms.c_emp_date,
+                                                    tbl_md_employee_mdms.c_work_place_title,
+                                                    tbl_md_employee_mdms.c_edu_lvl_title,
+                                                    tbl_md_employee_mdms.p_type,
+                                                     tbl_md_employee_mdms.c_emp_status_id,
+                                                     tbl_md_employee_mdms.c_job_code,
+                                                     tbl_md_employee_mdms.c_people_id,
+                                                     tbl_md_employee_mdms.c_post_id
+                            )
+                      WHERE ROWW_NUUM = 1
+                    )
+)
+
+  SELECT    DISTINCT
+                tbl_md_employee_mdms_cte.c_id                       AS id,
+                tbl_md_employee_mdms_cte.c_em_number                AS emp_no,
+                tbl_md_employee_mdms_cte.c_em_number_10             AS personnel_no,
+                tbl_md_employee_mdms_cte.c_address                  AS address,
+                tbl_md_employee_mdms_cte.c_national_code            AS national_code,
+                tbl_md_people_mdms.c_birth_city                 AS birth_place,
+                tbl_md_people_mdms.c_birthdate                  AS birth_date,
+                tbl_md_people_mdms.c_father_name                AS father_name,
+                tbl_md_people_mdms.c_first_name                 AS first_name,
+                tbl_md_people_mdms.c_last_name                  AS last_name,
+                tbl_md_people_mdms.c_ssn                        AS birth_certificate_no,
+                tbl_md_people_mdms.c_mobile                     AS phone,
+                post_detail.post_title                          AS post_title,
+                post_detail.post_code                           AS post_code,
+                0 AS deleted,
+                CASE
+                    WHEN tbl_md_people_mdms.c_gender = 'MALE'   THEN
+                        'مرد'
+                    WHEN tbl_md_people_mdms.c_gender = 'FEMALE' THEN
+                        'زن'
+                    END                                         AS gender_title,
+               post_detail.f_post_id                            AS f_post_id,
+                tbl_md_employee_mdms_cte.c_inc_dep_code             AS department_code,
+                tbl_md_employee_mdms_cte.c_inc_dep_title            AS department_title,
+                tbl_md_employee_mdms_cte.c_area_of_study            AS education_field_title,
+                vw_department.c_omor_title                      AS ccp_affairs,
+                vw_department.c_moavenat_title                  AS ccp_assistant,
+                vw_department.c_hoze_title                      AS ccp_area,
+                vw_department.c_code                            AS ccp_code,
+                vw_department.c_ghesmat_title                   AS ccp_section,
+                vw_department.c_vahed_title                     AS ccp_unit,
+                vw_department.c_title                           AS ccp_title,
+                tbl_md_employee_mdms_cte.p_type                     AS p_type,
+                tbl_md_employee_mdms_cte.c_dep_id                   AS f_department_id,
+                tbl_md_employee_mdms_cte.c_geo_id                   AS f_geo_id,
+                tbl_md_people_mdms.c_username                   AS c_username,
+               post_detail.post_grade_code                      AS post_grade_code,
+                post_detail.post_grade_title                    AS post_grade_title,
+                tbl_md_employee_mdms_cte.c_emp_date                 AS employment_date,
+                tbl_md_employee_mdms_cte.c_work_place_title         AS work_place_title,
+                tbl_md_employee_mdms_cte.c_edu_lvl_title            AS education_level_title,
+                tbl_md_job_mdms.c_title                         AS job_title,
+                CASE
+                    WHEN tbl_md_employee_mdms_cte.p_type = 'ContractorPersonal' THEN
+                        tbl_md_geo_work_mdms.c_title
+                    ELSE
+                        'شرکت ملي صنايع مس ايران'
+                    END                                             AS company_name,
+                tbl_md_people_mdms.c_email                      AS email,
+                tbl_md_employee_status_mdms.c_title AS employment_status_title,
+                tbl_md_employee_mdms_cte.c_emp_status_id as employment_status_id,
+                vw_department.C_MOJTAME_TITLE as complex_title ,
+                tbl_md_employee_status_mdms.c_code AS employment_status_code
+
+            FROM
+                  tbl_md_employee_mdms_cte
+                  LEFT JOIN tbl_md_employee_status_mdms ON tbl_md_employee_mdms_cte.c_emp_status_id = tbl_md_employee_status_mdms.c_id
+                  LEFT JOIN tbl_md_geo_work_mdms ON tbl_md_employee_mdms_cte.c_geo_id = tbl_md_geo_work_mdms.c_id
+                  LEFT JOIN tbl_md_job_mdms ON tbl_md_employee_mdms_cte.c_job_code = tbl_md_job_mdms.c_code
+                  LEFT JOIN tbl_md_people_mdms ON tbl_md_employee_mdms_cte.c_people_id = tbl_md_people_mdms.c_id
+                  LEFT JOIN vw_department ON tbl_md_employee_mdms_cte.c_dep_id = vw_department.c_id
+                  LEFT JOIN(
+                                SELECT
+                                    tbl_md_post_mdms.c_id  AS  tbl_md_post_mdms_c_id
+                                   ,tbl_md_post_mdms.c_title                        AS post_title
+                                   ,tbl_md_post_mdms.c_code                         AS post_code
+                                   ,tbl_md_post_grade_mdms.c_code                  AS post_grade_code
+                                   ,RTRIM(regexp_replace(tbl_md_post_grade_mdms.c_title, '[0-9]', '')) AS post_grade_title
+                                   ,tbl_post.id                                     AS f_post_id
+
+                                FROM tbl_md_post_mdms
+                                    LEFT JOIN tbl_md_post_grade_mdms ON tbl_md_post_mdms.c_grade_id = tbl_md_post_grade_mdms.c_id
+                                    LEFT JOIN tbl_post ON tbl_md_post_mdms.c_code = tbl_post.c_code and tbl_post.e_deleted is null
+                           )post_detail
+                    ON tbl_md_employee_mdms_cte.c_post_id =  post_detail.tbl_md_post_mdms_c_id
+
+             ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
