@@ -845,6 +845,30 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public void autoReviewRequestItemTaskByRunExperts(List<RequestItemCoursesDetailDTO.CompleteTaskDto> completeTaskDtoList) {
+
+        BaseResponse response = new BaseResponse();
+        completeTaskDtoList.forEach(item -> {
+            Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(item.getProcessInstanceId());
+            if (optionalRequestItem.isPresent()) {
+                ReviewTaskRequest reviewTaskRequest = new ReviewTaskRequest();
+                reviewTaskRequest.setProcessInstanceId(item.getProcessInstanceId());
+                reviewTaskRequest.setTaskId(item.getTaskIdPerCourse());
+                reviewTaskRequest.setApprove(true);
+                try {
+                    bpmsClientService.reviewTask(reviewTaskRequest);
+                    RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetailService.findById(item.getId());
+                    requestItemCoursesDetail.setProcessState("تایید اتوماتیک کارشناس اجرا");
+                    requestItemCoursesDetailService.save(requestItemCoursesDetail);
+                    response.setStatus(HttpStatus.OK.value());
+                } catch (Exception e) {
+                    response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
+                }
+            }
+        });
+    }
+
+    @Override
     @Transactional
     public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(ReviewTaskRequest reviewTaskRequest) {
 

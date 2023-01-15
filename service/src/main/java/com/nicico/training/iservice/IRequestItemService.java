@@ -82,6 +82,8 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
 
+    void autoReviewRequestItemTaskByRunExperts(List<RequestItemCoursesDetailDTO.CompleteTaskDto> completeTaskDtoList);
+
     BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(ReviewTaskRequest reviewTaskRequest);
 
     BaseResponse reviewRequestItemTaskByRunChiefForApproval(ReviewTaskRequest reviewTaskRequest);
