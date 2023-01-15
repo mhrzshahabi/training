@@ -23,7 +23,7 @@ public class RequestItemCoursesDetailRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/auto-review-by-reun-experts")
+    @GetMapping(value = "/auto-review-by-run-experts")
     public void autoReviewRequestItemTaskByRunExperts() {
         requestItemCoursesDetailService.approveCompleteTasks();
     }
