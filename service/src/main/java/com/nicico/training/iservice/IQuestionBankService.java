@@ -30,6 +30,8 @@ public interface IQuestionBankService {
 
     QuestionBankDTO.Info update(Long id, QuestionBankDTO.Update request);
 
+    Boolean update(Long id, Boolean isActive);
+
     void delete(Long id);
 
     Page<QuestionBank> findAll(Integer page, Integer size);

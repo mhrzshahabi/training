@@ -10,6 +10,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.model.QuestionBank;
+import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,9 +25,10 @@ import response.BaseResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.nicico.training.service.BaseService.*;
 
 @Slf4j
 @RestController
@@ -79,24 +81,32 @@ public class QuestionBankRestController {
                                                                    @RequestParam(value = "id", required = false) Long id,
                                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws NoSuchFieldException, IllegalAccessException, IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq;
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.and);
+
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
+            criteriaRq.setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+            }));
+        }
 
+        SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("enabled", null, EOperator.isNull, null);
 
-            request.setCriteria(criteriaRq);
-            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
-            {
-                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                    if (criterion.getFieldName() != null) {
-                        if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel") ||
-                                criterion.getFieldName().equals("equestionLevel.id") || criterion.getFieldName().equals("equestionLevel")) {
-                            criterion.setFieldName("eQuestionLevelId");
-                        }
+        if (criteriaRq.getCriteria() != null) {
+            criteriaRq.getCriteria().add(criteriaRq1);
+        } else {
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            criteriaRqList.add(criteriaRq1);
+            criteriaRq.setCriteria(criteriaRqList);
+        }
+
+        request.setCriteria(criteriaRq);
+        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
+            for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                if (criterion.getFieldName() != null) {
+                    if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel") ||
+                        criterion.getFieldName().equals("equestionLevel.id") || criterion.getFieldName().equals("equestionLevel")) {
+                        criterion.setFieldName("eQuestionLevelId");
                     }
                 }
             }
@@ -104,7 +114,7 @@ public class QuestionBankRestController {
 
         if (StringUtils.isNotEmpty(sortBy)) {
             if (sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel") ||
-                    sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")){
+                sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")) {
                 sortBy = "eQuestionLevelId";
             }
             request.setSortBy(sortBy);

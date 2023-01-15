@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import request.exam.ElsSendExamToTrainingResponse;
 import request.exam.ExamResult;
+import request.exam.UpdateQuestionActivationStateResponse;
 import response.BaseResponse;
 
 import java.util.*;
@@ -236,7 +238,7 @@ public class ElsService implements IElsService {
 
     }
 
-        private boolean isScoreInValidRange(Float score, String scoringMethod) {
+    private boolean isScoreInValidRange(Float score, String scoringMethod) {
         if (scoringMethod.equals("2")) { // از 100 نمره
             return score >= 0 && score <= 100;
         }
@@ -258,6 +260,11 @@ public class ElsService implements IElsService {
             parameterValue = parameterValueService.findById(notPassedCodeId).orElse(null);
         }
         return parameterValue;
+    }
+
+    @Override
+    public Boolean updateQuestionActivationState(Long questionId, Boolean isActive) {
+        return questionBankService.update(questionId, isActive);
     }
 
 }
