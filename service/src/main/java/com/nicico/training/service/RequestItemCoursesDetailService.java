@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.iservice.IRequestItemCoursesDetailService;
 import com.nicico.training.iservice.IRequestItemProcessDetailService;
@@ -13,15 +14,11 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import response.BaseResponse;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -41,6 +38,19 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
     public RequestItemCoursesDetail create(RequestItemCoursesDetailDTO.Create create) {
         RequestItemCoursesDetail requestItemCoursesDetail = modelMapper.map(create, RequestItemCoursesDetail.class);
         return requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public RequestItemCoursesDetail findById(Long id) {
+        Optional<RequestItemCoursesDetail> byId = requestItemCoursesDetailDAO.findById(id);
+        return byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    }
+
+    @Transactional
+    @Override
+    public void save(RequestItemCoursesDetail requestItemCoursesDetail) {
+        requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
     }
 
     @Override
@@ -98,9 +108,10 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
         return baseResponse;
     }
 
-    @Scheduled(cron = "0 30 17 1/1 * ?")
+//    @Scheduled(cron = "0 30 17 1/1 * ?")
 //    @Scheduled(cron = "*/1 * * * * ?") //every minute
     @Transactional
+    @Override
     public void approveCompleteTasks() {
         try {
             List<RequestItemCoursesDetailDTO.CompleteTaskDto> list = new ArrayList<>();
@@ -115,8 +126,7 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                     ));
                 }
             }
-            //todo shahabi approve Complete Tasks
-
+            requestItemService.autoReviewRequestItemTaskByRunExperts(list);
         } catch (Exception e) {
             Logger.getLogger(RequestItemCoursesDetailService.class.getName()).log(Level.SEVERE, null, e);
         }

@@ -44,12 +44,12 @@ public class RequestItemCoursesDetailDTO {
     @ApiModel("CompleteTaskDto")
     public static class CompleteTaskDto {
         private Long id;
-        private String taskId;
+        private String taskIdPerCourse;
         private String processInstanceId;
 
         public CompleteTaskDto(Long id, String taskId, String processInstanceId) {
             this.id = id;
-            this.taskId = taskId;
+            this.taskIdPerCourse = taskId;
             this.processInstanceId = processInstanceId;
         }
     }

@@ -11,6 +11,10 @@ public interface IRequestItemCoursesDetailService {
 
     RequestItemCoursesDetail create(RequestItemCoursesDetailDTO.Create create);
 
+    RequestItemCoursesDetail findById(Long id);
+
+    void save(RequestItemCoursesDetail requestItemCoursesDetail);
+
     List<RequestItemCoursesDetailDTO.Info> findAllByRequestItemProcessDetailId(Long requestItemProcessDetailId);
 
     RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion, Long chiefOpinionId);
@@ -18,5 +22,7 @@ public interface IRequestItemCoursesDetailService {
     List<RequestItemCoursesDetailDTO.Info> findAllByRequestItem(Long requestItemId);
 
     BaseResponse updateCoursesDetailAfterRunSupervisorReview(String processInstanceId, String taskId, String courseCode);
+
+    void approveCompleteTasks();
 
 }

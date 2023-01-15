@@ -21,4 +21,10 @@ public class RequestItemCoursesDetailRestController {
     public BaseResponse updateCoursesDetailAfterRunSupervisorReview(@RequestParam String processInstanceId, @RequestParam String taskId, @RequestParam String courseCode) {
         return requestItemCoursesDetailService.updateCoursesDetailAfterRunSupervisorReview(processInstanceId, taskId, courseCode);
     }
+
+    @Loggable
+    @GetMapping(value = "/auto-review-by-reun-experts")
+    public void autoReviewRequestItemTaskByRunExperts() {
+        requestItemCoursesDetailService.approveCompleteTasks();
+    }
 }
