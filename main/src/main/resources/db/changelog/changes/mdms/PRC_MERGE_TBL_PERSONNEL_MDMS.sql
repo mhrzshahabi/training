@@ -3,6 +3,7 @@ create or replace PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
 BEGIN------------UPDATE-------------------------------------------------------
 
 
+
 MERGE INTO TBL_PERSONNEL T
     USING (
         SELECT to_char(emp.c_em_number_10) AS personnel_no,
@@ -45,7 +46,7 @@ MERGE INTO TBL_PERSONNEL T
                emp.ccp_unit                AS ccp_unit,
                emp.company_name            AS company_name
         FROM (SELECT emp.*,
-                     emp.c_official_post_pure_title AS post_title,
+                     post.c_title_fa AS post_title,
                      CASE
                          WHEN emp.p_type = 'ContractorPersonal' THEN
                              geo.c_title
@@ -376,7 +377,6 @@ MERGE INTO TBL_PERSONNEL T
                 t.c_username              = CHANGES_.c_username;
 
 --------------INSERT-----------------------------------------------------
-
 MERGE INTO TBL_PERSONNEL T
     USING (
         SELECT to_char(emp.c_em_number_10)    AS personnel_no,
@@ -407,7 +407,7 @@ MERGE INTO TBL_PERSONNEL T
                emp.c_home_phone               AS phone,
                emp.c_post_code                AS post_code,
                emp.jobgrade                AS post_grade_code,
-               emp.c_official_post_pure_title AS post_title,
+               emp.post_title AS post_title,
                emp.p_type                     AS p_type,
                --emp.c_inc_dep_id               AS f_department_id,
                --emp.c_geo_id                   AS f_geo_id,
@@ -453,6 +453,8 @@ MERGE INTO TBL_PERSONNEL T
                      dep.c_code           AS department_code,
                      geo.id               AS f_geo_id,
                      dep.id               AS f_department_id,
+                     post.c_title_fa              As post_title ,
+
                      post.id              As f_post_id
               FROM (select po.c_username,
                            po.C_BIRTH_CITY,
