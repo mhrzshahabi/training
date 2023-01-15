@@ -108,9 +108,6 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
         return baseResponse;
     }
 
-//    @Scheduled(cron = "0 30 17 1/1 * ?")
-//    @Scheduled(cron = "*/1 * * * * ?") //every minute
-    @Transactional
     @Override
     public void approveCompleteTasks() {
         try {
