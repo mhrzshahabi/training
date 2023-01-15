@@ -229,6 +229,9 @@ public class QuestionBankService implements IQuestionBankService {
         } else {
             questionBank.setEnabled(74L);
         }
+
+        questionBankDAO.save(questionBank);
+
         return true;
     }
 
