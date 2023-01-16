@@ -9784,6 +9784,10 @@ DECLARE
 
     </changeSet>
 
+    <changeSet  author="namdari"  id="1673784269-25">
+        <dropProcedure procedureName="PRC_MERGE_MDMS"/>
+    </changeSet>
+
 
 </databaseChangeLog>
 
