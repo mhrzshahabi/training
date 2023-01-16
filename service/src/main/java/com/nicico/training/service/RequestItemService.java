@@ -854,6 +854,7 @@ public class RequestItemService implements IRequestItemService {
                 ReviewTaskRequest reviewTaskRequest = new ReviewTaskRequest();
                 reviewTaskRequest.setProcessInstanceId(item.getProcessInstanceId());
                 reviewTaskRequest.setTaskId(item.getTaskIdPerCourse());
+                reviewTaskRequest.setUserName(SecurityUtil.getUsername());
                 reviewTaskRequest.setApprove(true);
                 try {
                     bpmsClientService.reviewTask(reviewTaskRequest);
