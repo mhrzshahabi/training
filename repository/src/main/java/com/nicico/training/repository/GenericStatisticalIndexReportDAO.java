@@ -2372,7 +2372,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                    RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
                   \s
                               WHERE 1=1\s
-                                     and class.C_TEACHING_TYPE =  'آموزش حین کار'\s
+                                     and class.C_TEACHING_TYPE  like  '%OJT%'\s
                                       and class.C_START_DATE >=  :fromDate
                                       and class.C_START_DATE <=  :toDate
            
