@@ -798,7 +798,7 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest) {
+    public BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest, String courseCode) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
@@ -828,16 +828,13 @@ public class RequestItemService implements IRequestItemService {
         if (response.getStatus() == 200) {
             try {
                 bpmsClientService.reviewTask(reviewTaskRequest);
+                requestItemCoursesDetailService.updateCoursesDetailAfterRunExpertManualReview(reviewTaskRequest.getProcessInstanceId(), courseCode);
                 response.setMessage("عملیات موفقیت آمیز به پایان رسید");
             } catch (Exception e) {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
-        }
-//        else if (response.getStatus() == 400) {
-//            response.setMessage("برای بعضی از دوره ها سرپرست اجرا تعریف نشده است");
-//        }
-        else {
+        } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
         }

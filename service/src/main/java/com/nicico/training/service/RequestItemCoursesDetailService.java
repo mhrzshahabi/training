@@ -109,6 +109,30 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
     }
 
     @Override
+    public BaseResponse updateCoursesDetailAfterRunExpertManualReview(String processInstanceId, String courseCode) {
+
+        BaseResponse baseResponse = new BaseResponse();
+        Long requestItemId = requestItemService.getIdByProcessInstanceId(processInstanceId);
+        if (requestItemId != null) {
+            Long requestItemProcessDetailId = requestItemProcessDetailService.findAllByRequestItemId(requestItemId).stream().filter(item -> item.getRoleName().equals("planningChief"))
+                    .findFirst().map(RequestItemProcessDetail::getId).orElse(null);
+            if (requestItemProcessDetailId != null) {
+                List<RequestItemCoursesDetail> requestItemCoursesDetails = requestItemCoursesDetailDAO.findAllByRequestItemProcessDetailId(requestItemProcessDetailId);
+                RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetails.stream().filter(item -> item.getCourseCode().equals(courseCode)).findFirst().orElse(null);
+                if (requestItemCoursesDetail != null) {
+                    requestItemCoursesDetail.setProcessState("تایید دستی کارشناس اجرا");
+                    requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
+                    baseResponse.setStatus(HttpStatus.OK.value());
+                } else
+                    baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            } else
+                baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        } else
+            baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        return baseResponse;
+    }
+
+    @Override
     public void approveCompleteTasks() {
         try {
             List<RequestItemCoursesDetailDTO.CompleteTaskDto> list = new ArrayList<>();
