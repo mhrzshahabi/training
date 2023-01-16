@@ -167,9 +167,9 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/run-experts/request-item/review"})
-    public BaseResponse reviewRequestItemTaskByRunExperts(@RequestBody ReviewTaskRequest reviewTaskRequest) {
-        return requestItemService.reviewRequestItemTaskByRunExperts(reviewTaskRequest);
+    @PostMapping({"/tasks/run-experts/request-item/review/{courseCode}"})
+    public BaseResponse reviewRequestItemTaskByRunExperts(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String courseCode) {
+        return requestItemService.reviewRequestItemTaskByRunExperts(reviewTaskRequest, courseCode);
     }
 
 //    @Loggable

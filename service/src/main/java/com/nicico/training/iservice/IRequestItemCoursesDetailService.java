@@ -23,6 +23,8 @@ public interface IRequestItemCoursesDetailService {
 
     BaseResponse updateCoursesDetailAfterRunSupervisorReview(String processInstanceId, String taskId, String courseCode);
 
+    BaseResponse updateCoursesDetailAfterRunExpertManualReview(String processInstanceId, String courseCode);
+
     void approveCompleteTasks();
 
 }

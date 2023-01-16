@@ -3126,7 +3126,7 @@
     function confirmRequestItemProcessByRunExperts(record, window) {
 
         let baseUrl = requestItemBPMSUrl;
-        let url = "/tasks/run-experts/request-item/review";
+        let url = "/tasks/run-experts/request-item/review/" + record.courseCode;
 
         let reviewTaskRequest = {
             taskId: record.taskId,

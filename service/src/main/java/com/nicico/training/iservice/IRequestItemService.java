@@ -80,7 +80,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String courseCode);
 
-    BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
+    BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest, String courseCode);
 
     void autoReviewRequestItemTaskByRunExperts(List<RequestItemCoursesDetailDTO.CompleteTaskDto> completeTaskDtoList);
 
