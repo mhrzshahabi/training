@@ -9544,6 +9544,247 @@ DECLARE
     </changeSet>
 
 
+
+    <changeSet  author="namdari"  id="1673784269-1">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_AHMADI_COURSE_IN_NEEDASSESMENT"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_AHMADI_COURSE_IN_NEEDASSESMENT"/>
+
+    </changeSet>
+
+
+    <changeSet  author="namdari"  id="1673784269-2">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-3">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_AHDAFASLI"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_AHDAFASLI"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-4">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-5">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_PISHNIAZ"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_PISHNIAZ"/>
+
+    </changeSet>
+    <changeSet  author="namdari"  id="1673784269-6">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_FINAL"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_FINAL"/>
+
+    </changeSet>
+    <changeSet  author="namdari"  id="1673784269-7">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_SARFASLHA"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_DETAIL_SARFASLHA"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-8">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_TAGHVIM_AMOUZESHI_SESSIONS"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_TAGHVIM_AMOUZESHI_SESSIONS"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-9">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_MEHDIAZIMI_REPORT"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_MEHDIAZIMI_REPORT"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-10">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_MEHDIAZIMI_SUBREPORT1"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_MEHDIAZIMI_SUBREPORT1"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-11">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_MEHDIAZIMI_SUBREPORT2"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_MEHDIAZIMI_SUBREPORT2"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-12">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_MEHDIAZIMI_SUBREPORT3"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_MEHDIAZIMI_SUBREPORT3"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-13">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_MEHDIAZIMI_SUBREPORT4"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_MEHDIAZIMI_SUBREPORT4"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-14">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_CLASS_ALL_SCORE_STATE_COUNT"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_CLASS_ALL_SCORE_STATE_COUNT"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-15">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_CLASS_FULL_DETAILS"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_CLASS_FULL_DETAILS"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-16">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_GHEIBAT_GHERMOVAJA"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_GHEIBAT_GHERMOVAJA"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-17">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_GHEIBAT_MOVAJA"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_GHEIBAT_MOVAJA"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-18">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_FARAGIRAN"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_FARAGIRAN"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-19">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_BEDONEGHEIBAT"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_BEDONEGHEIBAT"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-20">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_ESHTERAK_MOJAZ_AND_GHERMOJAZ"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_ESHTERAK_MOJAZ_AND_GHERMOJAZ"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-21">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_CLASS_RATE"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_CLASS_RATE"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-22">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_STUDENT_GHEIBAT_GHERMOVAJA"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_STUDENT_GHEIBAT_GHERMOVAJA"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-23">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_COUNT_STUDENT_GHEIBAT_MOVAJA"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_COUNT_STUDENT_GHEIBAT_MOVAJA"/>
+
+    </changeSet>
+
+    <changeSet  author="namdari"  id="1673784269-24">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="VIEW_CLASS_RATE_SCORE"/>
+            </and>
+        </preConditions>
+        <dropView viewName="VIEW_CLASS_RATE_SCORE"/>
+
+    </changeSet>
+
+
 </databaseChangeLog>
 
 
