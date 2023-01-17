@@ -742,184 +742,225 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                                   List<Object> affairs,
                                                                   int affairsNull);
 
-    @Query(value = "SELECT rowNum AS id,\n" +
-            "                             res.*\n" +
-            "                       FROM (\n" +
-            "SELECT \n" +
-            "DISTINCT\n" +
-            "    complex ,\n" +
-            "    complex_id,\n" +
-            "    n_base_on_complex,\n" +
-            "    assistant,\n" +
-            "    assistant_id,\n" +
-            "    n_base_on_assistant,\n" +
-            "    affairs,\n" +
-            "    affairs_id,\n" +
-            "    n_base_on_affairs\n" +
-            "    \n" +
-            "    FROM (\n" +
-            "SELECT DISTINCT\n" +
-            "    complex,\n" +
-            "    complex_id,\n" +
-            "    CASE\n" +
-            "        WHEN SUM(sum_presence_hour)\n" +
-            "             OVER(PARTITION BY complex) = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round(SUM(sum_presence_hour)\n" +
-            "                  OVER(PARTITION BY complex, e_technical_type) / SUM(sum_presence_hour)\n" +
-            "                                                                 OVER(PARTITION BY complex), 2)\n" +
-            "    END AS n_base_on_complex,\n" +
-            "    assistant,\n" +
-            "    assistant_id,\n" +
-            "    CASE\n" +
-            "        WHEN SUM(sum_presence_hour)\n" +
-            "             OVER(PARTITION BY assistant) = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round(SUM(sum_presence_hour)\n" +
-            "                  OVER(PARTITION BY assistant, e_technical_type) / SUM(sum_presence_hour)\n" +
-            "                                                                   OVER(PARTITION BY assistant), 2)\n" +
-            "    END AS n_base_on_assistant,\n" +
-            "    affairs,\n" +
-            "    affairs_id,\n" +
-            "    CASE\n" +
-            "        WHEN SUM(sum_presence_hour)\n" +
-            "             OVER(PARTITION BY affairs) = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round(SUM(sum_presence_hour)\n" +
-            "                  OVER(PARTITION BY affairs, e_technical_type) / SUM(sum_presence_hour)\n" +
-            "                                                                 OVER(PARTITION BY affairs), 2)\n" +
-            "    END AS n_base_on_affairs,\n" +
-            "    e_technical_type ,\n" +
-            "    c_start_date,\n" +
-            "    c_end_date\n" +
-            "    \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT DISTINCT\n" +
-            "            SUM(s.presence_hour)   AS sum_presence_hour,\n" +
-            "            SUM(s.presence_minute) AS sum_presence_minute,\n" +
-            "            SUM(s.absence_hour)    AS sum_absence_hour,\n" +
-            "            SUM(s.absence_minute)  AS sum_absence_minute,\n" +
-            "            s.class_id             AS class_id,\n" +
-            "            s.affairs,\n" +
-            "            s.assistant,\n" +
-            "            s.assistant_id,\n" +
-            "            s.affairs_id,\n" +
-            "            s.complex_id,\n" +
-            "            s.complex,\n" +
-            "            s.e_technical_type,\n" +
-            "            s.c_end_date,\n" +
-            "            s.c_start_date,\n" +
-            "            CASE\n" +
-            "                WHEN s.e_technical_type = '1' THEN\n" +
-            "                    'عمومی'\n" +
-            "                WHEN s.e_technical_type = '2' THEN\n" +
-            "                    'تخصصی'\n" +
-            "                WHEN s.e_technical_type = '3' THEN\n" +
-            "                    'مدیریتی'\n" +
-            "            END                    AS technical_title\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                SELECT\n" +
-            "                    class.id               AS class_id,\n" +
-            "                    std.id                 AS student_id,\n" +
-            "                    SUM(\n" +
-            "                        CASE\n" +
-            "                            WHEN att.c_state IN('1', '2') THEN\n" +
-            "                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\n" +
-            "                                'HH24:MI')) * 24, 1)\n" +
-            "                            ELSE\n" +
-            "                                0\n" +
-            "                        END\n" +
-            "                    )                      AS presence_hour,\n" +
-            "                    SUM(\n" +
-            "                        CASE\n" +
-            "                            WHEN att.c_state IN('1', '2') THEN\n" +
-            "                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\n" +
-            "                                'HH24:MI')) * 24 * 60)\n" +
-            "                            ELSE\n" +
-            "                                0\n" +
-            "                        END\n" +
-            "                    )                      AS presence_minute,\n" +
-            "                    SUM(\n" +
-            "                        CASE\n" +
-            "                            WHEN att.c_state IN('3', '4') THEN\n" +
-            "                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\n" +
-            "                                'HH24:MI')) * 24, 1)\n" +
-            "                            ELSE\n" +
-            "                                0\n" +
-            "                        END\n" +
-            "                    )                      AS absence_hour,\n" +
-            "                    SUM(\n" +
-            "                        CASE\n" +
-            "                            WHEN att.c_state IN('3', '4') THEN\n" +
-            "                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\n" +
-            "                                'HH24:MI')) * 24 * 60)\n" +
-            "                            ELSE\n" +
-            "                                0\n" +
-            "                        END\n" +
-            "                    )                      AS absence_minute,\n" +
-            "                    class.c_start_date,\n" +
-            "                    class.c_end_date,\n" +
-            "                    tbl_course.e_technical_type,\n" +
-            "                    view_complex.c_title   AS complex,\n" +
-            "                    class.complex_id,\n" +
-            "                    class.assistant_id,\n" +
-            "                    class.affairs_id,\n" +
-            "                    view_assistant.c_title AS assistant,\n" +
-            "                    view_affairs.c_title   AS affairs\n" +
-            "                FROM\n" +
-            "                         tbl_attendance att\n" +
-            "                    INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "                    INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "                    INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "                    INNER JOIN tbl_course ON class.f_course = tbl_course.id\n" +
-            "                    LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "                    LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "                 \n" +
-            "                GROUP BY\n" +
-            "                    class.id,\n" +
-            "                    std.id,\n" +
-            "                    class.c_start_date,\n" +
-            "                    class.c_end_date,\n" +
-            "                    tbl_course.e_technical_type,\n" +
-            "                    view_complex.c_title,\n" +
-            "                    class.complex_id,\n" +
-            "                    class.assistant_id,\n" +
-            "                    class.affairs_id,\n" +
-            "                    view_assistant.c_title,\n" +
-            "                    view_affairs.c_title,\n" +
-            "                    csession.c_session_date,\n" +
-            "                    class.c_code\n" +
-            "            ) s\n" +
-            "        GROUP BY\n" +
-            "            s.class_id,\n" +
-            "            s.affairs,\n" +
-            "            s.assistant,\n" +
-            "            s.assistant_id,\n" +
-            "            s.affairs_id,\n" +
-            "            s.complex_id,\n" +
-            "            s.complex,\n" +
-            "            s.e_technical_type,\n" +
-            "            s.c_end_date,\n" +
-            "            s.c_start_date\n" +
-            "    ))\n" +
-            "    WHERE\n" +
-            "    e_technical_type = 3\n" +
-            "    and\n" +
-            "        c_start_date >= :fromDate\n" +
-            "    and\n" +
-            "       c_start_date <= :toDate\n" +
-            "        \n" +
-            "        AND (:complexNull = 1 OR complex IN (:complex))\n" +
-            "        AND (:assistantNull = 1 OR assistant IN (:assistant))\n" +
-            "        AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
-            "        ) res\n" +
-            "  ", nativeQuery = true)
+    @Query(value = """
+         --Report05 -saraneh anbasht sabeghe amozeshi modiriaty
+         
+         SELECT rowNum AS id,
+                res.*
+         FROM(     \s
+         
+          with kol as (
+                       SELECT DISTINCT\s
+                                   SUM(s.presence_hour)  over (partition by s.complex)    AS sum_kol_mojtama,\s
+                                   SUM(s.presence_hour)  over (partition by s.assistant)   AS sum_kol_moavenat,\s
+                                    SUM(s.presence_hour) over (partition by s.affairs)      AS sum_kol_omoor,\s
+                                   s.affairs       AS omoor,
+                                   s.assistant     AS moavenat,
+                                   s.assistant_id  AS moavenat_id,\s
+                                   s.affairs_id    AS omoor_id,
+                                   s.complex_id    AS mojtama_id,
+                                   s.complex       AS mojtama  \s
+         
+                               FROM\s
+                                   (\s
+                                       SELECT\s
+                                           class.id               AS class_id,\s
+                                           tbl_student.id         AS student_id,\s
+                                           SUM(\s
+                                               CASE\s
+                                                   WHEN att.c_state IN('1', '2') THEN\s
+                                                       round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\s
+                                                       'HH24:MI')) * 24, 1)\s
+                                                   ELSE\s
+                                                       0\s
+                                               END\s
+                                           )                      AS presence_hour,\s
+                                             view_complex.id         AS complex_id,
+                                             view_complex.c_title    AS complex,
+                                             view_assistant.id       AS assistant_id,
+                                             view_assistant.c_title  AS assistant,
+                                             view_affairs.id         AS affairs_id,
+                                             view_affairs.c_title    AS affairs
+                                       FROM\s
+                                           tbl_attendance att\s
+                                           INNER JOIN tbl_session csession ON att.f_session = csession.id\s
+                                           INNER JOIN tbl_class   class ON csession.f_class_id = class.id\s
+                                           INNER JOIN tbl_course ON class.f_course = tbl_course.id\s
+                                           INNER JOIN
+                                             (
+                                               select
+                                                     tbl_student.id                                                         as id
+                                                    ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
+                                                    ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
+                                                    ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
+                                               \s
+                                                from tbl_student\s
+                                                 LEFT JOIN view_last_md_employee_hr
+                                                 ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
+                                             )
+                                             tbl_student  ON att.f_student = tbl_student.id
+                                             RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
+                                             RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
+                                             RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
+                                    where 1=1
+                                          and class.C_START_DATE >= :fromDate
+         
+                                          and class.C_START_DATE <= :toDate
+                                        \s
+                                       GROUP BY\s
+                                           class.id,\s
+                                           tbl_student.id,\s
+                                            view_complex.id,
+                                           view_complex.c_title,
+                                           view_assistant.id,
+                                           view_assistant.c_title,
+                                           view_affairs.id,
+                                           view_affairs.c_title
+         
+                                   ) s\s
+                               GROUP BY\s
+                                   s.presence_hour,
+                                   s.class_id,\s
+                                   s.affairs,\s
+                                   s.assistant,\s
+                                   s.assistant_id,\s
+                                   s.affairs_id,\s
+                                   s.complex_id,\s
+                                   s.complex
+                                  \s
+                  having  nvl(count( s.class_id) ,0)  !=0
+                  ),
+                \s
+                modiriaty as(
+                            SELECT DISTINCT\s
+                                   SUM(s.presence_hour)  over (partition by s.complex)    AS sum_modiriaty_mojtama,\s
+                                   SUM(s.presence_hour)  over (partition by s.assistant)  AS sum_modiriaty_moavenat,\s
+                                   SUM(s.presence_hour)  over (partition by s.affairs)    AS sum_modiriaty_omoor,\s
+                                   s.affairs       AS omoor,
+                                   s.assistant     AS moavenat,
+                                   s.assistant_id  AS moavenat_id,\s
+                                   s.affairs_id    AS omoor_id,
+                                   s.complex_id    AS mojtama_id,
+                                   s.complex       AS mojtama  \s
+         
+                               FROM\s
+                                   (\s
+                                       SELECT\s
+                                           class.id               AS class_id,\s
+                                           tbl_student.id         AS student_id,\s
+                                           SUM(\s
+                                               CASE\s
+                                                   WHEN att.c_state IN('1', '2') THEN\s
+                                                       round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour,\s
+                                                       'HH24:MI')) * 24, 1)\s
+                                                   ELSE\s
+                                                       0\s
+                                               END\s
+                                           )                      AS presence_hour,\s
+                                             view_complex.id         AS complex_id,
+                                             view_complex.c_title    AS complex,
+                                             view_assistant.id       AS assistant_id,
+                                             view_assistant.c_title  AS assistant,
+                                             view_affairs.id         AS affairs_id,
+                                             view_affairs.c_title    AS affairs
+                                       FROM\s
+                                           tbl_attendance att\s
+                                           INNER JOIN tbl_session csession ON att.f_session = csession.id\s
+                                           INNER JOIN tbl_class   class ON csession.f_class_id = class.id\s
+                                           INNER JOIN tbl_course ON class.f_course = tbl_course.id\s
+                                           INNER JOIN
+                                             (
+                                               select
+                                                     tbl_student.id                                                         as id
+                                                    ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
+                                                    ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
+                                                    ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
+                                               \s
+                                                from tbl_student\s
+                                                 LEFT JOIN view_last_md_employee_hr
+                                                 ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
+                                             )
+                                             tbl_student  ON att.f_student = tbl_student.id
+                                             RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
+                                             RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
+                                             RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
+                                    where 1=1
+                                          and  tbl_course.e_technical_type = 3 --modiriaty
+                                          and class.C_START_DATE >= :fromDate
+         
+                                          and class.C_START_DATE <= :toDate
+                                        \s
+                                       GROUP BY\s
+                                           class.id,\s
+                                           tbl_student.id,\s
+                                            view_complex.id,
+                                           view_complex.c_title,
+                                           view_assistant.id,
+                                           view_assistant.c_title,
+                                           view_affairs.id,
+                                           view_affairs.c_title
+         
+                                   ) s\s
+                               GROUP BY\s
+                                   s.presence_hour,
+                                   s.class_id,\s
+                                   s.affairs,\s
+                                   s.assistant,\s
+                                   s.assistant_id,\s
+                                   s.affairs_id,\s
+                                   s.complex_id,\s
+                                   s.complex
+         \s
+                 )
+                \s
+                 select DISTINCT
+                \s
+                 kol.mojtama_id     as complex_id
+                 ,kol.mojtama       as complex
+                 ,max(cast ((modiriaty.sum_modiriaty_mojtama /kol.sum_kol_mojtama) as decimal(6,2)) ) OVER ( PARTITION BY kol.mojtama_id ) AS  n_base_on_complex
+                \s
+                 , kol.moavenat_id  as assistant_id
+                 , kol.moavenat     as assistant
+                 ,max( cast ( (modiriaty.sum_modiriaty_moavenat /kol.sum_kol_moavenat) as decimal(6,2))) OVER ( PARTITION BY  kol.moavenat_id ) AS n_base_on_assistant
+                \s
+                 ,kol.omoor_id     as affairs_id
+                 ,kol.omoor        as affairs
+                 ,max(cast ( (modiriaty.sum_modiriaty_omoor /kol.sum_kol_omoor) as decimal(6,2)) ) OVER ( PARTITION BY kol.omoor_id ) AS n_base_on_affairs
+                \s
+                 FROM
+                 kol\s
+                 LEFT JOIN  modiriaty
+                 on
+                  modiriaty.mojtama_id = kol.mojtama_id
+                  and modiriaty.moavenat_id = kol.moavenat_id
+                  and modiriaty.omoor_id = kol.omoor_id
+                \s
+                 where 1=1
+                       and (
+                            kol.mojtama_id is not null
+                            and kol.moavenat_id is not null
+                            and kol.omoor_id is not null
+                           )
+                 \s
+                 group by
+                 kol.mojtama_id
+                 ,kol.mojtama
+                 ,modiriaty.sum_modiriaty_mojtama\s
+                 ,modiriaty.sum_modiriaty_moavenat\s
+                 ,modiriaty.sum_modiriaty_omoor\s
+                 ,kol.sum_kol_mojtama
+                 ,kol.sum_kol_moavenat
+                 ,kol.sum_kol_omoor
+                 ,kol.moavenat_id
+                 ,kol.moavenat
+                 ,kol.omoor_id
+                 ,kol.omoor
+         ) res
+          where 1=1
+              AND (:complexNull = 1 OR complex IN (:complex))\s
+              AND (:assistantNull = 1 OR assistant IN (:assistant))\s
+              AND (:affairsNull = 1 OR affairs IN (:affairs))\s
+""", nativeQuery = true)
     List<GenericStatisticalIndexReport> saraneModiriati(String fromDate,
                                                                   String toDate,
                                                                   List<Object> complex,
