@@ -477,7 +477,6 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size) {
-        zaza
         ElsClassListDto dto = new ElsClassListDto();
         List<Object> list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
         long count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
