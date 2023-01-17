@@ -217,6 +217,8 @@
             } else {
                 if (record.title.includes("درخواست صدور گواهی نامه آموزشی") && record.name.includes("بررسی مسئول صدور گواهی نامه"))
                     reAssignTrainingCertificationTask(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی"))
+                    reAssignToPlanningChiefFromExpert(record);
                 else
                     reAssignTask(record);
             }
@@ -666,6 +668,91 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
 
+            let Window_Parallel_RequestItem_Return = isc.Window.create({
+                title: "عودت",
+                autoSize: false,
+                width: "30%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    isc.DynamicForm.create({
+                        ID: "reasonForm",
+                        width: "100%",
+                        height: "75%",
+                        autoFocus: "true",
+                        cellPadding: 5,
+                        fields: [
+                            {
+                                name: "returnReason",
+                                title: "دلیل عودت",
+                                type: "text",
+                                required: true,
+                                validators: [{
+                                    validateOnExit: true,
+                                    type: "lengthRange",
+                                    min: 1,
+                                    max: 250,
+                                    stopOnError: true,
+                                    errorMessage: "حداکثر تعداد کاراکتر مجاز 250 می باشد. "
+                                }]
+                            }
+                        ]
+                    }),
+                    isc.HLayout.create({
+                        width: "100%",
+                        height: "25%",
+                        align: "center",
+                        membersMargin: 10,
+                        members: [
+                            isc.Button.create({
+                                title: "<spring:message code='global.ok'/>",
+                                click: function () {
+                                    if (!reasonForm.validate())
+                                        return;
+
+                                    let baseUrl = requestItemBPMSUrl;
+                                    let url = "/processes/parallel/request-item/cancel-process";
+                                    let var_data = {
+                                        "returnReason": reasonForm.getField("returnReason").getValue(),
+                                    };
+                                    let reviewTaskRequest = {
+                                        variables: var_data,
+                                        taskId: record.taskId,
+                                        userName: userUserName,
+                                        approve: false,
+                                        processInstanceId: record.processInstanceId
+                                    };
+
+                                    let data = {
+                                        reviewTaskRequest: reviewTaskRequest,
+                                        reason: reasonForm.getField("returnReason").getValue()
+                                    }
+
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
+                                        wait.close();
+                                        let response = JSON.parse(resp.httpResponseText);
+                                        createDialog("info", response.message);
+                                        ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                                    }));
+                                    Window_Parallel_RequestItem_Completion.close();
+                                    Window_Parallel_RequestItem_Return.close();
+                                }
+                            }),
+                            isc.Button.create({
+                                title: "<spring:message code='cancel'/>",
+                                click: function () {
+                                    Window_Parallel_RequestItem_Return.close();
+                                }
+                            })
+                        ]
+                    })
+                ]
+            });
             let DynamicForm_Parallel_RequestItem_Completion = isc.DynamicForm.create({
                 colWidths: ["25%", "75%"],
                 width: "100%",
@@ -795,12 +882,19 @@
                         buttonClick: function (button, index) {
 
                             if (index === 0) {
-                                // let expertOpinion = DynamicForm_Parallel_RequestItem_Completion.getValue("expertOpinion");
                                 confirmParallelRequestItemProcess(record, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
                             }
                             this.hide();
                         }
                     });
+                }
+            });
+            let Button_Parallel_RequestItem_Completion_Return = isc.IButton.create({
+                title: "عودت",
+                align: "center",
+                width: "120",
+                click: function () {
+                    Window_Parallel_RequestItem_Return.show();
                 }
             });
             let Button_Parallel_RequestItem_Completion_Close = isc.IButton.create({
@@ -819,6 +913,7 @@
                 members: [
                     Button_Parallel_RequestItem_Completion_Detail,
                     Button_Parallel_RequestItem_Completion_Confirm,
+                    Button_Parallel_RequestItem_Completion_Return,
                     Button_Parallel_RequestItem_Completion_Close
                 ]
             });
@@ -838,6 +933,11 @@
                     HLayout_Parallel_RequestItem_Completion
                 ]
             });
+
+            if (record.assigneeList.size() === 1)
+                Button_Parallel_RequestItem_Completion_Return.show();
+            else
+                Button_Parallel_RequestItem_Completion_Return.hide();
 
             DynamicForm_Parallel_RequestItem_Completion.setValue("title", record.title);
             DynamicForm_Parallel_RequestItem_Completion.setValue("createBy", record.createBy);
@@ -3940,6 +4040,33 @@ function reAssignTask(record) {
                 }
             }));
         }
+    }
+    function reAssignToPlanningChiefFromExpert(record) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/processes/parallel/request-item/reAssign-process";
+        let map_data = {
+            "returnReason": null,
+        };
+        let reviewTaskRequest = {
+            variables: map_data,
+            processInstanceId: record.processInstanceId,
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+        };
+        let data = {
+            reviewTaskRequest: reviewTaskRequest,
+            reason: null,
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
     }
 
 // </script>
