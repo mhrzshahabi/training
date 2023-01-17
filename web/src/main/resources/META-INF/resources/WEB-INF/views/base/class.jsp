@@ -1955,9 +1955,14 @@
                         form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
                     } else if (value < startDate) {
                         form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                    } else if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
+                },
+                editorExit: function (form, item, value) {
+                    limitEndDateEditAccess(form, value);
                 }
             },
             {
@@ -2121,6 +2126,9 @@
                     return;
                 }
             }
+            if (DynamicForm1_Class_JspClass.hasErrors())
+                return;
+            
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
             if (DynamicForm1_Class_JspClass.getValue("autoValid")) {
                 if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third") || DynamicForm1_Class_JspClass.getValue("fourth") || DynamicForm1_Class_JspClass.getValue("fifth"))) {
@@ -5339,5 +5347,14 @@
         }));
     }
 
+    function limitEndDateEditAccess(form, value) {
+        if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
+            form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
+        }
+    }
+
+    function hasClassEndDateEditAccess() {
+        return classEndDateEditRole;
+    }
 
     // </script>
