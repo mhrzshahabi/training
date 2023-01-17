@@ -20,7 +20,6 @@ import request.exam.ElsStudentScore;
 import request.exam.ExamResult;
 import response.BaseResponse;
 import response.PaginationDto;
-import response.evaluation.dto.EvalAverageResult;
 import response.tclass.dto.*;
 
 import java.util.*;
