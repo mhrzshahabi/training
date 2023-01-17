@@ -477,6 +477,7 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size) {
+        zaza
         ElsClassListDto dto = new ElsClassListDto();
         List<Object> list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
         long count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
@@ -517,8 +518,10 @@ public class ClassStudentService implements IClassStudentService {
 //            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
 //            elsClassDto.setSupervisorName(arr[17] == null ? null : arr[17].toString());
 //            elsClassDto.setPlannerName(arr[18] == null ? null : arr[18].toString());
-            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
-            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
+//            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
+//            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
+            //todo this method must be changed
+            elsClassDto.setEvaluationRate(0.0);
 
             result.add(elsClassDto);
         }
