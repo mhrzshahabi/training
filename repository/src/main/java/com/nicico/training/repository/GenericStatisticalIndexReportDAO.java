@@ -936,109 +936,107 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
            --Report06 -nerkh ghozar az amozesh
            
            SELECT\s
-                             ROWNUM AS id,\s
-                             res.*\s
+                 ROWNUM AS id,\s
+                 res.*\s
+           FROM\s
+             (\s
+                 SELECT DISTINCT\s
+                     complex,\s
+                     CASE\s
+                         WHEN COUNT(national_code)\s
+                              OVER(PARTITION BY complex) = 0 THEN\s
+                             0\s
+                         ELSE\s
+                             round(COUNT(DISTINCT\s
+                                 CASE\s
+                                     WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN
+                                         national_code\s
+                                 END\s
+                             )\s
+                                   OVER(PARTITION BY complex) / COUNT(national_code)\s
+                                                                OVER(PARTITION BY complex), 2) * 100\s
+                     END AS n_base_on_complex,\s
+                     assistant,\s
+                     CASE\s
+                         WHEN COUNT(national_code)\s
+                              OVER(PARTITION BY assistant) = 0 THEN\s
+                             0\s
+                         ELSE\s
+                             round(COUNT(DISTINCT\s
+                                 CASE\s
+                                      WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN
+                                         national_code\s
+                                 END\s
+                             )\s
+                                   OVER(PARTITION BY assistant) / COUNT(national_code)\s
+                                                                  OVER(PARTITION BY assistant), 2) * 100\s
+                     END AS n_base_on_assistant,\s
+                     affairs,\s
+                     CASE\s
+                         WHEN COUNT(national_code)\s
+                              OVER(PARTITION BY affairs) = 0 THEN\s
+                             0\s
+                         ELSE\s
+                             round(COUNT(DISTINCT\s
+                                 CASE\s
+                                     WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN\s
+                                         national_code\s
+                                 END\s
+                             )\s
+                                   OVER(PARTITION BY affairs) / COUNT(national_code)\s
+                                                                OVER(PARTITION BY affairs), 2) * 100\s
+                     END AS n_base_on_affairs,\s
+                     complex_id,\s
+                     assistant_id,\s
+                     affairs_id\s
+                 FROM\s
+                     (\s
+                         SELECT DISTINCT\s
+                             tbl_student.national_code,\s
+                             tbl_class_student.class_id,\s
+                             tbl_student.id              AS student_id,\s
+                             tbl_class.c_start_date,\s
+                             tbl_class.c_end_date,\s
+                             tbl_class_student.scores_state_id,\s
+                             tbl_parameter_value.C_CODE  AS ghabol,
+                             view_complex.id             AS complex_id ,
+                             view_complex.c_title        AS complex,
+                             view_assistant.id           AS assistant_id,
+                             view_assistant.c_title      AS assistant,\s
+                             view_affairs.id             AS affairs_id,
+                             view_affairs.c_title        AS affairs
+              \s
                          FROM\s
-                             (\s
-                                 SELECT DISTINCT\s
-                                     complex,\s
-                                     CASE\s
-                                         WHEN COUNT(national_code)\s
-                                              OVER(PARTITION BY complex) = 0 THEN\s
-                                             0\s
-                                         ELSE\s
-                                             round(COUNT(DISTINCT\s
-                                                 CASE\s
-                                                     WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN
-                                                         national_code\s
-                                                 END\s
-                                             )\s
-                                                   OVER(PARTITION BY complex) / COUNT(national_code)\s
-                                                                                OVER(PARTITION BY complex), 2) * 100\s
-                                     END AS n_base_on_complex,\s
-                                     assistant,\s
-                                     CASE\s
-                                         WHEN COUNT(national_code)\s
-                                              OVER(PARTITION BY assistant) = 0 THEN\s
-                                             0\s
-                                         ELSE\s
-                                             round(COUNT(DISTINCT\s
-                                                 CASE\s
-                                                      WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN
-                                                         national_code\s
-                                                 END\s
-                                             )\s
-                                                   OVER(PARTITION BY assistant) / COUNT(national_code)\s
-                                                                                  OVER(PARTITION BY assistant), 2) * 100\s
-                                     END AS n_base_on_assistant,\s
-                                     affairs,\s
-                                     CASE\s
-                                         WHEN COUNT(national_code)\s
-                                              OVER(PARTITION BY affairs) = 0 THEN\s
-                                             0\s
-                                         ELSE\s
-                                             round(COUNT(DISTINCT\s
-                                                 CASE\s
-                                                     WHEN ghabol LIKE  'PassdByGrade' or ghabol LIKE  'PassedWithoutGrade'  THEN\s
-                                                         national_code\s
-                                                 END\s
-                                             )\s
-                                                   OVER(PARTITION BY affairs) / COUNT(national_code)\s
-                                                                                OVER(PARTITION BY affairs), 2) * 100\s
-                                     END AS n_base_on_affairs,\s
-                                     complex_id,\s
-                                     assistant_id,\s
-                                     affairs_id\s
-                                 FROM\s
-                                     (\s
-                                         SELECT DISTINCT\s
-                                             tbl_student.national_code,\s
-                                             tbl_class_student.class_id,\s
-                                             tbl_student.id              AS student_id,\s
-                                             tbl_class.c_start_date,\s
-                                             tbl_class.c_end_date,\s
-                                             tbl_class_student.scores_state_id,\s
-                                             tbl_parameter_value.C_CODE  AS ghabol,
-                                             view_complex.id             AS complex_id ,
-                                             view_complex.c_title        AS complex,
-                                             view_assistant.id           AS assistant_id,
-                                             view_assistant.c_title      AS assistant,\s
-                                             view_affairs.id             AS affairs_id,
-                                             view_affairs.c_title        AS affairs
-           
-                                         FROM\s
-                                                  tbl_class_student\s
-                                             INNER JOIN tbl_parameter_value ON tbl_class_student.scores_state_id = tbl_parameter_value.id
-                                             INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
-                                             INNER JOIN
-                                               (
-                                                 select
-                                                       tbl_student.id                                                         as id
-                                                      ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
-                                                      ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
-                                                      ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
-                                                      ,tbl_student.NATIONAL_CODE                                              as national_code
-                                                  from tbl_student\s
-                                                       LEFT JOIN view_last_md_employee_hr
-                                                       ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
-                                               )
-                                               tbl_student  ON tbl_class_student.student_id = tbl_student.id
-                                               RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
-                                               RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
-                                               RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
-                \s
-                                         WHERE\s
-                                             tbl_class_student.e_deleted IS NULL\s
-                                             and tbl_class.c_start_date >=  :fromDate
-                                             and  tbl_class.c_start_date <= :toDate
-                               \s
-                                     )\s
-                                 WHERE\s
-                                        (:complexNull = 1 OR complex IN (:complex))\s
-                                        AND (:assistantNull = 1 OR assistant IN (:assistant))\s
-                                        AND (:affairsNull = 1 OR affairs IN (:affairs))\s
-                                        \s
-                             ) res
+                                  tbl_class_student\s
+                             INNER JOIN tbl_parameter_value ON tbl_class_student.scores_state_id = tbl_parameter_value.id
+                             INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+                             INNER JOIN
+                               (
+                                 select
+                                       tbl_student.id                                                         as id
+                                      ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
+                                      ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
+                                      ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
+                                      ,tbl_student.NATIONAL_CODE                                              as national_code
+                                  from tbl_student\s
+                                       LEFT JOIN view_last_md_employee_hr
+                                       ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
+                               )
+                               tbl_student  ON tbl_class_student.student_id = tbl_student.id
+                               RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
+                               RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
+                               RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
+              \s
+                         WHERE\s
+                             tbl_class_student.e_deleted IS NULL\s
+                             and tbl_class.c_start_date >=  :fromDate
+                             and  tbl_class.c_start_date <= :toDate
+                     )\s
+              ) res
+           WHERE\s
+                (:complexNull = 1 OR complex IN (:complex))\s
+                AND (:assistantNull = 1 OR assistant IN (:assistant))\s
+                AND (:affairsNull = 1 OR affairs IN (:affairs))\s
 """, nativeQuery = true)
     List<GenericStatisticalIndexReport> gozarAzAmozesh(String fromDate,
                                                         String toDate,
