@@ -1,4 +1,4 @@
-create PROCEDURE PRC_MERGE_TBL_POST_MDMS AS
+create or replace PROCEDURE PRC_MERGE_TBL_POST_MDMS AS
 
 BEGIN
     ------------UPDATE-------------------------------------------------------
@@ -184,7 +184,7 @@ MERGE INTO TBL_POST T
                 n_version                = t.n_version + 1,
                 t.f_department_id        = CHANGES_.MDMS_f_department_id,
                 t.n_parent_id            = CHANGES_.MDMS_n_parent_id;
-    ------------INSERT-------------------------------------------------------
+------------INSERT-------------------------------------------------------
 MERGE INTO TBL_POST T
     USING (
         SELECT MDMS_POST.*
@@ -206,7 +206,7 @@ MERGE INTO TBL_POST T
                         dep.c_code                                AS c_cost_center_code,
                         dep.c_title                               AS c_cost_center_title_fa
                  FROM TBL_MD_POST_MDMS post
-                          left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                          left join vw_department mdms_dep on post.c_dep_id = mdms_dep.c_id
                           left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
                           left join TBL_MD_POST_grade_MDMS mdms_post_grade
                                     on (post.c_grade_id = mdms_post_grade.c_id)
@@ -231,6 +231,8 @@ MERGE INTO TBL_POST T
                 GROUP BY C_CODE , C_PEOPLE_TYPE
                 HAVING COUNT(*) > 1
             )
+          and regexp_substr(MDMS_POST.C_CODE, '\d*') is not  null
+
 
 
     ) NEW_
@@ -244,5 +246,3 @@ MERGE INTO TBL_POST T
                     NEW_.c_cost_center_code, NEW_.c_section, NEW_.c_unit,
                     NEW_.f_job_id, NEW_.f_post_grade_id, NEW_.c_people_type, NEW_.f_department_id, NEW_.n_parent_id);
 END;
-/
-
