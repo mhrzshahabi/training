@@ -653,6 +653,7 @@
     {"code": "Tclass_C", "title": "ایجاد کلاس"},
     {"code": "Tclass_R", "title": "مشاهده کلاس"},
     {"code": "Tclass_U", "title": "ویرایش کلاس"},
+    {"code": "Tclass_EndDate_U", "title": "ویرایش تاریخ پایان کلاس"},
     {"code": "Tclass_D", "title": "حذف کلاس"},
     {"code": "Tclass_P", "title": "چاپ کلاس"},
 

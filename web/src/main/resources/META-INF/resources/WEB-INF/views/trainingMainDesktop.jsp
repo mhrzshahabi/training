@@ -80,6 +80,7 @@
         <%--access= "<%= hasAuthority("ROLE.Training.admin_role") %>"--%>
         <%--userRoles.admin = access;--%>
         let postAdmin= "<%= hasAuthority("Admin_Post_Access") %>"
+        let classEndDateEditRole= "<%= hasAuthority("Tclass_EndDate_U") %>"
 
 
        /* jQuery.loadScript = function (url, callback) {
