@@ -857,6 +857,7 @@ public class RequestItemService implements IRequestItemService {
                 try {
                     bpmsClientService.reviewTask(reviewTaskRequest);
                     RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetailService.findById(item.getId());
+                    requestItemCoursesDetail.setClassIds(item.getClassIds());
                     requestItemCoursesDetail.setProcessState("تایید اتوماتیک کارشناس اجرا");
                     requestItemCoursesDetailService.save(requestItemCoursesDetail);
                     response.setStatus(HttpStatus.OK.value());

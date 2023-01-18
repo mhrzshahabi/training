@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
+import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.IRequestItemCoursesDetailService;
 import com.nicico.training.iservice.IRequestItemProcessDetailService;
 import com.nicico.training.iservice.IRequestItemService;
@@ -15,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import response.BaseResponse;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -113,6 +114,7 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
 
         BaseResponse baseResponse = new BaseResponse();
         Long requestItemId = requestItemService.getIdByProcessInstanceId(processInstanceId);
+        RequestItemDTO.Info info = requestItemService.getRequestItemProcessDetailByProcessInstanceId(processInstanceId);
         if (requestItemId != null) {
             Long requestItemProcessDetailId = requestItemProcessDetailService.findAllByRequestItemId(requestItemId).stream().filter(item -> item.getRoleName().equals("planningChief"))
                     .findFirst().map(RequestItemProcessDetail::getId).orElse(null);
@@ -121,6 +123,9 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                 RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetails.stream().filter(item -> item.getCourseCode().equals(courseCode)).findFirst().orElse(null);
                 if (requestItemCoursesDetail != null) {
                     requestItemCoursesDetail.setProcessState("تایید دستی کارشناس اجرا");
+                    Set<Long>classIds=requestItemCoursesDetailDAO.getClassIds(courseCode,info.getNationalCode());
+                    requestItemCoursesDetail.setClassIds(classIds);
+
                     requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
                     baseResponse.setStatus(HttpStatus.OK.value());
                 } else
@@ -143,11 +148,17 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                     Object[] data = (Object[]) completeTask;
                     list.add(new RequestItemCoursesDetailDTO.CompleteTaskDto((data[0] != null ? Long.parseLong(data[0].toString()) : 0),
                             (data[1] != null ? (data[1].toString()) : ""),
-                            (data[2] != null ? (data[2].toString()) : "")
-                    ));
+                            (data[2] != null ? (data[2].toString()) : ""),
+                            (data[3] != null ? (data[3].toString()) : ""),
+                            (data[4] != null ? (data[4].toString()) : "")
+                            ));
                 }
             }
-            requestItemService.autoReviewRequestItemTaskByRunExperts(list);
+            list.forEach(completeTaskDto -> {
+                Set<Long>classIds=requestItemCoursesDetailDAO.getClassIds(completeTaskDto.getCourseCode(),completeTaskDto.getUserNationalCode());
+                completeTaskDto.setClassIds(classIds);
+            });
+             requestItemService.autoReviewRequestItemTaskByRunExperts(list);
         } catch (Exception e) {
             Logger.getLogger(RequestItemCoursesDetailService.class.getName()).log(Level.SEVERE, null, e);
         }

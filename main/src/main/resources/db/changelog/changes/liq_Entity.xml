@@ -4053,5 +4053,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="namdari" id="1661158628187-04">
+        <createTable tableName="TBL_REQUEST_ITEM_COURSE_DETAIL_CLASS_IDS">
+            <column name="F_REQUEST_ITEM_COURSE_DETAIL" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CLASS_ID" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>

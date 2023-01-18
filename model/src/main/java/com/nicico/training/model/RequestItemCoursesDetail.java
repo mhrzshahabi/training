@@ -2,9 +2,11 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -49,5 +51,12 @@ public class RequestItemCoursesDetail extends Auditable implements Serializable 
 
     @Column(name = "c_task_id_per_course")
     private String taskIdPerCourse;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "TBL_REQUEST_ITEM_COURSE_DETAIL_CLASS_IDS", joinColumns = @JoinColumn(name = "F_REQUEST_ITEM_COURSE_DETAIL"))
+    @Column(name = "CLASS_ID")
+    @NotAudited
+    private Set<Long> classIds;
+
 
 }
