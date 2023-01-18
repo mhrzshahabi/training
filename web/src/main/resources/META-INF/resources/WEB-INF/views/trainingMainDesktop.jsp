@@ -1898,6 +1898,14 @@
                     }
                 },
                 </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_CompetenceRequest')">--%>
+                {
+                    title: "گزارش تایید صلاحیت های اتمام یافته",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/ended-certification"/>");
+                    }
+                },
+<%--                </sec:authorize>--%>
                 {
                     title: "<spring:message code="scientific.technical.certification.report"/>",
                     click: function () {

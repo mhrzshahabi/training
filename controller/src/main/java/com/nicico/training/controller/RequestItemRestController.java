@@ -326,7 +326,7 @@ public class RequestItemRestController {
                 synonymPersonnel = synonymPersonnelByPersonnelNo2;
 
             List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
-                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+                    .filter(course -> (course.getScoreStateId() == 400 || course.getScoreStateId() == 401) && (course.getClassStatusId() == 3 || course.getClassStatusId() == 5)).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
 
             for (RequestItemCoursesDetailDTO.Info userCourse : userCourses) {
                 if (list.contains(userCourse.getCourseCode()))
