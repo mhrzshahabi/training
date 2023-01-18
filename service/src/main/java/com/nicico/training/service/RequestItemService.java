@@ -163,6 +163,7 @@ public class RequestItemService implements IRequestItemService {
     @Override
     @Transactional
     public RequestItemDto createList(List<RequestItem> requestItems) {
+        requestItems = requestItems.stream().filter(item -> item.getNationalCode() != null).collect(Collectors.toList());
         List<RequestItem> temp=new ArrayList<>();
         if (!requestItems.isEmpty()){
           Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
