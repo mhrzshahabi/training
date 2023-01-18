@@ -486,7 +486,7 @@
                                                             if(ListGrid_Competence_Request_Items.getData().filter(c =>
                                                                 c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {
                                                                 let current = {
-                                                                    nationalCode: XL_row_object[i]["کدملی"],
+                                                                    nationalCode: XL_row_object[i]["کدملی (اجباری)"],
                                                                     personnelNo2: XL_row_object[i]["شماره پرسنلی قدیم"],
                                                                     personnelNumber: XL_row_object[i]["شماره پرسنلی جدید"],
                                                                     name: XL_row_object[i]["نام"],
@@ -1539,7 +1539,7 @@
 
         ListGrid_Competence_Request_Items.setData(result.list);
         if (result.list.size() === 0)
-            createDialog("info", "رکوردی با کدملی یا شماره پرسنلی قدیم صحیح برای اضافه شدن وجود ندارد");
+            createDialog("info", "رکوردی با کدملی صحیح برای اضافه شدن وجود ندارد");
         else {
             if (result.wrongCount !== 0)
                 createDialog("info"," از مجموع رکوردهای وارد شده؛ " + result.wrongCount + " رکورد با دیتای نادرست اضافه شده است ");
@@ -1567,20 +1567,20 @@
                                 let data = JSON.parse(response.httpResponseText);
                                 postTitle = data.titleFa;
                             }
-                            if (record.personnelNo2 !== undefined) {
-                                param.data = {
-                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
-                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
-                                    "requestItemId": record.id,
-                                    "requestNo": requestRecord.id
-                                }
-                            } else {
+                            if (record.nationalCode !== undefined) {
                                 param.data = {
                                     "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
                                     "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با کدملی " + record.nationalCode + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
                                     "requestItemId": record.id,
                                     "requestNo": requestRecord.id
-                                }
+                                };
+                            } else {
+                                param.data = {
+                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post + " با عنوان " + postTitle + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                    "requestItemId": record.id,
+                                    "requestNo": requestRecord.id
+                                };
                             }
                             isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation", "POST", JSON.stringify(param), function (resp) {
                                 wait.close();
@@ -1619,12 +1619,21 @@
                         let requestRecord = ListGrid_Competence_Request.getSelectedRecord();
                         for (let i = 0; i < validRecords.length; i++) {
                             let param = {}
-                            param.data = {
-                                "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
-                                "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + validRecords[i].personnelNo2 + " برای کدپست پیشنهادی " + validRecords[i].post + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
-                                "requestItemId": validRecords[i].id,
-                                "requestNo": requestRecord.id
-                            };
+                            if (validRecords[i].nationalCode !== undefined) {
+                                param.data = {
+                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با کدملی " + validRecords[i].nationalCode + " برای کدپست پیشنهادی " + validRecords[i].post + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                    "requestItemId": validRecords[i].id,
+                                    "requestNo": requestRecord.id
+                                };
+                            } else {
+                                param.data = {
+                                    "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                    "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + validRecords[i].personnelNo2 + " برای کدپست پیشنهادی " + validRecords[i].post + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                    "requestItemId": validRecords[i].id,
+                                    "requestNo": requestRecord.id
+                                };
+                            }
                             data.add(param);
                         }
                         wait.show();
