@@ -751,24 +751,30 @@
             if (fieldName === "score") {
                 let isScoreEditable = this.getSelectedRecord().isScoreEditable;
 
-                if (isScoreEditable) {
-                    if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
-                        return true;
-                    }
-                    if (failureReason_value_Eval != null && record.scoresStateId == 403) {
-                        return true;
-                    }
-                    if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
-                        return false;
-                    }
-                    if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
-                        return true;
-                    }
-                    let arr = [448, 405, 449, 406, 404, 401, 450];
-                    return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+                if (isScoreEditable == null) {
+                    return true;
+                } else {
+                    createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
+                    return false;
                 }
 
-                return false;
+                // if (isScoreEditable) {
+                //     if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
+                //         return true;
+                //     }
+                //     if (failureReason_value_Eval != null && record.scoresStateId == 403) {
+                //         return true;
+                //     }
+                //     if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                //         return false;
+                //     }
+                //     if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
+                //         return true;
+                //     }
+                //     let arr = [448, 405, 449, 406, 404, 401, 450];
+                //     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+                // }
+
 
                 // let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
                 // let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';

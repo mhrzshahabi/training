@@ -244,7 +244,7 @@ public class ClassStudentDTO implements Serializable {
         private String failureReasonTitle;
         private Integer evaluationStatusReaction;
         private Integer evaluationStatusExecution;
-        private Boolean isScoreEditable;
+        private String isScoreEditable;
     }
 
     @Getter

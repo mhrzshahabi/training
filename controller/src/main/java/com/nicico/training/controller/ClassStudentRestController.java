@@ -196,7 +196,7 @@ public class ClassStudentRestController {
         return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> {
             ClassStudentDTO.ScoresInfo scoresInfo = modelMapper.map(c, ClassStudentDTO.ScoresInfo.class);
             Long classStudentId = scoresInfo.getId();
-            Boolean isScoreEditable = iClassStudentService.isScoreEditable(classStudentId);
+            String isScoreEditable = iClassStudentService.isScoreEditable(classStudentId);
             scoresInfo.setIsScoreEditable(isScoreEditable);
             return scoresInfo;
         });
