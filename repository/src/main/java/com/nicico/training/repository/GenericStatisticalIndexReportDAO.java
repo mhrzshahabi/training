@@ -507,7 +507,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                      s.complex_id,\s
                                      s.complex
                                     \s
-                    having  nvl(count( s.class_id) ,0)  !=0
+                    having  nvl(count( s.class_id) ,0)  !=0  and s.presence_hour  !=0
                     ),
                   \s
                   omomi as(
