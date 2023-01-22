@@ -595,21 +595,21 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public List<SessionConflictDto> getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
-        List<SessionConflictDto> sessionConflict=new ArrayList<>();
+        List<SessionConflictDto> sessionConflict = new ArrayList<>();
         if (classStudentSessions != null && classStudentSessions.size() > 0) {
             for (int i = 0; i < classStudentSessions.size(); i++) {
                 List<?> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(), nationalCode);
                 if (conflicts != null) {
                     for (int z = 0; z < conflicts.size(); z++) {
                         Object[] conflict = (Object[]) conflicts.get(z);
-                        sessionConflict.add(new SessionConflictDto( (conflict[0] != null ? Long.parseLong(conflict[0].toString()) : 0),
-                                (conflict[1] != null ? (conflict[1].toString()) :""),
-                                (conflict[2] != null ? (conflict[2].toString()) :""),
-                                (conflict[3] != null ? (conflict[3].toString()) :""),
-                                (conflict[4] != null ? (conflict[4].toString()) :""),
-                                (conflict[5] != null ? (conflict[5].toString()) :""),
-                                (conflict[6] != null ? (conflict[6].toString()) :"")
-                                ));
+                        sessionConflict.add(new SessionConflictDto((conflict[0] != null ? Long.parseLong(conflict[0].toString()) : 0),
+                                (conflict[1] != null ? (conflict[1].toString()) : ""),
+                                (conflict[2] != null ? (conflict[2].toString()) : ""),
+                                (conflict[3] != null ? (conflict[3].toString()) : ""),
+                                (conflict[4] != null ? (conflict[4].toString()) : ""),
+                                (conflict[5] != null ? (conflict[5].toString()) : ""),
+                                (conflict[6] != null ? (conflict[6].toString()) : "")
+                        ));
                     }
                 }
             }
@@ -940,13 +940,15 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Boolean isScoreEditable(Long classStudentId) {
+    public String isScoreEditable(Long classStudentId) {
         ClassStudent classStudent = getClassStudent(classStudentId);
         Tclass tclass = classStudent.getTclass();
         String endDate = tclass.getEndDate();
         Long classTeachingMethodId = tclass.getTeachingMethodId();
+        String scoringMethod = tclass.getScoringMethod();
+        Long scoresStateId = classStudent.getScoresStateId();
+        Long failureReasonId = classStudent.getFailureReasonId();
         Integer evaluationStatusReaction = classStudent.getEvaluationStatusReaction();
-
         String teachingMethodCode = parameterValueService.get(classTeachingMethodId).getCode();
         String studentPresenceType = parameterValueService.get(classStudent.getPresenceTypeId()).getCode();
 
@@ -956,18 +958,15 @@ public class ClassStudentService implements IClassStudentService {
         boolean checkClassBasisDate = checkClassBasisDate(endDate, parameterService.getByCode("ClassConfig")); // تاریخ مبنای کلاس
         boolean isEvaluationStatusReactionNotComplete = evaluationStatusReaction == null || evaluationStatusReaction == 0 || evaluationStatusReaction == 1; // وضعیت تکمیل ارزیابی واکنشی
 
-        if (isNonAttendanceClass || isSelfTaughtStudent) {
-            return true;
-        }
+        List<Long> failureReasonIds = getFailureReasonIds();
+        String scoreStateAndFailureReason = getScoreStateAndFailureReason(scoringMethod, scoresStateId, failureReasonId, failureReasonIds);
 
-        if (checkClassBasisDate && isScoreDependent) {
-            return !isEvaluationStatusReactionNotComplete;
-        } else {
-            return true;
+        if (!isNonAttendanceClass && !isSelfTaughtStudent) {
+            if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
+                return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
         }
-
+        return scoreStateAndFailureReason;
     }
-
 
     @Override
     public boolean IsStudentAttendanceAllowable(Long classStudentId) {
@@ -991,4 +990,43 @@ public class ClassStudentService implements IClassStudentService {
         }
         return true;
     }
+
+    private String getScoreStateAndFailureReason(String scoringMethod, Long scoresStateId, Long failureReasonId, List<Long> failureReasonIds) {
+        if (scoringMethod.equals("1") || scoringMethod.equals("4")) {
+            return "روش نمره دهی بصورت (ارزشی) یا (بدون نمره) می باشد";
+        }
+        if (scoresStateId == 403) { // مردود
+            if (failureReasonId == 407L) {
+                return "وضعیت نمره (مردود) و علت مردودی (غیبت در جلسه امتحان) می باشد";
+            }
+            if (failureReasonId == 453L) {
+                return "وضعیت نمره (مردود) و علت مردودی (انصراف فراگیر) می باشد";
+            }
+            if (failureReasonIds.contains(failureReasonId))
+                return """
+                        علت مردودی فراگیر، یکی از موارد زیر است:
+                        قبول بدون نمره
+                        حذف کلاس
+                        حذف به دلیل غیبت مجاز
+                        حذف به دلیل غیبت غیرمجاز
+                        حذف به دلیل درخواست امور
+                        انصراف فراگیر
+                        """;
+        }
+        return null;
+    }
+
+    private List<Long> getFailureReasonIds() {
+        List<Long> failureReasonIds = new ArrayList<>();
+
+        failureReasonIds.add(401L); // قبول بدون نمره
+        failureReasonIds.add(404L); // حذف کلاس
+        failureReasonIds.add(405L); // حذف دانشجو از کلاس به دلیل غیبت غیرمجاز
+        failureReasonIds.add(406L); // حذف دانشجو به دلیل درخواست امور
+        failureReasonIds.add(448L); // انصراف فراگیر
+        failureReasonIds.add(449L); // حذف دانشجو از کلاس به دلیل غیبت مجاز
+
+        return failureReasonIds;
+    }
+
 }
