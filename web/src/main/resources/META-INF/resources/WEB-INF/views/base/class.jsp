@@ -1813,7 +1813,9 @@
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
                     var termEnd = form.getItem("termId").getSelectedRecord().endDate;
                     form.getItem("startDate").setValue(termStart);
-                    form.getItem("endDate").setValue(termEnd);
+                    if (hasClassEndDateEditAccess()) {
+                        form.getItem("endDate").setValue(termEnd);
+                    }
                     evalGroup();
                 }
             },
@@ -1963,6 +1965,10 @@
                 },
                 editorExit: function (form, item, value) {
                     limitEndDateEditAccess(form, value);
+                },
+                blur: function () {
+                    let endDate = this.getValue()
+                    limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
                 }
             },
             {
@@ -5350,6 +5356,8 @@
     function limitEndDateEditAccess(form, value) {
         if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
             form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
+        } else {
+            form.clearFieldErrors("endDate", true);
         }
     }
 
