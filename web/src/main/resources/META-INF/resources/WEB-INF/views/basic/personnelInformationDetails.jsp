@@ -166,6 +166,7 @@
                             RestDataSource_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + selectedPersonnel.nationalCode;
                             ListGrid_PersonnelJobExperiences.fetchData();
                             ListGrid_PersonnelJobExperiences.invalidateCache();
+                            //change With hrm
                         } else {
                             ListGrid_PersonnelJobExperiences.setData([]);
                         }
@@ -588,6 +589,7 @@
                 {name: "companyName", title: "نام شرکت"}
             ],
             fetchDataURL: masterDataUrl + "/job/{nationalCode}"
+            //change With hrm
         });
 
         var ListGrid_PersonnelJobExperiences = isc.TrLG.create({

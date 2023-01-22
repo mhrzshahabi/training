@@ -142,17 +142,6 @@
         fetchDataURL: competenceUrl + "/spec-list",
     });
 
-    <%--CompetenceDS_competence_Webservice = isc.TrDS.create({--%>
-    <%--    ID: "CompetenceDS_competence_Webservice",--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "competenceTypeId", hidden: true},--%>
-    <%--        {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},--%>
-    <%--    ],--%>
-    <%--    fetchDataURL: masterDataUrl + "/competence/iscList",--%>
-    <%--});--%>
 
     CompetenceLG_competenceV2 = isc.TrLG.create({
         ID: "CompetenceLG_competenceV2",

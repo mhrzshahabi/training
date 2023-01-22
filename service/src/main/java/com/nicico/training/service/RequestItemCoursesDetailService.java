@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 public class RequestItemCoursesDetailService implements IRequestItemCoursesDetailService {
 
     private final ModelMapper modelMapper;
-    @Autowired @Lazy
+    @Autowired
+    @Lazy
     private IRequestItemService requestItemService;
     private final RequestItemCoursesDetailDAO requestItemCoursesDetailDAO;
     private final IRequestItemProcessDetailService requestItemProcessDetailService;
@@ -57,14 +58,16 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
     @Override
     public List<RequestItemCoursesDetailDTO.Info> findAllByRequestItemProcessDetailId(Long requestItemProcessDetailId) {
         List<RequestItemCoursesDetail> requestItemCoursesDetails = requestItemCoursesDetailDAO.findAllByRequestItemProcessDetailId(requestItemProcessDetailId);
-        return modelMapper.map(requestItemCoursesDetails, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
+        return modelMapper.map(requestItemCoursesDetails, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>() {
+        }.getType());
     }
 
     @Override
     public RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion, Long chiefOpinionId) {
         RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = new RequestItemCoursesDetailDTO.OpinionInfo();
         List<RequestItemCoursesDetail> requestItemCoursesDetails = requestItemCoursesDetailDAO.findAllByRequestItemProcessDetailId(requestItemProcessDetailId);
-        List<RequestItemCoursesDetailDTO.Info> infoList = modelMapper.map(requestItemCoursesDetails, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
+        List<RequestItemCoursesDetailDTO.Info> infoList = modelMapper.map(requestItemCoursesDetails, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>() {
+        }.getType());
         opinionInfo.setCourses(infoList);
         opinionInfo.setFinalOpinion(chiefOpinion);
         opinionInfo.setFinalOpinionId(chiefOpinionId);
@@ -81,7 +84,8 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
             if (!requestItemCoursesDetailSet.stream().map(RequestItemCoursesDetail::getCourseCode).collect(Collectors.toList()).contains(requestItemCoursesDetail.getCourseCode()))
                 requestItemCoursesDetailSet.add(requestItemCoursesDetail);
         }
-        return modelMapper.map(requestItemCoursesDetailSet, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>(){}.getType());
+        return modelMapper.map(requestItemCoursesDetailSet, new TypeToken<List<RequestItemCoursesDetailDTO.Info>>() {
+        }.getType());
     }
 
     @Override
@@ -123,7 +127,7 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                 RequestItemCoursesDetail requestItemCoursesDetail = requestItemCoursesDetails.stream().filter(item -> item.getCourseCode().equals(courseCode)).findFirst().orElse(null);
                 if (requestItemCoursesDetail != null) {
                     requestItemCoursesDetail.setProcessState("تایید دستی کارشناس اجرا");
-                    Set<Long>classIds=requestItemCoursesDetailDAO.getClassIds(courseCode,info.getNationalCode());
+                    Set<Long> classIds = requestItemCoursesDetailDAO.getClassIds(courseCode, info.getNationalCode());
                     requestItemCoursesDetail.setClassIds(classIds);
 
                     requestItemCoursesDetailDAO.saveAndFlush(requestItemCoursesDetail);
@@ -151,17 +155,22 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
                             (data[2] != null ? (data[2].toString()) : ""),
                             (data[3] != null ? (data[3].toString()) : ""),
                             (data[4] != null ? (data[4].toString()) : "")
-                            ));
+                    ));
                 }
             }
             list.forEach(completeTaskDto -> {
-                Set<Long>classIds=requestItemCoursesDetailDAO.getClassIds(completeTaskDto.getCourseCode(),completeTaskDto.getUserNationalCode());
+                Set<Long> classIds = requestItemCoursesDetailDAO.getClassIds(completeTaskDto.getCourseCode(), completeTaskDto.getUserNationalCode());
                 completeTaskDto.setClassIds(classIds);
             });
-             requestItemService.autoReviewRequestItemTaskByRunExperts(list);
+            requestItemService.autoReviewRequestItemTaskByRunExperts(list);
         } catch (Exception e) {
             Logger.getLogger(RequestItemCoursesDetailService.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+
+    @Override
+    public  Set<Long> getByNationalCodeAndClassId(Long classId,String userNationalCode) {
+       return requestItemCoursesDetailDAO.getByNationalCodeAndClassId(classId, userNationalCode);
     }
 
 }

@@ -701,6 +701,14 @@
             },
             {name: "isScoreEditable", title: "isScoreEditable", hidden: true}
         ],
+        cellClick: function (record, rowNum, colNum) {
+            if (this.getFieldName(colNum) === "score") {
+                let isScoreEditable = record.isScoreEditable;
+                if (isScoreEditable !== null && isScoreEditable !== undefined) {
+                    createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
+                }
+            }
+        },
         sortChanged: function (sortField) {
             let arr = ["valence", "failureReasonId", "scoresStateId"];
             if (arr.includes(sortField[0].property)) {
@@ -750,13 +758,7 @@
 
             if (fieldName === "score") {
                 let isScoreEditable = this.getSelectedRecord().isScoreEditable;
-
-                if (isScoreEditable == null) {
-                    return true;
-                } else {
-                    createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
-                    return false;
-                }
+                return isScoreEditable == null;
 
                 // if (isScoreEditable) {
                 //     if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {

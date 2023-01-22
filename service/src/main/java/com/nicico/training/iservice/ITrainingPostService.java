@@ -48,4 +48,6 @@ public interface ITrainingPostService {
 
 
     List<TrainingPost> getTrainingPostWithPostId(Long objectId);
+
+    Boolean updateTrainingPostFromPost(Long trainingPostId, Long postId);
 }

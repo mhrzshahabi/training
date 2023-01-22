@@ -302,8 +302,41 @@ public class TrainingPostService implements ITrainingPostService {
         return trainingPostDAO.findAllById(ids);
     }
 
+    @Override
+    @Transactional
+    public Boolean updateTrainingPostFromPost(Long trainingPostId, Long postId) {
 
-        @Scheduled(cron = "0 30 17 1/1 * ?")
+        try {
+            TrainingPost trainingPost = trainingPostDAO.findById(trainingPostId)
+                    .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            Post post = postDAO.findById(postId)
+                    .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            if (post.getCode()!=null &&  post.getCode().contains("/")){
+                String code = post.getCode().substring(0, post.getCode().indexOf("/"));
+
+                if (code.equals(trainingPost.getCode())) {
+                    trainingPost.setDepartmentId(post.getDepartmentId());
+                    trainingPost.setAssistance(post.getAssistance());
+                    trainingPost.setAffairs(post.getAffairs());
+                    trainingPost.setSection(post.getSection());
+                    trainingPost.setUnit(post.getUnit());
+                    trainingPost.setCostCenterCode(post.getCostCenterCode());
+                    trainingPost.setCostCenterTitleFa(post.getCostCenterTitleFa());
+                    trainingPost.setTitleFa(post.getTitleFa());
+                    trainingPostDAO.save(trainingPost);
+                    return true;
+                }
+            }
+            return false;
+        } catch (TrainingException e) {
+            return false;
+        }
+    }
+
+
+    @Scheduled(cron = "0 30 17 1/1 * ?")
     public void changeTrainingPostStatus() {
 
         try {

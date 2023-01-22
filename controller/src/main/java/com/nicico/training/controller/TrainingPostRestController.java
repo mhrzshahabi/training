@@ -201,5 +201,15 @@ public class TrainingPostRestController {
             return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/update-training-post-from-post/{trainingPostId}/{postId}")
+    public ResponseEntity updateTrainingPostFromPost(@PathVariable Long trainingPostId,@PathVariable Long postId) {
+        Boolean updateTrainingPostFromPosttatus = trainingPostService.updateTrainingPostFromPost(trainingPostId,postId);
+
+        if (updateTrainingPostFromPosttatus != null && updateTrainingPostFromPosttatus) {
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

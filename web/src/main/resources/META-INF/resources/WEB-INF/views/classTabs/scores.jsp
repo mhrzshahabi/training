@@ -782,13 +782,7 @@
 
             if (fieldName === "score") {
                 let isScoreEditable = this.getSelectedRecord().isScoreEditable;
-
-                if (isScoreEditable == null) {
-                    return true;
-                } else {
-                    createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
-                    return false;
-                }
+                return isScoreEditable == null;
 
                 // if (isScoreEditable) {
                 //     if (scoresState_value === 403 || scoresState_value === 400) {
@@ -870,6 +864,14 @@
             if (record.save==true)
             {
                 return "background-color:#98B334;font-size: 12px;";
+            }
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (this.getFieldName(colNum) === "score") {
+                let isScoreEditable = record.isScoreEditable;
+                if (isScoreEditable !== null && isScoreEditable !== undefined) {
+                    createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
+                }
             }
         },
     });

@@ -5,6 +5,7 @@ import com.nicico.training.model.RequestItemCoursesDetail;
 import response.BaseResponse;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface IRequestItemCoursesDetailService {
@@ -26,5 +27,7 @@ public interface IRequestItemCoursesDetailService {
     BaseResponse updateCoursesDetailAfterRunExpertManualReview(String processInstanceId, String courseCode);
 
     void approveCompleteTasks();
+
+    Set<Long> getByNationalCodeAndClassId(Long classId, String userNationalCode);
 
 }

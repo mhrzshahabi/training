@@ -1702,12 +1702,14 @@
                 ListGrid_Personnel_Training_History.fetchData();
                 break;
             }
+            //change With hrm
             case "TabPane_Personnel_Job_History": {
                 RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;
                 ListGrid_Personnel_Job_History.fetchData();
                 ListGrid_Personnel_Job_History.invalidateCache();
                 break;
             }
+            //change With hrm
             case "TabPane_Post_History": {
                 RestDataSource_Competence_Request_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + requestItem.post;
                 ListGrid_Post_History.fetchData();
@@ -1977,7 +1979,7 @@
         }
     }
     function exportToExcelPersonnelJobHistory() {
-
+        //change With hrm
         let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
         if (ListGrid_Personnel_Job_History.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
@@ -1986,7 +1988,7 @@
                 '',"گزارش سوابق شغلی پرسنل"  , null, null);
     }
     function exportToExcelPostHistory() {
-
+        //change With hrm
         let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
         if (ListGrid_Post_History.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");

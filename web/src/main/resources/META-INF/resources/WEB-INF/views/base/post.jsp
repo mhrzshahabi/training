@@ -180,23 +180,6 @@
                 }
             }),
             </sec:authorize>
-            // isc.ToolStripButton.create({
-            //     title: 'نمايش مجتمع ها از وبسرويس',
-            //     click: function () {
-            //         DepartmentWebserviceLG_post.invalidateCache();
-            //         DepartmentWebserviceLG_post.fetchData();
-            //         Window_DepartmentWebService_Post.show();
-            //     }
-            // }),
-            // isc.ToolStripButton.create({
-            //     title: 'نمايش پست ها از وبسرويس',
-            //     click: function () {
-            //         PostWebserviceLG_post.invalidateCache();
-            //         PostWebserviceLG_post.fetchData();
-            //         Window_PostWebService_Post.show();
-            //     }
-            // }),
-            // DynamicForm_PostAlarmSelection,
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -339,110 +322,6 @@
         // fetchDataURL: PostDS_Url_User_posts
     });
 
-    DepartmentWebserviceDS_post = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true, filterOperator: "equals"},
-            {name: "code", filterOperator: "iContains"},
-            {name: "latinTitle", filterOperator: "iContains"},
-            {name: "title", filterOperator: "iContains"},
-            {name: "type", filterOperator: "iContains"},
-            {name: "nature", filterOperator: "iContains"},
-            {name: "startDate", filterOperator: "iContains"},
-            {name: "endDate", filterOperator: "iContains"},
-            {name: "legacyCreateDate", filterOperator: "iContains"},
-            {name: "legacyChangeDate", filterOperator: "iContains"},
-            {name: "active", filterOperator: "iContains"},
-            {name: "oldCode", filterOperator: "iContains"},
-            {name: "newCode", filterOperator: "iContains"},
-            {name: "user", filterOperator: "iContains"},
-            {name: "issuable", filterOperator: "iContains"},
-            {name: "comment", filterOperator: "iContains"},
-            {name: "correction", filterOperator: "iContains"},
-            {name: "alignment", filterOperator: "iContains"},
-
-        ],
-        fetchDataURL: masterDataUrl + "/department/iscList"
-    });
-
-    PostWebserviceDS_post = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {
-                name: "code",
-                title: "<spring:message code="post.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "titleFa",
-                title: "<spring:message code="post.title"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "jobTitleFa",
-                title: "<spring:message code="job.title"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "postGradeTitleFa",
-                title: "<spring:message code="post.grade.title"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {
-                name: "assistance",
-                title: "<spring:message code="assistance"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "affairs",
-                title: "<spring:message code="affairs"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "section",
-                title: "<spring:message code="section"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {
-                name: "costCenterCode",
-                title: "<spring:message code="reward.cost.center.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "costCenterTitleFa",
-                title: "<spring:message code="reward.cost.center.title"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "competenceCount",
-                title: "تعداد شایستگی",
-                align: "center",
-                filterOperator: "equals",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-            {
-                name: "personnelCount",
-                title: "تعداد پرسنل",
-                align: "center",
-                filterOperator: "equals",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-        ],
-        fetchDataURL: masterDataUrl + "/post/iscList?type=ContractorPersonal"
-    });
-
     PostLG_post = isc.TrLG.create({
         selectionType: "single",
         <sec:authorize access="hasAuthority('Post_R')">
@@ -545,146 +424,9 @@
     defineWindowTreeNeedsAssessment();
 
 
-    DepartmentWebserviceLG_post = isc.TrLG.create({
-        dataSource: DepartmentWebserviceDS_post,
-        autoFetchData: true,
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "code"},
-            {name: "latinTitle"},
-            {name: "title"},
-            {name: "type"},
-            {name: "nature"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "legacyCreateDate"},
-            {name: "legacyChangeDate"},
-            {name: "active"},
-            {name: "oldCode"},
-            {name: "newCode"},
-            {name: "user"},
-            {name: "issuable"},
-            {name: "comment"},
-            {name: "correction"},
-            {name: "alignment"}
-        ],
-
-        gridComponents: [isc.Label.create({
-            ID: "totalsDepartmentWebserviceLabel_post"
-        }), "filterEditor", "header", "body"],
-        dataChanged: function () {
-            let totalRows = this.data.getLength();
-            if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsDepartmentWebserviceLabel_post.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
-            } else {
-                totalsDepartmentWebserviceLabel_post.setContents("&nbsp;");
-            }
-        },
-        sortField: 0
-    });
-
-    PostWebserviceLG_post = isc.TrLG.create({
-        dataSource: PostWebserviceDS_post,
-        autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "jobTitleFa"},
-            {name: "postGradeTitleFa", canFilter: false, canSort: false},
-            {name: "area", canFilter: false, canSort: false},
-            {name: "assistance", canFilter: false, canSort: false},
-            {name: "affairs", canFilter: false, canSort: false},
-            {name: "section", canFilter: false, canSort: false},
-            {name: "unit", canFilter: false, canSort: false},
-            {name: "costCenterCode"},
-            {name: "costCenterTitleFa"},
-            {name: "competenceCount", canFilter: false, canSort: false},
-            {name: "personnelCount", canFilter: false, canSort: false}
-        ],
-
-        gridComponents: [isc.FormLayout.create({
-            items: [{
-                name: "alignment", type: "radioGroup", showTitle: false,
-                valueMap: {"Personal":"Personal", "ContractorPersonal":"ContractorPersonal"}, defaultValue: "ContractorPersonal",
-                change:"PostWebserviceDS_post.fetchDataURL = masterDataUrl+'/post/iscList?type=' + value;PostWebserviceLG_post.dataSource=PostWebserviceDS_post;refreshLG(PostWebserviceLG_post);"
-            }]
-        }), isc.Label.create({
-            ID: "totalsPostWebserviceLabel_post"
-        }), "filterEditor", "header", "body"],
-        dataChanged: function () {
-            let totalRows = this.data.getLength();
-            if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsPostWebserviceLabel_post.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
-            } else {
-                totalsPostWebserviceLabel_post.setContents("&nbsp;");
-            }
-        },
-        sortField: 0
-    });
-
     // ------------------------------------------- Window -------------------------------------------
 
-    var Window_DepartmentWebService_Post = isc.Window.create({
-        title: "<spring:message code='department'/>",
-        width: "100%",
-        height: "100%",
-        minWidth: "100%",
-        minHeight: "100%",
-        autoSize: false,
-        items: [
-            DepartmentWebserviceLG_post,
-            isc.HLayout.create({
-                width: "100%",
-                height: "6%",
-                autoDraw: false,
-                align: "center",
-                members: [
-                    isc.IButton.create({
-                        title: "<spring:message code='close'/>",
-                        icon: "[SKIN]/actions/cancel.png",
-                        width: "70",
-                        align: "center",
-                        click: function () {
-                            Window_DepartmentWebService_Post.close();
-                        }
-                    })
-                ]
-            })
-
-        ]
-    });
-
-
-    var Window_PostWebService_Post = isc.Window.create({
-        title: "<spring:message code='post'/>",
-        width: "100%",
-        height: "100%",
-        minWidth: "100%",
-        minHeight: "100%",
-        autoSize: false,
-        items: [
-            PostWebserviceLG_post,
-            isc.HLayout.create({
-                width: "100%",
-                height: "6%",
-                autoDraw: false,
-                align: "center",
-                members: [
-                    isc.IButton.create({
-                        title: "<spring:message code='close'/>",
-                        icon: "[SKIN]/actions/cancel.png",
-                        width: "70",
-                        align: "center",
-                        click: function () {
-                            Window_DepartmentWebService_Post.close();
-                        }
-                    })
-                ]
-            })
-
-        ]
-    });
-    // ------------------------------------------- Page UI -------------------------------------------
+     // ------------------------------------------- Page UI -------------------------------------------
 
 
     ////////////////////////////Detail Viewer Personnel ////////////////////////////
@@ -1034,6 +776,7 @@
                break;
            }
            case "Post_PostInfoTab": {
+               //change With hrm
                RestDataSource_Post_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + post.code;
                ListGrid_Post_PostInfo.fetchData();
                ListGrid_Post_PostInfo.invalidateCache();
