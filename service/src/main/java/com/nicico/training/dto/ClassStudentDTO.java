@@ -245,6 +245,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusReaction;
         private Integer evaluationStatusExecution;
         private String isScoreEditable;
+        private Boolean isAcceptByCertification;
     }
 
     @Getter

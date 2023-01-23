@@ -81,4 +81,6 @@ public interface IClassStudentService {
     boolean IsStudentAttendanceAllowable(Long classStudentId);
 
     String isScoreEditable(Long classStudentId);
+
+    Boolean isAcceptByCertification(Long classStudentId);
 }

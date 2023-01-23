@@ -169,8 +169,12 @@ public class RequestItemCoursesDetailService implements IRequestItemCoursesDetai
     }
 
     @Override
-    public  Set<Long> getByNationalCodeAndClassId(Long classId,String userNationalCode) {
-       return requestItemCoursesDetailDAO.getByNationalCodeAndClassId(classId, userNationalCode);
+    public  boolean getByNationalCodeAndClassId(Long classId,String userNationalCode) {
+        if (classId!=null && userNationalCode!=null){
+            return !requestItemCoursesDetailDAO.getByNationalCodeAndClassId(classId, userNationalCode).isEmpty();
+        }else {
+            return false;
+        }
     }
 
 }

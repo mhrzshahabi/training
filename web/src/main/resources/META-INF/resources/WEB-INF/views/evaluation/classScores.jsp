@@ -113,7 +113,8 @@
             {name: "valence", title: "<spring:message code="valence.mode"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains", canFilter: false},
             {name: "evaluationStatusReaction", title: "وضعیت ارزیابی واکنشی"},
-            {name: "isScoreEditable"}
+            {name: "isScoreEditable"},
+            {name: "isAcceptByCertification"}
 
         ],
         transformResponse: function (dsResponse, dsRequest, data) {
@@ -206,12 +207,33 @@
                                 isc.IButton.create({
                                     title: "تایید",
                                     click: function () {
-                                        let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
-                                        let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
-                                        let checkBasisDate = classEndDate >= classBasisDate_Eval;
-                                        if(isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
+                                        let isAcceptByCertification = rec.isAcceptByCertification;
+                                        if (isAcceptByCertification!==undefined && isAcceptByCertification != null && isAcceptByCertification){
+                                            createDialog("info", "نمره ی این دانشجو طی فرایند تایید صلاحیت مورد استناد قرار گرفته است و قابل تغییر نمی باشد", "ویرایش وضعیت قبولی امکان پذیر نیست");
+                                        }else {
+                                            let classEndDate = ListGrid_class_Evaluation.getSelectedRecord().tclassEndDate;
+                                            let isNotTeachingMethodRemotely = ListGrid_class_Evaluation.getSelectedRecord().teachingMethodTitle !== 'غیر حضوری';
+                                            let checkBasisDate = classEndDate >= classBasisDate_Eval;
+                                            if(isScoreDependent_Eval && checkBasisDate && isNotTeachingMethodRemotely) {
 
-                                            if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
+                                                if (!(rec.evaluationStatusReaction === null || rec.evaluationStatusReaction===1 || rec.evaluationStatusReaction===0)) {
+
+                                                    if (!score_windows_dynamicForm_Eval.validate()) {return;}
+                                                    if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
+                                                        rec.scoresStateId = 403;
+                                                        rec.failureReasonId = 408;
+                                                        rec.score = score_windows_dynamicForm_Eval.getItem("cause").getValue();
+                                                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update_Eval(rpcResponse)"));
+                                                        score_windows_Eval.close();
+                                                    } else {
+                                                        simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
+                                                        score_windows_dynamicForm_Eval.getItem("cause").setValue();
+                                                    }
+
+                                                } else {
+                                                    createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
+                                                }
+                                            } else {
 
                                                 if (!score_windows_dynamicForm_Eval.validate()) {return;}
                                                 if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
@@ -224,24 +246,10 @@
                                                     simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
                                                     score_windows_dynamicForm_Eval.getItem("cause").setValue();
                                                 }
-
-                                            } else {
-                                                createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
-                                            }
-                                        } else {
-
-                                            if (!score_windows_dynamicForm_Eval.validate()) {return;}
-                                            if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
-                                                rec.scoresStateId = 403;
-                                                rec.failureReasonId = 408;
-                                                rec.score = score_windows_dynamicForm_Eval.getItem("cause").getValue();
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update_Eval(rpcResponse)"));
-                                                score_windows_Eval.close();
-                                            } else {
-                                                simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
-                                                score_windows_dynamicForm_Eval.getItem("cause").setValue();
                                             }
                                         }
+
+
                                     }
                                 }),
                                 isc.IButton.create({
@@ -268,8 +276,13 @@
             if (record == null || record == "undefined") {
                 createDialog("info", "<spring:message code="msg.not.selected.record"/>", "<spring:message code="message"/>");
             } else {
-                failureReason_change_Eval = false;
-                ListGrid_Remove_All_Cell_Eval(record);
+                let isAcceptByCertification = record.isAcceptByCertification;
+                if (isAcceptByCertification!==undefined && isAcceptByCertification != null && isAcceptByCertification){
+                    createDialog("info", "نمره ی این دانشجو طی فرایند تایید صلاحیت مورد استناد قرار گرفته است و قابل تغییر نمی باشد", "ویرایش وضعیت قبولی امکان پذیر نیست");
+                }else {
+                    failureReason_change_Eval = false;
+                    ListGrid_Remove_All_Cell_Eval(record);
+                }
             }
         }
 
@@ -699,13 +712,21 @@
                     "3": "تکمیل شده و ناقص"
                 }
             },
-            {name: "isScoreEditable", title: "isScoreEditable", hidden: true}
+            {name: "isScoreEditable", title: "isScoreEditable", hidden: true},
+            {name: "isAcceptByCertification", title: "isAcceptByCertification", hidden: true}
         ],
         cellClick: function (record, rowNum, colNum) {
             if (this.getFieldName(colNum) === "score") {
                 let isScoreEditable = record.isScoreEditable;
                 if (isScoreEditable !== null && isScoreEditable !== undefined) {
                     createDialog("info", isScoreEditable, "ویرایش نمره امکان پذیر نیست");
+                }
+            }
+
+            if (this.getFieldName(colNum) === "scoresStateId") {
+                let isAcceptByCertification = record.isAcceptByCertification;
+                if (isAcceptByCertification !== null && isAcceptByCertification !== undefined && isAcceptByCertification===true) {
+                    createDialog("info", "نمره ی این دانشجو طی فرایند تایید صلاحیت مورد استناد قرار گرفته است و قابل تغییر نمی باشد", "ویرایش وضعیت قبولی امکان پذیر نیست");
                 }
             }
         },
@@ -819,6 +840,13 @@
                 //     let arr = [448, 405, 449, 406, 404, 401, 450];
                 //     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
                 // }
+            }
+
+            if (fieldName === "scoresStateId") {
+                let isAcceptByCertification = record.isAcceptByCertification;
+                if (isAcceptByCertification !== null && isAcceptByCertification !== undefined && isAcceptByCertification===true) {
+                    return  false;
+                }
             }
 
             if (fieldName === "failureReasonId") {

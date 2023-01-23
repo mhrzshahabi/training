@@ -197,7 +197,9 @@ public class ClassStudentRestController {
             ClassStudentDTO.ScoresInfo scoresInfo = modelMapper.map(c, ClassStudentDTO.ScoresInfo.class);
             Long classStudentId = scoresInfo.getId();
             String isScoreEditable = iClassStudentService.isScoreEditable(classStudentId);
+            Boolean isAcceptByCertification = iClassStudentService.isAcceptByCertification(classStudentId);
             scoresInfo.setIsScoreEditable(isScoreEditable);
+            scoresInfo.setIsAcceptByCertification(isAcceptByCertification);
             return scoresInfo;
         });
     }

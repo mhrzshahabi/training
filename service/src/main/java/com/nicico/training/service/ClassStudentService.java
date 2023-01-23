@@ -50,6 +50,7 @@ public class ClassStudentService implements IClassStudentService {
     private final IParameterService parameterService;
     private final ClassSessionDAO classSessionDAO;
     private final IParameterValueService iParameterValueService;
+    private final IRequestItemCoursesDetailService coursesDetailService;
 
     @Transactional(readOnly = true)
     @Override
@@ -843,8 +844,8 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     private Boolean getValueForEnterPractical(String theoType) {
-        if (theoType==null)
-        return true;
+        if (theoType == null)
+            return true;
         else {
             return !theoType.equals("1");
         }
@@ -952,6 +953,7 @@ public class ClassStudentService implements IClassStudentService {
         String teachingMethodCode = parameterValueService.get(classTeachingMethodId).getCode();
         String studentPresenceType = parameterValueService.get(classStudent.getPresenceTypeId()).getCode();
 
+        boolean isAcceptByCertification = coursesDetailService.getByNationalCodeAndClassId(tclass.getId(), classStudent.getStudent().getNationalCode()); // آیا توسط جاب یا به صورت دستی طی فرایند تایید صلاحیت تایید شده است؟
         boolean isNonAttendanceClass = teachingMethodCode.equals("intraOrganizationalRemotelyClass"); // کلاس غیر حضوری
         boolean isSelfTaughtStudent = studentPresenceType.equals("kh"); // فراگیر خود آموخته
         boolean isScoreDependent = (boolean) tclassService.getScoreDependency().get("isScoreDependent"); // ثبت نمره وابسته به ارزیابی است؟
@@ -960,12 +962,23 @@ public class ClassStudentService implements IClassStudentService {
 
         List<Long> failureReasonIds = getFailureReasonIds();
         String scoreStateAndFailureReason = getScoreStateAndFailureReason(scoringMethod, scoresStateId, failureReasonId, failureReasonIds);
+        if (!isAcceptByCertification) {
+            if (!isNonAttendanceClass && !isSelfTaughtStudent) {
+                if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
+                    return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
+            }
+            return scoreStateAndFailureReason;
+        } else
+            return "نمره ی این دانشجو طی فرایند تایید صلاحیت مورد استناد قرار گرفته است و قابل تغییر نمی باشد";
 
-        if (!isNonAttendanceClass && !isSelfTaughtStudent) {
-            if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
-                return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
-        }
-        return scoreStateAndFailureReason;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean isAcceptByCertification(Long classStudentId) {
+        ClassStudent classStudent = getClassStudent(classStudentId);
+        Tclass tclass = classStudent.getTclass();
+        return coursesDetailService.getByNationalCodeAndClassId(tclass.getId(), classStudent.getStudent().getNationalCode());
     }
 
     @Override
