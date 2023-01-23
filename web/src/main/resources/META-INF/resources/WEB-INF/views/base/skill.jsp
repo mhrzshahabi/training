@@ -93,18 +93,18 @@
     let SkillDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code='skill.title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleEn", title: "<spring:message code='title.en'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
-            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
-            {name: "skillLevel.titleFa", title: "<spring:message code='skill.level'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code='skill.title'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
+            {name: "titleEn", title: "<spring:message code='title.en'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
+            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
+            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
+            {name: "skillLevel.titleFa", title: "<spring:message code='skill.level'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
             {name: "categoryId", hidden: true},
 
             {name: "courseId", hidden: true},
-            {name: "course.titleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "course.code", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "course.titleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
+            {name: "course.code", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidthApproach: "both"},
         ],
         fetchDataURL: skillUrl + "/spec-list"
     });

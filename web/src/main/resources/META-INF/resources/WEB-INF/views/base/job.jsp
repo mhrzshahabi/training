@@ -274,35 +274,27 @@
                 {
                     name: "firstName",
                     title: "<spring:message code="firstName"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "lastName",
                     title: "<spring:message code="lastName"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "nationalCode",
                     title: "<spring:message code="national.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true,
-                    filterEditorProperties: {
+                    filterOperator: "iContains",filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     }
                 },
                 {
                     name: "companyName",
                     title: "<spring:message code="company.name"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true,
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     }
@@ -311,7 +303,6 @@
                     name: "personnelNo2",
                     title: "<spring:message code="personnel.no.6.digits"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true,
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     }
@@ -319,45 +310,31 @@
                 {
                     name: "postTitle",
                     title: "<spring:message code="post"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "postCode",
                     title: "<spring:message code="post.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "ccpArea",
                     title: "<spring:message code="area"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "ccpAssistant",
                     title: "<spring:message code="assistance"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "ccpAffairs",
                     title: "<spring:message code="affairs"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "ccpSection",
                     title: "<spring:message code="section"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "ccpUnit",
                     title: "<spring:message code="unit"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
             ],
             fetchDataURL: personnelUrl + "/iscList",
         });
@@ -393,20 +370,20 @@
             alternateRecordStyles: true,
             gridComponents: [ActionsTS_Personnel_Job, "header", "filterEditor", "body",],
             fields: [
-                {name: "firstName"},
-                {name: "lastName"},
+                {name: "firstName",autoFitWidth: true},
+                {name: "lastName",autoFitWidth: true},
                 {
                     name: "nationalCode",
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
-                    }
+                    },autoFitWidth: true
                 },
-                {name: "companyName"},
+                {name: "companyName",autoFitWidth: true},
                 {
                     name: "personnelNo",
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
-                    }
+                    },autoFitWidth: true
                 },
                 {
                     name: "personnelNo2",
@@ -414,8 +391,8 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
-                {name: "postCode"},
-                {name: "postTitle"},
+                {name: "postCode",autoFitWidth: true},
+                {name: "postTitle",autoFitWidth: true},
                 {name: "ccpArea"},
                 {name: "ccpAssistant"},
                 {name: "ccpAffairs"},
@@ -463,62 +440,52 @@
                 {
                     name: "needsAssessmentPriorityId",
                     title: "<spring:message code='priority'/>",
-                    filterOperator: "equals",
-                    autoFitWidth: true
+                    filterOperator: "equals"
                 },
                 {
                     name: "needsAssessmentDomainId",
                     title: "<spring:message code='domain'/>",
-                    filterOperator: "equals",
-                    autoFitWidth: true
+                    filterOperator: "equals"
                 },
                 {
                     name: "competence.title",
                     title: "<spring:message code="competence"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "competence.competenceTypeId",
                     title: "<spring:message code="competence.type"/>",
-                    filterOperator: "equals",
-                    autoFitWidth: true
+                    filterOperator: "equals"
                 },
                 {
                     name: "skill.code",
                     title: "<spring:message code="skill.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "skill.titleFa",
                     title: "<spring:message code="skill"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "skill.course.theoryDuration",
                     title: "<spring:message code="duration"/>",
-                    filterOperator: "equals",
-                    autoFitWidth: true
+                    filterOperator: "equals"
                 },
                 {
                     name: "skill.course.scoresState",
                     title: "<spring:message code='status'/>",
-                    filterOperator: "equals",
-                    autoFitWidth: true
+                    filterOperator: "equals"
                 },
                 {
                     name: "skill.course.code",
                     title: "<spring:message code="course.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "skill.course.titleFa",
                     title: "<spring:message code="course"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
             ],
             cacheAllData: true,
@@ -561,7 +528,7 @@
                 ActionsTS_NA_Job,
                 "header", "filterEditor", "body",],
             fields: [
-                {name: "competence.title"},
+                {name: "competence.title",autoFitWidth: true},
                 {
                     name: "competence.competenceTypeId",
                     type: "SelectItem",
@@ -605,9 +572,9 @@
                     ],
                 },
                 {name: "skill.code"},
-                {name: "skill.titleFa"},
+                {name: "skill.titleFa",autoFitWidth: true},
                 {name: "skill.course.code"},
-                {name: "skill.course.titleFa"}
+                {name: "skill.course.titleFa",autoFitWidth: true}
             ],
         });
         Delete_Button_response_job = isc.Button.create({
@@ -684,70 +651,52 @@
         PostDS_Job = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
-                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", valueMap:peopleTypeMap, filterOnKeypress: true},
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidthApproach: "both"},
                 {
                     name: "code",
                     title: "<spring:message code="post.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "titleFa",
                     title: "<spring:message code="post.title"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
+                    filterOperator: "iContains"
                 },
                 {
                     name: "jobTitleFa",
                     title: "<spring:message code="job.title"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "postGradeTitleFa",
                     title: "<spring:message code="post.grade.title"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
                 {
                     name: "assistance",
                     title: "<spring:message code="assistance"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "affairs",
                     title: "<spring:message code="affairs"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "section",
                     title: "<spring:message code="section"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
                 {
                     name: "costCenterCode",
                     title: "<spring:message code="reward.cost.center.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "costCenterTitleFa",
                     title: "<spring:message code="reward.cost.center.title"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
+                    filterOperator: "iContains"},
                 {
                     name: "competenceCount",
                     title: "تعداد شایستگی",
                     align: "center",
                     filterOperator: "equals",
-                    autoFitWidth: true,
                     autoFitWidthApproach: "both"
                 },
                 {
@@ -755,7 +704,6 @@
                     title: "تعداد پرسنل",
                     align: "center",
                     filterOperator: "equals",
-                    autoFitWidth: true,
                     autoFitWidthApproach: "both"
                 }
             ],
@@ -800,8 +748,8 @@
                         keyPressFilter: "[0-9/]"
                     }
                 },
-                {name: "titleFa",},
-                {name: "jobTitleFa",},
+                {name: "titleFa",autoFitWidth: true},
+                {name: "jobTitleFa",autoFitWidth: true},
                 {name: "postGradeTitleFa",},
                 {name: "area",},
                 {name: "assistance",},
@@ -814,7 +762,7 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
-                {name: "costCenterTitleFa"},
+                {name: "costCenterTitleFa",autoFitWidth: true},
                 {name: "competenceCount"},
                 {name: "personnelCount"},
                 {

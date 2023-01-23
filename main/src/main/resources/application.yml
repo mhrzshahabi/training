@@ -245,7 +245,7 @@ nicico:
   server:
     url: http://devapp01.icico.net.ir/training
   security:
-#    sys-password: password
+    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms/file'
   uploadMinioUrl: 'http://devapp01.icico.net.ir/fms/file'
