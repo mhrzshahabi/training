@@ -1813,9 +1813,7 @@
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
                     var termEnd = form.getItem("termId").getSelectedRecord().endDate;
                     form.getItem("startDate").setValue(termStart);
-                    if (hasClassEndDateEditAccess()) {
-                        form.getItem("endDate").setValue(termEnd);
-                    }
+                    form.getItem("endDate").setValue(termEnd);
                     evalGroup();
                 }
             },
@@ -1967,18 +1965,10 @@
                     limitEndDateEditAccess(form, value);
                 },
                 blur: function () {
-                    let endDate = this.getValue()
+                    let form = DynamicForm1_Class_JspClass;
+                    let endDate = form.getValue("endDate");
 
-                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                    if (classRecord !== undefined && classRecord !== null){
-                       if ( classRecord.endDate!==endDate){
-                           limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
-                       }
-                    }else {
-                        limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
-
-                    }
-
+                    limitEndDateEditAccess(form, endDate);
                 }
             },
             {
@@ -5364,11 +5354,23 @@
     }
 
     function limitEndDateEditAccess(form, value) {
-        if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
-            form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
-        } else {
-            form.clearFieldErrors("endDate", true);
+        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        if (classRecord !== undefined && classRecord !== null) { // ویرایش کلاس
+            if (classRecord.endDate !== value) {
+                if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
+                    form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
+                } else {
+                    form.clearFieldErrors("endDate", true);
+                }
+            } else { // ایجاد کلاس
+                if (hasClassEndDateEditAccess() === "false" && value < todayDate) {
+                    form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ امروز باشد", true);
+                } else {
+                    form.clearFieldErrors("endDate", true);
+                }
+            }
         }
+
     }
 
     function hasClassEndDateEditAccess() {
