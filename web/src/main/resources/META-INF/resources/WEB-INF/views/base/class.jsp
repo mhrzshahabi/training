@@ -1968,7 +1968,17 @@
                 },
                 blur: function () {
                     let endDate = this.getValue()
-                    limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
+
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    if (classRecord !== undefined && classRecord !== null){
+                       if ( classRecord.endDate!==endDate){
+                           limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
+                       }
+                    }else {
+                        limitEndDateEditAccess(DynamicForm1_Class_JspClass, endDate);
+
+                    }
+
                 }
             },
             {
