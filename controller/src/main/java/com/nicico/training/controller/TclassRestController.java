@@ -1065,7 +1065,8 @@ public class TclassRestController {
         //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
 
         if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
+            if (request.getCriteria().getCriteria().stream().filter(p -> (p==null ||
+                    p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
                 ArrayList list = new ArrayList<>();
                 list.add("-1000");
                 ((SearchDTO.CriteriaRq) request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("term.id") && p.getValue().size() == 0).toArray()[0]).setValue(list);
@@ -1156,15 +1157,6 @@ public class TclassRestController {
                 }
             });
         }
-        //*********************************
-        //******old code for alarms********
-////        for (TclassDTO.Info tclassDTO : response.getList()) {
-////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-////                tclassDTO.setHasWarning("alarm");
-////           else
-////              tclassDTO.setHasWarning("");
-////        }
-        //*********************************
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();

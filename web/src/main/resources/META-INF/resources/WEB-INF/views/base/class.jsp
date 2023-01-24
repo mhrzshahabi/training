@@ -2629,6 +2629,7 @@
                                     load_classes_by_term(term);
                                     clearClassTabValue();
                                     firstLoad = false;
+                                    DynamicForm_Term_Filter.getItem("departmentFilter").fetchData();
                                 } else
                                     getCurrentTermByYear();
                             }
@@ -2645,7 +2646,7 @@
                 width: "300",
                 height: 30,
                 optionDataSource: RestDataSource_Department_Filter,
-                autoFetchData: true,
+                autoFetchData: false,
                 displayField: "title",
                 valueField: "id",
                 textAlign: "center",
@@ -4580,10 +4581,10 @@
         }
     }
     function load_classes_by_department(value) {
-                if (value !== undefined) {
+                if (value !== undefined && value !== null) {
                     let criteria={};
 
-                    if(value !== -1 && value !== -2){
+                    if(!value.containsSubstring('-1') && !value.containsSubstring('-2')){
                         criteria = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
@@ -4595,7 +4596,7 @@
                         };
                     }
 
-                    if(value === -2){
+                    if(value.containsSubstring('-2') ){
                         criteria = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
@@ -4606,7 +4607,7 @@
                             ]
                         };
                     }
-                    if(value === -1){
+                    if(value.containsSubstring('-1') ){
                         criteria = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
@@ -4628,10 +4629,7 @@
                     let mainCriteria = createMainCriteria();
                     ListGrid_Class_JspClass.invalidateCache();
                     ListGrid_Class_JspClass.fetchData(mainCriteria);
-                } else {
-                    createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
                 }
-
     }
     function setDefaultTerm() {
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "termScope", "GET", null,
