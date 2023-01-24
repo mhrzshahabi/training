@@ -1,10 +1,10 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AcademicBKDTO;
-import com.nicico.training.dto.HrmFilterDTO;
 import com.nicico.training.iservice.IAcademicBKService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
+
+import static com.nicico.training.controller.util.CriteriaUtil.addCriteria;
+import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -99,36 +100,24 @@ public class AcademicBKRestController {
 
     @Loggable
     @DeleteMapping(value = "/test")
-    public void test() {
-        List<HrmFilterDTO> entitys=new ArrayList<>();
-        HrmFilterDTO entity =new HrmFilterDTO();
-        entity.setField("postId");
-        entity.setType("select");
-        entity.setOperator("=");
-        entity.setValues(Collections.singletonList(40832));
-        entity.setFromValues(Collections.singletonList(null));
-        entity.setToValues(Collections.singletonList(null));
-
-        ///////////////////////////
-
-        HrmFilterDTO entity2 =new HrmFilterDTO();
-        entity2.setField("date");
-        entity2.setType("select");
-        entity2.setOperator("=");
-        entity2.setValues(Collections.singletonList(1647808200));
-        entity2.setFromValues(Collections.singletonList(null));
-        entity2.setToValues(Collections.singletonList(null));
+    public String test() {
 
 
-        entitys.add(entity);
-        entitys.add(entity2);
+        SearchDTO.SearchRq re=new SearchDTO.SearchRq();
+        re.setCount(20);
+        re.setStartIndex(0);
+        SearchDTO.CriteriaRq criteriaRq = addCriteria(new ArrayList<>(), EOperator.or);
+        criteriaRq.getCriteria().add(createCriteria(EOperator.equals, "post.code", "10011201/1"));
+        re.setCriteria(criteriaRq);
+
 
 
          String fooResourceUrl
-                = "http://devapp01.icico.net.ir/hrm-backend/api/v1/post-persons/filter-history?count=30&startIndex=0";
-        HttpEntity<List<HrmFilterDTO>> request = new HttpEntity<>(entitys);
+                = "http://devapp01.icico.net.ir//hrm-backend/api/v1/post-persons/1";
+        HttpEntity<SearchDTO.SearchRq> request = new HttpEntity<>(re);
 
-          restTemplate.exchange(fooResourceUrl, HttpMethod.POST, request, HrmFilterDTO.class);
+        Object data=  restTemplate.exchange(fooResourceUrl, HttpMethod.POST, request, SearchDTO.SearchRq.class);
+        return data.toString();
 
     }
 
