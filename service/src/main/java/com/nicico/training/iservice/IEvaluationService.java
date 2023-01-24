@@ -71,8 +71,14 @@ public interface IEvaluationService {
 
     List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId , String evaluatorType);
 
-    EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Object> questionIds, List<Object> classIds, String startDate1, String startDate2,
-                                                                                                                  String endDate1, String endDate2);
+    EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Object> questionIds,
+                                                                                                                  List<Object> classIds,
+                                                                                                                  String startDate1,
+                                                                                                                  String startDate2,
+                                                                                                                  String endDate1,
+                                                                                                                  String endDate2,
+                                                                                                                  List<Object> catIds,
+                                                                                                                  List<Object> subCatIds);
 
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 

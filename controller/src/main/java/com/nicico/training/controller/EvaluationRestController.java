@@ -1003,6 +1003,8 @@ public class EvaluationRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         List<Object> questionIds = new ArrayList<>();
         List<Object> classIds = new ArrayList<>();
+        List<Object> catIds = null;
+        List<Object> subCatIds = null;
         String startDate1 = null;
         String startDate2 = null;
         String endDate1 = null;
@@ -1029,10 +1031,16 @@ public class EvaluationRestController {
                 if (criterion.getFieldName().equals("endDate2")) {
                     endDate2 = criterion.getValue().get(0).toString();
                 }
+                if (criterion.getFieldName().equals("courseCategory")) {
+                    catIds = criterion.getValue();
+                }
+                if (criterion.getFieldName().equals("courseSubCategory")) {
+                    subCatIds = criterion.getValue();
+                }
             }
         }
 
-        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs detailsDTOSpecRs = evaluationService.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2);
+        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs detailsDTOSpecRs = evaluationService.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2, catIds, subCatIds);
         return new ResponseEntity<>(detailsDTOSpecRs, HttpStatus.OK);
     }
 

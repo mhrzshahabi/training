@@ -343,11 +343,28 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Object> questionIds,List<Object> classIds,
-                                                                                                                         String startDate1, String startDate2,
-                                                                                                                         String endDate1, String endDate2) {
+    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Object> questionIds, List<Object> classIds,
+                                                                                                                         String startDate1,
+                                                                                                                         String startDate2,
+                                                                                                                         String endDate1,
+                                                                                                                         String endDate2,
+                                                                                                                         List<Object> catIds,
+                                                                                                                         List<Object> subCatIds) {
 
-        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2);
+        int catIdNullCheck = catIds == null ? 1 : 0;
+        int subCatIdNullCheck = subCatIds == null ? 1 : 0;
+
+        if (catIds == null) {
+            catIds = new ArrayList<>();
+            catIds.add(-1L);
+        }
+
+        if (subCatIds == null) {
+            subCatIds = new ArrayList<>();
+            subCatIds.add(-1L);
+        }
+
+        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2, catIds, catIdNullCheck, subCatIds, subCatIdNullCheck);
         List<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList> dtoList = new ArrayList<>();
         for (Object o : list){
             EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList dto = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList();
@@ -356,21 +373,21 @@ public class EvaluationService implements IEvaluationService {
             dto.setClassTitle(arr[1] == null ? null : arr[1].toString());
             dto.setClassStartDate(arr[2] == null ? null : arr[2].toString());
             dto.setClassEndDate(arr[3] == null ? null : arr[3].toString());
-
-
-            dto.setAnswerTitle(arr[4] == null ? null : arr[4].toString());
-            dto.setFirstName(arr[5] == null ? null : arr[5].toString());
-            dto.setLastName(arr[6] == null ? null : arr[6].toString());
-            dto.setNationalCode(arr[7] == null ? null : arr[7].toString());
-            dto.setComplexTitle(arr[8] == null ? null : arr[8].toString());
-            dto.setQuestionTitle(arr[9] == null ? null : arr[9].toString());
-            String first=(arr[10]== null ? "" : arr[10].toString());
-            String last=(arr[11]== null ? "" : arr[11].toString());
+            dto.setCategory(arr[5] == null ? null : arr[5].toString());
+            dto.setSubCategory(arr[7] == null ? null : arr[7].toString());
+            dto.setAnswerTitle(arr[8] == null ? null : arr[8].toString());
+            dto.setFirstName(arr[9] == null ? null : arr[9].toString());
+            dto.setLastName(arr[10] == null ? null : arr[10].toString());
+            dto.setNationalCode(arr[11] == null ? null : arr[11].toString());
+            dto.setComplexTitle(arr[12] == null ? null : arr[12].toString());
+            dto.setQuestionTitle(arr[13] == null ? null : arr[13].toString());
+            String first=(arr[14]== null ? "" : arr[14].toString());
+            String last=(arr[15]== null ? "" : arr[15].toString());
             dto.setTeacherName(first+ " "+last);
-            dto.setTeacherMobileNo(arr[12]== null ? null : arr[12].toString());
-            dto.setStudentMobileNo(arr[13]== null ? null : arr[13].toString());
-            dto.setOrganizer(arr[14]== null ? null : arr[14].toString());
-            dto.setDomain(arr[17]== null ? null : arr[17].toString());
+            dto.setTeacherMobileNo(arr[16]== null ? null : arr[16].toString());
+            dto.setStudentMobileNo(arr[17]== null ? null : arr[17].toString());
+            dto.setOrganizer(arr[18]== null ? null : arr[18].toString());
+            dto.setDomain(arr[21]== null ? null : arr[21].toString());
             dtoList.add(dto);
         }
         final EvaluationAnsweredQuestionsDetailsDTO.SpecRs specResponse = new EvaluationAnsweredQuestionsDetailsDTO.SpecRs();
