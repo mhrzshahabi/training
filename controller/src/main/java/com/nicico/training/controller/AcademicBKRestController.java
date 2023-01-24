@@ -113,7 +113,7 @@ public class AcademicBKRestController {
 
 
          String fooResourceUrl
-                = "http://devapp01.icico.net.ir//hrm-backend/api/v1/post-persons/1";
+                = "http://staging.icico.net.ir/hrm-backend/api/v1/post-persons/filter-by-criteria-custom";
         HttpEntity<SearchDTO.SearchRq> request = new HttpEntity<>(re);
 
         Object data=  restTemplate.exchange(fooResourceUrl, HttpMethod.POST, request, SearchDTO.SearchRq.class);
