@@ -1,0 +1,72 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
+    username: STG_TRAINING
+    password: stgtraining
+  redis:
+    host: redis
+    password: nicico
+  security:
+    oauth2:
+      client:
+        registration:
+          oserver:
+            client-id: ${spring.application.name}
+            client-secret: password
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: user_info
+        provider:
+          oserver:
+            authorization-uri: http://staging.icico.net.ir/oauth/authorize
+            token-uri: http://staging.icico.net.ir/oauth/token
+            user-info-uri: http://staging.icico.net.ir/user/info
+            user-name-attribute: username
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+  config:
+    activate:
+      on-profile: Staging
+nicico:
+  server:
+    url: http://devapp01.icico.net.ir/training
+  security:
+    sys-password: password
+  minioQuestionsGroup: '61502f8082da585df04a50dd'
+  minioUrl: 'http://storage.icico.net.ir/fms/file'
+  uploadMinioUrl: 'http://storage.icico.net.ir/fms/file'
+  elsUrl: 'http://staging.icico.net.ir/els/api/training'
+  hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
+  sms: 'http://devops01.icico.net.ir'
+  masterDataUrl: 'http://staging.icico.net.ir/master-data/api/v3'
+  elsSmsUrl: 'http://staging.icico.net.ir/els'
+  elsActuatorUrl: 'http://staging.icico.net.ir/els/actuator'
+  fmsActuatorUrl: 'http://staging.icico.net.ir/fms/actuator'
+  masterDataActuatorUrl: 'http://staging.icico.net.ir/master-data/actuator'
+
+  upload:
+    dir: /var/nicico/${spring.application.name}/upload
+  dirs:
+    upload-class: /var/nicico/${spring.application.name}/upload/Tclass
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/Tclass/deleted
+    upload-teacher: /var/nicico/${spring.application.name}/upload/Teacher
+    upload-teacher-deleted: /var/nicico/${spring.application.name}/upload/Teacher/deleted
+    upload-Job: /var/nicico/${spring.application.name}/upload/Job
+    upload-Job-deleted: /var/nicico/${spring.application.name}/upload/Job/deleted
+    upload-JobGroup: /var/nicico/${spring.application.name}/upload/JobGroup
+    upload-JobGroup-deleted: /var/nicico/${spring.application.name}/upload/JobGroup/deleted
+    upload-PostGrade: /var/nicico/${spring.application.name}/upload/PostGrade
+    upload-PostGrade-deleted: /var/nicico/${spring.application.name}/upload/PostGrade/deleted
+    upload-PostGradeGroup: /var/nicico/${spring.application.name}/upload/PostGradeGroup
+    upload-PostGradeGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGradeGroup/deleted
+    upload-PostGroup: /var/nicico/${spring.application.name}/upload/PostGroup
+    upload-PostGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGroup/deleted
+    upload-Post: /var/nicico/${spring.application.name}/upload/Post
+    upload-Post-deleted: /var/nicico/${spring.application.name}/upload/Post/deleted
+    upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
+    upload-TriningPost: /var/nicico/${spring.application.name}/upload/TrainingPost
+    upload-TriningPost-deleted: /var/nicico/${spring.application.name}/upload/TrainingPost/deleted
