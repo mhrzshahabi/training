@@ -16,6 +16,8 @@ public class EvaluationAnsweredQuestionsDetailsDTO {
     private String classTitle;
     private String classStartDate;
     private String classEndDate;
+    private String category;
+    private String subCategory;
     private String answerTitle;
     private String firstName;
     private String lastName;

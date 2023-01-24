@@ -8,6 +8,7 @@
 
     //----------------------------------------------------Variables-----------------------------------------------------
     let isCriteriaCategoriesChanged_Answered_Questions_Details = false;
+    let isCriteriaCategoriesChanged_AQD = false;
     let reportCriteria_Answered_Questions_Details = null;
 
     let startDateCheck_Order_EAQ = true;
@@ -25,6 +26,8 @@
             {name: "classTitle", title: "<spring:message code="class.title"/>", filterOperator: "iContains"},
             {name: "classStartDate", title: "<spring:message code="class.start.date"/>", filterOperator: "iContains"},
             {name: "classEndDate", title: "<spring:message code="class.end.date"/>", filterOperator: "iContains"},
+            {name: "category", title: "<spring:message code="category"/>", filterOperator: "iContains"},
+            {name: "subCategory", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains"},
@@ -85,6 +88,15 @@
             {name: "weight", title: "<spring:message code="weight"/>", filterOperator: "iContains"},
             {name: "order", title: "<spring:message code="order"/>", filterOperator: "iContains"},
         ],
+    });
+
+    let RestDataSource_Category_AQD = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "spec-list"
+    });
+    let RestDataSource_SubCategory_AQD = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}, {name: "category.titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
     });
 
     //---------------------------------------------------- Form------------------------------------------------
@@ -238,6 +250,112 @@
 
                 changed: function (form, item, value) {
                     //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                }
+            },
+            {
+                name: "courseCategory",
+                title: "گروه کاری",
+                type: "SelectItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_Category_AQD,
+                valueField: "id",
+                colSpan: 2,
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
+                },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان گروه",
+                        align: "center"
+                    }
+                ],
+                changed: function () {
+                    isCriteriaCategoriesChanged_AQD = true;
+                    let subCategoryField = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("courseSubCategory");
+                    if (this.getSelectedRecords() == null) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                    if (subCategoryField.getValue() === undefined)
+                        return;
+                    let subCategories = subCategoryField.getSelectedRecords();
+                    let categoryIds = this.getValue();
+                    let SubCats = [];
+                    for (let i = 0; i < subCategories.length; i++) {
+                        if (categoryIds.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
+                }
+            },
+            {
+                name: "courseSubCategory",
+                title: "زیرگروه کاری",
+                type: "SelectItem",
+                textAlign: "center",
+                colSpan: 2,
+                autoFetchData: false,
+                disabled: true,
+                optionDataSource: RestDataSource_SubCategory_AQD,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    canSelectAll: true,
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
+                },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "عنوان گروه",
+                        align: "center",
+                        sortNormalizer: function (record) {
+                            return record.category.titleFa;
+                        }
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان زیرگروه",
+                        align: "center"
+                    }
+                ],
+                focus: function () {
+                    if (isCriteriaCategoriesChanged_AQD) {
+                        isCriteriaCategoriesChanged_AQD = false;
+                        let ids = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("courseCategory").getValue();
+                        if (ids === []) {
+                            RestDataSource_SubCategory_AQD.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_AQD.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
                 }
             },
             {
@@ -506,7 +624,7 @@
     });
 
     //----------------------------------- layOut & grid-----------------------------------------------------------------------
-    var HLayOut_Confirm_Answered_Questions_Details = isc.TrHLayoutButtons.create({
+    let HLayOut_Confirm_Answered_Questions_Details = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -520,31 +638,33 @@
         ]
     });
 
-    var ListGrid_Answered_Questions_Details = isc.TrLG.create({
+    let ListGrid_Answered_Questions_Details = isc.TrLG.create({
         height: "70%",
         filterOnKeypress: false,
         showFilterEditor: false,
         dataSource: RestDataSource_Answered_Questions_Details,
         fields: [
-            {name: "classCode"},
-            {name: "classTitle"},
-            {name: "classStartDate"},
-            {name: "classEndDate"},
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "complexTitle"},
-            {name: "domain"},
-            {name: "questionTitle"},
-            {name: "answerTitle"},
-            {name: "teacherName"},
-            {name: "teacherMobileNo"},
-            {name: "studentMobileNo"},
-            {name: "organizer"}
+            {name: "classCode", autoFitWidth: true},
+            {name: "classTitle", autoFitWidth: true},
+            {name: "classStartDate", autoFitWidth: true},
+            {name: "classEndDate", autoFitWidth: true},
+            {name: "category", autoFitWidth: true},
+            {name: "subCategory", autoFitWidth: true},
+            {name: "firstName", autoFitWidth: true},
+            {name: "lastName", autoFitWidth: true},
+            {name: "nationalCode", autoFitWidth: true},
+            {name: "complexTitle", autoFitWidth: true},
+            {name: "domain", autoFitWidth: true},
+            {name: "questionTitle", autoFitWidth: true},
+            {name: "answerTitle", autoFitWidth: true},
+            {name: "teacherName", autoFitWidth: true},
+            {name: "teacherMobileNo", autoFitWidth: true},
+            {name: "studentMobileNo", autoFitWidth: true},
+            {name: "organizer", autoFitWidth: true}
         ]
     });
 
-    var VLayout_Body_Answered_Questions_Details = isc.TrVLayout.create({
+    let VLayout_Body_Answered_Questions_Details = isc.TrVLayout.create({
         border: "2px solid blue",
         padding: 20,
         members: [
