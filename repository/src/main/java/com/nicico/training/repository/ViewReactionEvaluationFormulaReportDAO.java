@@ -106,8 +106,8 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
                                 concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
                                 tbl_student.emp_no            AS student_emp_number,
                                 tbl_student.personnel_no      AS student_per_number,
-                                tbl_department.c_hoze_title   AS student_hoze,
-                                tbl_department.c_omor_title   AS student_omor,
+                   nvl(tbl_department.c_hoze_title, view_last_md_employee_hr.ccp_complex) AS student_hoze,
+                   nvl(tbl_department.c_omor_title, view_last_md_employee_hr.ccp_affairs) AS student_omor,
                                 tbl_post.c_code               AS student_post_code,
                                 tbl_post.c_title_fa           AS student_post_title,
                                 CAST(tbl_evaluation_analysis.c_teacher_grade AS DECIMAL(10, 2)) AS final_teacher,
@@ -339,6 +339,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
                                 ) percent_ ON clsstu.class_id = percent_.class_id
                               \s
                               \s
+                               LEFT JOIN view_last_md_employee_hr ON tbl_student.national_code = view_last_md_employee_hr.c_national_code
                             ORDER BY
                                 class_code
  
