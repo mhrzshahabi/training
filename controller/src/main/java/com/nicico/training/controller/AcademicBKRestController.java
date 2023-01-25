@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AcademicBKDTO;
@@ -9,23 +8,15 @@ import com.nicico.training.iservice.IAcademicBKService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
-import static com.nicico.training.controller.util.CriteriaUtil.addCriteria;
-import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,8 +27,7 @@ public class AcademicBKRestController {
     private final IAcademicBKService academicBKService;
     private final ModelMapper modelMapper;
 
-    @Autowired
-    private RestTemplate restTemplate;
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -98,27 +88,6 @@ public class AcademicBKRestController {
         }
     }
 
-    @Loggable
-    @DeleteMapping(value = "/test")
-    public String test() {
 
-
-        SearchDTO.SearchRq re=new SearchDTO.SearchRq();
-        re.setCount(20);
-        re.setStartIndex(0);
-        SearchDTO.CriteriaRq criteriaRq = addCriteria(new ArrayList<>(), EOperator.or);
-        criteriaRq.getCriteria().add(createCriteria(EOperator.equals, "post.code", "10011201/1"));
-        re.setCriteria(criteriaRq);
-
-
-
-         String fooResourceUrl
-                = "http://staging.icico.net.ir/hrm-backend/api/v1/post-persons/filter-by-criteria-custom";
-        HttpEntity<SearchDTO.SearchRq> request = new HttpEntity<>(re);
-
-        Object data=  restTemplate.exchange(fooResourceUrl, HttpMethod.POST, request, SearchDTO.SearchRq.class);
-        return data.toString();
-
-    }
 
 }

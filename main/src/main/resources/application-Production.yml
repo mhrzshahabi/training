@@ -48,6 +48,8 @@ nicico:
   elsActuatorUrl: 'http://mobiles.nicico.com/actuator'
   fmsActuatorUrl: 'http://apps.nicico.com/fms/actuator'
   masterDataActuatorUrl: 'http://apps.nicico.com/master-data/actuator'
+  hrmBackend: 'http://apps.nicico.com/hrm-backend/api/v1'
+
 
 
 

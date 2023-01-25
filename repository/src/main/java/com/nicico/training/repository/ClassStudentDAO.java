@@ -1239,4 +1239,20 @@ WHERE
             "                    and\n" +
             "                tbl_class.c_end_date > = classBasisDate.c_value",nativeQuery = true)
     List<?> findAllUsersForSenSmsForUnCompleteReactionEvaluation();
+
+
+
+    @Query(value = """
+SELECT
+    *
+FROM
+         tbl_class_student
+    INNER JOIN tbl_parameter_value ON tbl_class_student.scores_state_id = tbl_parameter_value.id
+WHERE
+    tbl_class_student.class_id = :classId
+    AND
+   \s
+    tbl_parameter_value.c_code = :scoreCode
+""",nativeQuery = true)
+    List<ClassStudent> getAllStudentWithScoreCondition(Long classId,String scoreCode);
 }

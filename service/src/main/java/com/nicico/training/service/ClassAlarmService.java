@@ -4,10 +4,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarmService;
-import com.nicico.training.model.Alarm;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.TestQuestion;
-import com.nicico.training.model.ViewClassConflict;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -1859,7 +1856,7 @@ public class ClassAlarmService implements IClassAlarmService {
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Override
-    public String checkAlarmsForEndingClass(Long class_id, String endDate, HttpServletResponse response) throws IOException {
+    public String checkAlarmsForEndingClass(Long classId, String endDate, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -1905,7 +1902,7 @@ public class ClassAlarmService implements IClassAlarmService {
             for (String script : alarmScripts) {
 
                 List<?> Alarm = (List<?>) entityManager.createNativeQuery(script)
-                        .setParameter("class_id", class_id)
+                        .setParameter("class_id", classId)
                         .setParameter("todaydat", todayDate).getResultList();
 
                 if (!Alarm.isEmpty())
@@ -1916,7 +1913,7 @@ public class ClassAlarmService implements IClassAlarmService {
             if (endDate.replaceAll("-", "/").compareTo(todayDate) > 0)
                 endingClassAlarm.append("تاریخ پایان کلاس " + endDate.replaceAll("-", "/") + " می باشد.<br />");
 
-            if (classStudentDAO.countClassStudentsByTclassId(class_id) == 0)
+            if (classStudentDAO.countClassStudentsByTclassId(classId) == 0)
                 endingClassAlarm.append("در کلاس هیچ فراگیری وجود ندارد.<br />");
 
             endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
@@ -1939,7 +1936,7 @@ public class ClassAlarmService implements IClassAlarmService {
                     "    AND   rownum = 1 AND :todaydat = :todaydat ";
 
             List<?> Alarm = (List<?>) entityManager.createNativeQuery(alarmLastScripts)
-                    .setParameter("class_id", class_id)
+                    .setParameter("class_id", classId)
                     .setParameter("todaydat", todayDate).getResultList();
 
             if (!Alarm.isEmpty())
@@ -1958,17 +1955,17 @@ public class ClassAlarmService implements IClassAlarmService {
                     "    INNER JOIN tbl_question_bank_test_question ON tbl_test_question.id = tbl_question_bank_test_question.f_test_question";
 
             List<?> alarmForQuestion = (List<?>) entityManager.createNativeQuery(alarmQuestionScripts)
-                    .setParameter("class_id", class_id)
+                    .setParameter("class_id", classId)
                      .getResultList();
 
-            Optional<Tclass> tClassById = tclassDAO.findById(class_id);
+            Optional<Tclass> tClassById = tclassDAO.findById(classId);
 
             if (tClassById.get().getCourse().getEvaluation().equals("2") && alarmForQuestion.isEmpty()) {
 
-                List<TestQuestion> testQuestionList = testQuestionDAO.findByTclassId(class_id);
+                List<ClassStudent> classStudentList = classStudentDAO.getAllStudentWithScoreCondition(classId,"PassedWithoutGrade");
 
-                if (testQuestionList.stream().noneMatch(t -> t.getTestQuestionType().equals("FinalTest"))) {
-                    endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی این کلاس یادگیری است و آزمونی برای آن طرح نشده، امکان پایان یافته شدن ندارد.<br />");
+                if (classStudentList.size()>0) {
+                    endingClassAlarm.append(" <br />بدلیل اینکه نوع ارزیابی دوره ی این کلاس یادگیری است و فراگیری وجود دارد که  قبول بدون نمره برایش ثبت شده است ; امکان پایان یافته شدن ندارد.<br />");
                 }
 
             }

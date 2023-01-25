@@ -44,6 +44,8 @@ nicico:
   elsActuatorUrl: 'http://staging.icico.net.ir/els/actuator'
   fmsActuatorUrl: 'http://staging.icico.net.ir/fms/actuator'
   masterDataActuatorUrl: 'http://staging.icico.net.ir/master-data/actuator'
+  hrmBackend: 'http://staging.icico.net.ir/hrm-backend/api/v1'
+
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload

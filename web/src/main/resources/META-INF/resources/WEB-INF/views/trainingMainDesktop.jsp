@@ -1314,6 +1314,7 @@
     const viewReactionEvaluationCommentUrl = rootUrl + "/evaluation/comments";
     const viewClassCostReportUrl = rootUrl + "/view-class-cost";
     const masterDataUrl = rootUrl + "/masterData";
+    const hrmDataUrl = rootUrl + "/hrm";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
     const sendMessageUrl = rootUrl + "/sendMessage";

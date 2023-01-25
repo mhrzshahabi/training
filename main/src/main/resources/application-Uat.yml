@@ -1,4 +1,3 @@
-
 spring:
   profiles: Uat
   datasource:
@@ -43,6 +42,8 @@ nicico:
   fmsActuatorUrl: 'http://uat.icico.net.ir/fms/actuator'
   masterDataActuatorUrl: 'http://uat.icico.net.ir/master-data/actuator'
   uploadMinioUrl: 'http://storage.icico.net.ir/fms'
+  hrmBackend: 'http://uat.icico.net.ir/hrm-backend/api/v1'
+
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
