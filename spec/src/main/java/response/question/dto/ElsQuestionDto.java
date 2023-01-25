@@ -71,5 +71,8 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private Double proposedPointValue;
     @ApiModelProperty
     private Boolean isChild;
+    @ApiModelProperty
+    private Boolean isActive;
+
 
 }
