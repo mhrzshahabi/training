@@ -1,4 +1,4 @@
-package com.nicico.training.controller.client.hrm;
+package com.nicico.training.controller;
 
 
 import com.nicico.copper.common.Loggable;
@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,13 +32,21 @@ public class HrmClientController {
 
     @Loggable
     @GetMapping(value = "/jobHistory-by-nationalCode/{nationalCode}")
-    public ResponseEntity<HrmJobHistoryDto> jobHistory(@PathVariable String nationalCode) {
+    public  ResponseEntity<ISC<HrmJobHistoryDto.SpecRs>> jobHistory(@PathVariable String nationalCode) {
         if (nationalCode!=null){
             String url = hrmUrl + "/post-persons/filter-by-criteria-custom";
             HttpEntity<HrmRequestDto> request = new HttpEntity<>(CreatHrmCriteria(nationalCode,"personnel.person.nationalCode"));
             try {
                 ResponseEntity<HrmJobHistoryDto> data = restTemplate.exchange(url, HttpMethod.POST, request, HrmJobHistoryDto.class);
-                return new ResponseEntity(data.getBody(), data.getStatusCode());
+                ISC.Response<HrmJobDto> response = new ISC.Response<>();
+                response.setStartRow(0);
+                response.setEndRow(Objects.requireNonNull(data.getBody()).getList().size());
+                response.setTotalRows(data.getBody().getTotalCount());
+                response.setData(data.getBody().getList());
+                ISC<HrmJobHistoryDto.SpecRs> infoISC = new ISC<>(response);
+                return new ResponseEntity<>(infoISC, data.getStatusCode());
+
+
             }catch (Exception e){
                 throw new TrainingException(TrainingException.ErrorType.Unauthorized, "خطا در دسترسی به سیستم منابع انسانی");
 
@@ -50,13 +60,22 @@ public class HrmClientController {
     }
     @Loggable
     @GetMapping(value = "/postHistory-by-postCode")
-    public ResponseEntity<HrmPostHistoryDto> postHistory(@RequestBody String postCode) {
+    public ResponseEntity<ISC<HrmPostHistoryDto.SpecRs>> postHistory(HttpServletRequest req) {
+        String postCode = req.getParameter("postCode");
         if (postCode!=null){
             String url = hrmUrl + "/post-persons/filter-by-criteria-custom";
             HttpEntity<HrmRequestDto> request = new HttpEntity<>(CreatHrmCriteria(postCode,"post.code"));
             try {
                 ResponseEntity<HrmPostHistoryDto> data = restTemplate.exchange(url, HttpMethod.POST, request, HrmPostHistoryDto.class);
-                return new ResponseEntity(data.getBody(), data.getStatusCode());
+
+                ISC.Response<HrmJobDto> response = new ISC.Response<>();
+                response.setStartRow(0);
+                response.setEndRow(Objects.requireNonNull(data.getBody()).getList().size());
+                response.setTotalRows(data.getBody().getTotalCount());
+                response.setData(data.getBody().getList());
+                ISC<HrmPostHistoryDto.SpecRs> infoISC = new ISC<>(response);
+                return new ResponseEntity<>(infoISC, data.getStatusCode());
+
             }catch (Exception e){
                 throw new TrainingException(TrainingException.ErrorType.Unauthorized, "خطا در دسترسی به سیستم منابع انسانی");
 
@@ -74,7 +93,7 @@ public class HrmClientController {
         HrmCustomCriteria3 hrmCustomCriteria3 = new HrmCustomCriteria3();
         HrmCustomCriteria2 hrmCustomCriteria2 = new HrmCustomCriteria2();
         HrmCustomCriteria hrmCustomCriteria = new HrmCustomCriteria();
-        hrmRequestDto.setCount(10);
+        hrmRequestDto.setCount(75);
         hrmRequestDto.setStartIndex(0);
 
         hrmCustomCriteria3.setOperator("equals");

@@ -391,30 +391,42 @@
 
     RestDataSource_Post_PostInfo = isc.TrDS.create({
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "personnelNo", title: "شماره پرسنلی"},
-            {name: "firstName", title: "نام"},
-            {name: "lastName", title: "نام خانوادگی"},
-            {name: "nationalCode", title: "کدملی"},
-            {name: "assignmentDate", title: "تاریخ شروع"},
-            {name: "dismissalDate", title: "تاریخ پایان"},
-            {name: "postCode", title: "کدپست"},
-            {name: "postTitle", title: "عنوان پست"},
-            {name: "jobNo", title: "کد شغل"},
-            {name: "jobTitle", title: "عنوان شغل"},
-            {name: "departmentTitle", title: "نام دپارتمان"},
-            {name: "departmentCode", title: "کد دپارتمان", hidden: true},
-            {name: "omur", title: "امور"},
-            {name: "ghesmat", title: "قسمت"},
-            {name: "companyName", title: "نام شرکت"}
+            {name: "id", primaryKey: true},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "personnelCompanyName"},
+            {name: "personnelCode"},
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode"}
         ]
     });
     ListGrid_Post_PostInfo = isc.TrLG.create({
         dataSource: RestDataSource_Post_PostInfo,
         selectionType: "single",
         autoFetchData: false,
-        initialSort: [
-            {property: "assignmentDate", direction: "ascending"}
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "personnelCompanyName",title: "شرکت"},
+            {name: "personnelCode",title: "کد پرسنلی"},
+            {name: "startDate",title: "تاریخ شروع",
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }},
+            {name: "endDate",title: "تاریخ پایان",
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }},
+            {name: "firstName",title: "نام"},
+            {name: "lastName",title: "نام خانوادگی"},
+            {name: "nationalCode",title: "کد ملی"}
+
         ]
     });
 
@@ -776,8 +788,7 @@
                break;
            }
            case "Post_PostInfoTab": {
-               //change With hrm
-               RestDataSource_Post_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + post.code;
+               RestDataSource_Post_PostInfo.fetchDataURL = hrmDataUrl + "/postHistory-by-postCode?postCode="+ post.code;
                ListGrid_Post_PostInfo.fetchData();
                ListGrid_Post_PostInfo.invalidateCache();
                break;

@@ -573,19 +573,12 @@
         var RestDataSource_PersonnelJobExperiences = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "personnelNo", title: "شماره پرسنلی"},
-                {name: "ssn", title: "کدملی"},
-                {name: "assignmentDate", title: "تاریخ شروع"},
-                {name: "dismissalDate", title: "تاریخ پایان"},
-                {name: "postCode", title: "کد پست"},
-                {name: "postTitle", title: "عنوان پست"},
-                {name: "jobNo", title: "کد شغل"},
-                {name: "jobTitle", title: "عنوان شغل"},
-                {name: "departmentTitle", title: "نام دپارتمان"},
-                {name: "departmentCode", title: "کد دپارتمان"},
-                {name: "omur", title: "امور"},
-                {name: "ghesmat", title: "قسمت"},
-                {name: "companyName", title: "نام شرکت"}
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "personnelCompanyName"},
+                {name: "personnelCode"},
+                {name: "post.code"},
+                {name: "post.title"}
             ],
             fetchDataURL: hrmDataUrl + "/jobHistory-by-nationalCode/{nationalCode}"
         });
@@ -596,24 +589,27 @@
             dataSource: RestDataSource_PersonnelJobExperiences,
             selectionType: "single",
             autoFetchData: false,
-            initialSort: [
-                {property: "assignmentDate", direction: "ascending"}
-            ],
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-                {name: "personnelNo"},
-                {name: "ssn"},
-                {name: "assignmentDate"},
-                {name: "dismissalDate"},
-                {name: "postCode"},
-                {name: "postTitle"},
-                {name: "jobNo"},
-                {name: "jobTitle"},
-                {name: "departmentTitle"},
-                {name: "departmentCode", hidden: true},
-                {name: "omur"},
-                {name: "ghesmat"},
-                {name: "companyName"}
+                {name: "post.code",title: "کد پست"},
+                {name: "post.title",title: "عنوان پست"},
+                {name: "personnelCompanyName",title: "شرکت"},
+                {name: "personnelCode",title: "کد پرسنلی"},
+                {name: "startDate",title: "تاریخ شروع",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                        }
+                    }},
+                {name: "endDate",title: "تاریخ پایان",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                        }
+                    }}
+
 
             ],
             gridComponents: ["filterEditor", "header", "body", "summaryRow"]

@@ -159,7 +159,7 @@
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         // fetchDataURL: masterDataUrl + "/competence/iscList",
-        //change With hrm
+
     });
 
     CompetenceLG_competence = isc.TrLG.create({
