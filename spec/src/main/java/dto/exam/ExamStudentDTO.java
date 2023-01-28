@@ -50,6 +50,15 @@ public class ExamStudentDTO {
         @ApiModelProperty
         private Float testScore;
 
+        @ApiModelProperty
+        private Double maxPracticalScore;
+
+        @ApiModelProperty
+        private Double maxClassScore;
+
+        @ApiModelProperty
+        private Double maxScore;
+
     }
 
     @Getter

@@ -185,6 +185,9 @@ public class ElsService implements IElsService {
                 dto.setClassScore(fields[8] != null ? Double.valueOf(fields[8].toString()) : null);
                 dto.setDescriptiveScore(fields[9] != null ? Float.valueOf(fields[9].toString()) : null);
                 dto.setTestScore(fields[10] != null ? Float.valueOf(fields[10].toString()) : null);
+                dto.setMaxPracticalScore(fields[11] != null ? Double.valueOf(fields[11].toString()) : null);
+                dto.setMaxClassScore(fields[12] != null ? Double.valueOf(fields[12].toString()) : null);
+                dto.setMaxScore(fields[13] != null ? Double.valueOf(fields[13].toString()) : null);
 
                 infos.add(dto);
             }

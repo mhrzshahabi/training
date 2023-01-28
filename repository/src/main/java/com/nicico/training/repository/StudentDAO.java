@@ -230,30 +230,42 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
     Optional<Student> getTrainingCertificationDetail(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
 
     @Query(value = """
-           SELECT
-               s.first_name,
-               s.last_name,
-               s.national_code,
-               CASE
-                   WHEN tq.c_test_question_type = 'FinalTest' THEN
-                       cs.score
-                   WHEN tq.c_test_question_type = 'PreTest'   THEN
-                       cs.pre_test_score
-               END        AS score,
-               pv.c_title AS score_state,
-               cs.id      AS class_student_id,
-               tq.id      AS exam_id,
-               cs.practical_score,
-               cs.class_score,
-               cs.descriptiveـscore,
-               cs.test_score
-           FROM
-                    tbl_student s
-               INNER JOIN tbl_class_student   cs ON s.id = cs.student_id
-               INNER JOIN tbl_class           c ON c.id = cs.class_id
-               INNER JOIN tbl_test_question   tq ON c.id = tq.f_class
-               INNER JOIN tbl_parameter_value pv ON cs.scores_state_id = pv.id
-           WHERE
+          SELECT
+              s.first_name,
+              s.last_name,
+              s.national_code,
+              CASE
+                  WHEN tq.c_test_question_type = 'FinalTest' THEN
+                      cs.score
+                  WHEN tq.c_test_question_type = 'PreTest'   THEN
+                      cs.pre_test_score
+              END                AS score,
+              pv.c_title         AS score_state,
+              cs.id              AS class_student_id,
+              tq.id              AS exam_id,
+              cs.practical_score,
+              cs.class_score,
+              cs.descriptiveـscore,
+              cs.test_score,
+              tq.practical_score AS practical_score1,
+              tq.class_score     AS class_score1,
+             \s
+              CASE
+                              WHEN c.c_scoring_method = 1 THEN
+                                  '0'
+                              WHEN c.c_scoring_method = 2 THEN
+                                  '100'
+                              WHEN c.c_scoring_method = 3 THEN
+                                  '20'
+                              WHEN c.c_scoring_method = 4 THEN
+                                  '0'
+                          END AS class_scoring_method_title
+          FROM
+                   tbl_student s
+              INNER JOIN tbl_class_student   cs ON s.id = cs.student_id
+              INNER JOIN tbl_class           c ON c.id = cs.class_id
+              INNER JOIN tbl_test_question   tq ON c.id = tq.f_class
+              INNER JOIN tbl_parameter_value pv ON cs.scores_state_id = pv.id
                tq.id = :examId
             """, nativeQuery = true)
     List<?> getAllStudentsOfExam(@Param("examId") Long testQuestionId);
