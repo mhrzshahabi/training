@@ -367,15 +367,17 @@ public class TclassService implements ITclassService {
     @Override
     @Transactional(readOnly = true)
     public List<StudentDTO.ReactionNotFilled> checkEvaluationsNotFilledForEndingClass(Long classId) {
+        boolean isScoreDependent = (boolean) getScoreDependency().get("isScoreDependent"); // ثبت نمره وابسته به ارزیابی است؟
+        if (isScoreDependent){
+            Tclass tClass = getTClass(classId);
+            List<Student> notFilledStudents;
+            TotalResponse<ParameterValueDTO.Info> classConfigParameterValues = parameterService.getByCode("ClassConfig");
+            if (MyUtils.checkClassBasisDate(tClass.getEndDate(), classConfigParameterValues)) {
 
-        Tclass tClass = getTClass(classId);
-        List<Student> notFilledStudents;
-        TotalResponse<ParameterValueDTO.Info> classConfigParameterValues = parameterService.getByCode("ClassConfig");
-        if (MyUtils.checkClassBasisDate(tClass.getEndDate(), classConfigParameterValues)) {
-
-            notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() == null || item.getEvaluationStatusReaction() == 0 || item.getEvaluationStatusReaction() == 1).map(ClassStudent::getStudent).collect(Collectors.toList());
-            if (notFilledStudents.size() != 0) {
-                return modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
+                notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() == null || item.getEvaluationStatusReaction() == 0 || item.getEvaluationStatusReaction() == 1).map(ClassStudent::getStudent).collect(Collectors.toList());
+                if (notFilledStudents.size() != 0) {
+                    return modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
+                }
             }
         }
         return new ArrayList<>();
