@@ -46,6 +46,10 @@ public class ExamNotSentToElsDTO {
 
         @ApiModelProperty
         private Boolean onlineFinalExamStatus;
+        @ApiModelProperty
+        private String name;
+        @ApiModelProperty
+        private ExamType type;
     }
 
 }

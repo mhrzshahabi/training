@@ -32,13 +32,15 @@ import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
 import com.nicico.training.mapper.teacher.TeacherPresentableCourseMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
-import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.*;
+import dto.exam.ElsExamCreateDTO;
+import dto.exam.ElsImportedExam;
+import dto.exam.ExamNotSentToElsDTO;
+import dto.exam.ExamStudentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -176,7 +178,6 @@ public class ElsRestController {
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
     private final IElsService elsService;
-    private final TestQuestionMapper testQuestionMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
