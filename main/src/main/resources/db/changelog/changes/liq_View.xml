@@ -22302,7 +22302,17 @@ WHERE
         </createView>
     </changeSet>
 
-    <changeSet author="namdari" id="1661158628187-03">
+    <changeSet  author="namdari"  id="1661158628187-05">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="view_statistics_unit_report"/>
+            </and>
+        </preConditions>
+        <dropView viewName="view_statistics_unit_report"/>
+
+    </changeSet>
+
+    <changeSet author="namdari" id="1661158628187-06">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
           with pr as (
