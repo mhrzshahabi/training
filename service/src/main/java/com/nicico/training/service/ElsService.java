@@ -2,7 +2,6 @@ package com.nicico.training.service;
 
 
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.testQuestion.TestQuestionMapper;
@@ -10,12 +9,10 @@ import com.nicico.training.model.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.exam.*;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import request.exam.ElsSendExamToTrainingResponse;
 import request.exam.ExamResult;
-import request.exam.UpdateQuestionActivationStateResponse;
 import response.BaseResponse;
 
 import java.util.*;
@@ -184,6 +181,10 @@ public class ElsService implements IElsService {
                 dto.setScoreStateTitle(fields[4] != null ? fields[4].toString() : null);
                 dto.setClassStudentId(fields[5] != null ? Long.valueOf(fields[5].toString()) : null);
                 dto.setExamId(fields[6] != null ? Long.valueOf(fields[6].toString()) : null);
+                dto.setPracticalScore(fields[7] != null ? Double.valueOf(fields[7].toString()) : null);
+                dto.setClassScore(fields[8] != null ? Double.valueOf(fields[8].toString()) : null);
+                dto.setDescriptiveScore(fields[9] != null ? Float.valueOf(fields[9].toString()) : null);
+                dto.setTestScore(fields[10] != null ? Float.valueOf(fields[10].toString()) : null);
 
                 infos.add(dto);
             }
