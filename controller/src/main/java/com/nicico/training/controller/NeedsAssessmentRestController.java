@@ -299,7 +299,7 @@ public class NeedsAssessmentRestController {
 
             List<NeedsAssessmentDTO.CourseDetail> courseNotPassedList = new ArrayList<>();
             List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
-                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+                    .filter(course -> (course.getScoreStateId() == 400 || course.getScoreStateId() == 401) && (course.getClassStatusId() == 3 || course.getClassStatusId() == 5)).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
             for (NeedsAssessmentDTO.CourseDetail courseDetail : needsAssessmentDTOList) {
                 if (!list.contains(courseDetail.getCourseCode()))
                     courseNotPassedList.add(courseDetail);

@@ -62,6 +62,58 @@ public class RequestItemDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("RequestItemEndedInfo")
+    public static class EndedInfo {
+        private Long id;
+        private String name;
+        private String lastName;
+        private String nationalCode;
+        private String letterNumber;
+        private Long requestNo;
+        private String requestDate;
+        private String applicant;
+        private String post;
+        private String postTitle;
+        private String currentPostTitle;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("RequestItemSendLetterInfo")
+    public static class SendLetterInfo {
+        private List<Long> ids;
+        private String letterNumberSent;
+        private String dateSent;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("RequestItemAppointmentCoursesInfo")
+    public static class AppointmentCoursesInfo {
+        private String courseCode;
+        private String courseTitle;
+        private String priority;
+        private String classCode;
+        private String classTitle;
+        private Float score;
+        private Long scoresStateId;
+
+        public AppointmentCoursesInfo(String courseCode, String courseTitle, String priority, String classCode, String classTitle, Float score, Long scoresStateId) {
+            this.courseCode = courseCode;
+            this.courseTitle = courseTitle;
+            this.priority = priority;
+            this.classCode = classCode;
+            this.classTitle = classTitle;
+            this.score = score;
+            this.scoresStateId = scoresStateId;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ExcelOutputInfo")
     public static class ExcelOutputInfo {
         private Long id;

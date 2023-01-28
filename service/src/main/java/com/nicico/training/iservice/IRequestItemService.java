@@ -38,6 +38,10 @@ public interface IRequestItemService {
 
     List<RequestItem> search(SearchDTO.SearchRq request);
 
+    List<RequestItem> getRequestItemsWithPassedAppointmentCourses();
+
+    List<RequestItemDTO.AppointmentCoursesInfo> getPassedAppointmentCoursesByRequestItemId(Long requestItemId);
+
     RequestItemDto createList(List<RequestItem> requestItem);
 
     List<RequestItem> getListWithCompetenceRequest(Long id);
@@ -108,6 +112,9 @@ public interface IRequestItemService {
 
     void updateProcessStatus(Long requestItemId, String processStatus);
 
+    void sendLetterForAppointment(RequestItemDTO.SendLetterInfo sendLetterInfo);
+
     List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId);
+
     boolean getPlanningChiefNationalCodeWithCheckDepartment();
 }

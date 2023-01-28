@@ -59,6 +59,15 @@ public abstract class RequestItemBeanMapper {
     public abstract List<RequestItemDTO.ReportInfo> toRequestItemReportInfoDtoList(List<RequestItem> requestItemList);
 
     @Mappings({
+            @Mapping(source = "competenceReqId", target = "requestNo", qualifiedByName = "toRequestNo"),
+            @Mapping(source = "competenceReqId", target = "requestDate", qualifiedByName = "toRequestDate"),
+            @Mapping(source = "competenceReqId", target = "applicant", qualifiedByName = "toApplicant"),
+            @Mapping(source = "competenceReqId", target = "letterNumber", qualifiedByName = "toLetterNumber")
+    })
+    public abstract RequestItemDTO.EndedInfo toRequestItemEndedInfoDto(RequestItem requestItem);
+    public abstract List<RequestItemDTO.EndedInfo> toRequestItemEndedInfoDtoList(List<RequestItem> requestItemList);
+
+    @Mappings({
             @Mapping(source = "assignee", target = "assignee", qualifiedByName = "toAssigneeName")
     })
     public abstract BPMSReqItemProcessHistoryDto toBPMSReqItemProcessHistoryDto(TaskHistory taskHistory);
