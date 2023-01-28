@@ -161,6 +161,32 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public List<RequestItem> getRequestItemsWithPassedAppointmentCourses() {
+        return requestItemDAO.getRequestItemsWithPassedAppointmentCourses();
+    }
+
+    @Override
+    public List<RequestItemDTO.AppointmentCoursesInfo> getPassedAppointmentCoursesByRequestItemId(Long requestItemId) {
+        List<Object> objectList = requestItemDAO.getPassedAppointmentCoursesByRequestItemId(requestItemId);
+        List<RequestItemDTO.AppointmentCoursesInfo> appointmentCoursesInfoList = new ArrayList<>();
+        if (objectList != null) {
+            for (Object object : objectList) {
+                Object[] data = (Object[]) object;
+                appointmentCoursesInfoList.add(new RequestItemDTO.AppointmentCoursesInfo(
+                        (data[0] != null ? (data[0].toString()) : ""),
+                        (data[1] != null ? (data[1].toString()) : ""),
+                        (data[2] != null ? (data[2].toString()) : ""),
+                        (data[3] != null ? (data[3].toString()) : ""),
+                        (data[4] != null ? (data[4].toString()) : ""),
+                        (data[5] != null ? Float.parseFloat(data[5].toString()) : 0),
+                        (data[6] != null ? Long.parseLong(data[6].toString()) : 0)
+                ));
+            }
+        }
+        return appointmentCoursesInfoList;
+    }
+
+    @Override
     @Transactional
     public RequestItemDto createList(List<RequestItem> requestItems) {
         requestItems = requestItems.stream().filter(item -> item.getNationalCode() != null).collect(Collectors.toList());
@@ -1173,6 +1199,12 @@ public class RequestItemService implements IRequestItemService {
             requestItem.setProcessStatusId(parameterValueService.getId(processStatus));
             requestItemDAO.saveAndFlush(requestItem);
         }
+    }
+
+    @Transactional
+    @Override
+    public void sendLetterForAppointment(RequestItemDTO.SendLetterInfo sendLetterInfo) {
+        requestItemDAO.updateLetterNumberAndDateByIds(sendLetterInfo.getLetterNumberSent(), sendLetterInfo.getDateSent(), sendLetterInfo.getIds());
     }
 
     @Override

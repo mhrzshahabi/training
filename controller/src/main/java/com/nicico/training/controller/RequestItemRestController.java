@@ -28,8 +28,7 @@ import response.requestItem.RequestItemWithDiff;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -217,6 +216,60 @@ public class RequestItemRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/ended-list")
+    public ResponseEntity<ISC<RequestItemDTO.EndedInfo>> endedList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                     @RequestParam(value = "_endRow",defaultValue = "50") Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        searchRq.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        List<RequestItem> resultList = requestItemService.getRequestItemsWithPassedAppointmentCourses();
+        List<RequestItemDTO.EndedInfo> result = requestItemBeanMapper.toRequestItemEndedInfoDtoList(resultList);
+
+        ISC.Response<RequestItemDTO.EndedInfo> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + result.size());
+        response.setTotalRows(requestItemService.getTotalStartedProcessCount());
+        response.setData(result);
+        ISC<RequestItemDTO.EndedInfo> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/appointment-courses-list/{requestItemId}")
+    public ResponseEntity<ISC<RequestItemDTO.AppointmentCoursesInfo>> appointmentCoursesList(@PathVariable Long requestItemId) {
+
+
+        List<RequestItemDTO.AppointmentCoursesInfo> resultList = requestItemService.getPassedAppointmentCoursesByRequestItemId(requestItemId);
+
+        ISC.Response<RequestItemDTO.AppointmentCoursesInfo> response = new ISC.Response<>();
+        response.setStartRow(0);
+        response.setEndRow(resultList.size());
+        response.setTotalRows(resultList.size());
+        response.setData(resultList);
+        ISC<RequestItemDTO.AppointmentCoursesInfo> excelDTOISC = new ISC<>(response);
+        return new ResponseEntity<>(excelDTOISC, HttpStatus.OK);
+    }
+
+    @Loggable
     @PutMapping(value = "/operational-roles/{id}")
     public ResponseEntity updateOperationalRoles(@PathVariable Long id) {
         requestItemService.updateOperationalRoles(id);
@@ -356,6 +409,13 @@ public class RequestItemRestController {
     public ResponseEntity updateProcessStatusToRunChief(@RequestParam Long requestItemId) {
         requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunChief");
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping({"/send-letter"})
+    public ResponseEntity sendLetterForAppointment(@RequestBody RequestItemDTO.SendLetterInfo sendLetterInfo) {
+        requestItemService.sendLetterForAppointment(sendLetterInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
