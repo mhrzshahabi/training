@@ -150,6 +150,7 @@
                 optionDataSource: QuestionnaireDS_Answered_Questions_Details,
                 valueField: "id",
                 // displayField: "title",
+                required: true,
                 filterFields: ["title"],
                 filterLocally: true,
                 pickListFields: [
@@ -189,6 +190,7 @@
                 valueField: "evaluationQuestionId",
                 optionDataSource: QuestionnaireQuestionDS_Answered_Questions_Details,
                 displayField: "evaluationQuestion.question",
+                required: true,
                 pickListFields: [
                     {name: "evaluationQuestion.domain.title"},
                     {name: "evaluationQuestion.question"}],
@@ -597,7 +599,7 @@
                 }
 
             } else {
-                createDialog("info", "لطفا پرسشنامه - سوال و کلاس را انتخاب کنید", "<spring:message code="message"/>")
+                createDialog("info", "لطفا پرسشنامه و سوال را انتخاب کنید", "<spring:message code="message"/>")
                 return;
             }
             if (questionIds === null || questionIds === undefined || questionIds.length === 0) {
