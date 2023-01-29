@@ -198,7 +198,7 @@ public class ElsService implements IElsService {
 
     @Override
     public List<String> updateScores(List<ExamStudentDTO.Score> list) {
-        List<String> notUpdatedNationalCodes = new ArrayList<>();
+        Set<String> notUpdatedNationalCodes = new HashSet<>();
 
         list.forEach(item -> {
             ClassStudent classStudent = classStudentService.findById(item.getClassStudentId())
@@ -208,11 +208,15 @@ public class ElsService implements IElsService {
 
             try {
                 Float score = item.getScore();
+                Double classScore = item.getClassScore() != null ? item.getClassScore().doubleValue() : 0;
+                Float testScore = item.getTestScore() != null ? item.getTestScore() : 0;
+                Float descriptiveScore =item.getDescriptiveScore() != null ? item.getDescriptiveScore() : 0;
+                Double practicalScore =item.getPracticalScore() != null ? item.getPracticalScore().doubleValue() : 0;
                 String scoringMethod = tclassService.get(classStudent.getTclassId()).getScoringMethod();
                 String acceptanceLimit = tclassService.get(classStudent.getTclassId()).getAcceptancelimit();
+                boolean scoreInValidRange = isScoreInValidRange(score, scoringMethod,classScore,testScore,descriptiveScore,practicalScore);
 
                 if (testQuestionType.equals("FinalTest")) {
-                    boolean scoreInValidRange = isScoreInValidRange(score, scoringMethod);
                     boolean passedAcceptanceLimit = score >= Float.parseFloat(acceptanceLimit);
 
                     if (scoreInValidRange) {
@@ -225,29 +229,40 @@ public class ElsService implements IElsService {
 
                         classStudent.setScoresStateId(parameterValue.getId());
                         classStudent.setScore(score);
-                        classStudentService.save(classStudent);
+                        classStudent.setTestScore(testScore);
+                        classStudent.setDescriptiveScore(descriptiveScore);
+                        classStudent.setClassScore(classScore);
+                        classStudent.setPracticalScore(practicalScore);
 
                     } else {
                         notUpdatedNationalCodes.add(item.getNationalCode());
                     }
                 } else if (testQuestionType.equals("PreTest")) {
-                    classStudent.setPreTestScore(score);
+                    if (scoreInValidRange) {
+                        classStudent.setPreTestScore(score);
+                        classStudent.setTestScore(testScore);
+                        classStudent.setDescriptiveScore(descriptiveScore);
+                    } else {
+                        notUpdatedNationalCodes.add(item.getNationalCode());
+                    }
                 }
+                classStudentService.save(classStudent);
+
             } catch (Exception e) {
                 notUpdatedNationalCodes.add(item.getNationalCode());
             }
         });
 
-        return notUpdatedNationalCodes;
+        return notUpdatedNationalCodes.stream().toList();
 
     }
 
-    private boolean isScoreInValidRange(Float score, String scoringMethod) {
+    private boolean isScoreInValidRange(Float score, String scoringMethod, Double classScore, Float testScore, Float descriptiveScore, Double practicalScore) {
         if (scoringMethod.equals("2")) { // از 100 نمره
-            return score >= 0 && score <= 100;
+            return score >= 0 && score <= 100 && (classScore+testScore+descriptiveScore+practicalScore==score);
         }
         if (scoringMethod.equals("3")) { // از 20 نمره
-            return score >= 0 && score <= 20;
+            return score >= 0 && score <= 20 && (classScore+testScore+descriptiveScore+practicalScore==score);
         }
         return false;
     }

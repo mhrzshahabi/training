@@ -72,6 +72,18 @@ public class ExamStudentDTO {
         private Float score;
 
         @ApiModelProperty
+        private Float testScore;
+
+        @ApiModelProperty
+        private Float practicalScore;
+
+        @ApiModelProperty
+        private Float classScore;
+
+        @ApiModelProperty
+        private Float descriptiveScore;
+
+        @ApiModelProperty
         private Long classStudentId;
 
         @ApiModelProperty
