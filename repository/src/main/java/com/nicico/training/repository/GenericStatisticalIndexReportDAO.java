@@ -1910,126 +1910,128 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = " -- nesbat karkonan amozesh be kol karkonan\n" +
-            "-- we have no date filter in this query\n" +
-            "SELECT rowNum AS id,\n" +
-            "                                           res.*\n" +
-            "                                    FROM (\n" +
-            "with personel_kol as(\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as personel_kol_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as personel_kol_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as personel_kol_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title   as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED = 0\n" +
-            "         --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title   \n" +
-            "),\n" +
-            " personel_amoozesh as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as personel_amoozesh_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as personel_amoozesh_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as personel_amoozesh_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title   as asmojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED = 0\n" +
-            "        and p.CCP_AFFAIRS like '%آموزش%'--\n" +
-            "        --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
+    @Query(value = "\n" +
+            "             SELECT rowNum AS id,    \n" +
+            "                                                        res.*    \n" +
+            "                                                 FROM (    \n" +
+            "             with personel_kol as(    \n" +
+            "               \n" +
+            "                   select \n" +
+            "    distinct    \n" +
+            "                     count(distinct p.id) over (partition by vw.c_mojtame_title ) as personel_kol_mojtama    \n" +
+            "                     ,count(distinct p.id) over (partition by vw.c_moavenat_title ) as personel_kol_moavenat    \n" +
+            "                     ,count(distinct p.id) over (partition by vw.c_omor_title ) as personel_kol_omoor    \n" +
+            "                     ,vw.c_mojtame_code        as mojtama_id    \n" +
+            "                     ,vw.c_mojtame_title   as mojtama    \n" +
+            "                     ,vw.c_moavenat_code      as moavenat_id    \n" +
+            "                     ,vw.c_moavenat_title as moavenat    \n" +
+            "                     ,vw.c_omor_code        as omoor_id    \n" +
+            "                     ,vw.c_omor_title   as omoor    \n" +
             "\n" +
+            "                     from      \n" +
+            "                     VIEW_SYNONYM_PERSONNEL p    \n" +
+            "                          LEFT JOIN vw_department vw ON p.f_department_id = vw.c_id     \n" +
+            "                        \n" +
+            "                  \n" +
+            "--                           \n" +
+            "                     where     \n" +
+            "                       p.DELETED = 0    \n" +
+            "             \n" +
+            "                         \n" +
+            "                     group by    \n" +
+            "                     p.id    \n" +
+            "                     , vw.c_mojtame_code           \n" +
+            "                     ,vw.c_mojtame_title       \n" +
+            "                     ,vw.c_moavenat_code          \n" +
+            "                     ,vw.c_moavenat_title     \n" +
+            "                     ,vw.c_omor_code            \n" +
+            "                     ,vw.c_omor_title         \n" +
+            "             ),    \n" +
+            "              personel_amoozesh as (    \n" +
+            "                      select \n" +
+            "    distinct    \n" +
+            "                     count(distinct p.id) over (partition by vw.c_mojtame_title ) as personel_amoozesh_mojtama    \n" +
+            "                     ,count(distinct p.id) over (partition by vw.c_moavenat_title ) as personel_amoozesh_moavenat    \n" +
+            "                     ,count(distinct p.id) over (partition by vw.c_omor_title ) as personel_amoozesh_omoor    \n" +
+            "                     ,vw.c_mojtame_code        as mojtama_id    \n" +
+            "                     ,vw.c_mojtame_title   as mojtama    \n" +
+            "                     ,vw.c_moavenat_code      as moavenat_id    \n" +
+            "                     ,vw.c_moavenat_title as moavenat    \n" +
+            "                     ,vw.c_omor_code        as omoor_id    \n" +
+            "                     ,vw.c_omor_title   as omoor    \n" +
             "\n" +
-            "select  DISTINCT \n" +
+            "                     from      \n" +
+            "                     VIEW_SYNONYM_PERSONNEL p    \n" +
+            "                          LEFT JOIN vw_department vw ON p.f_department_id = vw.c_id     \n" +
+            "                        \n" +
+            "                  \n" +
+            "--                           \n" +
+            "                     where     \n" +
+            "                       p.DELETED = 0    \n" +
+            "                                            and vw.c_omor_title like '%آموزش%'--    \n" +
             "\n" +
-            "personel_kol.mojtama_id as complex_id\n" +
-            ",personel_kol.mojtama AS complex\n" +
-            ",sum(cast (  (personel_amoozesh.personel_amoozesh_mojtama /personel_kol.personel_kol_mojtama) *100 as decimal(6,2)) ) OVER ( PARTITION BY personel_kol.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", personel_kol.moavenat_id as assistant_id\n" +
-            ", personel_kol.moavenat as assistant\n" +
-            ",sum( cast ( (personel_amoozesh.personel_amoozesh_moavenat /personel_kol.personel_kol_moavenat)*100 as decimal(6,2))) OVER ( PARTITION BY  personel_kol.moavenat_id ) AS n_base_on_assistant\n" +
-            "\n" +
-            ",personel_kol.omoor_id as affairs_id\n" +
-            ",personel_kol.omoor  AS affairs\n" +
-            ",sum(cast ( (personel_amoozesh.personel_amoozesh_omoor /personel_kol.personel_kol_omoor)*100 as decimal(6,2)) ) OVER ( PARTITION BY personel_kol.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "personel_kol \n" +
-            "LEFT JOIN   personel_amoozesh\n" +
-            "on\n" +
-            " personel_amoozesh.mojtama_id = personel_kol.mojtama_id\n" +
-            " and personel_amoozesh.moavenat_id = personel_kol.moavenat_id\n" +
-            " and personel_amoozesh.omoor_id = personel_kol.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "and (personel_kol.mojtama_id is not null\n" +
-            "     and personel_kol.moavenat_id is not null\n" +
-            "     and personel_kol.omoor_id is not null\n" +
-            "    )\n" +
-            "\n" +
-            "group by\n" +
-            "personel_kol.mojtama_id\n" +
-            ",personel_kol.mojtama\n" +
-            ",personel_amoozesh.personel_amoozesh_mojtama \n" +
-            ",personel_amoozesh.personel_amoozesh_moavenat\n" +
-            ",personel_amoozesh.personel_amoozesh_omoor\n" +
-            ",personel_kol.personel_kol_mojtama\n" +
-            ",personel_kol.personel_kol_moavenat\n" +
-            ",personel_kol.personel_kol_omoor\n" +
-            ", personel_kol.moavenat_id\n" +
-            ", personel_kol.moavenat\n" +
-            ",personel_kol.omoor_id\n" +
-            ",personel_kol.omoor) res\n" +
-            "where 1=1\n" +
-            "and (\n" +
-            "(:complexNull = 1 OR complex IN (:complex))\n" +
-            "AND (:assistantNull = 1 OR assistant IN (:assistant))\n" +
-            "AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
-            "    )\n" +
-            "\n", nativeQuery = true)
+            "             \n" +
+            "                         \n" +
+            "                     group by    \n" +
+            "                     p.id    \n" +
+            "                     , vw.c_mojtame_code           \n" +
+            "                     ,vw.c_mojtame_title       \n" +
+            "                     ,vw.c_moavenat_code          \n" +
+            "                     ,vw.c_moavenat_title     \n" +
+            "                     ,vw.c_omor_code            \n" +
+            "                     ,vw.c_omor_title         \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select  DISTINCT     \n" +
+            "                 \n" +
+            "             personel_kol.mojtama_id as complex_id    \n" +
+            "             ,personel_kol.mojtama AS complex    \n" +
+            "             ,sum(cast (  (personel_amoozesh.personel_amoozesh_mojtama /personel_kol.personel_kol_mojtama) *100 as decimal(6,2)) ) OVER ( PARTITION BY personel_kol.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , personel_kol.moavenat_id as assistant_id    \n" +
+            "             , personel_kol.moavenat as assistant    \n" +
+            "             ,sum( cast ( (personel_amoozesh.personel_amoozesh_moavenat /personel_kol.personel_kol_moavenat)*100 as decimal(6,2))) OVER ( PARTITION BY  personel_kol.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                 \n" +
+            "             ,personel_kol.omoor_id as affairs_id    \n" +
+            "             ,personel_kol.omoor  AS affairs    \n" +
+            "             ,sum(cast ( (personel_amoozesh.personel_amoozesh_omoor /personel_kol.personel_kol_omoor)*100 as decimal(6,2)) ) OVER ( PARTITION BY personel_kol.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             personel_kol     \n" +
+            "             LEFT JOIN   personel_amoozesh    \n" +
+            "             on    \n" +
+            "              personel_amoozesh.mojtama_id = personel_kol.mojtama_id    \n" +
+            "              and personel_amoozesh.moavenat_id = personel_kol.moavenat_id    \n" +
+            "              and personel_amoozesh.omoor_id = personel_kol.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "             and (personel_kol.mojtama_id is not null    \n" +
+            "                  and personel_kol.moavenat_id is not null    \n" +
+            "                  and personel_kol.omoor_id is not null    \n" +
+            "                 )    \n" +
+            "                 \n" +
+            "             group by    \n" +
+            "             personel_kol.mojtama_id    \n" +
+            "             ,personel_kol.mojtama    \n" +
+            "             ,personel_amoozesh.personel_amoozesh_mojtama     \n" +
+            "             ,personel_amoozesh.personel_amoozesh_moavenat    \n" +
+            "             ,personel_amoozesh.personel_amoozesh_omoor    \n" +
+            "             ,personel_kol.personel_kol_mojtama    \n" +
+            "             ,personel_kol.personel_kol_moavenat    \n" +
+            "             ,personel_kol.personel_kol_omoor    \n" +
+            "             , personel_kol.moavenat_id    \n" +
+            "             , personel_kol.moavenat    \n" +
+            "             ,personel_kol.omoor_id    \n" +
+            "             ,personel_kol.omoor) res    \n" +
+            "             \n" +
+            "              where 1=1\n" +
+            "            and (\n" +
+            "            (:complexNull = 1 OR complex IN (:complex))\n" +
+            "            AND (:assistantNull = 1 OR assistant IN (:assistant))\n" +
+            "            AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
+            "                )\n" +
+            "             ", nativeQuery = true)
     List<GenericStatisticalIndexReport> trainingStaffToTotalStaff(
                                                        List<Object> complex,
                                                        int complexNull,

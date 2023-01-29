@@ -10044,7 +10044,15 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet  author="namdari"  id="1673784269-26">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <viewExists viewName="MDMS_TBL_MD_DEPARTMENT"/>
+            </and>
+        </preConditions>
+        <dropView viewName="MDMS_TBL_MD_DEPARTMENT"/>
 
+    </changeSet>
 
 </databaseChangeLog>
 
