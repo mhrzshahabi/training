@@ -43,7 +43,8 @@ public abstract class TestQuestionMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "tclass.titleClass"),
-            @Mapping(target = "type", source = "id", qualifiedByName = "getExamTypeByTestQuestionId")
+            @Mapping(target = "type", source = "id", qualifiedByName = "getExamTypeByTestQuestionId"),
+            @Mapping(target = "acceptanceLimit", source = "tclass.acceptancelimit", qualifiedByName = "convertAcceptanceLimit")
     })
     public abstract ExamNotSentToElsDTO.Info toExamNotSentDto(TestQuestion testQuestion);
 
@@ -71,6 +72,17 @@ public abstract class TestQuestionMapper {
             return ExamType.MULTI_CHOICES;
         else
             return ExamType.DESCRIPTIVE;
+
+
+    }
+    @Named("convertAcceptanceLimit")
+     Double convertAcceptanceLimit(String acceptanceLimit ) {
+        try {
+            return Double.valueOf(acceptanceLimit);
+        }catch (Exception e){
+            return 0D;
+        }
+
 
 
     }
