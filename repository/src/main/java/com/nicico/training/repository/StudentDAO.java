@@ -266,6 +266,7 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
               INNER JOIN tbl_class           c ON c.id = cs.class_id
               INNER JOIN tbl_test_question   tq ON c.id = tq.f_class
               INNER JOIN tbl_parameter_value pv ON cs.scores_state_id = pv.id
+              where 
                tq.id = :examId
             """, nativeQuery = true)
     List<?> getAllStudentsOfExam(@Param("examId") Long testQuestionId);
