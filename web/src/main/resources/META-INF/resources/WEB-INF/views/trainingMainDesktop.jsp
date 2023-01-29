@@ -2282,7 +2282,16 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/mobileVerify/"/>");
                     }
-                }
+                },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_Special_Courses')">
+                {
+                    title: "<spring:message code="special.courses"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/special-courses"/>");
+                    }
+                },
                 </sec:authorize>
 
                 <%--{--%>

@@ -229,6 +229,9 @@ public class MainFormController {
     @RequestMapping("/mobileVerify")
     public String showMobileVerifyForm() { return "security/mobileVerify"; }
 
+    @RequestMapping("/special-courses")
+    public String showSpecialCoursesForm() { return "evaluation/specialCourses"; }
+
     @RequestMapping("/operationalRole")
     public String showOperationalRoleForm() {
         return "security/operationalRole";
