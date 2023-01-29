@@ -46,17 +46,17 @@ public class GenericStatisticalIndexReportRestController {
         List<Object> complexList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("complex")).collect(Collectors.toList());
         if (complexList.size() != 0) {
             complexNull = 0;
-            complex = ((SearchDTO.CriteriaRq) complexList.get(0)).getValue();
+            complex = convertList(((SearchDTO.CriteriaRq) complexList.get(0)).getValue());
         }
         List<Object> assistantList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("assistant")).collect(Collectors.toList());
         if (assistantList.size() != 0) {
             assistantNull = 0;
-            assistant = ((SearchDTO.CriteriaRq) assistantList.get(0)).getValue();
+            assistant = convertList(((SearchDTO.CriteriaRq) assistantList.get(0)).getValue());
         }
         List<Object> affairsList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("affairs")).collect(Collectors.toList());
         if (affairsList.size() != 0) {
             affairsNull = 0;
-            affairs = ((SearchDTO.CriteriaRq) affairsList.get(0)).getValue();
+            affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
         }
 
         List<GenericStatisticalIndexReportDTO> reportDTOList = genericStatisticalIndexReportService.getQueryResult(reportType, fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
@@ -68,6 +68,15 @@ public class GenericStatisticalIndexReportRestController {
                 .setTotalRows(reportDTOList.size());
         ISC<GenericStatisticalIndexReportDTO> dataISC = new ISC<>(response);
         return new ResponseEntity<>(dataISC, HttpStatus.OK);
+    }
+
+    private List<Object> convertList(List<Object> values) {
+        List<Object> objects=new ArrayList<>();
+        values.forEach(object->{
+            objects.add(object);
+            objects.add(object.toString().replace("ی","ي").replace("ک","ك"));
+        });
+        return objects;
     }
 
 }
