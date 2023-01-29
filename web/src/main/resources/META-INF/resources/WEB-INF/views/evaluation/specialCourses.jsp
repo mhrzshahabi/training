@@ -7,32 +7,24 @@
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     let RestDataSource_Course_SC = isc.TrDS.create({
-        ID: "specialCourseDS",
         fields: [
-            {name: "id", type: "Integer", primaryKey: true},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "category"},
-            {name: "subCategory.titleFa"},
-            {name: "runType.titleFa"},
-            {name: "levelType.titleFa"},
-            {name: "theoType.titleFa"},
-            {name: "duration"},
-            {name: "technicalType.titleFa"},
-            {name: "minTeacherDegree"},
-            {name: "minTeacherExpYears"},
-            {name: "minTeacherEvalScore"},
-            {name: "issueTitle"},
-            {name: "description"},
-            {name: "workflowStatus"},
-            {name: "workflowStatusCode"},
-            {name: "hasGoal"},
-            {name: "hasSkill"},
-            {name: "evaluation"},
-            {name: "behavioralLevel"}
+            {name: "id", primaryKey: true},
+            {name: "scoringMethod"},
+            {name: "acceptancelimit"},
+            {name: "startEvaluation"},
+            {
+                name: "code",
+                title: "<spring:message code="course.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+            {name: "theoryDuration"},
+            {name: "categoryId"},
+            {name: "subCategoryId"},
         ],
-        fetchDataURL: courseUrl + "search"
+        fetchDataURL: courseUrl + "add-permission/spec-list?type=combo"
     });
 
     let RestDataSource_Category_SC = isc.TrDS.create({
@@ -63,11 +55,119 @@
         ],
         fetchDataURL: selfDeclarationUrl + "/list"
     });
+    //----------------------------------- Dynamic Form -----------------------------------------------------------------
+    let DynamicForm_Course = isc.DynamicForm.create({
+        overflow: "hidden",
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "courseId",
+                title: "<spring:message code="course.title"/>",
+                required: true,
+                textAlign: "center",
+                autoFetchData: false,
+                width: "*",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Course_SC,
+                sortField: ["id"],
+                filterFields: ["id"],
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='course.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                    },
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='course.title'/>",
+                        align: "center",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "<spring:message code='category'/>",
+                        align: "center",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "subCategory.titleFa",
+                        title: "<spring:message code='subcategory'/>",
+                        align: "center",
+                        filterOperator: "iContains"
+                    },
+                ],
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListWidth: 800,
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+
+                        }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+                click(form, item) {
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "evaluation", operator: "inSet", value: ["2", "3", "4"]}]
+                    };
+                    item.pickListCriteria = criteria;
+                    item.fetchData();
+                }
+            }
+        ]
+    });
+    //----------------------------------- window -----------------------------------------------------------------------
+    let Window_Select_Course = isc.Window.create({
+        title: "<spring:message code="course.select"/>",
+        width: "40%",
+        height: "40%",
+        //autoCenter: true,
+        overflow: "hidden",
+        showMaximizeButton: false,
+        autoSize: false,
+        canDragResize: false,
+        items: [
+            DynamicForm_Course,
+            isc.TrHLayoutButtons.create({
+                members: [
+                    isc.TrSaveBtn.create({
+                        click: function () {
+                            if (!DynamicForm_Course.validate()) {
+                                return;
+                            }
+                            let courseId = DynamicForm_Course.getField("courseId").getValue();
+                            // todo add this course to special courses list
+                        }
+                    }),
+                    isc.TrCancelBtn.create({
+                        click: function () {
+                            Window_Select_Course.close();
+                        }
+                    })
+                ]
+            })]
+    });
     //----------------------------------- layOut -----------------------------------------------------------------------
     let ToolStripButton_Add_SC = isc.ToolStripButtonCreate.create({
         title: "افزودن به دوره های خاص",
         click: function () {
-            
+            Window_Select_Course.show();
         }
     });
 
