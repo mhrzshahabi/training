@@ -6,10 +6,11 @@ import lombok.ToString;
 import response.BaseResponse;
 
 import java.util.List;
+import java.util.Map;
 
 @Setter
 @Getter
 @ToString
 public class UpdateScoreResponse extends BaseResponse {
-    private List<String> notUpdatedNationalCodes;
+    private Map<String,String> notUpdatedNationalCodes;
 }

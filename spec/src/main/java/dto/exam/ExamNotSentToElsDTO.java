@@ -56,6 +56,8 @@ public class ExamNotSentToElsDTO {
         @ApiModelProperty
         private Double acceptanceLimit;
 
+        @ApiModelProperty
+        private String classCode;
     }
 
 }

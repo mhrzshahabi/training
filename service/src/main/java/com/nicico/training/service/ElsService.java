@@ -197,8 +197,8 @@ public class ElsService implements IElsService {
     }
 
     @Override
-    public List<String> updateScores(List<ExamStudentDTO.Score> list) {
-        Set<String> notUpdatedNationalCodes = new HashSet<>();
+    public Map<String,String> updateScores(List<ExamStudentDTO.Score> list) {
+        Map<String,String> notUpdatedNationalCodes = new HashMap<>();
 
         list.forEach(item -> {
             ClassStudent classStudent = classStudentService.findById(item.getClassStudentId())
@@ -223,7 +223,7 @@ public class ElsService implements IElsService {
                         ParameterValue parameterValue = updateScoreState(passedAcceptanceLimit);
 
                         if (parameterValue == null) {
-                            notUpdatedNationalCodes.add(item.getNationalCode());
+                            notUpdatedNationalCodes.put(item.getNationalCode(),"خطا در ثبت نمره");
                             return;
                         }
 
@@ -235,7 +235,7 @@ public class ElsService implements IElsService {
                         classStudent.setPracticalScore(practicalScore);
 
                     } else {
-                        notUpdatedNationalCodes.add(item.getNationalCode());
+                        notUpdatedNationalCodes.put(item.getNationalCode(),"نمرات ثبت شده در بازه ی درستی نیستند");
                     }
                 } else if (testQuestionType.equals("PreTest")) {
                     if (scoreInValidRange) {
@@ -243,17 +243,17 @@ public class ElsService implements IElsService {
                         classStudent.setTestScore(testScore);
                         classStudent.setDescriptiveScore(descriptiveScore);
                     } else {
-                        notUpdatedNationalCodes.add(item.getNationalCode());
+                        notUpdatedNationalCodes.put(item.getNationalCode(),"نمرات ثبت شده در بازه ی درستی نیستند");
                     }
                 }
                 classStudentService.save(classStudent);
 
             } catch (Exception e) {
-                notUpdatedNationalCodes.add(item.getNationalCode());
+                notUpdatedNationalCodes.put(item.getNationalCode(),"خطا در ثبت نمره");
             }
         });
 
-        return notUpdatedNationalCodes.stream().toList();
+        return notUpdatedNationalCodes;
 
     }
 

@@ -3113,7 +3113,7 @@ public class ElsRestController {
         UpdateScoreResponse response = new UpdateScoreResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            List<String> notUpdatedNationalCodes = new ArrayList<>();
+            Map<String,String> notUpdatedNationalCodes = new HashMap<>();
             try {
                 notUpdatedNationalCodes = elsService.updateScores(scoreList);
                 response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);

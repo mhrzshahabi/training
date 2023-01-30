@@ -42,6 +42,7 @@ public abstract class TestQuestionMapper {
     public abstract  TestQuestionDTO.Create toCreate(TestQuestionDTO.Import dto);
 
     @Mappings({
+            @Mapping(target = "classCode", source = "tclass.code"),
             @Mapping(target = "name", source = "tclass.titleClass"),
             @Mapping(target = "type", source = "id", qualifiedByName = "getExamTypeByTestQuestionId"),
             @Mapping(target = "acceptanceLimit", source = "tclass.acceptancelimit", qualifiedByName = "convertAcceptanceLimit")

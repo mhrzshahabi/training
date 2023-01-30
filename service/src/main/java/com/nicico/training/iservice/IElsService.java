@@ -9,6 +9,7 @@ import request.exam.ExamResult;
 import response.BaseResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IElsService {
     BaseResponse checkValidScores(Long id, List<ExamResult> examResults);
@@ -19,7 +20,7 @@ public interface IElsService {
 
     List<ExamStudentDTO.Info> getAllStudentsOfExam(Long examId);
 
-    List<String> updateScores(List<ExamStudentDTO.Score> list);
+    Map<String,String> updateScores(List<ExamStudentDTO.Score> list);
 
     Boolean updateQuestionActivationState(Long questionId, Boolean isActive);
 }
