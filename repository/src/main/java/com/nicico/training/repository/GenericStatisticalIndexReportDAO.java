@@ -2041,112 +2041,107 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int affairsNull);
 
 
-    @Query(value = " --final nerkh asar bakhshi sathe yadgiri (doreh jadid)\n" +
-            " SELECT\n" +
-            "    rowNum AS id, res.* FROM(\n" +
-            "select distinct\n" +
-            "co.id                as complex_id \n" +
-            ",co.c_title          as complex\n" +
-            ",vt.nerkh_mojtama_x  as n_base_on_complex\n" +
-            ",si.id               as assistant_id\n" +
-            ",si.c_title          as assistant\n" +
-            ",vt.nerkh_moavenat_x  as n_base_on_assistant\n" +
-            ",af.id               as affairs_id  \n" +
-            ",vt.nerkh_omoor_x  as n_base_on_affairs\n" +
-            ",af.c_title          as affairs\n" +
-            "\n" +
-            "from\n" +
-            "     tbl_class                     cl \n" +
-            "    LEFT JOIN view_complex        co ON cl.complex_id = co.id\n" +
-            "    LEFT JOIN view_assistant      si ON cl.assistant_id = si.id\n" +
-            "    LEFT JOIN view_affairs        af ON cl.affairs_id = af.id\n" +
-            "left join( --vt\n" +
-            "\n" +
-            "        select \n" +
-            "          \n" +
-            "            max(abs(cast(nr.sorat_mojtama / nr.makhraj_mojtama as decimal(6,2))))  OVER( PARTITION BY nr.mojtama  ) as nerkh_mojtama_x\n" +
-            "            ,nr.mojtama_id as mojtama_id_vt\n" +
-            "            \n" +
-            "            ,max(abs(cast(nr.sorat_moavenat / nr.makhraj_moavenat as decimal(6,2))))  OVER( PARTITION BY nr.moavenat  ) as nerkh_moavenat_x\n" +
-            "            ,nr.moavenat_id as moavenat_id_vt\n" +
-            "            \n" +
-            "            ,max(abs(cast(nr.sorat_omoor / nr.makhraj_omoor as decimal(6,2))))  OVER( PARTITION BY nr.omoor  ) as nerkh_omoor_x\n" +
-            "            ,nr.omoor_id as omoor_id_vt\n" +
-            "        from( --nr\n" +
-            "        \n" +
-            "            SELECT\n" +
-            "               max ((AVG(nvl(cs.pre_test_score, 0)) - AVG(nvl(cs.score, 0)))  )OVER( PARTITION BY co.c_title  )  as sorat_mojtama,\n" +
-            "               max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY co.c_title  ) as makhraj_mojtama,\n" +
-            "                max ((AVG(nvl(cs.pre_test_score, 0)) - AVG(nvl(cs.score, 0)))  )OVER( PARTITION BY si.c_title  )  as sorat_moavenat,\n" +
-            "               max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY si.c_title  ) as makhraj_moavenat,\n" +
-            "                max ((AVG(nvl(cs.pre_test_score, 0)) - AVG(nvl(cs.score, 0)))  )OVER( PARTITION BY af.c_title  )  as sorat_omoor,\n" +
-            "               max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY af.c_title  ) as makhraj_omoor,\n" +
-            "                cs.class_id   AS class_id,\n" +
-            "                c.c_code      AS class_code,\n" +
-            "                co.c_title    AS mojtama,\n" +
-            "                co.id         AS mojtama_id,   \n" +
-            "                si.c_title    AS moavenat,\n" +
-            "                si.id        as  moavenat_id,\n" +
-            "                af.c_title    AS omoor,\n" +
-            "                af.id         as omoor_id \n" +
-            "           \n" +
-            "            FROM\n" +
-            "                tbl_class_student   cs\n" +
-            "                INNER JOIN tbl_class           c ON cs.class_id = c.id\n" +
-            "                LEFT JOIN view_complex        co ON c.complex_id = co.id\n" +
-            "                LEFT JOIN view_assistant      si ON c.assistant_id = si.id\n" +
-            "                LEFT JOIN view_affairs        af ON c.affairs_id = af.id\n" +
-            "             WHERE 1 = 1  \n" +
-            "              and\n" +
-            "     c.D_CREATED_DATE >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
-            "     and c.D_CREATED_DATE <=  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
-            "  \n" +
-            "--              and    to_char(c.D_CREATED_DATE,'yyyy/mm/dd','nls_calendar=persian')  <=@ from_date  --should be a mandatory @parameter\n" +
-            "--              and   to_char(c.D_CREATED_DATE,'yyyy/mm/dd','nls_calendar=persian')   =>@ to_date   -- should be a mandatory @parameter\n" +
-            "--             and co.id =@\n" +
-            "--             and si.id =@\n" +
-            "--             and af.id=@ \n" +
-            "       \n" +
-            "            GROUP BY\n" +
-            "                cs.class_id,\n" +
-            "                c.c_code,\n" +
-            "                co.c_title,\n" +
-            "                si.c_title,\n" +
-            "                af.c_title,\n" +
-            "                co.id,\n" +
-            "                si.id,\n" +
-            "                af.id\n" +
-            "            HAVING\n" +
-            "                  ( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))))  !=0\n" +
-            "          ) nr\n" +
-            "        group by\n" +
-            "          nr.mojtama\n" +
-            "          ,nr.sorat_mojtama\n" +
-            "          ,nr.makhraj_mojtama\n" +
-            "          ,nr.mojtama_id\n" +
-            "          ,nr.moavenat\n" +
-            "          ,nr.sorat_moavenat\n" +
-            "          ,nr.makhraj_moavenat\n" +
-            "          ,nr.moavenat_id\n" +
-            "          ,nr.omoor\n" +
-            "          ,nr.sorat_omoor\n" +
-            "          ,nr.makhraj_omoor\n" +
-            "          ,nr.omoor_id\n" +
-            " ) vt \n" +
-            " on\n" +
-            "     co.id  = vt.mojtama_id_vt\n" +
-            "     and si.id = vt.moavenat_id_vt\n" +
-            "     and af.id  = vt.omoor_id_vt\n" +
-            "  \n" +
-            "order by\n" +
-            "vt.nerkh_mojtama_x\n" +
-            ",vt.nerkh_moavenat_x\n" +
-            ",vt.nerkh_omoor_x\n" +
-            ") RES\n" +
-            "WHERE \n" +
-            "(:complexNull = 1 OR complex IN (:complex))\n" +
-            "AND (:assistantNull = 1 OR assistant IN (:assistant))\n" +
-            "AND (:affairsNull = 1 OR affairs IN (:affairs))\n", nativeQuery = true)
+    @Query(value = "    SELECT    \n" +
+            "                 rowNum AS id, res.* FROM(    \n" +
+            "             select distinct    \n" +
+            "             co.id                as complex_id     \n" +
+            "             ,co.c_title          as complex    \n" +
+            "             ,vt.nerkh_mojtama_x  as n_base_on_complex    \n" +
+            "             ,si.id               as assistant_id    \n" +
+            "             ,si.c_title          as assistant    \n" +
+            "             ,vt.nerkh_moavenat_x  as n_base_on_assistant    \n" +
+            "             ,af.id               as affairs_id      \n" +
+            "             ,vt.nerkh_omoor_x  as n_base_on_affairs    \n" +
+            "             ,af.c_title          as affairs    \n" +
+            "                 \n" +
+            "             from    \n" +
+            "                  tbl_class                     cl     \n" +
+            "                 LEFT JOIN view_complex        co ON cl.complex_id = co.id    \n" +
+            "                 LEFT JOIN view_assistant      si ON cl.assistant_id = si.id    \n" +
+            "                 LEFT JOIN view_affairs        af ON cl.affairs_id = af.id    \n" +
+            "             left join( --vt    \n" +
+            "                 \n" +
+            "                 select     \n" +
+            "                           \n" +
+            "                         max(abs(cast(nr.sorat_mojtama / nr.makhraj_mojtama as decimal(6,2))))  OVER( PARTITION BY nr.mojtama  ) as nerkh_mojtama_x    \n" +
+            "                         ,nr.mojtama_id as mojtama_id_vt    \n" +
+            "                             \n" +
+            "                         ,max(abs(cast(nr.sorat_moavenat / nr.makhraj_moavenat as decimal(6,2))))  OVER( PARTITION BY nr.moavenat  ) as nerkh_moavenat_x    \n" +
+            "                         ,nr.moavenat_id as moavenat_id_vt    \n" +
+            "                             \n" +
+            "                         ,max(abs(cast(nr.sorat_omoor / nr.makhraj_omoor as decimal(6,2))))  OVER( PARTITION BY nr.omoor  ) as nerkh_omoor_x    \n" +
+            "                         ,nr.omoor_id as omoor_id_vt    \n" +
+            "                     from( --nr    \n" +
+            "                       SELECT    \n" +
+            "                            max ((AVG(nvl(cs.score, 0)) - AVG(nvl(cs.pre_test_score, 0)))  )OVER( PARTITION BY co.c_title  )  as sorat_mojtama,    \n" +
+            "                            max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY co.c_title  ) as makhraj_mojtama,    \n" +
+            "                             max ((AVG(nvl(cs.score, 0)) - AVG(nvl(cs.pre_test_score, 0)))  )OVER( PARTITION BY si.c_title  )  as sorat_moavenat,    \n" +
+            "                            max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY si.c_title  ) as makhraj_moavenat,    \n" +
+            "                             max ((AVG(nvl(cs.score, 0)) - AVG(nvl(cs.pre_test_score, 0)))  )OVER( PARTITION BY af.c_title  )  as sorat_omoor,    \n" +
+            "                            max( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))) )  OVER( PARTITION BY af.c_title  ) as makhraj_omoor,    \n" +
+            "                             cs.class_id   AS class_id,    \n" +
+            "                             c.c_code      AS class_code,    \n" +
+            "                             co.c_title    AS mojtama,    \n" +
+            "                             co.id         AS mojtama_id,       \n" +
+            "                             si.c_title    AS moavenat,    \n" +
+            "                             si.id        as  moavenat_id,    \n" +
+            "                             af.c_title    AS omoor,    \n" +
+            "                             af.id         as omoor_id     \n" +
+            "                            \n" +
+            "                         FROM    \n" +
+            "                             tbl_class_student   cs    \n" +
+            "                             INNER JOIN tbl_class           c ON cs.class_id = c.id    \n" +
+            "                             LEFT JOIN view_complex        co ON c.complex_id = co.id    \n" +
+            "                             LEFT JOIN view_assistant      si ON c.assistant_id = si.id    \n" +
+            "                             LEFT JOIN view_affairs        af ON c.affairs_id = af.id    \n" +
+            "                          WHERE 1 = 1      \n" +
+            "--                          and\n" +
+            "--                          c.c_code = 'ME1C4T37-1400-1-1'\n" +
+            "                           and    \n" +
+            "                  c.D_CREATED_DATE >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')    \n" +
+            "                  and c.D_CREATED_DATE <=  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')    \n" +
+            "                   \n" +
+            " \n" +
+            "                         GROUP BY    \n" +
+            "                             cs.class_id,    \n" +
+            "                             c.c_code,    \n" +
+            "                             co.c_title,    \n" +
+            "                             si.c_title,    \n" +
+            "                             af.c_title,    \n" +
+            "                             co.id,    \n" +
+            "                             si.id,    \n" +
+            "                             af.id    \n" +
+            "                         HAVING    \n" +
+            "                               ( (MAX(nvl(cs.score, 0)) - MIN(nvl(cs.pre_test_score  , 0))))  !=0    \n" +
+            "                       ) nr    \n" +
+            "                     group by    \n" +
+            "                       nr.mojtama    \n" +
+            "                       ,nr.sorat_mojtama    \n" +
+            "                       ,nr.makhraj_mojtama    \n" +
+            "                       ,nr.mojtama_id    \n" +
+            "                       ,nr.moavenat    \n" +
+            "                       ,nr.sorat_moavenat    \n" +
+            "                       ,nr.makhraj_moavenat    \n" +
+            "                       ,nr.moavenat_id    \n" +
+            "                       ,nr.omoor    \n" +
+            "                       ,nr.sorat_omoor    \n" +
+            "                       ,nr.makhraj_omoor    \n" +
+            "                       ,nr.omoor_id    \n" +
+            "              ) vt     \n" +
+            "              on    \n" +
+            "                  co.id  = vt.mojtama_id_vt    \n" +
+            "                  and si.id = vt.moavenat_id_vt    \n" +
+            "                  and af.id  = vt.omoor_id_vt    \n" +
+            "                   \n" +
+            "             order by    \n" +
+            "             vt.nerkh_mojtama_x    \n" +
+            "             ,vt.nerkh_moavenat_x    \n" +
+            "             ,vt.nerkh_omoor_x    \n" +
+            "             ) RES    \n" +
+            "             WHERE     \n" +
+            "             (:complexNull = 1 OR complex IN (:complex))    \n" +
+            "             AND (:assistantNull = 1 OR assistant IN (:assistant))    \n" +
+            "             AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
     List<GenericStatisticalIndexReport> teachingLearningLevelOfNewCourses(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
