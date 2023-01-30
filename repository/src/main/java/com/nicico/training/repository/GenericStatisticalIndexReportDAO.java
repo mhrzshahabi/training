@@ -2296,203 +2296,203 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int assistantNull,
                                                        List<Object> affairs,
                                                        int affairsNull);
-    @Query(value = " SELECT    \n" +
-            "                rowNum AS id, res.* FROM (    \n" +
-            "              with kol as(    \n" +
-            "                        \n" +
-            "                 SELECT DISTINCT    \n" +
-            "                     SUM(s.koltime) over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,    \n" +
-            "                     SUM(s.koltime) over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,    \n" +
-            "                     SUM(s.koltime) over (partition by  s.omoor)  AS sum_presence_hour_kol_omoor,    \n" +
-            "                     s.c_start_date,      \n" +
-            "                     s.mojtama,    \n" +
-            "                     s.moavenat,    \n" +
-            "                       s.mojtama_id,\n" +
-            "                     s.omoor_id,\n" +
-            "                     s.moavenat_id,\n" +
-            "                     s.omoor    \n" +
-            "                       \n" +
-            "                 FROM    \n" +
-            "                     (    \n" +
-            "         SELECT\n" +
-            "    tbl_session.f_teacher_id,\n" +
-            "    tbl_class.c_start_date,\n" +
-            "    timaha.koltime,\n" +
-            "     view_last_md_employee_hr.ccp_complex   AS mojtama,\n" +
-            "     view_last_md_employee_hr.ccp_assistant AS moavenat,\n" +
-            "     view_last_md_employee_hr.ccp_affairs   AS omoor,\n" +
-            "     view_last_md_employee_hr.c_mojtame_code as mojtama_id,\n" +
-            "     view_last_md_employee_hr.c_omor_code as omoor_id,\n" +
-            "     view_last_md_employee_hr.c_moavenat_code as moavenat_id\n" +
-            "FROM\n" +
-            "         tbl_session\n" +
-            "    INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id\n" +
-            "    LEFT JOIN (\n" +
-            "        SELECT\n" +
-            "            f_teacher_id    AS teacher,\n" +
-            "            SUM(timetadris) koltime\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                SELECT\n" +
-            "                    tbl_session.f_teacher_id,\n" +
-            "                    round(to_number(to_date(tbl_session.c_session_end_hour, 'HH24:MI') - to_date(tbl_session.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                    24, 1) AS timetadris,\n" +
-            "                     tbl_class.c_end_date,\n" +
-            "                     tbl_class.c_start_date\n" +
-            "                FROM\n" +
-            "                         tbl_session\n" +
-            "                    INNER JOIN  tbl_class ON tbl_session.f_class_id =  tbl_class.id\n" +
-            "                WHERE\n" +
-            "                    tbl_session.f_teacher_id IS NOT NULL\n" +
-            "            )\n" +
-            "        GROUP BY\n" +
-            "            f_teacher_id\n" +
-            "    ) timaha ON timaha.teacher = tbl_session.f_teacher_id\n" +
-            "    INNER JOIN  tbl_teacher ON tbl_session.f_teacher_id =  tbl_teacher.id\n" +
-            "    INNER JOIN  view_last_md_employee_hr ON  tbl_teacher.c_teacher_code =  view_last_md_employee_hr.\n" +
-            "    c_national_code\n" +
-            "WHERE\n" +
-            "    tbl_session.f_teacher_id IS NOT NULL\n" +
-            "     and  tbl_class.C_START_DATE >= :fromDate    \n" +
-            "                       and tbl_class.C_START_DATE <= :toDate   \n" +
-            "                    \n" +
-            "                     ) s    \n" +
-            "                 GROUP BY    \n" +
-            "                     s.koltime,    \n" +
-            "                     s.c_start_date,      \n" +
-            "                     s.mojtama,    \n" +
-            "                     s.moavenat,   \n" +
-            "                     s.mojtama_id,\n" +
-            "                     s.omoor_id,\n" +
-            "                     s.moavenat_id,\n" +
-            "                \n" +
-            "                     s.omoor      \n" +
-            "             HAVING  SUM(s.koltime) !=0      \n" +
-            "                         \n" +
-            "              ),    \n" +
-            "                 \n" +
-            "             modares_hamkar as(    \n" +
-            "                            \n" +
-            "                 SELECT DISTINCT    \n" +
-            "                     SUM(s.koltime) over (partition by  s.mojtama)  AS sum_presence_hour_modares_hamkar_mojtama,    \n" +
-            "                     SUM(s.koltime) over (partition by  s.moavenat)  AS sum_presence_hour_modares_hamkar_moavenat,    \n" +
-            "                     SUM(s.koltime) over (partition by  s.omoor)  AS sum_presence_hour_modares_hamkar_omoor,    \n" +
-            "                     s.c_start_date,      \n" +
-            "                     s.mojtama,    \n" +
-            "                     s.moavenat,    \n" +
-            "                       s.mojtama_id,\n" +
-            "                     s.omoor_id,\n" +
-            "                     s.moavenat_id,\n" +
-            "                     s.omoor    \n" +
-            "                       \n" +
-            "                 FROM    \n" +
-            "                     (    \n" +
-            "         SELECT\n" +
-            "    tbl_session.f_teacher_id,\n" +
-            "    tbl_class.c_start_date,\n" +
-            "    timaha.koltime,\n" +
-            "     view_last_md_employee_hr.ccp_complex   AS mojtama,\n" +
-            "     view_last_md_employee_hr.ccp_assistant AS moavenat,\n" +
-            "     view_last_md_employee_hr.ccp_affairs   AS omoor,\n" +
-            "     view_last_md_employee_hr.c_mojtame_code as mojtama_id,\n" +
-            "     view_last_md_employee_hr.c_omor_code as omoor_id,\n" +
-            "     view_last_md_employee_hr.c_moavenat_code as moavenat_id\n" +
-            "FROM\n" +
-            "         tbl_session\n" +
-            "    INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id\n" +
-            "    LEFT JOIN (\n" +
-            "        SELECT\n" +
-            "            f_teacher_id    AS teacher,\n" +
-            "            SUM(timetadris) koltime\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                SELECT\n" +
-            "                    tbl_session.f_teacher_id,\n" +
-            "                    round(to_number(to_date(tbl_session.c_session_end_hour, 'HH24:MI') - to_date(tbl_session.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                    24, 1) AS timetadris,\n" +
-            "                     tbl_class.c_end_date,\n" +
-            "                     tbl_class.c_start_date\n" +
-            "                FROM\n" +
-            "                         tbl_session\n" +
-            "                    INNER JOIN  tbl_class ON tbl_session.f_class_id =  tbl_class.id\n" +
-            "                WHERE\n" +
-            "                    tbl_session.f_teacher_id IS NOT NULL\n" +
-            "                      and  tbl_class.C_START_DATE >= :fromDate    \n" +
-            "                       and tbl_class.C_START_DATE <= :toDate   \n" +
-            "                     \n" +
-            "            )\n" +
-            "        GROUP BY\n" +
-            "            f_teacher_id\n" +
-            "    ) timaha ON timaha.teacher = tbl_session.f_teacher_id\n" +
-            "    INNER JOIN  tbl_teacher ON tbl_session.f_teacher_id =  tbl_teacher.id\n" +
-            "    INNER JOIN  view_last_md_employee_hr ON  tbl_teacher.c_teacher_code =  view_last_md_employee_hr.\n" +
-            "    c_national_code\n" +
-            "WHERE\n" +
-            "    tbl_session.f_teacher_id IS NOT NULL\n" +
-            "     and   tbl_teacher.b_personnel =1\n" +
-            "                    \n" +
-            "                     ) s    \n" +
-            "                 GROUP BY    \n" +
-            "                     s.koltime,    \n" +
-            "                     s.c_start_date,      \n" +
-            "                     s.mojtama,    \n" +
-            "                     s.moavenat,   \n" +
-            "                     s.mojtama_id,\n" +
-            "                     s.omoor_id,\n" +
-            "                     s.moavenat_id,\n" +
-            "                \n" +
-            "                     s.omoor      \n" +
-            "             HAVING  SUM(s.koltime) !=0    \n" +
-            "             \n" +
-            "             )    \n" +
-            "                 \n" +
-            "             select  DISTINCT     \n" +
-            "                 \n" +
-            "             kol.mojtama_id as complex_id    \n" +
-            "             ,kol.mojtama as complex    \n" +
-            "             ,cast (  (modares_hamkar.sum_presence_hour_modares_hamkar_mojtama /kol.sum_presence_hour_kol_mojtama) *100 as decimal(6,2))  AS n_base_on_complex    \n" +
-            "                 \n" +
-            "             , kol.moavenat_id as assistant_id    \n" +
-            "             , kol.moavenat as assistant    \n" +
-            "             , cast ( (modares_hamkar.sum_presence_hour_modares_hamkar_moavenat /kol.sum_presence_hour_kol_moavenat)*100 as decimal(6,2)) as n_base_on_assistant    \n" +
-            "                 \n" +
-            "             ,kol.omoor_id as affairs_id    \n" +
-            "             ,kol.omoor as affairs    \n" +
-            "             ,cast ( (modares_hamkar.sum_presence_hour_modares_hamkar_omoor /kol.sum_presence_hour_kol_omoor)*100 as decimal(6,2))  AS n_base_on_affairs    \n" +
-            "                 \n" +
+    @Query(value = " SELECT        \n" +
+            "                             rowNum AS id, res.* FROM (        \n" +
+            "                           with kol as(        \n" +
+            "                                         \n" +
+            "                              SELECT DISTINCT        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.omoor)  AS sum_presence_hour_kol_omoor,        \n" +
+            "                                  s.c_start_date,          \n" +
+            "                                  s.mojtama,        \n" +
+            "                                  s.moavenat,        \n" +
+            "                                    s.mojtama_id,    \n" +
+            "                                  s.omoor_id,    \n" +
+            "                                  s.moavenat_id,    \n" +
+            "                                  s.omoor        \n" +
+            "                                        \n" +
+            "                              FROM        \n" +
+            "                                  (        \n" +
+            "                      SELECT    \n" +
+            "                 tbl_session.f_teacher_id,    \n" +
+            "                 tbl_class.c_start_date,    \n" +
+            "                 timaha.koltime,    \n" +
+            "                  view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                  view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                  view_last_md_employee_hr.ccp_affairs   AS omoor,    \n" +
+            "                  view_last_md_employee_hr.c_mojtame_code as mojtama_id,    \n" +
+            "                  view_last_md_employee_hr.c_omor_code as omoor_id,    \n" +
+            "                  view_last_md_employee_hr.c_moavenat_code as moavenat_id    \n" +
             "             FROM    \n" +
-            "              kol    \n" +
-            "             LEFT JOIN   modares_hamkar    \n" +
-            "             on    \n" +
-            "              modares_hamkar.mojtama_id = kol.mojtama_id    \n" +
-            "              and modares_hamkar.moavenat_id = kol.moavenat_id    \n" +
-            "              and modares_hamkar.omoor_id = kol.omoor_id    \n" +
-            "                 \n" +
-            "             WHERE 1=1    \n" +
-            "             AND (    \n" +
-            "                  kol.mojtama_id IS NOT NULL     \n" +
-            "                  AND  kol.moavenat_id IS NOT NULL     \n" +
-            "                  AND  kol.omoor_id IS NOT NULL     \n" +
-            "                )    \n" +
-            "                 \n" +
-            "             group by    \n" +
-            "             kol.mojtama_id    \n" +
-            "             ,kol.mojtama    \n" +
-            "             ,modares_hamkar.sum_presence_hour_modares_hamkar_mojtama    \n" +
-            "             ,modares_hamkar.sum_presence_hour_modares_hamkar_moavenat    \n" +
-            "             ,modares_hamkar.sum_presence_hour_modares_hamkar_omoor    \n" +
-            "             ,kol.sum_presence_hour_kol_mojtama    \n" +
-            "             ,kol.sum_presence_hour_kol_moavenat    \n" +
-            "             ,kol.sum_presence_hour_kol_omoor    \n" +
-            "             ,kol.moavenat_id    \n" +
-            "             ,kol.moavenat    \n" +
-            "             ,kol.omoor_id    \n" +
-            "             ,kol.omoor    \n" +
-            "             ) res    \n" +
-            "             where    \n" +
-            "             (:complexNull = 1 OR complex IN (:complex))    \n" +
-            "                                  AND (:assistantNull = 1 OR assistant IN (:assistant))    \n" +
-            "                                   AND (:affairsNull = 1 OR affairs IN (:affairs)) " , nativeQuery = true)
+            "                      tbl_session    \n" +
+            "                 INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id    \n" +
+            "                 LEFT JOIN (    \n" +
+            "                     SELECT    \n" +
+            "                         f_teacher_id    AS teacher,    \n" +
+            "                         SUM(timetadris) koltime    \n" +
+            "                     FROM    \n" +
+            "                         (    \n" +
+            "                             SELECT    \n" +
+            "                                 tbl_session.f_teacher_id,    \n" +
+            "                                 round(to_number(to_date(tbl_session.c_session_end_hour, 'HH24:MI') - to_date(tbl_session.c_session_start_hour, 'HH24:MI')) *    \n" +
+            "                                 24, 1) AS timetadris,    \n" +
+            "                                  tbl_class.c_end_date,    \n" +
+            "                                  tbl_class.c_start_date    \n" +
+            "                             FROM    \n" +
+            "                                      tbl_session    \n" +
+            "                                 INNER JOIN  tbl_class ON tbl_session.f_class_id =  tbl_class.id    \n" +
+            "                             WHERE    \n" +
+            "                                 tbl_session.f_teacher_id IS NOT NULL    \n" +
+            "                         )    \n" +
+            "                     GROUP BY    \n" +
+            "                         f_teacher_id    \n" +
+            "                 ) timaha ON timaha.teacher = tbl_session.f_teacher_id    \n" +
+            "                 INNER JOIN  tbl_teacher ON tbl_session.f_teacher_id =  tbl_teacher.id    \n" +
+            "                 INNER JOIN  view_last_md_employee_hr ON  tbl_teacher.c_teacher_code =  view_last_md_employee_hr.    \n" +
+            "                 c_national_code    \n" +
+            "             WHERE    \n" +
+            "                 tbl_session.f_teacher_id IS NOT NULL    \n" +
+            "                  and  tbl_class.C_START_DATE >= :fromDate        \n" +
+            "                                    and tbl_class.C_START_DATE <= :toDate       \n" +
+            "                                     \n" +
+            "                                  ) s        \n" +
+            "                              GROUP BY        \n" +
+            "                                  s.koltime,        \n" +
+            "                                  s.c_start_date,          \n" +
+            "                                  s.mojtama,        \n" +
+            "                                  s.moavenat,       \n" +
+            "                                  s.mojtama_id,    \n" +
+            "                                  s.omoor_id,    \n" +
+            "                                  s.moavenat_id,    \n" +
+            "                                 \n" +
+            "                                  s.omoor          \n" +
+            "                          HAVING  SUM(s.koltime) !=0          \n" +
+            "                                          \n" +
+            "                           ),        \n" +
+            "                                  \n" +
+            "                          modares_hamkar as(        \n" +
+            "                                             \n" +
+            "                              SELECT DISTINCT        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.mojtama)  AS sum_presence_hour_modares_hamkar_mojtama,        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.moavenat)  AS sum_presence_hour_modares_hamkar_moavenat,        \n" +
+            "                                  SUM(s.koltime) over (partition by  s.omoor)  AS sum_presence_hour_modares_hamkar_omoor,        \n" +
+            "                                  s.c_start_date,          \n" +
+            "                                  s.mojtama,        \n" +
+            "                                  s.moavenat,        \n" +
+            "                                    s.mojtama_id,    \n" +
+            "                                  s.omoor_id,    \n" +
+            "                                  s.moavenat_id,    \n" +
+            "                                  s.omoor        \n" +
+            "                                        \n" +
+            "                              FROM        \n" +
+            "                                  (        \n" +
+            "                      SELECT    \n" +
+            "                 tbl_session.f_teacher_id,    \n" +
+            "                 tbl_class.c_start_date,    \n" +
+            "                 timaha.koltime,    \n" +
+            "                  view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                  view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                  view_last_md_employee_hr.ccp_affairs   AS omoor,    \n" +
+            "                  view_last_md_employee_hr.c_mojtame_code as mojtama_id,    \n" +
+            "                  view_last_md_employee_hr.c_omor_code as omoor_id,    \n" +
+            "                  view_last_md_employee_hr.c_moavenat_code as moavenat_id    \n" +
+            "             FROM    \n" +
+            "                      tbl_session    \n" +
+            "                 INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id    \n" +
+            "                 LEFT JOIN (    \n" +
+            "                     SELECT    \n" +
+            "                         f_teacher_id    AS teacher,    \n" +
+            "                         SUM(timetadris) koltime    \n" +
+            "                     FROM    \n" +
+            "                         (    \n" +
+            "                             SELECT    \n" +
+            "                                 tbl_session.f_teacher_id,    \n" +
+            "                                 round(to_number(to_date(tbl_session.c_session_end_hour, 'HH24:MI') - to_date(tbl_session.c_session_start_hour, 'HH24:MI')) *    \n" +
+            "                                 24, 1) AS timetadris,    \n" +
+            "                                  tbl_class.c_end_date,    \n" +
+            "                                  tbl_class.c_start_date    \n" +
+            "                             FROM    \n" +
+            "                                      tbl_session    \n" +
+            "                                 INNER JOIN  tbl_class ON tbl_session.f_class_id =  tbl_class.id    \n" +
+            "                             WHERE    \n" +
+            "                                 tbl_session.f_teacher_id IS NOT NULL    \n" +
+            "                                 \n" +
+            "                         )    \n" +
+            "                     GROUP BY    \n" +
+            "                         f_teacher_id    \n" +
+            "                 ) timaha ON timaha.teacher = tbl_session.f_teacher_id    \n" +
+            "                 INNER JOIN  tbl_teacher ON tbl_session.f_teacher_id =  tbl_teacher.id    \n" +
+            "                 INNER JOIN  view_last_md_employee_hr ON  tbl_teacher.c_teacher_code =  view_last_md_employee_hr.    \n" +
+            "                 c_national_code    \n" +
+            "             WHERE    \n" +
+            "                 tbl_session.f_teacher_id IS NOT NULL    \n" +
+            "                  and   tbl_teacher.b_personnel =1    \n" +
+            "                        and  tbl_class.C_START_DATE >= :fromDate        \n" +
+            "                                    and tbl_class.C_START_DATE <= :toDate       \n" +
+            "                                     \n" +
+            "                                  ) s        \n" +
+            "                              GROUP BY        \n" +
+            "                                  s.koltime,        \n" +
+            "                                  s.c_start_date,          \n" +
+            "                                  s.mojtama,        \n" +
+            "                                  s.moavenat,       \n" +
+            "                                  s.mojtama_id,    \n" +
+            "                                  s.omoor_id,    \n" +
+            "                                  s.moavenat_id,    \n" +
+            "                                 \n" +
+            "                                  s.omoor          \n" +
+            "                          HAVING  SUM(s.koltime) !=0        \n" +
+            "                              \n" +
+            "                          )        \n" +
+            "                                  \n" +
+            "                          select  DISTINCT         \n" +
+            "                                \n" +
+            "                          kol.mojtama_id as complex_id        \n" +
+            "                          ,kol.mojtama as complex        \n" +
+            "                          ,cast (  (modares_hamkar.sum_presence_hour_modares_hamkar_mojtama /kol.sum_presence_hour_kol_mojtama) *100 as decimal(6,2))  AS n_base_on_complex        \n" +
+            "                                  \n" +
+            "                          , kol.moavenat_id as assistant_id        \n" +
+            "                          , kol.moavenat as assistant        \n" +
+            "                          , cast ( (modares_hamkar.sum_presence_hour_modares_hamkar_moavenat /kol.sum_presence_hour_kol_moavenat)*100 as decimal(6,2)) as n_base_on_assistant        \n" +
+            "                                  \n" +
+            "                          ,kol.omoor_id as affairs_id        \n" +
+            "                          ,kol.omoor as affairs        \n" +
+            "                          ,cast ( (modares_hamkar.sum_presence_hour_modares_hamkar_omoor /kol.sum_presence_hour_kol_omoor)*100 as decimal(6,2))  AS n_base_on_affairs        \n" +
+            "                                  \n" +
+            "                          FROM        \n" +
+            "                           kol        \n" +
+            "                          LEFT JOIN   modares_hamkar        \n" +
+            "                          on        \n" +
+            "                           modares_hamkar.mojtama_id = kol.mojtama_id        \n" +
+            "                           and modares_hamkar.moavenat_id = kol.moavenat_id        \n" +
+            "                           and modares_hamkar.omoor_id = kol.omoor_id        \n" +
+            "                                  \n" +
+            "                          WHERE 1=1        \n" +
+            "                          AND (        \n" +
+            "                               kol.mojtama_id IS NOT NULL         \n" +
+            "                               AND  kol.moavenat_id IS NOT NULL         \n" +
+            "                               AND  kol.omoor_id IS NOT NULL         \n" +
+            "                             )        \n" +
+            "                                  \n" +
+            "                          group by        \n" +
+            "                          kol.mojtama_id        \n" +
+            "                          ,kol.mojtama        \n" +
+            "                          ,modares_hamkar.sum_presence_hour_modares_hamkar_mojtama        \n" +
+            "                          ,modares_hamkar.sum_presence_hour_modares_hamkar_moavenat        \n" +
+            "                          ,modares_hamkar.sum_presence_hour_modares_hamkar_omoor        \n" +
+            "                          ,kol.sum_presence_hour_kol_mojtama        \n" +
+            "                          ,kol.sum_presence_hour_kol_moavenat        \n" +
+            "                          ,kol.sum_presence_hour_kol_omoor        \n" +
+            "                          ,kol.moavenat_id        \n" +
+            "                          ,kol.moavenat        \n" +
+            "                          ,kol.omoor_id        \n" +
+            "                          ,kol.omoor        \n" +
+            "                          ) res        \n" +
+            "                          where        \n" +
+            "                          (:complexNull = 1 OR complex IN (:complex))        \n" +
+            "                                               AND (:assistantNull = 1 OR assistant IN (:assistant))        \n" +
+            "                                                AND (:affairsNull = 1 OR affairs IN (:affairs)) " , nativeQuery = true)
     List<GenericStatisticalIndexReport> teachingRatioOfInternalTeachers(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
