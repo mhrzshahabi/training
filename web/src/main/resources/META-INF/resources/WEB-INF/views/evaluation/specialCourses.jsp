@@ -47,13 +47,12 @@
     let RestDataSource_Special_Courses = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "name", title: "<spring:message code="course.title"/>"},
+            {name: "titleFa", title: "<spring:message code="course.title"/>"},
             {name: "code", title: "<spring:message code="course.code"/>"},
             {name: "category", title: "<spring:message code="category"/>"},
-            {name: "subCategory", title: "<spring:message code="subcategory"/>"},
-            {name: "state", title: "<spring:message code="status"/>"}
+            {name: "subCategory", title: "<spring:message code="subcategory"/>"}
         ],
-        fetchDataURL: selfDeclarationUrl + "/list"
+        fetchDataURL: courseUrl + "special-course"
     });
     //----------------------------------- Dynamic Form -----------------------------------------------------------------
     let DynamicForm_Course = isc.DynamicForm.create({
@@ -101,7 +100,7 @@
                 pickListProperties: {
                     showFilterEditor: true
                 },
-                pickListWidth: 800,
+                // pickListWidth: "600",
                 icons: [
                     {
                         name: "clear",
@@ -136,8 +135,7 @@
     let Window_Select_Course = isc.Window.create({
         title: "<spring:message code="course.select"/>",
         width: "40%",
-        height: "40%",
-        //autoCenter: true,
+        height: "15%",
         overflow: "hidden",
         showMaximizeButton: false,
         autoSize: false,
@@ -147,12 +145,15 @@
             isc.TrHLayoutButtons.create({
                 members: [
                     isc.TrSaveBtn.create({
+                        title: "<spring:message code="add"/>",
                         click: function () {
                             if (!DynamicForm_Course.validate()) {
                                 return;
                             }
                             let courseId = DynamicForm_Course.getField("courseId").getValue();
-                            // todo add this course to special courses list
+                            updateSpecialCourses(courseId, true);
+                            DynamicForm_Course.clearValues();
+                            Window_Select_Course.close();
                         }
                     }),
                     isc.TrCancelBtn.create({
@@ -201,15 +202,19 @@
         showFilterEditor: true,
         autoFetchData: true,
         gridComponents: ["filterEditor", "header", "body"],
-        // dataSource: RestDataSource_Special_Courses,
+        dataSource: RestDataSource_Special_Courses,
+        canRemoveRecords: true,
         fields: [
             {name: "id", hidden: true},
-            {name: "name", title: "<spring:message code="course.title"/>"},
+            {name: "titleFa", title: "<spring:message code="course.title"/>"},
             {name: "code", title: "<spring:message code="course.code"/>"},
-            {name: "category", title: "<spring:message code="category"/>"},
-            {name: "subCategory", title: "<spring:message code="subcategory"/>"},
-            {name: "state", title: "<spring:message code="status"/>"}
-        ]
+            {name: "category.titleFa", title: "<spring:message code="category"/>"},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>"}
+        ],
+        removeRecordClick: function (rowNum) {
+            let record = this.getRecord(rowNum);
+            updateSpecialCourses(record.id, false);
+        }
     });
 
     let VLayout_Body_SC = isc.TrVLayout.create({
@@ -222,5 +227,19 @@
 
     //------------------------------------------------- Functions ------------------------------------------------------
 
+    function updateSpecialCourses(courseId, isSpecial) {
+        let url = courseUrl + "update/is-special?id=" + courseId + "&is-special=" + isSpecial;
+        isc.RPCManager.sendRequest(TrDSRequest(url, "PUT", null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                createDialog("info", "عملیات با موفقیت انجام شد");
+            } else {
+                createDialog("warning", "عملیات ناموفق", "خطا");
+            }
+        }));
+
+        setTimeout(function () {
+            ListGrid_SC.invalidateCache();
+        }, 1000);
+    }
 
     // </script>

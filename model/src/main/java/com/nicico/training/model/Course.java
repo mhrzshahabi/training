@@ -160,4 +160,11 @@ public class Course extends Auditable {
     @NotAudited
     private Boolean hasSkill;
 
+    /**
+     * if true, the score related to this course can be edited
+     * regardless of the evaluation status
+     */
+    @Column(name = "b_is_special")
+    private Boolean isSpecial;
+
 }

@@ -96,6 +96,8 @@ public interface CourseBeanMapper {
 
     List<CourseDTO.InfoForAudit> toAuditDtoList(List<CourseAudit> courseAudits);
 
+    CourseDTO.CourseSpecRs toSpecRs(Course course);
+
     @Named("getCourseIdFromAudit")
     default Long getCourseIdFromAudit(AuditCourseId auditCourseId) {
         return auditCourseId.getId();

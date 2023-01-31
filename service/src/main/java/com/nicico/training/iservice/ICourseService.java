@@ -108,4 +108,6 @@ public interface ICourseService {
     String getClassCourseTechnicalType(Long classId);
 
     String getClassCourseLevelType(Long classId);
+
+    CourseDTO.CourseSpecRs updateIsSpecial(Long courseId, Boolean isSpecial);
 }
