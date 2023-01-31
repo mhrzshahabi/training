@@ -235,11 +235,8 @@
             } else {
                 createDialog("warning", "عملیات ناموفق", "خطا");
             }
-        }));
-
-        setTimeout(function () {
             ListGrid_SC.invalidateCache();
-        }, 1000);
+        }));
     }
 
     // </script>
