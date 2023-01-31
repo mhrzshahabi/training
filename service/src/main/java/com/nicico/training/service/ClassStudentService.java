@@ -964,7 +964,7 @@ public class ClassStudentService implements IClassStudentService {
         List<Long> failureReasonIds = getFailureReasonIds();
         String scoreStateAndFailureReason = getScoreStateAndFailureReason(scoringMethod, scoresStateId, failureReasonId, failureReasonIds);
         if (!isAcceptByCertification) {
-            if (isSpecialCourse) {
+            if (isSpecialCourse != null && !isSpecialCourse) {
                 if (!isNonAttendanceClass && !isSelfTaughtStudent) {
                     if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
                         return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
