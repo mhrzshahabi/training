@@ -10044,6 +10044,13 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1675057195061">
+        <addColumn tableName="tbl_course">
+            <column name="b_is_special" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
     <changeSet  author="namdari"  id="1673784269-26">
         <preConditions onFail="MARK_RAN">
             <and>

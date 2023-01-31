@@ -181,7 +181,10 @@
       "code": "Menu_Evaluation_MobileVerify",
       "title": "منوی ارزیابی - تایید شماره موبایل فر اگیران"
     },
-
+    {
+      "code": "Menu_Evaluation_Special_Courses",
+      "title": "منوی ارزیابی - دوره های خاص"
+    },
 
     {
       "code": "Menu_Cartable",

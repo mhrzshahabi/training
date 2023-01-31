@@ -56,6 +56,7 @@ public class CourseDTO implements Serializable {
     private String scoringMethod;
     private String acceptancelimit;
     private Integer startEvaluation;
+    private Boolean isSpecial;
 
     @Getter
     @Setter

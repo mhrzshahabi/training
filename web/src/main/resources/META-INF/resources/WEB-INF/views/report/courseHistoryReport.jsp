@@ -25,7 +25,9 @@
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
             {name: "evaluation"},
-            {name: "behavioralLevel"}],
+            {name: "behavioralLevel"},
+            {name: "isSpecial"}
+        ],
         fetchDataURL: courseUrl + "audit" + "/" + record.id,
     });
 
@@ -152,6 +154,14 @@
                     "1": "مشاهده",
                     "2": "مصاحبه",
                     "3": "کار پروژه ای"
+                }
+            },
+            {
+                name: "isSpecial",
+                title: "نوع دوره",
+                valueMap: {
+                    "true": "خاص",
+                    "false": "غیر خاص"
                 }
             }
         ]

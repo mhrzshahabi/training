@@ -785,6 +785,15 @@ public class CourseService implements ICourseService {
         return searchRs;
     }
 
+    @Transactional
+    @Override
+    public CourseDTO.CourseSpecRs updateIsSpecial(Long courseId, Boolean isSpecial) {
+        Course course = getCourse(courseId);
+        course.setIsSpecial(isSpecial);
+        Course updatedCourse = courseDAO.save(course);
+        return beanMapper.toSpecRs(updatedCourse);
+    }
+
 }
 
 

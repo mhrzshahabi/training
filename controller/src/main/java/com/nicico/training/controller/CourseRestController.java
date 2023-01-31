@@ -862,4 +862,29 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping("/special-course")
+    public ResponseEntity<ISC<CourseDTO.Info>> getSpecialCourses(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteria = makeNewCriteria("isSpecial", true, EOperator.equals, null);
+        searchRq.setCriteria(criteria);
+        SearchDTO.SearchRs<CourseDTO.Info> searchRs = iCourseService.search(searchRq, i -> modelMapper.map(i, CourseDTO.Info.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping("/update/is-special")
+    public ResponseEntity<CourseDTO.CourseSpecRs> updateIsSpecial(@RequestParam("id") Long courseId, @RequestParam("is-special") Boolean isSpecial) {
+        try {
+            CourseDTO.CourseSpecRs info = iCourseService.updateIsSpecial(courseId, isSpecial);
+            return new ResponseEntity<>(info, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
 }

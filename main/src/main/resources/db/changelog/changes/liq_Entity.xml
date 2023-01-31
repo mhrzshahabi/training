@@ -4062,5 +4062,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1675072446448">
+        <addColumn tableName="TBL_COURSE_AUD">
+            <column name="b_is_special" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

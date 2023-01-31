@@ -86,4 +86,7 @@ public class CourseAudit implements Serializable {
 
     @Column(name = "e_deleted")
     private Long deleted;
+
+    @Column(name = "b_is_special")
+    private Boolean isSpecial;
 }

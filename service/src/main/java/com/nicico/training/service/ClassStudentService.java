@@ -944,6 +944,7 @@ public class ClassStudentService implements IClassStudentService {
     public String isScoreEditable(Long classStudentId) {
         ClassStudent classStudent = getClassStudent(classStudentId);
         Tclass tclass = classStudent.getTclass();
+        Boolean isSpecialCourse = tclass.getCourse().getIsSpecial();
         String endDate = tclass.getEndDate();
         Long classTeachingMethodId = tclass.getTeachingMethodId();
         String scoringMethod = tclass.getScoringMethod();
@@ -963,9 +964,11 @@ public class ClassStudentService implements IClassStudentService {
         List<Long> failureReasonIds = getFailureReasonIds();
         String scoreStateAndFailureReason = getScoreStateAndFailureReason(scoringMethod, scoresStateId, failureReasonId, failureReasonIds);
         if (!isAcceptByCertification) {
-            if (!isNonAttendanceClass && !isSelfTaughtStudent) {
-                if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
-                    return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
+            if (isSpecialCourse != null && !isSpecialCourse) {
+                if (!isNonAttendanceClass && !isSelfTaughtStudent) {
+                    if (checkClassBasisDate && isScoreDependent && isEvaluationStatusReactionNotComplete)
+                        return "ثبت نمره وابسته به ارزیابی است ولی ارزیابی تکمیل نشده است";
+                }
             }
             return scoreStateAndFailureReason;
         } else
