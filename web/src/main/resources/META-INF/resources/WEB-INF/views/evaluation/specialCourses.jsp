@@ -117,17 +117,7 @@
                     }
                 ],
                 endRow: true,
-                startRow: false,
-                click(form, item) {
-                    let criteria = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [
-                            {fieldName: "evaluation", operator: "inSet", value: ["2", "3", "4"]}]
-                    };
-                    item.pickListCriteria = criteria;
-                    item.fetchData();
-                }
+                startRow: false
             }
         ]
     });
