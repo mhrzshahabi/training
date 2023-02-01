@@ -229,46 +229,57 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "AND std.national_code =:nationalCode", nativeQuery = true)
     Optional<Student> getTrainingCertificationDetail(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
 
-    @Query(value = """
-          SELECT
-              s.first_name,
-              s.last_name,
-              s.national_code,
-              CASE
-                  WHEN tq.c_test_question_type = 'FinalTest' THEN
-                      cs.score
-                  WHEN tq.c_test_question_type = 'PreTest'   THEN
-                      cs.pre_test_score
-              END                AS score,
-              pv.c_title         AS score_state,
-              cs.id              AS class_student_id,
-              tq.id              AS exam_id,
-              cs.practical_score,
-              cs.class_score,
-              cs.descriptiveـscore,
-              cs.test_score,
-              tq.practical_score AS practical_score1,
-              tq.class_score     AS class_score1,
-             \s
-              CASE
-                              WHEN c.c_scoring_method = 1 THEN
-                                  '0'
-                              WHEN c.c_scoring_method = 2 THEN
-                                  '100'
-                              WHEN c.c_scoring_method = 3 THEN
-                                  '20'
-                              WHEN c.c_scoring_method = 4 THEN
-                                  '0'
-                          END AS class_scoring_method_title
-          FROM
-                   tbl_student s
-              INNER JOIN tbl_class_student   cs ON s.id = cs.student_id
-              INNER JOIN tbl_class           c ON c.id = cs.class_id
-              INNER JOIN tbl_test_question   tq ON c.id = tq.f_class
-              INNER JOIN tbl_parameter_value pv ON cs.scores_state_id = pv.id
-              where 
-               tq.id = :examId
-            """, nativeQuery = true)
+    @Query(value = " SELECT\n" +
+            "              s.first_name,\n" +
+            "              s.last_name,\n" +
+            "              s.national_code,\n" +
+            "              CASE\n" +
+            "                  WHEN tq.c_test_question_type = 'FinalTest' THEN\n" +
+            "                      cs.score\n" +
+            "                  WHEN tq.c_test_question_type = 'PreTest'   THEN\n" +
+            "                      cs.pre_test_score\n" +
+            "              END                AS score,\n" +
+            "              pv.c_title         AS score_state,\n" +
+            "              cs.id              AS class_student_id,\n" +
+            "              tq.id              AS exam_id,\n" +
+            "                  CASE\n" +
+            "                  WHEN tq.c_test_question_type = 'FinalTest' THEN\n" +
+            "                      cs.practical_score\n" +
+            "                  WHEN tq.c_test_question_type = 'PreTest'   THEN\n" +
+            "                      0\n" +
+            "              END       as practical_score      ,\n" +
+            "              \n" +
+            "               CASE\n" +
+            "                  WHEN tq.c_test_question_type = 'FinalTest' THEN\n" +
+            "                      cs.class_score\n" +
+            "                  WHEN tq.c_test_question_type = 'PreTest'   THEN\n" +
+            "                      0\n" +
+            "              END           AS class_score  ,\n" +
+            "              \n" +
+            "            \n" +
+            "              cs.descriptiveـscore,\n" +
+            "              cs.test_score,\n" +
+            "              tq.practical_score AS practical_score1,\n" +
+            "              tq.class_score     AS class_score1,\n" +
+            "             \n" +
+            "              CASE\n" +
+            "                              WHEN c.c_scoring_method = 1 THEN\n" +
+            "                                  '0'\n" +
+            "                              WHEN c.c_scoring_method = 2 THEN\n" +
+            "                                  '100'\n" +
+            "                              WHEN c.c_scoring_method = 3 THEN\n" +
+            "                                  '20'\n" +
+            "                              WHEN c.c_scoring_method = 4 THEN\n" +
+            "                                  '0'\n" +
+            "                          END AS class_scoring_method_title\n" +
+            "          FROM\n" +
+            "                   tbl_student s\n" +
+            "              INNER JOIN tbl_class_student   cs ON s.id = cs.student_id\n" +
+            "              INNER JOIN tbl_class           c ON c.id = cs.class_id\n" +
+            "              INNER JOIN tbl_test_question   tq ON c.id = tq.f_class\n" +
+            "              INNER JOIN tbl_parameter_value pv ON cs.scores_state_id = pv.id\n" +
+            "              where \n" +
+            "   tq.id = :examId", nativeQuery = true)
     List<?> getAllStudentsOfExam(@Param("examId") Long testQuestionId);
 
     @Query(value = "update  TBL_STUDENT set f_contact_info=null where f_contact_info IN(:ids)" , nativeQuery = true)
