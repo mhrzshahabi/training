@@ -137,7 +137,7 @@
         width: "40%",
         height: "15%",
         overflow: "hidden",
-        showMaximizeButton: false,
+        showMaximizeButton: true,
         autoSize: false,
         canDragResize: false,
         items: [
@@ -235,11 +235,8 @@
             } else {
                 createDialog("warning", "عملیات ناموفق", "خطا");
             }
-        }));
-
-        setTimeout(function () {
             ListGrid_SC.invalidateCache();
-        }, 1000);
+        }));
     }
 
     // </script>
