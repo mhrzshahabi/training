@@ -137,7 +137,7 @@
         width: "40%",
         height: "15%",
         overflow: "hidden",
-        showMaximizeButton: false,
+        showMaximizeButton: true,
         autoSize: false,
         canDragResize: false,
         items: [
