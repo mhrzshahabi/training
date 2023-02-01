@@ -3897,198 +3897,181 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int assistantNull,
                                                        List<Object> affairs,
                                                        int affairsNull);
-    @Query(value = " -- saraneh amozeshi paeen tar az karshenasi\n" +
-            "\n" +
-            "SELECT  \n" +
-            "                                rowNum AS id, \n" +
-            "                                  res.* FROM(\n" +
-            "with kol_hour as (\n" +
-            "SELECT DISTINCT\n" +
-            "    SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,\n" +
-            "     SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,\n" +
-            "     SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,\n" +
-            "     s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "  \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            class.id               AS class_id,\n" +
-            "            std.id                 AS student_id,\n" +
-            "            SUM(\n" +
-            "                CASE\n" +
-            "                    WHEN att.c_state IN('1', '2') THEN\n" +
-            "                        round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                        24, 1)\n" +
-            "                    ELSE\n" +
-            "                        0\n" +
-            "                END\n" +
-            "            )                      AS presence_hour,\n" +
-            "           \n" +
-            "            class.c_start_date     AS class_start_date ,\n" +
-            "            class.c_end_date       AS class_end_date,\n" +
-            "            class.complex_id       AS mojtama_id,\n" +
-            "            view_complex.c_title   AS mojtama,\n" +
-            "            class.assistant_id     AS moavenat_id,\n" +
-            "            view_assistant.c_title AS moavenat,\n" +
-            "            class.affairs_id       AS omoor_id,\n" +
-            "            view_affairs.c_title   AS omoor\n" +
-            "        FROM                                   \n" +
-            "                 tbl_attendance att     \n" +
-            "            INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "            INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "            INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "            LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "            LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "            LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "       where 1=1 \n" +
-            "       and ( \n" +
-            "            std.POST_GRADE_TITLE is not null\n" +
-            "            and std.POST_GRADE_TITLE not like '%سرپرست و کارشناس ارشد%' --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like '%رئیس%'  --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like '%معاون مدیرعامل%'  --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like  '%اجرایی%' --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like  '%مدیرعامل%' --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like  '%مسئول و کارشناس%' --farsi\n" +
-            "            and std.POST_GRADE_TITLE not like  '%مدیر%' --farsi\n" +
-            "           \n" +
-            "           and std.POST_GRADE_TITLE not like '%سرپرست و کارشناس ارشد%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%رئیس%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%معاون مدیرعامل%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%اجرایی%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%مدیرعامل%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%مسئول و کارشناس%' --arabic\n" +
-            "           and std.POST_GRADE_TITLE not like '%مدیر%' --arabic\n" +
-            "            )\n" +
-            "                    and class.C_START_DATE >= :fromDate \n" +
-            "                                                 and class.C_START_DATE <= :toDate \n" +
-            "       --and class.C_START_DATE <=@\n" +
-            "       --and class.C_END_DATE =>@\n" +
-            " --       and view_complex.id =@\n" +
-            "--       and view_affairs.id =@\n" +
-            "--       and view_assistant.id =@\n" +
+    @Query(value = " -- saraneh amozeshi paeen tar az karshenasi    \n" +
+            "                 \n" +
+            "             SELECT      \n" +
+            "                                             rowNum AS id,     \n" +
+            "                                               res.* FROM(    \n" +
+            "             with kol_hour as (    \n" +
             "            \n" +
-            "        GROUP BY\n" +
-            "            class.id,\n" +
-            "            std.id,\n" +
-            "            class.c_start_date,\n" +
-            "            class.c_end_date,\n" +
-            "            view_complex.c_title,\n" +
-            "            class.complex_id,\n" +
-            "            class.assistant_id,\n" +
-            "            class.affairs_id,\n" +
-            "            view_assistant.c_title,\n" +
-            "            view_affairs.c_title,\n" +
-            "            csession.c_session_date,\n" +
-            "            class.c_code\n" +
-            "    ) s\n" +
-            "GROUP BY\n" +
-            "    s.presence_hour,\n" +
-            "    s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "karkonan as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as karkonan_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as karkonan_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as karkonan_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title    as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED =0\n" +
-            "         and ( \n" +
-            "            p.POST_GRADE_TITLE is not null\n" +
-            "            and p.post_grade_code not in (0,10,20,21,22,23,30,31,32,33,50,51,52,60,61,62,70,71,72,73,90,91,92)--farsi\n" +
-
-            "            )\n" +
-            "    --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
+            "                   SELECT DISTINCT       \n" +
+            "                              SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,       \n" +
+            "                               SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,       \n" +
+            "                               SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,       \n" +
+            "                              s.mojtama_id,       \n" +
+            "                              s.mojtama,       \n" +
+            "                              moavenat_id,       \n" +
+            "                              s.moavenat,       \n" +
+            "                              s.omoor_id,       \n" +
+            "                              s.omoor       \n" +
+            "                                   \n" +
+            "                          FROM       \n" +
+            "                              (       \n" +
+            "                                  SELECT       \n" +
+            "                                      class.id               AS class_id,       \n" +
+            "                                      std.id                 AS student_id,       \n" +
+            "                                      SUM(       \n" +
+            "                                          CASE       \n" +
+            "                                              WHEN att.c_state IN('1', '2') THEN       \n" +
+            "                                                  round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *       \n" +
+            "                                                  24, 1)       \n" +
+            "                                              ELSE       \n" +
+            "                                                  0       \n" +
+            "                                          END       \n" +
+            "                                      )                      AS presence_hour,       \n" +
+            "                                            \n" +
+            "                                      class.c_start_date     AS class_start_date ,       \n" +
+            "                                      class.c_end_date       AS class_end_date,       \n" +
+            "                                     view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,     \n" +
+            "                                     view_last_md_employee_hr.ccp_complex   AS mojtama,     \n" +
+            "                                     view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,     \n" +
+            "                                     view_last_md_employee_hr.ccp_assistant AS moavenat,     \n" +
+            "                                     view_last_md_employee_hr.c_omor_code       AS omoor_id,     \n" +
+            "                                     view_last_md_employee_hr.ccp_affairs   AS omoor     \n" +
+            "                                          \n" +
+            "                                  FROM       \n" +
+            "                                           tbl_attendance att       \n" +
+            "                                      INNER JOIN tbl_student std ON att.f_student = std.id       \n" +
+            "                                      INNER JOIN tbl_session csession ON att.f_session = csession.id       \n" +
+            "                                      INNER JOIN tbl_class   class ON csession.f_class_id = class.id       \n" +
+            "                                      INNER JOIN TBL_COURSE  course ON course.id = class.F_COURSE       \n" +
+            "                                       \n" +
+            "                                                                                        LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE \n" +
+            "                                                                                        LEFT JOIN  VIEW_SYNONYM_PERSONNEL  p    ON std.NATIONAL_CODE = p.NATIONAL_CODE \n" +
+            "                                                                                         \n" +
+            "                                 where 1=1         \n" +
+            "                          and p.DELETED =0    \n" +
+            "                      and (     \n" +
+            "                         p.POST_GRADE_TITLE is not null    \n" +
+            "                         and p.post_grade_code not in (0,10,20,21,22,23,30,31,32,33,50,51,52,60,61,62,70,71,72,73,90,91,92)--farsi    \n" +
             "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "karkonan.mojtama_id as complex_id\n" +
-            ",karkonan.mojtama as complex\n" +
-            ",max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", karkonan.moavenat_id as assistant_id\n" +
-            ", karkonan.moavenat as assistant\n" +
-            ",max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant\n" +
-            "\n" +
-            ",karkonan.omoor_id as affairs_id\n" +
-            ",karkonan.omoor as affairs\n" +
-            ",max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "karkonan \n" +
-            "LEFT JOIN  kol_hour\n" +
-            "on\n" +
-            " kol_hour.mojtama_id = karkonan.mojtama_id\n" +
-            " and kol_hour.moavenat_id = karkonan.moavenat_id\n" +
-            " and kol_hour.omoor_id = karkonan.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           karkonan.mojtama_id is not null\n" +
-            "           and karkonan.moavenat_id is not null\n" +
-            "           and karkonan.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "karkonan.mojtama_id\n" +
-            ",karkonan.mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_moavenat\n" +
-            ",kol_hour.sum_presence_hour_kol_omoor\n" +
-            ",karkonan.karkonan_mojtama\n" +
-            ",karkonan.karkonan_moavenat\n" +
-            ",karkonan.karkonan_omoor\n" +
-            ",karkonan.moavenat_id\n" +
-            ",karkonan.moavenat\n" +
-            ",karkonan.omoor_id\n" +
-            ",karkonan.omoor\n" +
-            ")res  \n" +
-            "                               where \n" +
-            "                                  (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                             AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                  AND (:affairsNull = 1 OR affairs IN (:affairs))\n", nativeQuery = true)
+            "                                         )\n" +
+            "                                                      and class.C_START_DATE >= :fromDate        \n" +
+            "                                                                           and class.C_START_DATE <= :toDate        \n" +
+            "                                             \n" +
+            "                                 --and class.C_START_DATE <=@       \n" +
+            "                                 --and class.C_END_DATE =>@       \n" +
+            "                           --       and view_complex.id =@       \n" +
+            "                          --       and view_affairs.id =@       \n" +
+            "                          --       and view_assistant.id =@       \n" +
+            "                                             \n" +
+            "                                  GROUP BY       \n" +
+            "                                      class.id,       \n" +
+            "                                      std.id,       \n" +
+            "                                      class.c_start_date,       \n" +
+            "                                      class.c_end_date,       \n" +
+            "                    view_last_md_employee_hr.c_mojtame_code,     \n" +
+            "                                     view_last_md_employee_hr.c_moavenat_code,     \n" +
+            "                                    view_last_md_employee_hr.c_omor_code,     \n" +
+            "                                    view_last_md_employee_hr.ccp_complex, \n" +
+            "                                     view_last_md_employee_hr.ccp_assistant, \n" +
+            "                                     view_last_md_employee_hr.ccp_affairs,     \n" +
+            "                                      csession.c_session_date,       \n" +
+            "                                      class.c_code       \n" +
+            "                              ) s       \n" +
+            "                          GROUP BY       \n" +
+            "                              s.presence_hour,       \n" +
+            "                                s.mojtama_id,       \n" +
+            "                              s.mojtama,       \n" +
+            "                              moavenat_id,       \n" +
+            "                              s.moavenat,       \n" +
+            "                              s.omoor_id,       \n" +
+            "                              s.omoor       \n" +
+            "                                 \n" +
+            "              ),    \n" +
+            "                 \n" +
+            "             karkonan as (    \n" +
+            "                      select distinct          \n" +
+            "                                   count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_complex ) as karkonan_mojtama          \n" +
+            "                                   ,count(distinct p.id) over (partition by  view_last_md_employee_hr.ccp_assistant ) as karkonan_moavenat          \n" +
+            "                                   ,count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_affairs ) as karkonan_omoor          \n" +
+            "                                 , view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_complex   AS mojtama,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant AS moavenat,        \n" +
+            "                                      view_last_md_employee_hr.c_omor_code       AS omoor_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                   from            \n" +
+            "                                   VIEW_SYNONYM_PERSONNEL p          \n" +
+            "                                       \n" +
+            "                                            \n" +
+            "                                            LEFT JOIN view_last_md_employee_hr  ON p.f_department_id = view_last_md_employee_hr.c_dep_id    \n" +
+            "                                                \n" +
+            "                                                \n" +
+            "                                   where           \n" +
+            "                                       p.DELETED = 0          \n" +
+            "                               --         and view_complex.id =@          \n" +
+            "                               --       and view_affairs.id =@          \n" +
+            "                               --       and view_assistant.id =@          \n" +
+            "                                             \n" +
+            "                                   group by          \n" +
+            "                                   p.id          \n" +
+            "                                     , view_last_md_employee_hr.c_mojtame_code,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code,        \n" +
+            "                                     view_last_md_employee_hr.c_omor_code,        \n" +
+            "                                     view_last_md_employee_hr.ccp_complex,    \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant,    \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs    \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select DISTINCT    \n" +
+            "                 \n" +
+            "             karkonan.mojtama_id as complex_id    \n" +
+            "             ,karkonan.mojtama as complex    \n" +
+            "             ,max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , karkonan.moavenat_id as assistant_id    \n" +
+            "             , karkonan.moavenat as assistant    \n" +
+            "             ,max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                 \n" +
+            "             ,karkonan.omoor_id as affairs_id    \n" +
+            "             ,karkonan.omoor as affairs    \n" +
+            "             ,max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             karkonan     \n" +
+            "             LEFT JOIN  kol_hour    \n" +
+            "             on    \n" +
+            "              kol_hour.mojtama_id = karkonan.mojtama_id    \n" +
+            "              and kol_hour.moavenat_id = karkonan.moavenat_id    \n" +
+            "              and kol_hour.omoor_id = karkonan.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "                   and (    \n" +
+            "                        karkonan.mojtama_id is not null    \n" +
+            "                        and karkonan.moavenat_id is not null    \n" +
+            "                        and karkonan.omoor_id is not null    \n" +
+            "                       )    \n" +
+            "                  \n" +
+            "             group by    \n" +
+            "             karkonan.mojtama_id    \n" +
+            "             ,karkonan.mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_moavenat    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_omoor    \n" +
+            "             ,karkonan.karkonan_mojtama    \n" +
+            "             ,karkonan.karkonan_moavenat    \n" +
+            "             ,karkonan.karkonan_omoor    \n" +
+            "             ,karkonan.moavenat_id    \n" +
+            "             ,karkonan.moavenat    \n" +
+            "             ,karkonan.omoor_id    \n" +
+            "             ,karkonan.omoor    \n" +
+            "             )res      \n" +
+            "                                            where     \n" +
+            "                                               (:complexNull = 1 OR complex IN (:complex))     \n" +
+            "                                          AND (:assistantNull = 1 OR assistant IN (:assistant))     \n" +
+            "                                               AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
     List<GenericStatisticalIndexReport> lowerThanBachelor(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -4099,182 +4082,181 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int affairsNull);
 
 
-    @Query(value = " -- saraneh amozeshi sarparastan\n" +
-            "\n" +
-            "SELECT  \n" +
-            "                                rowNum AS id, \n" +
-            "                                  res.* FROM(\n" +
-            "with kol_hour as (\n" +
-            "SELECT DISTINCT\n" +
-            "    SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,\n" +
-            "     SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,\n" +
-            "     SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,\n" +
-            "     s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "  \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            class.id               AS class_id,\n" +
-            "            std.id                 AS student_id,\n" +
-            "            SUM(\n" +
-            "                CASE\n" +
-            "                    WHEN att.c_state IN('1', '2') THEN\n" +
-            "                        round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                        24, 1)\n" +
-            "                    ELSE\n" +
-            "                        0\n" +
-            "                END\n" +
-            "            )                      AS presence_hour,\n" +
-            "           \n" +
-            "            class.c_start_date     AS class_start_date ,\n" +
-            "            class.c_end_date       AS class_end_date,\n" +
-            "            class.complex_id       AS mojtama_id,\n" +
-            "            view_complex.c_title   AS mojtama,\n" +
-            "            class.assistant_id     AS moavenat_id,\n" +
-            "            view_assistant.c_title AS moavenat,\n" +
-            "            class.affairs_id       AS omoor_id,\n" +
-            "            view_affairs.c_title   AS omoor\n" +
-            "        FROM                                   \n" +
-            "                 tbl_attendance att     \n" +
-            "            INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "            INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "            INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "            LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "            LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "            LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "       where 1=1 \n" +
-            "       and (\n" +
-            "            std.POST_GRADE_TITLE like '%سرپرست و کارشناس ارشد%' --farsi\n" +
-            "            or\n" +
-            "            std.POST_GRADE_TITLE like '%سرپرست و کارشناس ارشد%' --arabic\n" +
-            "            )\n" +
-            "                           and class.C_START_DATE >= :fromDate \n" +
-            "                                                 and class.C_START_DATE <= :toDate \n" +
-            "       --and class.C_START_DATE <=@\n" +
-            "       --and class.C_END_DATE =>@\n" +
-            " --       and view_complex.id =@\n" +
-            "--       and view_affairs.id =@\n" +
-            "--       and view_assistant.id =@\n" +
-            "            \n" +
-            "        GROUP BY\n" +
-            "            class.id,\n" +
-            "            std.id,\n" +
-            "            class.c_start_date,\n" +
-            "            class.c_end_date,\n" +
-            "            view_complex.c_title,\n" +
-            "            class.complex_id,\n" +
-            "            class.assistant_id,\n" +
-            "            class.affairs_id,\n" +
-            "            view_assistant.c_title,\n" +
-            "            view_affairs.c_title,\n" +
-            "            csession.c_session_date,\n" +
-            "            class.c_code\n" +
-            "    ) s\n" +
-            "GROUP BY\n" +
-            "    s.presence_hour,\n" +
-            "    s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "karkonan as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as karkonan_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as karkonan_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as karkonan_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title    as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED =0\n" +
-            "         and ( p.post_grade_code in (60,61,62) --farsi\n" +
-            "             )\n" +
-            "    --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "karkonan.mojtama_id as complex_id\n" +
-            ",karkonan.mojtama as complex\n" +
-            ",max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", karkonan.moavenat_id as assistant_id\n" +
-            ", karkonan.moavenat as assistant\n" +
-            ",max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant\n" +
-            "\n" +
-            ",karkonan.omoor_id as affairs_id\n" +
-            ",karkonan.omoor as affairs\n" +
-            ",max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "karkonan \n" +
-            "LEFT JOIN  kol_hour\n" +
-            "on\n" +
-            " kol_hour.mojtama_id = karkonan.mojtama_id\n" +
-            " and kol_hour.moavenat_id = karkonan.moavenat_id\n" +
-            " and kol_hour.omoor_id = karkonan.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           karkonan.mojtama_id is not null\n" +
-            "           and karkonan.moavenat_id is not null\n" +
-            "           and karkonan.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "karkonan.mojtama_id\n" +
-            ",karkonan.mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_moavenat\n" +
-            ",kol_hour.sum_presence_hour_kol_omoor\n" +
-            ",karkonan.karkonan_mojtama\n" +
-            ",karkonan.karkonan_moavenat\n" +
-            ",karkonan.karkonan_omoor\n" +
-            ",karkonan.moavenat_id\n" +
-            ",karkonan.moavenat\n" +
-            ",karkonan.omoor_id\n" +
-            ",karkonan.omoor\n" +
-            ")res  \n" +
-            "                               where \n" +
-            "                                  (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                             AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                  AND (:affairsNull = 1 OR affairs IN (:affairs))\n", nativeQuery = true)
+    @Query(value = " -- saraneh amozeshi sarparastan    \n" +
+            "                 \n" +
+            "             SELECT      \n" +
+            "                                             rowNum AS id,     \n" +
+            "                                               res.* FROM(    \n" +
+            "             with kol_hour as (    \n" +
+            "              \n" +
+            "                                SELECT DISTINCT           \n" +
+            "                                           SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,           \n" +
+            "                                            SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,           \n" +
+            "                                            SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,           \n" +
+            "                                           s.mojtama_id,           \n" +
+            "                                           s.mojtama,           \n" +
+            "                                           moavenat_id,           \n" +
+            "                                           s.moavenat,           \n" +
+            "                                           s.omoor_id,           \n" +
+            "                                           s.omoor           \n" +
+            "                                                    \n" +
+            "                                       FROM           \n" +
+            "                                           (           \n" +
+            "                                               SELECT           \n" +
+            "                                                   class.id               AS class_id,           \n" +
+            "                                                   std.id                 AS student_id,           \n" +
+            "                                                   SUM(           \n" +
+            "                                                       CASE           \n" +
+            "                                                           WHEN att.c_state IN('1', '2') THEN           \n" +
+            "                                                               round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *           \n" +
+            "                                                               24, 1)           \n" +
+            "                                                           ELSE           \n" +
+            "                                                               0           \n" +
+            "                                                       END           \n" +
+            "                                                   )                      AS presence_hour,           \n" +
+            "                                                             \n" +
+            "                                                   class.c_start_date     AS class_start_date ,           \n" +
+            "                                                   class.c_end_date       AS class_end_date,           \n" +
+            "                                                  view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_complex   AS mojtama,         \n" +
+            "                                                  view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_assistant AS moavenat,         \n" +
+            "                                                  view_last_md_employee_hr.c_omor_code       AS omoor_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_affairs   AS omoor         \n" +
+            "                                                           \n" +
+            "                                               FROM           \n" +
+            "                                                        tbl_attendance att           \n" +
+            "                                                   INNER JOIN tbl_student std ON att.f_student = std.id           \n" +
+            "                                                   INNER JOIN tbl_session csession ON att.f_session = csession.id           \n" +
+            "                                                   INNER JOIN tbl_class   class ON csession.f_class_id = class.id           \n" +
+            "                                                   INNER JOIN TBL_COURSE  course ON course.id = class.F_COURSE           \n" +
+            "                                                        \n" +
+            "                                                                                                     LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE     \n" +
+            "                                                                                                     LEFT JOIN  VIEW_SYNONYM_PERSONNEL  p    ON std.NATIONAL_CODE = p.NATIONAL_CODE     \n" +
+            "                                                                                                          \n" +
+            "                                              where 1=1             \n" +
+            "                                       and p.DELETED =0        \n" +
+            "                                   and (         \n" +
+            "                                      p.POST_GRADE_TITLE is not null        \n" +
+            " and ( p.post_grade_code in (60,61,62) --farsi    \n" +
+            "                          )                          \n" +
+            "                                                      )    \n" +
+            "                                                                   and class.C_START_DATE >= :fromDate            \n" +
+            "                                                                                        and class.C_START_DATE <= :toDate            \n" +
+            "                                                              \n" +
+            "                                              --and class.C_START_DATE <=@           \n" +
+            "                                              --and class.C_END_DATE =>@           \n" +
+            "                                        --       and view_complex.id =@           \n" +
+            "                                       --       and view_affairs.id =@           \n" +
+            "                                       --       and view_assistant.id =@           \n" +
+            "                                                              \n" +
+            "                                               GROUP BY           \n" +
+            "                                                   class.id,           \n" +
+            "                                                   std.id,           \n" +
+            "                                                   class.c_start_date,           \n" +
+            "                                                   class.c_end_date,           \n" +
+            "                                 view_last_md_employee_hr.c_mojtame_code,         \n" +
+            "                                                  view_last_md_employee_hr.c_moavenat_code,         \n" +
+            "                                                 view_last_md_employee_hr.c_omor_code,         \n" +
+            "                                                 view_last_md_employee_hr.ccp_complex,     \n" +
+            "                                                  view_last_md_employee_hr.ccp_assistant,     \n" +
+            "                                                  view_last_md_employee_hr.ccp_affairs,         \n" +
+            "                                                   csession.c_session_date,           \n" +
+            "                                                   class.c_code           \n" +
+            "                                           ) s           \n" +
+            "                                       GROUP BY           \n" +
+            "                                           s.presence_hour,           \n" +
+            "                                             s.mojtama_id,           \n" +
+            "                                           s.mojtama,           \n" +
+            "                                           moavenat_id,           \n" +
+            "                                           s.moavenat,           \n" +
+            "                                           s.omoor_id,           \n" +
+            "                                           s.omoor  \n" +
+            "                 \n" +
+            "              ),    \n" +
+            "                 \n" +
+            "             karkonan as (    \n" +
+            "               select distinct          \n" +
+            "                                   count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_complex ) as karkonan_mojtama          \n" +
+            "                                   ,count(distinct p.id) over (partition by  view_last_md_employee_hr.ccp_assistant ) as karkonan_moavenat          \n" +
+            "                                   ,count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_affairs ) as karkonan_omoor          \n" +
+            "                                 , view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_complex   AS mojtama,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant AS moavenat,        \n" +
+            "                                      view_last_md_employee_hr.c_omor_code       AS omoor_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                   from            \n" +
+            "                                   VIEW_SYNONYM_PERSONNEL p          \n" +
+            "                                       \n" +
+            "                                            \n" +
+            "                                            LEFT JOIN view_last_md_employee_hr  ON p.f_department_id = view_last_md_employee_hr.c_dep_id    \n" +
+            "                                                \n" +
+            "                                                \n" +
+            "                                   where           \n" +
+            "                                       p.DELETED = 0          \n" +
+            "                               --         and view_complex.id =@          \n" +
+            "                               --       and view_affairs.id =@          \n" +
+            "                               --       and view_assistant.id =@          \n" +
+            "                                             \n" +
+            "                                   group by          \n" +
+            "                                   p.id          \n" +
+            "                                     , view_last_md_employee_hr.c_mojtame_code,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code,        \n" +
+            "                                     view_last_md_employee_hr.c_omor_code,        \n" +
+            "                                     view_last_md_employee_hr.ccp_complex,    \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant,    \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs        \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select DISTINCT    \n" +
+            "                 \n" +
+            "             karkonan.mojtama_id as complex_id    \n" +
+            "             ,karkonan.mojtama as complex    \n" +
+            "             ,max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , karkonan.moavenat_id as assistant_id    \n" +
+            "             , karkonan.moavenat as assistant    \n" +
+            "             ,max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                 \n" +
+            "             ,karkonan.omoor_id as affairs_id    \n" +
+            "             ,karkonan.omoor as affairs    \n" +
+            "             ,max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             karkonan     \n" +
+            "             LEFT JOIN  kol_hour    \n" +
+            "             on    \n" +
+            "              kol_hour.mojtama_id = karkonan.mojtama_id    \n" +
+            "              and kol_hour.moavenat_id = karkonan.moavenat_id    \n" +
+            "              and kol_hour.omoor_id = karkonan.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "                   and (    \n" +
+            "                        karkonan.mojtama_id is not null    \n" +
+            "                        and karkonan.moavenat_id is not null    \n" +
+            "                        and karkonan.omoor_id is not null    \n" +
+            "                       )    \n" +
+            "                  \n" +
+            "             group by    \n" +
+            "             karkonan.mojtama_id    \n" +
+            "             ,karkonan.mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_moavenat    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_omoor    \n" +
+            "             ,karkonan.karkonan_mojtama    \n" +
+            "             ,karkonan.karkonan_moavenat    \n" +
+            "             ,karkonan.karkonan_omoor    \n" +
+            "             ,karkonan.moavenat_id    \n" +
+            "             ,karkonan.moavenat    \n" +
+            "             ,karkonan.omoor_id    \n" +
+            "             ,karkonan.omoor    \n" +
+            "             )res      \n" +
+            "                                            where     \n" +
+            "                                               (:complexNull = 1 OR complex IN (:complex))     \n" +
+            "                                          AND (:assistantNull = 1 OR assistant IN (:assistant))     \n" +
+            "                                               AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
     List<GenericStatisticalIndexReport> trainingOfSupervisors(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -4286,182 +4268,181 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = " -- saraneh amozeshi modiran\n" +
-            "\n" +
-            "SELECT  \n" +
-            "                                rowNum AS id, \n" +
-            "                                  res.* FROM(\n" +
-            "with kol_hour as (\n" +
-            "SELECT DISTINCT\n" +
-            "    SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,\n" +
-            "     SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,\n" +
-            "     SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,\n" +
-            "     s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "  \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            class.id               AS class_id,\n" +
-            "            std.id                 AS student_id,\n" +
-            "            SUM(\n" +
-            "                CASE\n" +
-            "                    WHEN att.c_state IN('1', '2') THEN\n" +
-            "                        round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                        24, 1)\n" +
-            "                    ELSE\n" +
-            "                        0\n" +
-            "                END\n" +
-            "            )                      AS presence_hour,\n" +
-            "           \n" +
-            "            class.c_start_date     AS class_start_date ,\n" +
-            "            class.c_end_date       AS class_end_date,\n" +
-            "            class.complex_id       AS mojtama_id,\n" +
-            "            view_complex.c_title   AS mojtama,\n" +
-            "            class.assistant_id     AS moavenat_id,\n" +
-            "            view_assistant.c_title AS moavenat,\n" +
-            "            class.affairs_id       AS omoor_id,\n" +
-            "            view_affairs.c_title   AS omoor\n" +
-            "        FROM                                   \n" +
-            "                 tbl_attendance att     \n" +
-            "            INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "            INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "            INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "            LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "            LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "            LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "       where 1=1 \n" +
-            "       and (\n" +
-            "            std.POST_GRADE_TITLE like '%مدیر%' --farsi\n" +
-            "            or\n" +
-            "            std.POST_GRADE_TITLE like '%مدیر%' --arabic\n" +
-            "            )\n" +
-            "                    and class.C_START_DATE >= :fromDate \n" +
-            "                                                 and class.C_START_DATE <= :toDate \n" +
-            "       --and class.C_START_DATE <=@\n" +
-            "       --and class.C_END_DATE =>@\n" +
-            " --       and view_complex.id =@\n" +
-            "--       and view_affairs.id =@\n" +
-            "--       and view_assistant.id =@\n" +
-            "            \n" +
-            "        GROUP BY\n" +
-            "            class.id,\n" +
-            "            std.id,\n" +
-            "            class.c_start_date,\n" +
-            "            class.c_end_date,\n" +
-            "            view_complex.c_title,\n" +
-            "            class.complex_id,\n" +
-            "            class.assistant_id,\n" +
-            "            class.affairs_id,\n" +
-            "            view_assistant.c_title,\n" +
-            "            view_affairs.c_title,\n" +
-            "            csession.c_session_date,\n" +
-            "            class.c_code\n" +
-            "    ) s\n" +
-            "GROUP BY\n" +
-            "    s.presence_hour,\n" +
-            "    s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "karkonan as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as karkonan_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as karkonan_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as karkonan_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title    as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED =0\n" +
-            "         and ( p.post_grade_code in (30,31,32,33) --farsi\n" +
-            "             )\n" +
-            "    --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "karkonan.mojtama_id as complex_id\n" +
-            ",karkonan.mojtama as complex\n" +
-            ",max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", karkonan.moavenat_id as assistant_id\n" +
-            ", karkonan.moavenat as assistant\n" +
-            ",max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant\n" +
-            "\n" +
-            ",karkonan.omoor_id as affairs_id\n" +
-            ",karkonan.omoor as affairs\n" +
-            ",max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "karkonan \n" +
-            "LEFT JOIN  kol_hour\n" +
-            "on\n" +
-            " kol_hour.mojtama_id = karkonan.mojtama_id\n" +
-            " and kol_hour.moavenat_id = karkonan.moavenat_id\n" +
-            " and kol_hour.omoor_id = karkonan.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           karkonan.mojtama_id is not null\n" +
-            "           and karkonan.moavenat_id is not null\n" +
-            "           and karkonan.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "karkonan.mojtama_id\n" +
-            ",karkonan.mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_moavenat\n" +
-            ",kol_hour.sum_presence_hour_kol_omoor\n" +
-            ",karkonan.karkonan_mojtama\n" +
-            ",karkonan.karkonan_moavenat\n" +
-            ",karkonan.karkonan_omoor\n" +
-            ",karkonan.moavenat_id\n" +
-            ",karkonan.moavenat\n" +
-            ",karkonan.omoor_id\n" +
-            ",karkonan.omoor\n" +
-            ")res  \n" +
-            "                               where \n" +
-            "                                  (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                             AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                  AND (:affairsNull = 1 OR affairs IN (:affairs))\n", nativeQuery = true)
+    @Query(value = " -- saraneh amozeshi sarparastan    \n" +
+            "                 \n" +
+            "             SELECT      \n" +
+            "                                             rowNum AS id,     \n" +
+            "                                               res.* FROM(    \n" +
+            "             with kol_hour as (    \n" +
+            "              \n" +
+            "                                SELECT DISTINCT           \n" +
+            "                                           SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,           \n" +
+            "                                            SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,           \n" +
+            "                                            SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,           \n" +
+            "                                           s.mojtama_id,           \n" +
+            "                                           s.mojtama,           \n" +
+            "                                           moavenat_id,           \n" +
+            "                                           s.moavenat,           \n" +
+            "                                           s.omoor_id,           \n" +
+            "                                           s.omoor           \n" +
+            "                                                    \n" +
+            "                                       FROM           \n" +
+            "                                           (           \n" +
+            "                                               SELECT           \n" +
+            "                                                   class.id               AS class_id,           \n" +
+            "                                                   std.id                 AS student_id,           \n" +
+            "                                                   SUM(           \n" +
+            "                                                       CASE           \n" +
+            "                                                           WHEN att.c_state IN('1', '2') THEN           \n" +
+            "                                                               round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *           \n" +
+            "                                                               24, 1)           \n" +
+            "                                                           ELSE           \n" +
+            "                                                               0           \n" +
+            "                                                       END           \n" +
+            "                                                   )                      AS presence_hour,           \n" +
+            "                                                             \n" +
+            "                                                   class.c_start_date     AS class_start_date ,           \n" +
+            "                                                   class.c_end_date       AS class_end_date,           \n" +
+            "                                                  view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_complex   AS mojtama,         \n" +
+            "                                                  view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_assistant AS moavenat,         \n" +
+            "                                                  view_last_md_employee_hr.c_omor_code       AS omoor_id,         \n" +
+            "                                                  view_last_md_employee_hr.ccp_affairs   AS omoor         \n" +
+            "                                                           \n" +
+            "                                               FROM           \n" +
+            "                                                        tbl_attendance att           \n" +
+            "                                                   INNER JOIN tbl_student std ON att.f_student = std.id           \n" +
+            "                                                   INNER JOIN tbl_session csession ON att.f_session = csession.id           \n" +
+            "                                                   INNER JOIN tbl_class   class ON csession.f_class_id = class.id           \n" +
+            "                                                   INNER JOIN TBL_COURSE  course ON course.id = class.F_COURSE           \n" +
+            "                                                        \n" +
+            "                                                                                                     LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE     \n" +
+            "                                                                                                     LEFT JOIN  VIEW_SYNONYM_PERSONNEL  p    ON std.NATIONAL_CODE = p.NATIONAL_CODE     \n" +
+            "                                                                                                          \n" +
+            "                                              where 1=1             \n" +
+            "                                       and p.DELETED =0        \n" +
+            "                                   and (         \n" +
+            "                                      p.POST_GRADE_TITLE is not null        \n" +
+            " and ( p.post_grade_code in (30,31,32,33) --farsi    \n" +
+            "                          )                          \n" +
+            "                                                      )    \n" +
+            "                                                                   and class.C_START_DATE >= :fromDate            \n" +
+            "                                                                                        and class.C_START_DATE <= :toDate            \n" +
+            "                                                              \n" +
+            "                                              --and class.C_START_DATE <=@           \n" +
+            "                                              --and class.C_END_DATE =>@           \n" +
+            "                                        --       and view_complex.id =@           \n" +
+            "                                       --       and view_affairs.id =@           \n" +
+            "                                       --       and view_assistant.id =@           \n" +
+            "                                                              \n" +
+            "                                               GROUP BY           \n" +
+            "                                                   class.id,           \n" +
+            "                                                   std.id,           \n" +
+            "                                                   class.c_start_date,           \n" +
+            "                                                   class.c_end_date,           \n" +
+            "                                 view_last_md_employee_hr.c_mojtame_code,         \n" +
+            "                                                  view_last_md_employee_hr.c_moavenat_code,         \n" +
+            "                                                 view_last_md_employee_hr.c_omor_code,         \n" +
+            "                                                 view_last_md_employee_hr.ccp_complex,     \n" +
+            "                                                  view_last_md_employee_hr.ccp_assistant,     \n" +
+            "                                                  view_last_md_employee_hr.ccp_affairs,         \n" +
+            "                                                   csession.c_session_date,           \n" +
+            "                                                   class.c_code           \n" +
+            "                                           ) s           \n" +
+            "                                       GROUP BY           \n" +
+            "                                           s.presence_hour,           \n" +
+            "                                             s.mojtama_id,           \n" +
+            "                                           s.mojtama,           \n" +
+            "                                           moavenat_id,           \n" +
+            "                                           s.moavenat,           \n" +
+            "                                           s.omoor_id,           \n" +
+            "                                           s.omoor  \n" +
+            "                 \n" +
+            "              ),    \n" +
+            "                 \n" +
+            "             karkonan as (    \n" +
+            "               select distinct          \n" +
+            "                                   count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_complex ) as karkonan_mojtama          \n" +
+            "                                   ,count(distinct p.id) over (partition by  view_last_md_employee_hr.ccp_assistant ) as karkonan_moavenat          \n" +
+            "                                   ,count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_affairs ) as karkonan_omoor          \n" +
+            "                                 , view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_complex   AS mojtama,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant AS moavenat,        \n" +
+            "                                      view_last_md_employee_hr.c_omor_code       AS omoor_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                   from            \n" +
+            "                                   VIEW_SYNONYM_PERSONNEL p          \n" +
+            "                                       \n" +
+            "                                            \n" +
+            "                                            LEFT JOIN view_last_md_employee_hr  ON p.f_department_id = view_last_md_employee_hr.c_dep_id    \n" +
+            "                                                \n" +
+            "                                                \n" +
+            "                                   where           \n" +
+            "                                       p.DELETED = 0          \n" +
+            "                               --         and view_complex.id =@          \n" +
+            "                               --       and view_affairs.id =@          \n" +
+            "                               --       and view_assistant.id =@          \n" +
+            "                                             \n" +
+            "                                   group by          \n" +
+            "                                   p.id          \n" +
+            "                                     , view_last_md_employee_hr.c_mojtame_code,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code,        \n" +
+            "                                     view_last_md_employee_hr.c_omor_code,        \n" +
+            "                                     view_last_md_employee_hr.ccp_complex,    \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant,    \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs        \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select DISTINCT    \n" +
+            "                 \n" +
+            "             karkonan.mojtama_id as complex_id    \n" +
+            "             ,karkonan.mojtama as complex    \n" +
+            "             ,max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , karkonan.moavenat_id as assistant_id    \n" +
+            "             , karkonan.moavenat as assistant    \n" +
+            "             ,max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                 \n" +
+            "             ,karkonan.omoor_id as affairs_id    \n" +
+            "             ,karkonan.omoor as affairs    \n" +
+            "             ,max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             karkonan     \n" +
+            "             LEFT JOIN  kol_hour    \n" +
+            "             on    \n" +
+            "              kol_hour.mojtama_id = karkonan.mojtama_id    \n" +
+            "              and kol_hour.moavenat_id = karkonan.moavenat_id    \n" +
+            "              and kol_hour.omoor_id = karkonan.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "                   and (    \n" +
+            "                        karkonan.mojtama_id is not null    \n" +
+            "                        and karkonan.moavenat_id is not null    \n" +
+            "                        and karkonan.omoor_id is not null    \n" +
+            "                       )    \n" +
+            "                  \n" +
+            "             group by    \n" +
+            "             karkonan.mojtama_id    \n" +
+            "             ,karkonan.mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_moavenat    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_omoor    \n" +
+            "             ,karkonan.karkonan_mojtama    \n" +
+            "             ,karkonan.karkonan_moavenat    \n" +
+            "             ,karkonan.karkonan_omoor    \n" +
+            "             ,karkonan.moavenat_id    \n" +
+            "             ,karkonan.moavenat    \n" +
+            "             ,karkonan.omoor_id    \n" +
+            "             ,karkonan.omoor    \n" +
+            "             )res      \n" +
+            "                                            where     \n" +
+            "                                               (:complexNull = 1 OR complex IN (:complex))     \n" +
+            "                                          AND (:assistantNull = 1 OR assistant IN (:assistant))     \n" +
+            "                                               AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
     List<GenericStatisticalIndexReport> managersTrainingPerCapita(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -4473,195 +4454,177 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = " -- saraneh amozeshi peymankari\n" +
-            "\n" +
-            "SELECT  \n" +
-            "                                rowNum AS id, \n" +
-            "                                  res.* FROM(\n" +
-            "with kol_hour as (\n" +
-            "SELECT DISTINCT\n" +
-            "    SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,\n" +
-            "     SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,\n" +
-            "     SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,\n" +
-            "     s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "  \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            class.id               AS class_id,\n" +
-            "            std.id                 AS student_id,\n" +
-            "            SUM(\n" +
-            "                CASE\n" +
-            "                    WHEN att.c_state IN('1', '2') THEN\n" +
-            "                        round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                        24, 1)\n" +
-            "                    ELSE\n" +
-            "                        0\n" +
-            "                END\n" +
-            "            )                      AS presence_hour,\n" +
-            "           \n" +
-            "            class.c_start_date     AS class_start_date ,\n" +
-            "            class.c_end_date       AS class_end_date,\n" +
-            "            class.complex_id       AS mojtama_id,\n" +
-            "            view_complex.c_title   AS mojtama,\n" +
-            "            class.assistant_id     AS moavenat_id,\n" +
-            "            view_assistant.c_title AS moavenat,\n" +
-            "            class.affairs_id       AS omoor_id,\n" +
-            "            view_affairs.c_title   AS omoor\n" +
-            "        FROM                                   \n" +
-            "                 tbl_attendance att     \n" +
-            "            INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "            INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "            INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "            INNER JOIN TBL_PERSONNEL_REGISTERED R ON std.NATIONAL_CODE = R.NATIONAL_CODE -- PERSONEL_MOTEFAREGHE\n" +
-            "                         \n" +
-            "            LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "            LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "            LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "       where 1=1 \n" +
-            "         AND std.POST_GRADE_TITLE is null\n" +
-            "         AND R.E_DELETED is null\n" +
-            "         AND R.NATIONAL_CODE NOT IN (\n" +
-            "                                     SELECT NATIONAL_CODE\n" +
-            "                                     FROM\n" +
-            "                                       TBL_PERSONNEL\n" +
-            "                                    )\n" +
-            "                                       and class.C_START_DATE >= :fromDate \n" +
-            "                                                 and class.C_START_DATE <= :toDate \n" +
-            "       --and class.C_START_DATE <=@\n" +
-            "       --and class.C_END_DATE =>@\n" +
-            " --       and view_complex.id =@\n" +
-            "--       and view_affairs.id =@\n" +
-            "--       and view_assistant.id =@\n" +
-            "            \n" +
-            "        GROUP BY\n" +
-            "            class.id,\n" +
-            "            std.id,\n" +
-            "            class.c_start_date,\n" +
-            "            class.c_end_date,\n" +
-            "            view_complex.c_title,\n" +
-            "            class.complex_id,\n" +
-            "            class.assistant_id,\n" +
-            "            class.affairs_id,\n" +
-            "            view_assistant.c_title,\n" +
-            "            view_affairs.c_title,\n" +
-            "            csession.c_session_date,\n" +
-            "            class.c_code\n" +
-            "    ) s\n" +
-            "GROUP BY\n" +
-            "    s.presence_hour,\n" +
-            "    s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "karkonan as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as karkonan_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as karkonan_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as karkonan_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title    as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "           INNER JOIN tbl_student std ON std.NATIONAL_CODE = p.NATIONAL_CODE\n" +
-            "           INNER JOIN TBL_PERSONNEL_REGISTERED R ON std.NATIONAL_CODE = R.NATIONAL_CODE -- PERSONEL_MOTEFAREGHE\n" +
-            "           \n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         AND p.DELETED =0\n" +
-            "         AND p.POST_GRADE_TITLE is null\n" +
-            "         AND R.E_DELETED is null\n" +
-            "         AND R.NATIONAL_CODE NOT IN (\n" +
-            "                                     SELECT NATIONAL_CODE\n" +
-            "                                     FROM\n" +
-            "                                       TBL_PERSONNEL\n" +
-            "                                    ) \n" +
-            "            \n" +
-            "    --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "karkonan.mojtama_id as complex_id\n" +
-            ",karkonan.mojtama as complex\n" +
-            ",max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", karkonan.moavenat_id as assistant_id\n" +
-            ", karkonan.moavenat as assistant\n" +
-            ",max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant\n" +
-            " \n" +
-            ",karkonan.omoor_id as affairs_id\n" +
-            ",karkonan.omoor as affairs\n" +
-            ",max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "karkonan \n" +
-            "LEFT JOIN  kol_hour\n" +
-            "on\n" +
-            " kol_hour.mojtama_id = karkonan.mojtama_id\n" +
-            " and kol_hour.moavenat_id = karkonan.moavenat_id\n" +
-            " and kol_hour.omoor_id = karkonan.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           karkonan.mojtama_id is not null\n" +
-            "           and karkonan.moavenat_id is not null\n" +
-            "           and karkonan.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "karkonan.mojtama_id\n" +
-            ",karkonan.mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_moavenat\n" +
-            ",kol_hour.sum_presence_hour_kol_omoor\n" +
-            ",karkonan.karkonan_mojtama\n" +
-            ",karkonan.karkonan_moavenat\n" +
-            ",karkonan.karkonan_omoor\n" +
-            ",karkonan.moavenat_id\n" +
-            ",karkonan.moavenat\n" +
-            ",karkonan.omoor_id\n" +
-            ",karkonan.omoor\n" +
-            ")res  \n" +
-            "                               where \n" +
-            "                                  (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                             AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                  AND (:affairsNull = 1 OR affairs IN (:affairs))\n", nativeQuery = true)
+    @Query(value = " -- saraneh amozeshi peymankari    \n" +
+            "                 \n" +
+            "             SELECT      \n" +
+            "                                             rowNum AS id,     \n" +
+            "                                               res.* FROM(    \n" +
+            "             with kol_hour as (    \n" +
+            "              \n" +
+            "                   SELECT DISTINCT               \n" +
+            "                                                        SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,               \n" +
+            "                                                         SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,               \n" +
+            "                                                         SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,               \n" +
+            "                                                        s.mojtama_id,               \n" +
+            "                                                        s.mojtama,               \n" +
+            "                                                        moavenat_id,               \n" +
+            "                                                        s.moavenat,               \n" +
+            "                                                        s.omoor_id,               \n" +
+            "                                                        s.omoor               \n" +
+            "                                                                     \n" +
+            "                                                    FROM               \n" +
+            "                                                        (               \n" +
+            "                                                            SELECT               \n" +
+            "                                                                class.id               AS class_id,               \n" +
+            "                                                                std.id                 AS student_id,               \n" +
+            "                                                                SUM(               \n" +
+            "                                                                    CASE               \n" +
+            "                                                                        WHEN att.c_state IN('1', '2') THEN               \n" +
+            "                                                                            round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *               \n" +
+            "                                                                            24, 1)               \n" +
+            "                                                                        ELSE               \n" +
+            "                                                                            0               \n" +
+            "                                                                    END               \n" +
+            "                                                                )                      AS presence_hour,               \n" +
+            "                                                                              \n" +
+            "                                                                class.c_start_date     AS class_start_date ,               \n" +
+            "                                                                class.c_end_date       AS class_end_date,               \n" +
+            "                                                               view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_complex   AS mojtama,             \n" +
+            "                                                               view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_assistant AS moavenat,             \n" +
+            "                                                               view_last_md_employee_hr.c_omor_code       AS omoor_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_affairs   AS omoor             \n" +
+            "                                                                            \n" +
+            "                                                            FROM               \n" +
+            "                                                                     tbl_attendance att               \n" +
+            "                                                                INNER JOIN tbl_student std ON att.f_student = std.id               \n" +
+            "                                                                INNER JOIN tbl_session csession ON att.f_session = csession.id               \n" +
+            "                                                                INNER JOIN tbl_class   class ON csession.f_class_id = class.id               \n" +
+            "                                                                INNER JOIN TBL_COURSE  course ON course.id = class.F_COURSE               \n" +
+            "                                                                         \n" +
+            "                                                                                                                  LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE         \n" +
+            "                                                                                                                            \n" +
+            "                                                           where 1=1  \n" +
+            "                                                           and std.p_type is null \n" +
+            "                 \n" +
+            "                                                       \n" +
+            "                                                                                and class.C_START_DATE >= :fromDate                \n" +
+            "                                                                                                     and class.C_START_DATE <= :toDate                \n" +
+            "                                                                               \n" +
+            "                                                           --and class.C_START_DATE <=@               \n" +
+            "                                                           --and class.C_END_DATE =>@               \n" +
+            "                                                     --       and view_complex.id =@               \n" +
+            "                                                    --       and view_affairs.id =@               \n" +
+            "                                                    --       and view_assistant.id =@               \n" +
+            "                                                                               \n" +
+            "                                                            GROUP BY               \n" +
+            "                                                                class.id,               \n" +
+            "                                                                std.id,               \n" +
+            "                                                                class.c_start_date,               \n" +
+            "                                                                class.c_end_date,               \n" +
+            "                                              view_last_md_employee_hr.c_mojtame_code,             \n" +
+            "                                                               view_last_md_employee_hr.c_moavenat_code,             \n" +
+            "                                                              view_last_md_employee_hr.c_omor_code,             \n" +
+            "                                                              view_last_md_employee_hr.ccp_complex,         \n" +
+            "                                                               view_last_md_employee_hr.ccp_assistant,         \n" +
+            "                                                               view_last_md_employee_hr.ccp_affairs,             \n" +
+            "                                                                csession.c_session_date,               \n" +
+            "                                                                class.c_code               \n" +
+            "                                                        ) s               \n" +
+            "                                                    GROUP BY               \n" +
+            "                                                        s.presence_hour,               \n" +
+            "                                                          s.mojtama_id,               \n" +
+            "                                                        s.mojtama,               \n" +
+            "                                                        moavenat_id,               \n" +
+            "                                                        s.moavenat,               \n" +
+            "                                                        s.omoor_id,               \n" +
+            "                                                        s.omoor \n" +
+            "              ),    \n" +
+            "                 \n" +
+            "             karkonan as (    \n" +
+            "              select distinct          \n" +
+            "                                   count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_complex ) as karkonan_mojtama          \n" +
+            "                                   ,count(distinct p.id) over (partition by  view_last_md_employee_hr.ccp_assistant ) as karkonan_moavenat          \n" +
+            "                                   ,count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_affairs ) as karkonan_omoor          \n" +
+            "                                 , view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_complex   AS mojtama,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant AS moavenat,        \n" +
+            "                                      view_last_md_employee_hr.c_omor_code       AS omoor_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                   from            \n" +
+            "                                   VIEW_SYNONYM_PERSONNEL p          \n" +
+            "                                       \n" +
+            "                                            \n" +
+            "                                            LEFT JOIN view_last_md_employee_hr  ON p.f_department_id = view_last_md_employee_hr.c_dep_id    \n" +
+            "                                                \n" +
+            "                                                \n" +
+            "                                   where           \n" +
+            "                                       p.DELETED = 0          \n" +
+            "                               --         and view_complex.id =@          \n" +
+            "                               --       and view_affairs.id =@          \n" +
+            "                               --       and view_assistant.id =@          \n" +
+            "                                             \n" +
+            "                                   group by          \n" +
+            "                                   p.id          \n" +
+            "                                     , view_last_md_employee_hr.c_mojtame_code,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code,        \n" +
+            "                                     view_last_md_employee_hr.c_omor_code,        \n" +
+            "                                     view_last_md_employee_hr.ccp_complex,    \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant,    \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs    \n" +
+            "                    \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select DISTINCT    \n" +
+            "                 \n" +
+            "             karkonan.mojtama_id as complex_id    \n" +
+            "             ,karkonan.mojtama as complex    \n" +
+            "             ,max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , karkonan.moavenat_id as assistant_id    \n" +
+            "             , karkonan.moavenat as assistant    \n" +
+            "             ,max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                  \n" +
+            "             ,karkonan.omoor_id as affairs_id    \n" +
+            "             ,karkonan.omoor as affairs    \n" +
+            "             ,max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             karkonan     \n" +
+            "             LEFT JOIN  kol_hour    \n" +
+            "             on    \n" +
+            "              kol_hour.mojtama_id = karkonan.mojtama_id    \n" +
+            "              and kol_hour.moavenat_id = karkonan.moavenat_id    \n" +
+            "              and kol_hour.omoor_id = karkonan.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "                   and (    \n" +
+            "                        karkonan.mojtama_id is not null    \n" +
+            "                        and karkonan.moavenat_id is not null    \n" +
+            "                        and karkonan.omoor_id is not null    \n" +
+            "                       )    \n" +
+            "                  \n" +
+            "             group by    \n" +
+            "             karkonan.mojtama_id    \n" +
+            "             ,karkonan.mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_moavenat    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_omoor    \n" +
+            "             ,karkonan.karkonan_mojtama    \n" +
+            "             ,karkonan.karkonan_moavenat    \n" +
+            "             ,karkonan.karkonan_omoor    \n" +
+            "             ,karkonan.moavenat_id    \n" +
+            "             ,karkonan.moavenat    \n" +
+            "             ,karkonan.omoor_id    \n" +
+            "             ,karkonan.omoor    \n" +
+            "             )res      \n" +
+            "                                            where     \n" +
+            "                                               (:complexNull = 1 OR complex IN (:complex))     \n" +
+            "                                          AND (:assistantNull = 1 OR assistant IN (:assistant))     \n" +
+            "                                               AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
     List<GenericStatisticalIndexReport> capitaOfContractingForces(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -4673,173 +4636,177 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = "-- saraneh saat amozeshi sherkat\n" +
-            "SELECT  \n" +
-            "                                rowNum AS id, \n" +
-            "                                  res.* FROM(\n" +
-            "\n" +
-            "with kol_hour as (SELECT DISTINCT\n" +
-            "    SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,\n" +
-            "     SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,\n" +
-            "     SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,\n" +
-            "     s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "  \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            class.id               AS class_id,\n" +
-            "            std.id                 AS student_id,\n" +
-            "            SUM(\n" +
-            "                CASE\n" +
-            "                    WHEN att.c_state IN('1', '2') THEN\n" +
-            "                        round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                        24, 1)\n" +
-            "                    ELSE\n" +
-            "                        0\n" +
-            "                END\n" +
-            "            )                      AS presence_hour,\n" +
-            "           \n" +
-            "            class.c_start_date     AS class_start_date ,\n" +
-            "            class.c_end_date       AS class_end_date,\n" +
-            "            class.complex_id       AS mojtama_id,\n" +
-            "            view_complex.c_title   AS mojtama,\n" +
-            "            class.assistant_id     AS moavenat_id,\n" +
-            "            view_assistant.c_title AS moavenat,\n" +
-            "            class.affairs_id       AS omoor_id,\n" +
-            "            view_affairs.c_title   AS omoor\n" +
-            "        FROM\n" +
-            "                 tbl_attendance att\n" +
-            "            INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "            INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "            INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "            LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "            LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "            LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "       where 1=1\n" +
-            "          and class.C_START_DATE >= :fromDate \n" +
-            "                                                 and class.C_START_DATE <= :toDate \n" +
-            "       --and class.C_START_DATE <=@\n" +
-            "       --and class.C_END_DATE =>@\n" +
-            " --       and view_complex.id =@\n" +
-            "--       and view_affairs.id =@\n" +
-            "--       and view_assistant.id =@\n" +
-            "            \n" +
-            "        GROUP BY\n" +
-            "            class.id,\n" +
-            "            std.id,\n" +
-            "            class.c_start_date,\n" +
-            "            class.c_end_date,\n" +
-            "            view_complex.c_title,\n" +
-            "            class.complex_id,\n" +
-            "            class.assistant_id,\n" +
-            "            class.affairs_id,\n" +
-            "            view_assistant.c_title,\n" +
-            "            view_affairs.c_title,\n" +
-            "            csession.c_session_date,\n" +
-            "            class.c_code\n" +
-            "    ) s\n" +
-            "GROUP BY\n" +
-            "    s.presence_hour,\n" +
-            "    s.class_id, \n" +
-            "    s.class_end_date,\n" +
-            "    s.class_start_date,  \n" +
-            "    s.mojtama_id,\n" +
-            "    s.mojtama,\n" +
-            "    moavenat_id,\n" +
-            "    s.moavenat,\n" +
-            "    s.omoor_id,\n" +
-            "    s.omoor\n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "karkonan as (\n" +
-            "        select distinct\n" +
-            "        count(distinct p.id) over (partition by view_complex.c_title ) as karkonan_mojtama\n" +
-            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as karkonan_moavenat\n" +
-            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as karkonan_omoor\n" +
-            "        ,view_complex.id        as mojtama_id\n" +
-            "        ,view_complex.c_title    as mojtama\n" +
-            "        ,view_assistant.id      as moavenat_id\n" +
-            "        ,view_assistant.c_title as moavenat\n" +
-            "        ,view_affairs.id        as omoor_id\n" +
-            "        ,view_affairs.c_title   as omoor\n" +
-            "        from  \n" +
-            "        VIEW_SYNONYM_PERSONNEL p\n" +
-            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
-            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
-            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
-            "        where \n" +
-            "         p.employment_status_code = 1 --eshteghal\n" +
-            "         and p.DELETED =0\n" +
-            "    --         and view_complex.id =@\n" +
-            "    --       and view_affairs.id =@\n" +
-            "    --       and view_assistant.id =@\n" +
-            "        \n" +
-            "        group by\n" +
-            "        p.id\n" +
-            "        , view_complex.id       \n" +
-            "        ,view_complex.c_title   \n" +
-            "        ,view_assistant.id      \n" +
-            "        ,view_assistant.c_title \n" +
-            "        ,view_affairs.id        \n" +
-            "        ,view_affairs.c_title  \n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "karkonan.mojtama_id as complex_id\n" +
-            ",karkonan.mojtama as complex\n" +
-            ",max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", karkonan.moavenat_id as assistant_id\n" +
-            ", karkonan.moavenat as assistant\n" +
-            ",max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant\n" +
-            "\n" +
-            ",karkonan.omoor_id as affairs_id\n" +
-            ",karkonan.omoor as affairs\n" +
-            ",max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs\n" +
-            "FROM\n" +
-            "karkonan \n" +
-            "LEFT JOIN  kol_hour\n" +
-            "on\n" +
-            " kol_hour.mojtama_id = karkonan.mojtama_id\n" +
-            " and kol_hour.moavenat_id = karkonan.moavenat_id\n" +
-            " and kol_hour.omoor_id = karkonan.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           karkonan.mojtama_id is not null\n" +
-            "           and karkonan.moavenat_id is not null\n" +
-            "           and karkonan.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "karkonan.mojtama_id\n" +
-            ",karkonan.mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_mojtama\n" +
-            ",kol_hour.sum_presence_hour_kol_moavenat\n" +
-            ",kol_hour.sum_presence_hour_kol_omoor\n" +
-            ",karkonan.karkonan_mojtama\n" +
-            ",karkonan.karkonan_moavenat\n" +
-            ",karkonan.karkonan_omoor\n" +
-            ",karkonan.moavenat_id\n" +
-            ",karkonan.moavenat\n" +
-            ",karkonan.omoor_id\n" +
-            ",karkonan.omoor\n" +
-            ")res  \n" +
-            "                               where \n" +
-            "                                  (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                             AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                  AND (:affairsNull = 1 OR affairs IN (:affairs))", nativeQuery = true)
+    @Query(value = " -- saraneh amozeshi peymankari    \n" +
+            "                 \n" +
+            "             SELECT      \n" +
+            "                                             rowNum AS id,     \n" +
+            "                                               res.* FROM(    \n" +
+            "             with kol_hour as (    \n" +
+            "              \n" +
+            "                   SELECT DISTINCT               \n" +
+            "                                                        SUM(s.presence_hour)  over (partition by  s.mojtama)  AS sum_presence_hour_kol_mojtama,               \n" +
+            "                                                         SUM(s.presence_hour)  over (partition by  s.moavenat)  AS sum_presence_hour_kol_moavenat,               \n" +
+            "                                                         SUM(s.presence_hour)  over (partition by s.omoor)  AS sum_presence_hour_kol_omoor,               \n" +
+            "                                                        s.mojtama_id,               \n" +
+            "                                                        s.mojtama,               \n" +
+            "                                                        moavenat_id,               \n" +
+            "                                                        s.moavenat,               \n" +
+            "                                                        s.omoor_id,               \n" +
+            "                                                        s.omoor               \n" +
+            "                                                                     \n" +
+            "                                                    FROM               \n" +
+            "                                                        (               \n" +
+            "                                                            SELECT               \n" +
+            "                                                                class.id               AS class_id,               \n" +
+            "                                                                std.id                 AS student_id,               \n" +
+            "                                                                SUM(               \n" +
+            "                                                                    CASE               \n" +
+            "                                                                        WHEN att.c_state IN('1', '2') THEN               \n" +
+            "                                                                            round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *               \n" +
+            "                                                                            24, 1)               \n" +
+            "                                                                        ELSE               \n" +
+            "                                                                            0               \n" +
+            "                                                                    END               \n" +
+            "                                                                )                      AS presence_hour,               \n" +
+            "                                                                              \n" +
+            "                                                                class.c_start_date     AS class_start_date ,               \n" +
+            "                                                                class.c_end_date       AS class_end_date,               \n" +
+            "                                                               view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_complex   AS mojtama,             \n" +
+            "                                                               view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_assistant AS moavenat,             \n" +
+            "                                                               view_last_md_employee_hr.c_omor_code       AS omoor_id,             \n" +
+            "                                                               view_last_md_employee_hr.ccp_affairs   AS omoor             \n" +
+            "                                                                            \n" +
+            "                                                            FROM               \n" +
+            "                                                                     tbl_attendance att               \n" +
+            "                                                                INNER JOIN tbl_student std ON att.f_student = std.id               \n" +
+            "                                                                INNER JOIN tbl_session csession ON att.f_session = csession.id               \n" +
+            "                                                                INNER JOIN tbl_class   class ON csession.f_class_id = class.id               \n" +
+            "                                                                INNER JOIN TBL_COURSE  course ON course.id = class.F_COURSE               \n" +
+            "                                                                         \n" +
+            "                                                                                                                  LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE         \n" +
+            "                                                                                                                            \n" +
+            "                                                           where 1=1  \n" +
+            "                                                           and std.p_type is not null \n" +
+            "                 \n" +
+            "                                                       \n" +
+            "                                                                                and class.C_START_DATE >= :fromDate                \n" +
+            "                                                                                                     and class.C_START_DATE <= :toDate                \n" +
+            "                                                                               \n" +
+            "                                                           --and class.C_START_DATE <=@               \n" +
+            "                                                           --and class.C_END_DATE =>@               \n" +
+            "                                                     --       and view_complex.id =@               \n" +
+            "                                                    --       and view_affairs.id =@               \n" +
+            "                                                    --       and view_assistant.id =@               \n" +
+            "                                                                               \n" +
+            "                                                            GROUP BY               \n" +
+            "                                                                class.id,               \n" +
+            "                                                                std.id,               \n" +
+            "                                                                class.c_start_date,               \n" +
+            "                                                                class.c_end_date,               \n" +
+            "                                              view_last_md_employee_hr.c_mojtame_code,             \n" +
+            "                                                               view_last_md_employee_hr.c_moavenat_code,             \n" +
+            "                                                              view_last_md_employee_hr.c_omor_code,             \n" +
+            "                                                              view_last_md_employee_hr.ccp_complex,         \n" +
+            "                                                               view_last_md_employee_hr.ccp_assistant,         \n" +
+            "                                                               view_last_md_employee_hr.ccp_affairs,             \n" +
+            "                                                                csession.c_session_date,               \n" +
+            "                                                                class.c_code               \n" +
+            "                                                        ) s               \n" +
+            "                                                    GROUP BY               \n" +
+            "                                                        s.presence_hour,               \n" +
+            "                                                          s.mojtama_id,               \n" +
+            "                                                        s.mojtama,               \n" +
+            "                                                        moavenat_id,               \n" +
+            "                                                        s.moavenat,               \n" +
+            "                                                        s.omoor_id,               \n" +
+            "                                                        s.omoor \n" +
+            "              ),    \n" +
+            "                 \n" +
+            "             karkonan as (    \n" +
+            "              select distinct          \n" +
+            "                                   count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_complex ) as karkonan_mojtama          \n" +
+            "                                   ,count(distinct p.id) over (partition by  view_last_md_employee_hr.ccp_assistant ) as karkonan_moavenat          \n" +
+            "                                   ,count(distinct p.id) over (partition by view_last_md_employee_hr.ccp_affairs ) as karkonan_omoor          \n" +
+            "                                 , view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_complex   AS mojtama,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant AS moavenat,        \n" +
+            "                                      view_last_md_employee_hr.c_omor_code       AS omoor_id,        \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                   from            \n" +
+            "                                   VIEW_SYNONYM_PERSONNEL p          \n" +
+            "                                       \n" +
+            "                                            \n" +
+            "                                            LEFT JOIN view_last_md_employee_hr  ON p.f_department_id = view_last_md_employee_hr.c_dep_id    \n" +
+            "                                                \n" +
+            "                                                \n" +
+            "                                   where           \n" +
+            "                                       p.DELETED = 0          \n" +
+            "                               --         and view_complex.id =@          \n" +
+            "                               --       and view_affairs.id =@          \n" +
+            "                               --       and view_assistant.id =@          \n" +
+            "                                             \n" +
+            "                                   group by          \n" +
+            "                                   p.id          \n" +
+            "                                     , view_last_md_employee_hr.c_mojtame_code,        \n" +
+            "                                      view_last_md_employee_hr.c_moavenat_code,        \n" +
+            "                                     view_last_md_employee_hr.c_omor_code,        \n" +
+            "                                     view_last_md_employee_hr.ccp_complex,    \n" +
+            "                                      view_last_md_employee_hr.ccp_assistant,    \n" +
+            "                                      view_last_md_employee_hr.ccp_affairs    \n" +
+            "                    \n" +
+            "             )    \n" +
+            "                 \n" +
+            "                 \n" +
+            "             select DISTINCT    \n" +
+            "                 \n" +
+            "             karkonan.mojtama_id as complex_id    \n" +
+            "             ,karkonan.mojtama as complex    \n" +
+            "             ,max(cast (kol_hour.sum_presence_hour_kol_mojtama /karkonan.karkonan_mojtama as decimal(6,2)) ) OVER ( PARTITION BY karkonan.mojtama_id ) AS n_base_on_complex    \n" +
+            "                 \n" +
+            "             , karkonan.moavenat_id as assistant_id    \n" +
+            "             , karkonan.moavenat as assistant    \n" +
+            "             ,max( cast ( kol_hour.sum_presence_hour_kol_moavenat /karkonan.karkonan_moavenat as decimal(6,2))) OVER ( PARTITION BY  karkonan.moavenat_id ) AS n_base_on_assistant    \n" +
+            "                  \n" +
+            "             ,karkonan.omoor_id as affairs_id    \n" +
+            "             ,karkonan.omoor as affairs    \n" +
+            "             ,max(cast ( kol_hour.sum_presence_hour_kol_omoor /karkonan.karkonan_omoor as decimal(6,2)) ) OVER ( PARTITION BY karkonan.omoor_id ) AS n_base_on_affairs    \n" +
+            "                 \n" +
+            "             FROM    \n" +
+            "             karkonan     \n" +
+            "             LEFT JOIN  kol_hour    \n" +
+            "             on    \n" +
+            "              kol_hour.mojtama_id = karkonan.mojtama_id    \n" +
+            "              and kol_hour.moavenat_id = karkonan.moavenat_id    \n" +
+            "              and kol_hour.omoor_id = karkonan.omoor_id    \n" +
+            "                 \n" +
+            "             where 1=1    \n" +
+            "                   and (    \n" +
+            "                        karkonan.mojtama_id is not null    \n" +
+            "                        and karkonan.moavenat_id is not null    \n" +
+            "                        and karkonan.omoor_id is not null    \n" +
+            "                       )    \n" +
+            "                  \n" +
+            "             group by    \n" +
+            "             karkonan.mojtama_id    \n" +
+            "             ,karkonan.mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_mojtama    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_moavenat    \n" +
+            "             ,kol_hour.sum_presence_hour_kol_omoor    \n" +
+            "             ,karkonan.karkonan_mojtama    \n" +
+            "             ,karkonan.karkonan_moavenat    \n" +
+            "             ,karkonan.karkonan_omoor    \n" +
+            "             ,karkonan.moavenat_id    \n" +
+            "             ,karkonan.moavenat    \n" +
+            "             ,karkonan.omoor_id    \n" +
+            "             ,karkonan.omoor    \n" +
+            "             )res      \n" +
+            "                                            where     \n" +
+            "                                               (:complexNull = 1 OR complex IN (:complex))     \n" +
+            "                                          AND (:assistantNull = 1 OR assistant IN (:assistant))     \n" +
+            "                                               AND (:affairsNull = 1 OR affairs IN (:affairs))  ", nativeQuery = true)
     List<GenericStatisticalIndexReport> trainingHoursOfTheCompany(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
