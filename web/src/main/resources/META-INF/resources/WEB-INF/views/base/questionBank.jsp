@@ -641,20 +641,16 @@
                 name: "code",
                 sortNormalizer: function (record) {
                     return parseInt(record.code);
+                }
                 },
-                autoFitWidth: true
-            },
             {
-                name: "question",
-                autoFitWidth: true,
-            },
+                name: "question"},
             {name: "displayType.id",
                 optionDataSource: DisplayTypeDS_questionBank,
                 title: "<spring:message code="question.bank.display.type"/>",
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
-                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                 optionDataSource: DisplayTypeDS_questionBank,
@@ -682,7 +678,6 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
-                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                 optionDataSource: AnswerTypeDS_questionBank,
@@ -711,7 +706,6 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
-                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_category,
@@ -740,7 +734,6 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
-                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: RestDataSourceSubCategory,
@@ -773,22 +766,14 @@
                 },
 
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-            },
+                filterOperator: "iContains"},
             {
                 name: "course.titleFa",
-                sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; },
-                autoFitWidth: true
-            },
+                sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {
-                name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; },
-                autoFitWidth: true
-            },
+                name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {
-                name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; },
-                autoFitWidth: true
-            },
+                name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
             {
                 name: "equestionLevel.id",
                 optionDataSource: EQuestionLevelDS_questionBank,
@@ -797,7 +782,6 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
-                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: EQuestionLevelDS_questionBank,
@@ -820,13 +804,9 @@
                 }
             },
             {
-                name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; },
-                autoFitWidth: true
-            },
+                name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
             {
-                name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; },
-                autoFitWidth: true
-            },
+                name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
             {
                 name: "createdBy",
                 hidden: true
@@ -836,20 +816,16 @@
                 title: "هدف سوال",
                 optionDataSource: questionTargetDS_questionBank,
                 valueField: "id",
-                displayField: "title",
-                autoFitWidth: true
-            },
+                displayField: "title"},
             {
                 name: "questionDesigner",
                 width: "10%",
-                align: "center",
-                autoFitWidth: true
+                align: "center"
             },
             {
                 name: "createdDate",
                 width: "10%",
                 align: "center",
-                autoFitWidth: true,
                 filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -863,13 +839,16 @@
             },
             {
                 name: "preViewIcon",
+                title: "پیش نمایش",
                 width: "4%",
                 align: "center",
-                showTitle: false,
+                showTitle: true,
+                canSort:false,
                 canFilter: false
             }
         ],
         autoFetchData: true,
+        autoFitWidth: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
         initialSort: [

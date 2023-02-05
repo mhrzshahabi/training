@@ -16,7 +16,9 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,9 @@ public class QuestionBankService implements IQuestionBankService {
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
     private final IParameterValueService parameterValueService;
-    private final QuestionBankBeanMapper questionBankBeanMapper;
+    @Autowired
+    @Lazy
+    private  QuestionBankBeanMapper questionBankBeanMapper;
     private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
 
 
