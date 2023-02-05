@@ -9,6 +9,7 @@ import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
+import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
@@ -29,19 +30,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
-import static com.nicico.training.utility.persianDate.MyUtils.areAllUnique;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionBankService implements IQuestionBankService {
 
     private final ModelMapper modelMapper;
+    private final MessageSource messageSource;
     private final QuestionBankDAO questionBankDAO;
-    private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
     private final IParameterValueService parameterValueService;
-    private final MessageSource messageSource;
+    private final QuestionBankBeanMapper questionBankBeanMapper;
+    private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
 
 
     @Transactional(readOnly = true)
@@ -74,6 +75,14 @@ public class QuestionBankService implements IQuestionBankService {
         map.setGroupQuestions(getGroupQuestionDto(questionGroupIds));
         map.setGroupQuestionIds(questionGroupIds);
         return map;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public QuestionBankDTO.PreViewInfo getQuestionPreViewInfo(Long id) {
+        Optional<QuestionBank> cById = questionBankDAO.findById(id);
+        QuestionBank questionBank = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
+        return questionBankBeanMapper.toQuestionBankPreViewInfo(questionBank);
     }
 
     private Set<GroupQuestionDto> getGroupQuestionDto(Set<Long> questionGroupIds) {

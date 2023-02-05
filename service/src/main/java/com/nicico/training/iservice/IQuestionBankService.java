@@ -21,6 +21,8 @@ public interface IQuestionBankService {
 
     QuestionBankDTO.FullInfo get(Long Id);
 
+    QuestionBankDTO.PreViewInfo getQuestionPreViewInfo(Long id);
+
     SearchDTO.SearchRs<QuestionBankDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
     List<QuestionBank> searchModels(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
