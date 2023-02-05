@@ -83,4 +83,6 @@ public interface IClassStudentService {
     String isScoreEditable(Long classStudentId);
 
     Boolean isAcceptByCertification(Long classStudentId);
+
+    BaseResponse getCertificate(String nationalCode, Long classId);
 }

@@ -330,7 +330,7 @@ public class QuestionBankService implements IQuestionBankService {
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
         if (isFilterForGroupQuestion){
-            list.add(makeNewCriteria("isChild", true, EOperator.equals, null));
+            list.add(makeNewCriteria("isChild", 1, EOperator.equals, null));
         }
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {

@@ -985,6 +985,11 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
+    public BaseResponse getCertificate(String nationalCode, Long classId) {
+        return null;
+    }
+
+    @Override
     public boolean IsStudentAttendanceAllowable(Long classStudentId) {
         try {
             ClassStudent classStudentById = getClassStudent(classStudentId);

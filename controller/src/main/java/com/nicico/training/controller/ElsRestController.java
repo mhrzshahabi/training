@@ -3163,5 +3163,12 @@ public class ElsRestController {
         return response;
     }
 
+    @GetMapping("/student/certificate/{national-code}/{class-id}")
+    public BaseResponse studentCertificate(HttpServletRequest header,@PathVariable("national-code") String  nationalCode
+            ,@PathVariable("class-id") Long  classId) {
+        return  classStudentService.getCertificate(nationalCode,classId);
+
+    }
+
 
 }
