@@ -75,7 +75,23 @@ public class QuestionBankDTO {
         private String questionDesigner;
         private Set<GroupQuestionDto> groupQuestions;
         private Set<Long> groupQuestionIds;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("QuestionBank-PreViewInfo")
+    public static class PreViewInfo {
+        private Long id;
+        private String question;
+        private String questionTypeTitle;
+        private String option1;
+        private String option2;
+        private String option3;
+        private String option4;
+        private Boolean hasAttachment;
+        private String childPriority;
+        private List<QuestionBankDTO.PreViewInfo> groupQuestions;
     }
 
     @Getter

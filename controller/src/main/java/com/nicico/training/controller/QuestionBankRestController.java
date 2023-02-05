@@ -10,7 +10,6 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.*;
 
@@ -351,5 +351,23 @@ public class QuestionBankRestController {
 
             return response;
         }
+    }
+
+    @Loggable
+    @GetMapping(value = "/pre-view-info/{id}")
+    public ResponseEntity<QuestionBankDTO.PreViewInfo> getQuestionPreViewInfo(@PathVariable Long id) {
+        QuestionBankDTO.PreViewInfo preViewInfo = iQuestionBankService.getQuestionPreViewInfo(id);
+        List<QuestionBankDTO.PreViewInfo> sorted = preViewInfo.getGroupQuestions().stream().sorted((a1, a2) -> {
+            if (a1.getChildPriority() == null && a2.getChildPriority() == null)
+                return 0;
+            else if (a1.getChildPriority() == null)
+                return 1;
+            else if (a2.getChildPriority() == null)
+                return -1;
+            else
+                return a1.getChildPriority().compareTo(a2.getChildPriority());
+        }).collect(Collectors.toList());
+        preViewInfo.setGroupQuestions(sorted);
+        return new ResponseEntity<>(preViewInfo, HttpStatus.OK);
     }
 }

@@ -1,6 +1,5 @@
 package com.nicico.training.mapper.QuestionBank;
 
-
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.iservice.ICategoryService;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import response.question.dto.*;
 
 import java.util.*;
-
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public abstract class QuestionBankBeanMapper {
@@ -606,13 +604,19 @@ public abstract class QuestionBankBeanMapper {
     abstract public QuestionBankDTO toQuestionDto(QuestionBank questionBank);
     abstract public List<QuestionBankDTO> toQuestionDtos(List<QuestionBank> questionBank);
     abstract public List<QuestionBankDTO.Exam> toQuestionExamDtos(Set<QuestionBank> questionBank);
-
     abstract public Set<QuestionBankDTO.Exam> toExamDtos(Set<QuestionBank> questionBank);
 
+    @Mapping(target = "questionTypeTitle",source = "questionType",qualifiedByName ="toQuestionTypeTitle")
+    public abstract QuestionBankDTO.PreViewInfo toQuestionBankPreViewInfo(QuestionBank questionBank);
 
     @Named("getQuestionChilds")
     List<QuestionBankDTO.Exam> getQuestionChilds(QuestionBank questionBank) {
         return toQuestionExamDtos(questionBank.getGroupQuestions());
+    }
+
+    @Named("toQuestionTypeTitle")
+    String toQuestionTypeTitle(ParameterValue questionType) {
+        return questionType.getTitle();
     }
 
     @Mappings({

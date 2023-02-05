@@ -118,8 +118,6 @@
                 width: 200}
 
         ]
-
-
     });
     let RestDataSource_All_questionBank = isc.TrDS.create({
         fields: [
@@ -160,7 +158,14 @@
         },
         fetchDataURL: questionBankUrl + "/with-filter/spec-list"
     });
-
+    let RestDataSource_Files_Question_PreView = isc.TrDS.create({
+        fields: [
+            {name: "fileName", title: "نام فایل"},
+            {name: "fileTypeId", title: "نوع فایل"},
+            {name: "group_id", title: "groupId", hidden: true},
+            {name: "key", title: "deleted", hidden: true},
+        ]
+    });
 
     Lable_ForQuestions_group_Question = isc.LgLabel.create({contents:"لیست سوالات برای این سوال گروهی", customEdges: ["R","L","T", "B"]});
 
@@ -289,7 +294,6 @@
                 name: "code",
                 title: "<spring:message code="code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
                 name: "question",
@@ -299,68 +303,64 @@
             {
                 name: "questionType.title",
                 title: "<spring:message code="question.bank.question.type"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "displayType.title",
                 title: "<spring:message code="question.bank.display.type"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "category.titleFa",
                 title: "<spring:message code="category"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "subCategory.titleFa",
                 title: "<spring:message code="subcategory"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "teacher.fullNameFa",
                 title: "<spring:message code="teacher"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "teacher.personality.lastNameFa",
                 title: "<spring:message code="teacher"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "tclass.course.titleFa",
                 title: "<spring:message code="class"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "tclass.code",
                 title: "<spring:message code='class.code'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "equestionLevel.titleFa",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "tclass.startDate",
                 title: "<spring:message code='class.start.date'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "tclass.endDate",
                 title: "<spring:message code='class.end.date'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "course.titleFa",
                 title: "<spring:message code="course"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "createdBy",
@@ -371,15 +371,13 @@
                 name: "questionDesigner",
                 title: "طراح سوال",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "createdDate",
                 title: "<spring:message code="create.date"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "iContains"
             }
-
         ],
         fetchDataURL: questionBankUrl + "/spec-list"
     });
@@ -639,18 +637,24 @@
         dataSource: QuestionBankDS_questionBank,
         </sec:authorize>
         fields: [
-            {name: "code",
+            {
+                name: "code",
                 sortNormalizer: function (record) {
                     return parseInt(record.code);
-                }
+                },
+                autoFitWidth: true
             },
-            {name: "question",},
+            {
+                name: "question",
+                autoFitWidth: true,
+            },
             {name: "displayType.id",
                 optionDataSource: DisplayTypeDS_questionBank,
                 title: "<spring:message code="question.bank.display.type"/>",
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                 optionDataSource: DisplayTypeDS_questionBank,
@@ -678,6 +682,7 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                 optionDataSource: AnswerTypeDS_questionBank,
@@ -706,6 +711,7 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_category,
@@ -734,6 +740,7 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: RestDataSourceSubCategory,
@@ -769,9 +776,19 @@
                 filterOperator: "iContains",
                 autoFitWidth: true,
             },
-            {name: "course.titleFa",sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
-            {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
-            {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
+            {
+                name: "course.titleFa",
+                sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; },
+                autoFitWidth: true
+            },
+            {
+                name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; },
+                autoFitWidth: true
+            },
+            {
+                name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; },
+                autoFitWidth: true
+            },
             {
                 name: "equestionLevel.id",
                 optionDataSource: EQuestionLevelDS_questionBank,
@@ -780,6 +797,7 @@
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
+                autoFitWidth: true,
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     optionDataSource: EQuestionLevelDS_questionBank,
@@ -801,8 +819,14 @@
                     return record.eQuestionLevel?.titleFa;
                 }
             },
-            {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
-            {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
+            {
+                name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; },
+                autoFitWidth: true
+            },
+            {
+                name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; },
+                autoFitWidth: true
+            },
             {
                 name: "createdBy",
                 hidden: true
@@ -812,17 +836,20 @@
                 title: "هدف سوال",
                 optionDataSource: questionTargetDS_questionBank,
                 valueField: "id",
-                displayField: "title"
+                displayField: "title",
+                autoFitWidth: true
             },
             {
                 name: "questionDesigner",
                 width: "10%",
-                align: "center"
+                align: "center",
+                autoFitWidth: true
             },
             {
                 name: "createdDate",
                 width: "10%",
                 align: "center",
+                autoFitWidth: true,
                 filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -833,12 +860,18 @@
                         return date.toLocaleDateString('fa-IR');
                     }
                 }
+            },
+            {
+                name: "preViewIcon",
+                width: "4%",
+                align: "center",
+                showTitle: false,
+                canFilter: false
             }
         ],
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
-        // sortField: "id",
         initialSort: [
             {property: "id", direction: "descending", primarySort: true}
         ],
@@ -846,6 +879,8 @@
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
             loadAttachment();
 
@@ -858,6 +893,39 @@
         filterEditorSubmit: function () {
             QuestionBankLG_questionBank.invalidateCache();
         },
+        createRecordComponent: function (record, colNum) {
+
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName === "preViewIcon") {
+                let preViewImg = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/help.png",
+                    prompt: "پیش نمایش",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/pre-view-info/" + record.id, "GET", null, function (resp) {
+                            if (resp.httpResponseCode === 200) {
+                                let data = JSON.parse(resp.httpResponseText);
+                                if (record.questionType.title === "تشریحی") {
+                                    showDescriptiveQuestionPreView(data);
+                                } else if (record.questionType.title === "چند گزینه ای") {
+                                    showMultipleChoiceQuestionPreView(data);
+                                } else if (record.questionType.title === "سوالات گروهی") {
+                                    showGroupQuestionPreView(data);
+                                }
+                            }
+                        }));
+                    }
+                });
+                return preViewImg;
+            } else {
+                return null;
+            }
+        }
     });
 
     function changeFormDirection(style) {
@@ -981,7 +1049,7 @@
                                             } else if(result === 404){
                                                 createDialog("warning", "چنین سوالی وجود ندارد", "اخطار");
                                             }else if(result === 406){
-                                                createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.", "اخطار");
+                                                createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف یا ویرایش این سوال وجود ندارد.", "اخطار");
                                             } else {
                                                 createDialog("warning", "خطا در حذف سوال", "اخطار");
                                             }
@@ -2350,7 +2418,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                                 } else if(resp.httpResponseCode == 404){
                                     createDialog("warning", "چنین سوالی وجود ندارد", "اخطار");
                                 }else if(resp.httpResponseCode == 406){
-                                    createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.", "اخطار");
+                                    createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف یا ویرایش این سوال وجود ندارد.", "اخطار");
                                 } else {
                                     createDialog("warning", "خطا در حذف سوال", "اخطار");
                                 }
@@ -2475,6 +2543,387 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
         }
 
+    }
+
+    isc.defineClass("DescriptiveQuestion", isc.VLayout).addProperties({
+        align: "top",
+        width: "100%",
+        autoFit: false,
+        autoDraw: false,
+        showEdges: false,
+        canAdaptHeight: true,
+        layoutMargin: 2,
+        membersMargin: 2,
+        descQuestion: null,
+        questionBankId: null,
+        initWidget: function () {
+
+            this.Super("initWidget", arguments);
+            let This = this;
+            this.addMember(
+                isc.DynamicForm.create({
+                    colWidths: ["15%", "85%"],
+                    width: "100%",
+                    height: "100%",
+                    numCols: "2",
+                    autoFocus: "true",
+                    cellPadding: 5,
+                    fields: [
+                        {
+                            name: "question",
+                            title: "",
+                            type: "staticText"
+                        },
+                        {
+                            name: "attachment",
+                            title: "فایل های سوال",
+                            type: "ButtonItem",
+                            startRow: false,
+                            endRow: true,
+                            colSpan: 1,
+                            click: function () {
+                                showQuestionFiles(This.questionBankId);
+                            }
+                        }
+                    ]
+                })
+            );
+            this.getMembers().last().setValue("question", this.descQuestion);
+        }
+    });
+    isc.defineClass("MultipleChoiceAnswer", isc.VLayout).addProperties({
+        align: "top",
+        width: "100%",
+        autoFit: false,
+        autoDraw: false,
+        showEdges: false,
+        canAdaptHeight: true,
+        layoutMargin: 2,
+        membersMargin: 2,
+        multipleChoiceQuestion: null,
+        option1: null,
+        option2: null,
+        option3Hidden: null,
+        option3: null,
+        option4Hidden: null,
+        option4: null,
+        questionBankId: null,
+        initWidget: function () {
+
+            this.Super("initWidget", arguments);
+            let This = this;
+            this.addMember(
+                isc.DynamicForm.create({
+                    colWidths: ["15%", "85%"],
+                    width: "100%",
+                    height: "100%",
+                    numCols: "2",
+                    autoFocus: "true",
+                    cellPadding: 5,
+                    fields: [
+                        {
+                            name: "question",
+                            title: "",
+                            type: "staticText"
+                        },
+                        {
+                            name: "attachment",
+                            title: "فایل های سوال",
+                            type: "ButtonItem",
+                            startRow: false,
+                            endRow: true,
+                            colSpan: 1,
+                            click: function () {
+                                showQuestionFiles(This.questionBankId);
+                            }
+                        }
+                    ]
+                })
+            );
+            this.getMembers().last().setValue("question", this.multipleChoiceQuestion);
+            this.addMember(
+                isc.DynamicForm.create({
+                    colWidths: ["10%", "90%"],
+                    width: "100%",
+                    height: "100%",
+                    numCols: "2",
+                    autoFocus: "true",
+                    cellPadding: 5,
+                    fields: [
+                        {
+                            name: "option1",
+                            title: "گزینه الف: ",
+                            type: "staticText"
+                        },
+                        {
+                            name: "option2",
+                            title: "گزینه ب: ",
+                            type: "staticText"
+                        },
+                        {
+                            name: "option3",
+                            title: "گزینه ج: ",
+                            type: "staticText",
+                            hidden: This.option3Hidden
+                        },
+                        {
+                            name: "option4",
+                            title: "گزینه د: ",
+                            type: "staticText",
+                            hidden: This.option4Hidden
+                        }
+                    ]
+                })
+            );
+            this.getMembers().last().setValue("option1", this.option1);
+            this.getMembers().last().setValue("option2", this.option2);
+            this.getMembers().last().setValue("option3", this.option3);
+            this.getMembers().last().setValue("option4", this.option4);
+        }
+    });
+
+    function showDescriptiveQuestionPreView(data) {
+
+        let Label_Info_Question_PreView = isc.Label.create({
+            border: "0px solid black",
+            align: "center",
+            width: "100%",
+            height: 5,
+            margin: 5
+        });
+        let Window_Question_PreView = isc.Window.create({
+            title: "پیش نمایش سوال",
+            autoSize: false,
+            width: "45%",
+            height: "30%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            items: []
+        });
+
+        Label_Info_Question_PreView.setContents("سوال تشریحی");
+        let VLayout_Question_PreView = isc.DescriptiveQuestion.create({
+            descQuestion: data.question,
+            questionBankId: data.id
+        });
+        let VLayout_Main = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            align: "top",
+            overflow: "auto",
+            membersMargin: 5,
+            members: [
+                Label_Info_Question_PreView,
+                VLayout_Question_PreView,
+            ]
+        });
+        Window_Question_PreView.setMembers([VLayout_Main]);
+        Window_Question_PreView.show();
+    }
+
+    function showMultipleChoiceQuestionPreView(data) {
+
+        let Label_Info_Question_PreView = isc.Label.create({
+            border: "0px solid black",
+            align: "center",
+            width: "100%",
+            height: 5,
+            margin: 5
+        });
+        let Window_Question_PreView = isc.Window.create({
+            title: "پیش نمایش سوال",
+            autoSize: false,
+            width: "45%",
+            height: "30%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            items: []
+        });
+
+        Label_Info_Question_PreView.setContents("سوال چند گزینه ای");
+        let VLayout_Question_PreView = isc.MultipleChoiceAnswer.create({
+            multipleChoiceQuestion: data.question,
+            option1: data.option1,
+            option2: data.option2,
+            option3Hidden: data.option3 === null || data.option3 === undefined,
+            option3: data.option3,
+            option4Hidden: data.option4 === null || data.option4 === undefined,
+            option4: data.option4,
+            questionBankId: data.id
+        });
+        let VLayout_Main = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            align: "top",
+            overflow: "auto",
+            membersMargin: 5,
+            members: [
+                Label_Info_Question_PreView,
+                VLayout_Question_PreView,
+            ]
+        });
+        Window_Question_PreView.setMembers([VLayout_Main]);
+        Window_Question_PreView.show();
+    }
+
+    function showGroupQuestionPreView(data) {
+
+        let Label_Info_Question_PreView = isc.Label.create({
+            border: "0px solid black",
+            align: "center",
+            width: "100%",
+            height: 5,
+            margin: 5
+        });
+        let Window_Question_PreView = isc.Window.create({
+            title: "پیش نمایش سوال",
+            autoSize: false,
+            width: "45%",
+            height: "50%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            items: []
+        });
+
+        Label_Info_Question_PreView.setContents("سوال گروهی");
+        let VLayout_Question_PreView = isc.DescriptiveQuestion.create({
+            descQuestion: "باتوجه به متن به سوالات پاسخ دهید: " + data.question,
+            questionBankId: data.id
+        });
+        let VLayout_Main = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            align: "top",
+            overflow: "auto",
+            membersMargin: 5,
+            members: [
+                Label_Info_Question_PreView,
+                VLayout_Question_PreView,
+            ]
+        });
+
+        if (data.groupQuestions.size() !== 0) {
+
+            data.groupQuestions.forEach(item => {
+                if (item.questionTypeTitle === "تشریحی") {
+
+                    let VLayout_Descriptive = isc.DescriptiveQuestion.create({
+                        descQuestion: item.question,
+                        questionBankId: item.id
+                    });
+                    VLayout_Main.addMember(VLayout_Descriptive);
+                } else {
+
+                    let VLayout_MultipleChoice = isc.MultipleChoiceAnswer.create({
+                        multipleChoiceQuestion: item.question,
+                        option1: item.option1,
+                        option2: item.option2,
+                        option3Hidden: item.option3 === null || item.option3 === undefined,
+                        option3: item.option3,
+                        option4Hidden: item.option4 === null || item.option4 === undefined,
+                        option4: item.option4,
+                        questionBankId: item.id
+                    });
+                    VLayout_Main.addMember(VLayout_MultipleChoice);
+                }
+            });
+        }
+        Window_Question_PreView.setMembers([VLayout_Main]);
+        Window_Question_PreView.show();
+    }
+
+    function showQuestionFiles(questionBankId) {
+
+        let ListGrid_Files_Question_PreView = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_Files_Question_PreView,
+            showFilterEditor: false,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            initialSort: [
+                {property: "fileTypeId", direction: "ascending"}
+            ],
+            fields: [
+                {
+                    name: "fileName",
+                    align: "center",
+                    width: "10%"
+                },
+                {
+                    name: "fileTypeId",
+                    align: "center",
+                    valueMap: {
+                        1: "صورت سوال",
+                        2: "سوالات عملی",
+                        3: "فایل گزینه اول",
+                        4: "فایل گزینه دوم",
+                        5: "فایل گزینه سوم",
+                        6: "فایل گزینه چهارم",
+                    },
+                    width: "10%"
+                },
+                {
+                    name: "download",
+                    title: "دریافت فایل",
+                    align: "center",
+                    canFilter: false,
+                    width: "120"
+                }
+            ],
+            createRecordComponent: function (record, colNum) {
+
+                let fieldName = this.getFieldName(colNum);
+                if (record == null || fieldName !== "download")
+                    return null;
+
+                return isc.ToolStripButton.create({
+                    icon: "[SKIN]actions/download.png",
+                    width: "25",
+                    click: function () {
+                        if (record == null) {return;}
+                        downloadQuestionFiles(record.id);
+                    }
+                });
+            }
+        });
+        let Window_Files_Question_PreView = isc.Window.create({
+            title: "نمایش فایل های سوال",
+            width: "40%",
+            height: "40%",
+            autoSize: false,
+            items: [ListGrid_Files_Question_PreView]
+        });
+
+        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/findQuestionFiles/" + questionBankId, "GET", null, function (resp) {
+            if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let files = JSON.parse(resp.httpResponseText);
+                ListGrid_Files_Question_PreView.setData(files);
+                Window_Files_Question_PreView.show();
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+    function downloadQuestionFiles(id) {
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "GET",
+            action: "attachment/download/" + id,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "myToken", type: "hidden"}
+                ]
+        });
+        downloadForm.setValue("myToken", "<%=accessToken%>");
+        downloadForm.show();
+        downloadForm.submitForm();
     }
 
     //</script>
