@@ -3163,5 +3163,13 @@ public class ElsRestController {
         return response;
     }
 
+    @GetMapping("/passed-classes/by-nationalCode")
+    public ResponseEntity<List<TclassDTO.PassedClasses>> passedCoursesByNationalCode(@RequestParam String nationalCode, @RequestHeader(name = "X-Auth-Token") String header) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            List<TclassDTO.PassedClasses> passedClassesByNationalCode = tclassService.getPassedClassesByNationalCode(nationalCode);
+            return new ResponseEntity<>(passedClassesByNationalCode, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
 
 }

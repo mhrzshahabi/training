@@ -939,4 +939,24 @@ public class TclassDTO {
         private String code;
         private String titleClass;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PassedClasses")
+    public static class PassedClasses {
+        private Long id;
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+
+        public PassedClasses(Long id, String code, String titleClass, String startDate, String endDate) {
+            this.id = id;
+            this.code = code;
+            this.titleClass = titleClass;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
 }

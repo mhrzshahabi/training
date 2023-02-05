@@ -2867,4 +2867,24 @@ public class TclassService implements ITclassService {
      }
 
     }
+
+    @Override
+    public List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode) {
+
+        List<TclassDTO.PassedClasses> passedClassesDTO = new ArrayList<>();
+        List<?> passedClasses = tclassDAO.getPassedClassesByNationalCode(nationalCode);
+        if (passedClasses != null) {
+            for (Object passedClass : passedClasses) {
+                Object[] data = (Object[]) passedClass;
+                passedClassesDTO.add(new TclassDTO.PassedClasses(
+                        (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
+                        (data[1] != null ? (data[1].toString()) : ""),
+                        (data[2] != null ? (data[2].toString()) : ""),
+                        (data[3] != null ? (data[3].toString()) : ""),
+                        (data[4] != null ? (data[4].toString()) : "")
+                ));
+            }
+        }
+        return passedClassesDTO;
+    }
 }
