@@ -230,4 +230,6 @@ public interface ITclassService {
     String getClassTargetPopulation(Long classId);
 
     boolean checkClassScoring(ScoringClassDto scoringClassDto);
+
+    List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode);
 }

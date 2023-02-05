@@ -212,5 +212,22 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "update tbl_class set calendar_id = null where calendar_id = :calendarId", nativeQuery = true)
     void updateAllSetToNullByEducationalCalenderId(@Param("calendarId") Long id);
 
+    @Query(value = """
+            SELECT
+                tbl_class.id,
+                tbl_class.c_code,
+                tbl_class.c_title_class,
+                tbl_class.c_start_date,
+                tbl_class.c_end_date
+            FROM
+                tbl_student
+                INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
+                INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
+            WHERE
+                tbl_class.c_status IN ( 3, 5 )
+                AND tbl_class_student.scores_state_id IN ( 400, 401 )
+                AND tbl_student.national_code =:nationalCode
+    """, nativeQuery = true)
+    List<?> getPassedClassesByNationalCode(@Param("nationalCode") String nationalCode);
 
 }
