@@ -24,25 +24,12 @@ public class ImportedQuestion {
     private Boolean isEvaluationQuestion;
     @ApiModelProperty
     private boolean dbStatus;
-//        @ApiModelProperty(hidden = true)
-//        private int usageCount;
-//        @ApiModelProperty
-//        private QuestionLevel questionLevel;
+
     @ApiModelProperty
     private List<ImportedQuestionOption> questionOption;
     @ApiModelProperty
     private List<Map<String, String>> files;
-//        @ApiModelProperty
-//        private List<Map<String,String>> option1Files;
-//
-//        @ApiModelProperty
-//        private List<Map<String,String>> option2Files;
-//
-//        @ApiModelProperty
-//        private List<Map<String,String>> option3Files;
-//
-//        @ApiModelProperty
-//        private List<Map<String,String>> option4Files;
+
     @ApiModelProperty
     private Boolean hasAttachment;
     @ApiModelProperty(required = true)
