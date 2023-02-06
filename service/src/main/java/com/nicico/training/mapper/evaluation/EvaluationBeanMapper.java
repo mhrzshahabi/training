@@ -2540,6 +2540,7 @@ public abstract class EvaluationBeanMapper {
                     if (eQuestionType.equals(MULTI_CHOICES)) {
                         ImportedQuestionProtocol   importedQuestionProtocol= getMultiChoice(questionBank1,eQuestionType);
                         importedQuestionProtocol.setIsChild(true);
+                        importedQuestionProtocol.setHasParent(true);
                         importedQuestionProtocol.setChildPriority(importedQuestionProtocol.getChildPriority());
                         //
                         //
@@ -2559,6 +2560,7 @@ public abstract class EvaluationBeanMapper {
                     } else if (eQuestionType.equals(DESCRIPTIVE)) {
                         ImportedQuestionProtocol   importedQuestionProtocol= getDESCRIPTIVE(questionBank1,eQuestionType);
                         importedQuestionProtocol.setIsChild(true);
+                        importedQuestionProtocol.setHasParent(true);
                         importedQuestionProtocol.setChildPriority(importedQuestionProtocol.getChildPriority());
                         //
                         //
