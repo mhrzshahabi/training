@@ -84,5 +84,4 @@ public interface IClassStudentService {
 
     Boolean isAcceptByCertification(Long classStudentId);
 
-    BaseResponse getCertificate(String nationalCode, Long classId);
 }

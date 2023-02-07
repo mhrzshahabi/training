@@ -945,18 +945,28 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("PassedClasses")
     public static class PassedClasses {
-        private Long id;
-        private String code;
-        private String titleClass;
+        private Long classId;
+        private String courseCode;
+        private String courseTitle;
+        private Float courseTheoryDuration;
+        private String termTitle;
+        private String teacherName;
         private String startDate;
         private String endDate;
+        private String scoresState;
+        private Float score;
 
-        public PassedClasses(Long id, String code, String titleClass, String startDate, String endDate) {
-            this.id = id;
-            this.code = code;
-            this.titleClass = titleClass;
+        public PassedClasses(Long classId, String courseCode, String courseTitle, Float courseTheoryDuration, String termTitle, String teacherName, String startDate, String endDate, String scoresState, Float score) {
+            this.classId = classId;
+            this.courseCode = courseCode;
+            this.courseTitle = courseTitle;
+            this.courseTheoryDuration = courseTheoryDuration;
+            this.termTitle = termTitle;
+            this.teacherName = teacherName;
             this.startDate = startDate;
             this.endDate = endDate;
+            this.scoresState = scoresState;
+            this.score = score;
         }
     }
 }

@@ -2880,11 +2880,29 @@ public class TclassService implements ITclassService {
                         (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
                         (data[1] != null ? (data[1].toString()) : ""),
                         (data[2] != null ? (data[2].toString()) : ""),
-                        (data[3] != null ? (data[3].toString()) : ""),
-                        (data[4] != null ? (data[4].toString()) : "")
+                        (data[3] != null ? Float.parseFloat(data[3].toString()) : 0),
+                        (data[4] != null ? (data[4].toString()) : ""),
+                        (data[5] != null ? (data[5].toString()) : ""),
+                        (data[6] != null ? (data[6].toString()) : ""),
+                        (data[7] != null ? (data[7].toString()) : ""),
+                        (data[8] != null ? (data[8].toString()) : ""),
+                        (data[9] != null ? Float.parseFloat(data[9].toString()) : 0)
                 ));
             }
         }
         return passedClassesDTO;
+    }
+
+    @Override
+    public BaseResponse getCertification(String nationalCode, Long classId) {
+        BaseResponse response = new BaseResponse();
+        Long id = tclassDAO.getCertification(nationalCode, classId);
+        if (id != null) {
+            response.setStatus(HttpStatus.OK.value());
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("برای این فراگیر در این کلاس شرایط پایان یافته یا اختتام یافته بودن کلاس و قبول شدن فراگیر در آن برقرار نیست.");
+        }
+        return response;
     }
 }

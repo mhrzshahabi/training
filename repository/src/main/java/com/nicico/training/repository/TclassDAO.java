@@ -215,10 +215,38 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = """
             SELECT
                 tbl_class.id,
-                tbl_class.c_code,
-                tbl_class.c_title_class,
+                tbl_course.c_code,
+                tbl_course.c_title_fa AS course_title,
+                tbl_course.n_theory_duration,
+                tbl_term.c_title_fa AS term_title,
+                concat(
+                    concat(
+                        tbl_personal_info.c_first_name_fa, ' '
+                    ), tbl_personal_info.c_last_name_fa
+                ) AS teacher_name,
                 tbl_class.c_start_date,
-                tbl_class.c_end_date
+                tbl_class.c_end_date,
+                tbl_parameter_value.c_title,
+                tbl_class_student.score
+            FROM
+                tbl_student
+                INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
+                INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
+                INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
+                INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+                INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+                INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+                INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class_student.scores_state_id
+            WHERE
+                tbl_class.c_status IN ( 3, 5 )
+                AND tbl_class_student.scores_state_id IN ( 400, 401 )
+                AND tbl_student.national_code =:nationalCode
+    """, nativeQuery = true)
+    List<?> getPassedClassesByNationalCode(@Param("nationalCode") String nationalCode);
+
+    @Query(value = """
+            SELECT
+                tbl_class.id
             FROM
                 tbl_student
                 INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
@@ -227,7 +255,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
                 tbl_class.c_status IN ( 3, 5 )
                 AND tbl_class_student.scores_state_id IN ( 400, 401 )
                 AND tbl_student.national_code =:nationalCode
+                AND tbl_class.id IN (:classId)
     """, nativeQuery = true)
-    List<?> getPassedClassesByNationalCode(@Param("nationalCode") String nationalCode);
+    Long getCertification(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
 
 }
