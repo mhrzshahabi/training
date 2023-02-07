@@ -1013,6 +1013,7 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     private String getScoreStateAndFailureReason(String scoringMethod, Long scoresStateId, Long failureReasonId, List<Long> failureReasonIds) {
+        if (failureReasonId!=null ){
         if (scoringMethod.equals("1") || scoringMethod.equals("4")) {
             return "روش نمره دهی بصورت (ارزشی) یا (بدون نمره) می باشد";
         }
@@ -1035,6 +1036,7 @@ public class ClassStudentService implements IClassStudentService {
                         """;
         }
         return null;
+        }else return null;
     }
 
     private List<Long> getFailureReasonIds() {

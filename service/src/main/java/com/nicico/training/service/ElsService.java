@@ -95,8 +95,8 @@ public class ElsService implements IElsService {
                 Optional<QuestionBank> questionBank = allByTeacherId.stream()
                         .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
                         .findFirst();
-
-                questionBank.ifPresent(filteredQuestions::add);
+                if (questionBank.isPresent() && (questionBank.get().getIsChild()==null || (questionBank.get().getIsChild()!=null && !questionBank.get().getIsChild())))
+                    filteredQuestions.add(questionBank.get());
             }
         }
         return filteredQuestions;
