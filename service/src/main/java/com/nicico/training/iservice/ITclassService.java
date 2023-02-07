@@ -232,4 +232,6 @@ public interface ITclassService {
     boolean checkClassScoring(ScoringClassDto scoringClassDto);
 
     List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode);
+
+    BaseResponse getCertification(String nationalCode, Long classId);
 }

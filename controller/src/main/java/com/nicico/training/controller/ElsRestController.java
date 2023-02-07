@@ -3163,15 +3163,19 @@ public class ElsRestController {
         return response;
     }
 
-    @GetMapping("/student/certificate/{national-code}/{class-id}")
-    public BaseResponse studentCertificate(HttpServletRequest header,@PathVariable("national-code") String  nationalCode
-            ,@PathVariable("class-id") Long  classId) {
-        return  classStudentService.getCertificate(nationalCode,classId);
-
+    @GetMapping("/student/certification")
+    public BaseResponse getStudentCertification(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam String nationalCode, @RequestParam Long classId) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            return tclassService.getCertification(nationalCode, classId);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return response;
+        }
     }
 
     @GetMapping("/passed-classes/by-nationalCode")
-    public ResponseEntity<List<TclassDTO.PassedClasses>> passedCoursesByNationalCode(@RequestParam String nationalCode, @RequestHeader(name = "X-Auth-Token") String header) {
+    public ResponseEntity<List<TclassDTO.PassedClasses>> passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
             List<TclassDTO.PassedClasses> passedClassesByNationalCode = tclassService.getPassedClassesByNationalCode(nationalCode);
             return new ResponseEntity<>(passedClassesByNationalCode, HttpStatus.OK);
