@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import com.nicico.training.model.Parameter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -49,6 +50,7 @@ public class ParameterValueDTO implements Serializable {
     public static class Info extends ParameterValueDTO {
         private Long id;
         private Integer version;
+        private String parameterTitle;
     }
 
     @Getter

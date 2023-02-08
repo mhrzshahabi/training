@@ -50,6 +50,12 @@ public class ParameterValueRestController {
     }
 
     @Loggable
+    @GetMapping("/listByCode/v3")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListByCodes(@RequestParam MultiValueMap<String, String> criteria, @RequestParam List<String> codes) {
+        return new ResponseEntity<>(iParameterValueService.findAllByParameterCodes(codes), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping("/listByCode/v2/gapCompetenceType/iscList/{type}")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> gapCompetenceType(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String type) {
 

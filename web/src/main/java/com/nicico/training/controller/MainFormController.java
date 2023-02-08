@@ -660,4 +660,9 @@ public class MainFormController {
         return "report/classesWillBeHeldInNextTwoDaysReport";
     }
 
+    @RequestMapping("/weeklySchedule")
+    public String weeklyScheduleDaysReport() {
+        return "report/weeklySchedule";
+    }
+
 }
