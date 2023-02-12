@@ -39,6 +39,27 @@
         allowAdvancedCriteria: true,
     });
 
+    let RestDataSource_Result_WS = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "sessionDate"},
+            {name: "sessionTime"},
+            {name: "classTitle"},
+            {name: "classCode"},
+            {name: "teachingMethod"},
+            {name: "fullName"},
+            {
+                name: "teacherType", valueMap: {
+                    "true": "داخلی",
+                    "false": "بیرونی"
+                }
+            },
+            {name: "teacherMobile"},
+        ],
+        allowAdvancedCriteria: true,
+        fetchDataURL: sessionServiceUrl + "weekly-meeting-schedule"
+    });
+
     let DynamicForm_WS = isc.DynamicForm.create({
         align: "right",
         titleAlign: "center",
@@ -158,7 +179,7 @@
             },
             {
                 name: "holdingClassTypeId",
-                title: "<spring:message code="course_eruntype"/>:",
+                title: "<spring:message code="course_eruntype"/>",
                 type: "SelectItem",
                 multiple: true,
                 optionDataSource: RestDataSource_class_Holding_Class_Type_List,
@@ -178,7 +199,6 @@
                     debugger
 
                     if (value === null) {
-                        form.getItem("teachingMethodId").setOptionDataSource(null);
                         form.getItem("teachingMethodId").setValue(null);
                         form.getItem("teachingMethodId").disable()
                         return;
@@ -216,6 +236,9 @@
                     sortField: 0,
                     showFilterEditor: false
                 },
+                focus: function () {
+                    this.fetchData()
+                }
             },
         ]
     });
@@ -407,7 +430,7 @@
         filterOnKeypress: false,
         showFilterEditor: true,
         gridComponents: ["filterEditor", "header", "body"],
-        // dataSource: RestDataSource_Result_WS,
+        dataSource: RestDataSource_Result_WS,
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {

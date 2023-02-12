@@ -660,9 +660,9 @@ public class MainFormController {
         return "report/classesWillBeHeldInNextTwoDaysReport";
     }
 
-    @RequestMapping("/weeklySchedule")
+    @RequestMapping("/weeklyMeetingSchedule")
     public String weeklyScheduleDaysReport() {
-        return "report/weeklySchedule";
+        return "report/weeklyMeetingSchedule";
     }
 
 }
