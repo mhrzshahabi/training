@@ -889,13 +889,7 @@
                         isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/pre-view-info/" + record.id, "GET", null, function (resp) {
                             if (resp.httpResponseCode === 200) {
                                 let data = JSON.parse(resp.httpResponseText);
-                                if (record.questionType.title === "تشریحی") {
-                                    showDescriptiveQuestionPreView(data);
-                                } else if (record.questionType.title === "چند گزینه ای") {
-                                    showMultipleChoiceQuestionPreView(data);
-                                } else if (record.questionType.title === "سوالات گروهی") {
-                                    showGroupQuestionPreView(data);
-                                }
+                                directionDefinition(record, data);
                             }
                         }));
                     }
@@ -2535,22 +2529,23 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         membersMargin: 2,
         descQuestion: null,
         questionBankId: null,
+        style: null,
         initWidget: function () {
 
             this.Super("initWidget", arguments);
             let This = this;
             this.addMember(
                 isc.DynamicForm.create({
-                    colWidths: ["15%", "85%"],
                     width: "100%",
                     height: "100%",
-                    numCols: "2",
+                    numCols: 1,
                     autoFocus: "true",
                     cellPadding: 5,
                     fields: [
                         {
                             name: "question",
-                            title: "",
+                            colSpan: 1,
+                            showTitle: false,
                             type: "staticText"
                         },
                         {
@@ -2568,6 +2563,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 })
             );
             this.getMembers().last().setValue("question", this.descQuestion);
+            this.getMembers().last().getItem("question").setCellStyle(this.style);
+            this.getMembers().last().getItem("attachment").setCellStyle(this.style);
         }
     });
     isc.defineClass("MultipleChoiceAnswer", isc.VLayout).addProperties({
@@ -2587,22 +2584,23 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         option4Hidden: null,
         option4: null,
         questionBankId: null,
+        style: null,
         initWidget: function () {
 
             this.Super("initWidget", arguments);
             let This = this;
             this.addMember(
                 isc.DynamicForm.create({
-                    colWidths: ["15%", "85%"],
                     width: "100%",
                     height: "100%",
-                    numCols: "2",
+                    numCols: 1,
                     autoFocus: "true",
                     cellPadding: 5,
                     fields: [
                         {
                             name: "question",
-                            title: "",
+                            colSpan: 1,
+                            showTitle: false,
                             type: "staticText"
                         },
                         {
@@ -2620,34 +2618,35 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 })
             );
             this.getMembers().last().setValue("question", this.multipleChoiceQuestion);
+            this.getMembers().last().getItem("question").setCellStyle(this.style);
+            this.getMembers().last().getItem("attachment").setCellStyle(this.style);
             this.addMember(
                 isc.DynamicForm.create({
-                    colWidths: ["10%", "90%"],
                     width: "100%",
                     height: "100%",
-                    numCols: "2",
+                    numCols: "1",
                     autoFocus: "true",
                     cellPadding: 5,
                     fields: [
                         {
                             name: "option1",
-                            title: "گزینه الف: ",
+                            showTitle: false,
                             type: "staticText"
                         },
                         {
                             name: "option2",
-                            title: "گزینه ب: ",
+                            showTitle: false,
                             type: "staticText"
                         },
                         {
                             name: "option3",
-                            title: "گزینه ج: ",
+                            showTitle: false,
                             type: "staticText",
                             hidden: This.option3Hidden
                         },
                         {
                             name: "option4",
-                            title: "گزینه د: ",
+                            showTitle: false,
                             type: "staticText",
                             hidden: This.option4Hidden
                         }
@@ -2658,10 +2657,97 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
             this.getMembers().last().setValue("option2", this.option2);
             this.getMembers().last().setValue("option3", this.option3);
             this.getMembers().last().setValue("option4", this.option4);
+            this.getMembers().last().getItem("option1").setCellStyle(this.style);
+            this.getMembers().last().getItem("option2").setCellStyle(this.style);
+            this.getMembers().last().getItem("option3").setCellStyle(this.style);
+            this.getMembers().last().getItem("option4").setCellStyle(this.style);
         }
     });
 
-    function showDescriptiveQuestionPreView(data) {
+    function directionDefinition(record, data) {
+
+        let styleName = null;
+        let DynamicForm_Direction = isc.DynamicForm.create({
+            overflow: "hidden",
+            wrapItemTitles: true,
+            numCols: 4,
+            colWidths: ["10%", "25%", "10%", "25%"],
+            width: "100%",
+            height: "80%",
+            fields: [
+                {
+                    name: "direction",
+                    title: "تعیین جهت نمایش سوالات",
+                    type: "radioGroup",
+                    vertical: false,
+                    colSpan: 4,
+                    defaultValue: 1,
+                    fillHorizontalSpace: true,
+                    valueMap: {
+                        "1": "راست چین (سوالات فارسی)",
+                        "2": "چپ چین (سوالات غیر فارسی)",
+                    },
+                    changed: function (form, item, value) {
+                        if (value === "1") {
+                            styleName = 'MSG_contentEditor';
+                        } else if (value === "2") {
+                            styleName = 'textAreaRTL';
+                        }
+                    }
+                }
+            ]
+        });
+        let Confirm_Direction = isc.IButtonSave.create({
+            top: 260,
+            layoutMargin: 5,
+            membersMargin: 5,
+            title: "ادامه",
+            click: function () {
+                Window_Direction.close();
+                if (record.questionType.title === "تشریحی") {
+                    showDescriptiveQuestionPreView(data, styleName);
+                } else if (record.questionType.title === "چند گزینه ای") {
+                    showMultipleChoiceQuestionPreView(data, styleName);
+                } else if (record.questionType.title === "سوالات گروهی") {
+                    showGroupQuestionPreView(data, styleName);
+                }
+            }
+        });
+        let Cancel_Direction = isc.IButtonCancel.create({
+            layoutMargin: 5,
+            membersMargin: 5,
+            width: 120,
+            click: function () {
+                Window_Direction.close();
+            }
+        });
+        let HLayout_Direction = isc.HLayout.create({
+            layoutMargin: 5,
+            membersMargin: 15,
+            width: "100%",
+            height: "20%",
+            align: "center",
+            members: [
+                Confirm_Direction,
+                Cancel_Direction
+            ]
+        });
+        let Window_Direction = isc.Window.create({
+            title: "تعیین جهت نمایش",
+            autoSize: false,
+            width: "45%",
+            height: "20%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            items: [
+                DynamicForm_Direction,
+                HLayout_Direction
+            ]
+        });
+        Window_Direction.show();
+    }
+    function showDescriptiveQuestionPreView(data, styleName) {
 
         let Label_Info_Question_PreView = isc.Label.create({
             border: "0px solid black",
@@ -2684,7 +2770,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         Label_Info_Question_PreView.setContents("سوال تشریحی");
         let VLayout_Question_PreView = isc.DescriptiveQuestion.create({
             descQuestion: data.question,
-            questionBankId: data.id
+            questionBankId: data.id,
+            style: styleName
         });
         let VLayout_Main = isc.VLayout.create({
             width: "100%",
@@ -2701,7 +2788,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         Window_Question_PreView.show();
     }
 
-    function showMultipleChoiceQuestionPreView(data) {
+    function showMultipleChoiceQuestionPreView(data, styleName) {
 
         let Label_Info_Question_PreView = isc.Label.create({
             border: "0px solid black",
@@ -2724,13 +2811,14 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         Label_Info_Question_PreView.setContents("سوال چند گزینه ای");
         let VLayout_Question_PreView = isc.MultipleChoiceAnswer.create({
             multipleChoiceQuestion: data.question,
-            option1: data.option1,
-            option2: data.option2,
+            option1: (styleName !== 'textAreaRTL' ? "گزینه الف: " : "a: ") + data.option1,
+            option2: (styleName !== 'textAreaRTL' ? "گزینه ب: " : "b: ") + data.option2,
             option3Hidden: data.option3 === null || data.option3 === undefined,
-            option3: data.option3,
+            option3: (styleName !== 'textAreaRTL' ? "گزینه ج: " : "c: ") + data.option3,
             option4Hidden: data.option4 === null || data.option4 === undefined,
-            option4: data.option4,
-            questionBankId: data.id
+            option4: (styleName !== 'textAreaRTL' ? "گزینه د: " : "d: ") + data.option4,
+            questionBankId: data.id,
+            style: styleName
         });
         let VLayout_Main = isc.VLayout.create({
             width: "100%",
@@ -2747,7 +2835,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         Window_Question_PreView.show();
     }
 
-    function showGroupQuestionPreView(data) {
+    function showGroupQuestionPreView(data, styleName) {
 
         let Label_Info_Question_PreView = isc.Label.create({
             border: "0px solid black",
@@ -2769,8 +2857,9 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
         Label_Info_Question_PreView.setContents("سوال گروهی");
         let VLayout_Question_PreView = isc.DescriptiveQuestion.create({
-            descQuestion: "باتوجه به متن به سوالات پاسخ دهید: " + data.question,
-            questionBankId: data.id
+            descQuestion: "باتوجه به متن به سوالات پاسخ دهید" + "<br/>" + data.question,
+            questionBankId: data.id,
+            style: styleName
         });
         let VLayout_Main = isc.VLayout.create({
             width: "100%",
@@ -2791,20 +2880,22 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                     let VLayout_Descriptive = isc.DescriptiveQuestion.create({
                         descQuestion: item.question,
-                        questionBankId: item.id
+                        questionBankId: item.id,
+                        style: styleName
                     });
                     VLayout_Main.addMember(VLayout_Descriptive);
                 } else {
 
                     let VLayout_MultipleChoice = isc.MultipleChoiceAnswer.create({
                         multipleChoiceQuestion: item.question,
-                        option1: item.option1,
-                        option2: item.option2,
+                        option1: (styleName !== 'textAreaRTL' ? "گزینه الف: " : "a: ") + item.option1,
+                        option2: (styleName !== 'textAreaRTL' ? "گزینه ب: " : "b: ") + item.option2,
                         option3Hidden: item.option3 === null || item.option3 === undefined,
-                        option3: item.option3,
+                        option3: (styleName !== 'textAreaRTL' ? "گزینه ج: " : "c: ") + item.option3,
                         option4Hidden: item.option4 === null || item.option4 === undefined,
-                        option4: item.option4,
-                        questionBankId: item.id
+                        option4: (styleName !== 'textAreaRTL' ? "گزینه د: " : "d: ") + item.option4,
+                        questionBankId: item.id,
+                        style: styleName
                     });
                     VLayout_Main.addMember(VLayout_MultipleChoice);
                 }

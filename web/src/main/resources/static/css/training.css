@@ -533,3 +533,7 @@ left: 0 !important;
 }.files {
     color: #25d000;
 }
+
+.staticTextItemOverRTL {
+    font-size: 12px !important;
+}
