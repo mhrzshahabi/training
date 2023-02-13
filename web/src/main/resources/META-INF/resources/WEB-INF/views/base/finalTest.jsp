@@ -173,6 +173,12 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
+            isc.ToolStripButton.create({
+                title: "zaza",
+                click: function () {
+                    showCopyForm_finalTest2();
+                }
+            }),
                   DynamicForm_Filter_exam,
             <sec:authorize access="hasAuthority('FinalTest_R')">
             isc.ToolStripButtonRefresh.create({
@@ -2393,6 +2399,13 @@ if (data.tclassId !== undefined && data.tclassId !== null){
             isCopyForm = true;
             FinalTestWin_finalTest.show();
         }
+    }
+    function showCopyForm_finalTest2() {
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/student/certification", "GET",null, function (resp) {
+
+
+        }));
+
     }
 
     function saveCopyTest_finalTest() {

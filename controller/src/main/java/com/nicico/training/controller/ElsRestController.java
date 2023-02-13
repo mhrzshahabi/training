@@ -2,7 +2,9 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.client.minio.MinIoClient;
@@ -43,6 +45,7 @@ import dto.exam.ExamNotSentToElsDTO;
 import dto.exam.ExamStudentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -97,6 +100,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -109,7 +113,7 @@ import static com.nicico.training.controller.util.AppUtils.getPrefix;
 @RequestMapping("/anonymous/els")
 @RequiredArgsConstructor
 public class ElsRestController {
-
+    private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final PersonBeanMapper personBeanMapper;
@@ -3164,14 +3168,33 @@ public class ElsRestController {
     }
 
     @GetMapping("/student/certification")
-    public BaseResponse getStudentCertification(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam String nationalCode, @RequestParam Long classId) {
-        BaseResponse response = new BaseResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-            return tclassService.getCertification(nationalCode, classId);
-        } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return response;
-        }
+    public void  getStudentCertification(HttpServletResponse response) throws JRException, SQLException, IOException {
+//        BaseResponse response = new BaseResponse();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+//            return tclassService.getCertification(nationalCode, classId);
+//        } else {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            return response;
+//        }
+        Map<String, Object> params = new HashMap<>();
+ //         reportUtil.export("/reports/Blank_A4_Landscape.jasper", params, response);
+//         String data = "{" + "\"content\": " + "questions" + "}";
+//        params.put("todayDate", "dateUtil.todayDate()");
+//        params.put("code","1");
+//        params.put("teacher","1");
+//        params.put("startDate","1" );
+//        params.put("titleClass","1");
+        params.put("nationalCode","3720228851");
+        params.put("course","کامپیوتر");
+        params.put("from","1399/01/01");
+        params.put("to","1399/01/02");
+        params.put("date","1399/01/02");
+        params.put("duration","32");
+        params.put("fullName","مجید قدیری");
+        params.put("letterNum","۱۲۳۴۵");
+        params.put("qrCodeData","آقااااااا بخدا این گواهی نامه درستههه");
+           params.put(ConstantVARs.REPORT_TYPE,"PDF");
+        reportUtil.export("/reports/Certificate.jasper", params, response);
     }
 
     @GetMapping("/passed-classes/by-nationalCode")
