@@ -3165,11 +3165,8 @@ public class ElsRestController {
     }
 
     @GetMapping("/student/certification")
-    public void   getStudentCertification(@RequestHeader(name = "X-Auth-Token") String header,HttpServletResponse response,@RequestParam String nationalCode,@RequestParam Long classId) throws JRException, SQLException, IOException {
-//         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-             tclassService.getCertification(nationalCode, classId,response);
-//        }
-
+    public void   getStudentCertification(HttpServletResponse response,@RequestParam String nationalCode,@RequestParam Long classId) throws JRException, SQLException, IOException {
+              tclassService.getCertification(nationalCode, classId,response);
     }
 
     @GetMapping("/passed-classes/by-nationalCode")

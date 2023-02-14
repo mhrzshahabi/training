@@ -2917,10 +2917,10 @@ public class TclassService implements ITclassService {
             String name = item[6] != null ? item[6].toString() : "";
             String lastName = item[5] != null ? item[5].toString() : "";
             String code = item[7] != null ? item[7].toString() : "";
-            String fullName = name.equals(lastName) ? name + " " + lastName : name;
+            String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             StringBuilder qrData = new StringBuilder();
-            qrData.append("گواهی می شود ").append(fullName).append("با کد ملی ").append(nationalCode).append("دوره آموزشی ")
-                    .append(course).append("که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
+            qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append(nationalCode).append(" دوره آموزشی ")
+                    .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" ساعت ").append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
             params.put("nationalCode", nationalCode);
             params.put("course", changeTextToSomeSize(course, 15));
             params.put("from", from);
@@ -2929,7 +2929,7 @@ public class TclassService implements ITclassService {
             params.put("duration", duration);
             params.put("fullName", fullName);
             params.put("letterNum", nationalCode + code);
-            params.put("qrCodeData", qrData);
+            params.put("qrCodeData", qrData.toString());
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
