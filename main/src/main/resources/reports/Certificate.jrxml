@@ -29,14 +29,14 @@
 			<textField>
 				<reportElement x="110" y="80" width="100" height="30" uuid="8a12e18e-2f9a-4c53-80c9-b6f0176df73c"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="110" y="53" width="100" height="30" uuid="a52316b5-ee2f-4536-91bc-cf69a3b8d234"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{letterNum}]]></textFieldExpression>
 			</textField>
@@ -60,42 +60,42 @@
 			<textField>
 				<reportElement x="497" y="77" width="100" height="30" uuid="90e6885f-76cd-428d-afc6-716bdec85735"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nationalCode}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="240" y="77" width="100" height="30" uuid="a00715f1-d45b-464c-8707-cb63317619ae"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{course}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="510" y="107" width="100" height="30" uuid="9c743c13-1617-4506-bfb7-04311a29a356"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{from}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="380" y="107" width="100" height="30" uuid="1eda3212-d95d-4078-bc82-537f00ba935f"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{to}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="268" y="107" width="100" height="30" uuid="08e376fb-230f-41aa-b797-ee7057fc84cb"/>
 				<textElement>
-					<font fontName="B Nazanin"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{duration}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="367" y="22" width="100" height="30" uuid="f1bcb11d-9643-4f84-a8df-76d0dd9af833"/>
 				<textElement>
-					<font fontName="B Nazanin" size="18" isBold="true"/>
+					<font fontName="Shabnam-FD" size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fullName}]]></textFieldExpression>
 			</textField>
