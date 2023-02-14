@@ -262,7 +262,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
      WHERE
          tbl_class.c_status IN ( 3, 5 )
          AND tbl_class_student.scores_state_id IN ( 400, 401 )
-         AND tbl_student.national_code = :nationalcode
+         AND tbl_student.national_code = :nationalCode
           AND tbl_class.id IN (:classId)
           ORDER BY tbl_class.id
     """, nativeQuery = true)
