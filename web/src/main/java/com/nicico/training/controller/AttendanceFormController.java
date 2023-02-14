@@ -129,6 +129,7 @@ public class AttendanceFormController {
                                @RequestParam(value = "list") String list) throws JRException, IOException, SQLException {
         final Map<String, Object> params = new HashMap<>();
         String data = "{" + "\"content\": " + list + "}";
+
         params.put("nationalCode","3720228851");
         params.put("course","کامپیوتر");
         params.put("from","1399/01/01");
