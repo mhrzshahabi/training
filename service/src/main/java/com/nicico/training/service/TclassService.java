@@ -2922,13 +2922,13 @@ public class TclassService implements ITclassService {
             qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append(nationalCode).append(" دوره آموزشی ")
                     .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" ساعت ").append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
             params.put("nationalCode", nationalCode);
-            params.put("course", changeTextToSomeSize(course, 15));
+            params.put("course", changeTextToSomeSize(course, 50));
             params.put("from", from);
             params.put("to", to);
             params.put("date", DateUtil.todayDate());
             params.put("duration", duration);
             params.put("fullName", fullName);
-            params.put("letterNum", nationalCode + code);
+            params.put("letterNum", nationalCode+"-"+ code);
             params.put("qrCodeData", qrData.toString());
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
