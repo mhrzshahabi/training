@@ -3166,19 +3166,19 @@ public class ElsRestController {
 
     @GetMapping("/student/certification")
     public void   getStudentCertification(@RequestHeader(name = "X-Auth-Token") String header,HttpServletResponse response,@RequestParam String nationalCode,@RequestParam Long classId) throws JRException, SQLException, IOException {
-         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+//         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
              tclassService.getCertification(nationalCode, classId,response);
-        }
+//        }
 
     }
 
     @GetMapping("/passed-classes/by-nationalCode")
     public ResponseEntity<List<TclassDTO.PassedClasses>> passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam String nationalCode) {
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
             List<TclassDTO.PassedClasses> passedClassesByNationalCode = tclassService.getPassedClassesByNationalCode(nationalCode);
             return new ResponseEntity<>(passedClassesByNationalCode, HttpStatus.OK);
-//        } else
-//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
 }
