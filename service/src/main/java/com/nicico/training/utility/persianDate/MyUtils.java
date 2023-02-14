@@ -565,4 +565,12 @@ public class MyUtils {
             return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
     }
 
+    public static String changeTextToSomeSize(String a,int size){
+        if (a.length() < size) {
+            return a;
+        } else {
+            return a.substring(0, size);
+        }
+    }
+
 }

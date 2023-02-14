@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -129,20 +128,10 @@ public class AttendanceFormController {
                                @RequestParam(value = "list") String list) throws JRException, IOException, SQLException {
         final Map<String, Object> params = new HashMap<>();
         String data = "{" + "\"content\": " + list + "}";
-
-        params.put("nationalCode","3720228851");
-        params.put("course","کامپیوتر");
-        params.put("from","1399/01/01");
-        params.put("to","1399/01/02");
-        params.put("date","1399/01/02");
-        params.put("duration","32");
-        params.put("fullName","مجید قدیری");
-        params.put("letterNum","۱۲۳۴۵");
-        params.put("qrCodeData","آقااااااا بخدا این گواهی نامه درستههه");
-        params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+        params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-        reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/attendanceFullClear.jasper", params, jsonDataSource, response);
     }
 
 }

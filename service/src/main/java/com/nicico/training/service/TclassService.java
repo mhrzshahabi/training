@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -8,6 +9,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
@@ -23,6 +25,8 @@ import com.nicico.training.utility.persianDate.MyUtils;
 import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
@@ -48,8 +52,12 @@ import response.tclass.ElsSessionResponse;
 import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -57,7 +65,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.utility.persianDate.MyUtils.*;
+import static com.nicico.training.utility.persianDate.MyUtils.changeTextToSomeSize;
+import static com.nicico.training.utility.persianDate.MyUtils.getPrograms2;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Slf4j
@@ -111,6 +120,7 @@ public class TclassService implements ITclassService {
     private final QuestionnaireDAO questionnaireDAO;
     private final IParameterValueService iParameterValueService;
     private final IViewReactionEvaluationFormulaReportService viewReactionEvaluationFormulaReportService;
+    private final ReportUtil reportUtil;
 
 
     @Override
@@ -208,10 +218,9 @@ public class TclassService implements ITclassService {
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         Long classOldSupervisor = tclass.getSupervisorId();
         Long classOldTeacher = tclass.getTeacherId();
-        if (tclass.getClassStatus().equals("4")){
+        if (tclass.getClassStatus().equals("4")) {
             throw new TrainingException(TrainingException.ErrorType.Forbidden);
-        }
-        else if (!tclass.getTargetPopulationTypeId().equals(request.getTargetPopulationTypeId())){
+        } else if (!tclass.getTargetPopulationTypeId().equals(request.getTargetPopulationTypeId())) {
             throw new TrainingException(TrainingException.ErrorType.Forbidden);
         } else {
             Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
@@ -282,7 +291,7 @@ public class TclassService implements ITclassService {
 
     @Transactional
     public BaseResponse delete(Long id) throws IOException {
-        BaseResponse response=new BaseResponse();
+        BaseResponse response = new BaseResponse();
         Optional<Tclass> byId = tclassDAO.findById(id);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<Attendance> attendances = attendanceDAO.findBySessionIn(tclass.getClassSessions());
@@ -292,26 +301,30 @@ public class TclassService implements ITclassService {
 //                    resp.sendError(409, messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
                     response.setMessage(messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
                     response.setStatus(409);
-                    return response;                }
+                    return response;
+                }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
 //            resp.sendError(409, messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
             response.setMessage(messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
             response.setStatus(409);
-            return response;        }
+            return response;
+        }
         if (!tclass.getClassStudents().isEmpty()) {
 //            resp.sendError(409, messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
             response.setMessage(messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
             response.setStatus(409);
-            return response;        }
-        List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
+            return response;
+        }
+        List<ClassCheckList> classCheckLists = classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
 //            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
             response.setMessage(messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
             response.setStatus(409);
-            return response;        }
+            return response;
+        }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
@@ -319,13 +332,14 @@ public class TclassService implements ITclassService {
 //            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
             response.setMessage(messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
             response.setStatus(409);
-            return response;        }
+            return response;
+        }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
 //            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
-           response.setMessage(messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
             response.setStatus(409);
             return response;
         }
@@ -368,7 +382,7 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     public List<StudentDTO.ReactionNotFilled> checkEvaluationsNotFilledForEndingClass(Long classId) {
         boolean isScoreDependent = (boolean) getScoreDependency().get("isScoreDependent"); // ثبت نمره وابسته به ارزیابی است؟
-        if (isScoreDependent){
+        if (isScoreDependent) {
             Tclass tClass = getTClass(classId);
             List<Student> notFilledStudents;
             TotalResponse<ParameterValueDTO.Info> classConfigParameterValues = parameterService.getByCode("ClassConfig");
@@ -376,7 +390,8 @@ public class TclassService implements ITclassService {
 
                 notFilledStudents = tClass.getClassStudents().stream().filter(item -> item.getEvaluationStatusReaction() == null || item.getEvaluationStatusReaction() == 0 || item.getEvaluationStatusReaction() == 1).map(ClassStudent::getStudent).collect(Collectors.toList());
                 if (notFilledStudents.size() != 0) {
-                    return modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {}.getType());
+                    return modelMapper.map(notFilledStudents, new TypeToken<List<StudentDTO.ReactionNotFilled>>() {
+                    }.getType());
                 }
             }
         }
@@ -579,7 +594,8 @@ public class TclassService implements ITclassService {
         final Tclass tclass = tclassDAO.findById(classId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
         tclass.setId(classId);
         tclass.setStudentOnlineEvalStatus(state);
-        tclassDAO.save(tclass);    }
+        tclassDAO.save(tclass);
+    }
 
     @Override
     public void changeOnlineExecutionEvalStudentStatus(Long classId, boolean state) {
@@ -593,25 +609,24 @@ public class TclassService implements ITclassService {
     //state 5 = ekhtemam
     @Transactional
     @Override
-    public BaseResponse changeClassStatus(Long classId, String state,String reason){
-        BaseResponse response=new BaseResponse();
-        Tclass tclass=new Tclass();
-        Optional<LockClass> lockClassOptional=lockClassDAO.findByClassId(classId);
+    public BaseResponse changeClassStatus(Long classId, String state, String reason) {
+        BaseResponse response = new BaseResponse();
+        Tclass tclass = new Tclass();
+        Optional<LockClass> lockClassOptional = lockClassDAO.findByClassId(classId);
         Optional<Tclass> optionalTClass = tclassDAO.findById(classId);
-        if (optionalTClass.isPresent()){
-            tclass =optionalTClass.get();
+        if (optionalTClass.isPresent()) {
+            tclass = optionalTClass.get();
         }
 
         String classStatus = get(classId).getClassStatus();
-        switch (state){
-            case "lock":{
+        switch (state) {
+            case "lock": {
                 if (classStatus.equals(ClassStatus.finish.getId().toString())) {
                     if (lockClassOptional.isPresent()) {
                         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                         response.setMessage("کلاس مورد نظر قبلا در اختتام بوده است");
-                    }
-                    else{
-                        LockClass lockClass=new LockClass();
+                    } else {
+                        LockClass lockClass = new LockClass();
                         lockClass.setClassId(classId);
                         lockClass.setReason(reason);
                         lockClass.setClassCode(get(classId).getCode());
@@ -622,14 +637,13 @@ public class TclassService implements ITclassService {
 //                        tclassDAO.changeClassStatus(classId, ClassStatus.lock.getId().toString());
                         response.setStatus(200);
                     }
-                } else
-                {
+                } else {
                     response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                     response.setMessage("کلاس مورد نظر در وضعیت پایان یافته نیست");
                 }
                 return response;
             }
-            case "unLock":{
+            case "unLock": {
                 if (classStatus.equals(ClassStatus.lock.getId().toString())) {
                     if (lockClassOptional.isPresent()) {
                         lockClassDAO.deleteById(lockClassOptional.get().getId());
@@ -637,13 +651,11 @@ public class TclassService implements ITclassService {
                         tclassDAO.save(tclass);
 //                        tclassDAO.changeClassStatus(classId, ClassStatus.finish.getId().toString());
                         response.setStatus(200);
-                    }
-                    else{
+                    } else {
                         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                         response.setMessage("کلاس مورد نظر در لیست کلاس های اختتام نیست");
                     }
-                } else
-                {
+                } else {
                     response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                     response.setMessage("کلاس مورد نظر در  وضعیت اختتام نیست");
                 }
@@ -921,22 +933,21 @@ public class TclassService implements ITclassService {
         Double studentsGradeToFacility = null;
         Double percentOfFilledExecutionEvaluationForms = null;
         Integer studentCount = null;
-       String executionEvaluationStatus=null;
-        Double z9=null;
-        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
+        String executionEvaluationStatus = null;
+        Double z9 = null;
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions = new ArrayList<>();
 
 
-
-        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
+        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos = new ArrayList<>();
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
 
         TclassDTO.ExecutionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ExecutionEvaluationResult.class);
-   ExecutionResultDTO executionResultDTO = calculateStudentsExecutionEvaluationResult(classStudents);
-        Map<String, Double> executionEvaluationResultMap=executionResultDTO.getStringDoubleMap();
-        List<Long> evaluationIds=executionResultDTO.getEvaluationIds();
-        if(executionEvaluationResultMap!=null) {
+        ExecutionResultDTO executionResultDTO = calculateStudentsExecutionEvaluationResult(classStudents);
+        Map<String, Double> executionEvaluationResultMap = executionResultDTO.getStringDoubleMap();
+        List<Long> evaluationIds = executionResultDTO.getEvaluationIds();
+        if (executionEvaluationResultMap != null) {
             if (executionEvaluationResultMap.get("studentsGradeToTeacher") != null)
                 studentsGradeToTeacher = (Double) executionEvaluationResultMap.get("studentsGradeToTeacher");
             if (executionEvaluationResultMap.get("studentsGradeToGoals") != null)
@@ -946,43 +957,43 @@ public class TclassService implements ITclassService {
             percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
         }
         studentCount = getStudentCount(classStudents);
-         if(evaluationIds!=null) {
-             List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers=new ArrayList<>();
-             evaluationIds.stream().forEach(evaluationId->{
-                 Optional<Evaluation> evaluation = evaluationDAO.findById(evaluationId);
+        if (evaluationIds != null) {
+            List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers = new ArrayList<>();
+            evaluationIds.stream().forEach(evaluationId -> {
+                Optional<Evaluation> evaluation = evaluationDAO.findById(evaluationId);
 
-                 if (evaluation.isPresent()) {
-                     answers.addAll( evaluationService.getEvaluationFormAnswerDetail(evaluation.get()));
+                if (evaluation.isPresent()) {
+                    answers.addAll(evaluationService.getEvaluationFormAnswerDetail(evaluation.get()));
 
 
-                 }
-             });
-             if (answers != null && answers.size() > 0) {
-                 executionInfos = getQuestionnaireInfo(answers);
-             }
-             if(evaluationIds!=null && evaluationIds.size()>0) {
-                 Optional<Evaluation> optionalEvaluation = evaluationDAO.findById(evaluationIds.get(0));
-                 Optional<Questionnaire> questionnaire = questionnaireDAO.findById(optionalEvaluation.get().getQuestionnaireId());
-                 if (questionnaire.isPresent()) {
-                     evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
-                 }
-             }
-         }
-        if(executionInfos!=null )
-          evaluationResult.setQuestionnaireQuestions(executionInfos);
+                }
+            });
+            if (answers != null && answers.size() > 0) {
+                executionInfos = getQuestionnaireInfo(answers);
+            }
+            if (evaluationIds != null && evaluationIds.size() > 0) {
+                Optional<Evaluation> optionalEvaluation = evaluationDAO.findById(evaluationIds.get(0));
+                Optional<Questionnaire> questionnaire = questionnaireDAO.findById(optionalEvaluation.get().getQuestionnaireId());
+                if (questionnaire.isPresent()) {
+                    evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
+                }
+            }
+        }
+        if (executionInfos != null)
+            evaluationResult.setQuestionnaireQuestions(executionInfos);
 
         Map<String, Object> FEEGradeResult = getFEEGrade(studentsGradeToTeacher,
                 studentsGradeToGoals,
                 studentsGradeToFacility,
-               percentOfFilledExecutionEvaluationForms);
+                percentOfFilledExecutionEvaluationForms);
 
 
         if (FEEGradeResult.get("FEEGrade") != null)
             FEEGrade = (Double) FEEGradeResult.get("FEEGrade");
         if (FEEGradeResult.get("FEEPass") != null)
             FEEPass = (Boolean) FEEGradeResult.get("FEEPass");
-         if(FEEGradeResult.get("z9")!=null)
-             z9=(Double) FEEGradeResult.get("z9");
+        if (FEEGradeResult.get("z9") != null)
+            z9 = (Double) FEEGradeResult.get("z9");
 
         if (studentCount != null)
             evaluationResult.setStudentCount(studentCount);
@@ -1006,29 +1017,27 @@ public class TclassService implements ITclassService {
 
         if (studentsGradeToTeacher != null)
             evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
-        if(z9!=null)
+        if (z9 != null)
             evaluationResult.setZ9(z9);
 
-        if(  FEEPass!=null && FEEPass.equals(true)){
-            if( evaluationResult.getFEEGrade()!=null && evaluationResult.getFEEGrade()>=z9){
-               evaluationResult.setExecutionEvaluationStatus("تایید");
-               if(z9!=null) {
-                   evaluationResult.setDiffer((double) Math.round((FEEGrade-z9)* 100) / 100);
-               }else{
-                   evaluationResult.setDiffer(FEEGrade);
-               }
+        if (FEEPass != null && FEEPass.equals(true)) {
+            if (evaluationResult.getFEEGrade() != null && evaluationResult.getFEEGrade() >= z9) {
+                evaluationResult.setExecutionEvaluationStatus("تایید");
+                if (z9 != null) {
+                    evaluationResult.setDiffer((double) Math.round((FEEGrade - z9) * 100) / 100);
+                } else {
+                    evaluationResult.setDiffer(FEEGrade);
+                }
 
 
-            }else{
+            } else {
                 evaluationResult.setExecutionEvaluationStatus("عدم تایید");
                 evaluationResult.setDiffer(0.00);
             }
-        }else {
+        } else {
             evaluationResult.setExecutionEvaluationStatus("عدم تایید(به حدنصاب نرسیدن پرسشنامه ها)");
             evaluationResult.setDiffer(0.00);
         }
-
-
 
 
         return evaluationResult;
@@ -1218,7 +1227,7 @@ public class TclassService implements ITclassService {
                         classStudent.getTclass().getId(), 504L, 154L);
                 Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
                 if (evaluation != null) {
-                    completeNum ++;
+                    completeNum++;
                     int studentsGradeToTeacher_cl = 0;
                     int studentsGradeToFacility_cl = 0;
                     int studentsGradeToGoals_cl = 0;
@@ -1287,13 +1296,14 @@ public class TclassService implements ITclassService {
         result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
         result.put("studentsGradeToFacility", studentsGradeToFacility_l);
         result.put("studentsGradeToGoals", studentsGradeToGoals_l);
-        result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
+        result.put("evaluatedPercent", (completeNum / Double.valueOf(classStudents.size())) * 100);
         result.put("answeredStudentsNum", Double.valueOf(completeNum));
         result.put("allStudentsNum", Double.valueOf(classStudents.size()));
         return result;
     }
+
     @Transactional
-    public ExecutionResultDTO calculateStudentsExecutionEvaluationResult( Set<ClassStudent> classStudents) {
+    public ExecutionResultDTO calculateStudentsExecutionEvaluationResult(Set<ClassStudent> classStudents) {
 //
         Double studentsGradeToTeacher_l = null;
         Double studentsGradeToFacility_l = null;
@@ -1303,11 +1313,11 @@ public class TclassService implements ITclassService {
         Integer studentsGradeToGoals_count = null;
         Map<String, Double> result = new HashMap<>();
         Double completeNum = 0.0;
-        ExecutionResultDTO executionResultDTO=new ExecutionResultDTO();
-        List<Long> evaluationIds=new ArrayList<>();
-        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
-        Long questionnaireId=null;
-        EvaluationDTO.Info evaluationDTO =new EvaluationDTO.Info();
+        ExecutionResultDTO executionResultDTO = new ExecutionResultDTO();
+        List<Long> evaluationIds = new ArrayList<>();
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions = new ArrayList<>();
+        Long questionnaireId = null;
+        EvaluationDTO.Info evaluationDTO = new EvaluationDTO.Info();
 
 
         for (ClassStudent classStudent : classStudents) {
@@ -1317,7 +1327,7 @@ public class TclassService implements ITclassService {
 
                 Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
                 if (evaluation != null) {
-                    completeNum ++;
+                    completeNum++;
                     int studentsGradeToTeacher_cl = 0;
                     int studentsGradeToFacility_cl = 0;
                     int studentsGradeToGoals_cl = 0;
@@ -1328,10 +1338,10 @@ public class TclassService implements ITclassService {
                     double teacherTotalWeight = 0.0;
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
-                    questionnaireId=   evaluation.getQuestionnaireId();
+                    questionnaireId = evaluation.getQuestionnaireId();
                     evaluationIds.add(evaluation.getId());
 
-                    result.put("questionnaireId",questionnaireId.doubleValue());
+                    result.put("questionnaireId", questionnaireId.doubleValue());
 
                     for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
                         if (answer.getAnswerId() != null) {
@@ -1354,8 +1364,7 @@ public class TclassService implements ITclassService {
                                 if (answer.getWeight() != null) {
                                     teacherTotalWeight += answer.getWeight();
 
-                                }
-                                else
+                                } else
                                     teacherTotalWeight++;
                                 teacherTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
                             }
@@ -1395,92 +1404,86 @@ public class TclassService implements ITclassService {
         result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
         result.put("studentsGradeToFacility", studentsGradeToFacility_l);
         result.put("studentsGradeToGoals", studentsGradeToGoals_l);
-        result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
+        result.put("evaluatedPercent", (completeNum / Double.valueOf(classStudents.size())) * 100);
         result.put("answeredStudentsNum", Double.valueOf(completeNum));
         result.put("allStudentsNum", Double.valueOf(classStudents.size()));
-        if(evaluationDTO.getId()!=null)
+        if (evaluationDTO.getId() != null)
 //        result.put("evaluationId",evaluationDTO.getId().doubleValue());
-         executionResultDTO.setStringDoubleMap(result);
+            executionResultDTO.setStringDoubleMap(result);
         executionResultDTO.setEvaluationIds(evaluationIds);
         return executionResultDTO;
     }
 
 
-
     private List<QuestionnaireQuestionDTO.ExecutionInfo> getQuestionnaireInfo(List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers) {
-        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
+        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos = new ArrayList<>();
         final int[] studentsGradeToQuestion_cl = {0};
         final Double[] questionTotalWeight = {0.00};
         final Double[] questionTotalGrade = {0.00};
         final Double[] studentsGradeToQuestion_l = {0.00};
         final Integer[] studentsGradeToQuestion_count = {0};
-        List<Double> orders=new ArrayList<>();
+        List<Double> orders = new ArrayList<>();
 
 
-        List<EvaluationAnswerDTO.EvaluationAnswerFullData> forTeacherAnswers= answers.stream().filter(answer->{
-            if (answer.getAnswerId()!=null && answer.getDomainId()!=null && answer.getDomainId().equals(53L))
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> forTeacherAnswers = answers.stream().filter(answer -> {
+            if (answer.getAnswerId() != null && answer.getDomainId() != null && answer.getDomainId().equals(53L))
                 return true;
             else
                 return false;
         }).collect(Collectors.toList());
-     List<Long> evaluationQuestionIds=  forTeacherAnswers.stream().map(answer->answer.getEvaluationQuestionId()).collect(Collectors.toList());
-       evaluationQuestionIds.stream().forEach(evaluationQuestionId->{
+        List<Long> evaluationQuestionIds = forTeacherAnswers.stream().map(answer -> answer.getEvaluationQuestionId()).collect(Collectors.toList());
+        evaluationQuestionIds.stream().forEach(evaluationQuestionId -> {
 
-           QuestionnaireQuestionDTO.ExecutionInfo executionInfo=new QuestionnaireQuestionDTO.ExecutionInfo();
+            QuestionnaireQuestionDTO.ExecutionInfo executionInfo = new QuestionnaireQuestionDTO.ExecutionInfo();
 
-          List<EvaluationAnswerDTO.EvaluationAnswerFullData> finalAnswers= forTeacherAnswers.stream().filter(answer->answer.getEvaluationQuestionId().equals(evaluationQuestionId)).collect(Collectors.toList());
-          finalAnswers.stream().forEach(answer->{
-          studentsGradeToQuestion_cl[0] = 1;
-          if (answer.getWeight() != null) {
-              questionTotalWeight[0] += answer.getWeight();
+            List<EvaluationAnswerDTO.EvaluationAnswerFullData> finalAnswers = forTeacherAnswers.stream().filter(answer -> answer.getEvaluationQuestionId().equals(evaluationQuestionId)).collect(Collectors.toList());
+            finalAnswers.stream().forEach(answer -> {
+                studentsGradeToQuestion_cl[0] = 1;
+                if (answer.getWeight() != null) {
+                    questionTotalWeight[0] += answer.getWeight();
 
-          }
-          else
-              questionTotalWeight[0]++;
-          questionTotalGrade[0] += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
-          Double order=  answer.getOrder().doubleValue();
-          if(orders.contains(order))
-              order+=0.1;
-          else{
-              orders.add(order.doubleValue());
-          }
-          Collections.sort(orders);
-          executionInfo.setQuestionOrder(order);
+                } else
+                    questionTotalWeight[0]++;
+                questionTotalGrade[0] += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+                Double order = answer.getOrder().doubleValue();
+                if (orders.contains(order))
+                    order += 0.1;
+                else {
+                    orders.add(order.doubleValue());
+                }
+                Collections.sort(orders);
+                executionInfo.setQuestionOrder(order);
 
-          executionInfo.setQuestionTitle(answer.getQuestion());
+                executionInfo.setQuestionTitle(answer.getQuestion());
 
-      });
-          if (questionTotalWeight[0] != 0) {
-              if (studentsGradeToQuestion_l[0] == null) studentsGradeToQuestion_l[0] = 0.0;
-              if (studentsGradeToQuestion_count[0] == null) studentsGradeToQuestion_count[0] = 0;
-              studentsGradeToQuestion_l[0] += (questionTotalGrade[0] / questionTotalWeight[0]);
-              studentsGradeToQuestion_count[0] += studentsGradeToQuestion_cl[0];
-
-
-          }
-          if (studentsGradeToQuestion_l[0] != null && studentsGradeToQuestion_count[0] != 0)
-              studentsGradeToQuestion_l[0] /= studentsGradeToQuestion_count[0];
+            });
+            if (questionTotalWeight[0] != 0) {
+                if (studentsGradeToQuestion_l[0] == null) studentsGradeToQuestion_l[0] = 0.0;
+                if (studentsGradeToQuestion_count[0] == null) studentsGradeToQuestion_count[0] = 0;
+                studentsGradeToQuestion_l[0] += (questionTotalGrade[0] / questionTotalWeight[0]);
+                studentsGradeToQuestion_count[0] += studentsGradeToQuestion_cl[0];
 
 
+            }
+            if (studentsGradeToQuestion_l[0] != null && studentsGradeToQuestion_count[0] != 0)
+                studentsGradeToQuestion_l[0] /= studentsGradeToQuestion_count[0];
 
 
-          executionInfo.setAveGradeToQuestion((double) Math.round( studentsGradeToQuestion_l[0]* 100) / 100);
+            executionInfo.setAveGradeToQuestion((double) Math.round(studentsGradeToQuestion_l[0] * 100) / 100);
 
 
+            executionInfos.add(executionInfo);
+
+            studentsGradeToQuestion_cl[0] = 0;
+            questionTotalWeight[0] = 0.00;
+            questionTotalGrade[0] = 0.00;
+            studentsGradeToQuestion_l[0] = 0.00;
+            studentsGradeToQuestion_count[0] = 0;
 
 
-          executionInfos.add(executionInfo);
-
-          studentsGradeToQuestion_cl [0]= 0;
-          questionTotalWeight[0] = 0.00;
-           questionTotalGrade[0] = 0.00;
-           studentsGradeToQuestion_l[0] = 0.00;
-           studentsGradeToQuestion_count[0] = 0;
-
-
-       });
-      List<QuestionnaireQuestionDTO.ExecutionInfo> sortedList= executionInfos.stream().sorted(Comparator.comparing(QuestionnaireQuestionDTO.ExecutionInfo::getQuestionOrder)).collect(Collectors.toList());
-       return sortedList;
+        });
+        List<QuestionnaireQuestionDTO.ExecutionInfo> sortedList = executionInfos.stream().sorted(Comparator.comparing(QuestionnaireQuestionDTO.ExecutionInfo::getQuestionOrder)).collect(Collectors.toList());
+        return sortedList;
     }
 
     public Double getTeacherGradeToClass(Long classId, Long teacherId) {
@@ -1566,7 +1569,7 @@ public class TclassService implements ITclassService {
                                             Double studentsGradeToGoals,
                                             Double studentsGradeToFacility,
                                             Double percentOfFilledExecutionEvaluationForms
-                                           ) {
+    ) {
         Map<String, Object> result = new HashMap<>();
         Boolean FEEPass = null;
         Double FEEGrade = null;
@@ -1587,7 +1590,7 @@ public class TclassService implements ITclassService {
                 minQus_EE = Double.parseDouble(parameterValue.getValue());
 
         }
-        if (studentsGradeToTeacher == null && studentsGradeToGoals == null && studentsGradeToFacility == null )
+        if (studentsGradeToTeacher == null && studentsGradeToGoals == null && studentsGradeToFacility == null)
             FEEGrade = null;
         else {
             if (studentsGradeToTeacher == null)
@@ -1597,9 +1600,9 @@ public class TclassService implements ITclassService {
             if (studentsGradeToFacility == null)
                 studentsGradeToFacility = 0.0;
 
-            FEEGrade =studentsGradeToTeacher;
+            FEEGrade = studentsGradeToTeacher;
 //            FEEGrade /= 100;
-            if ( percentOfFilledExecutionEvaluationForms>= minQus_EE)
+            if (percentOfFilledExecutionEvaluationForms >= minQus_EE)
                 FEEPass = true;
             else
                 FEEPass = false;
@@ -1607,12 +1610,12 @@ public class TclassService implements ITclassService {
 
         result.put("FEEGrade", FEEGrade);
         result.put("FEEPass", FEEPass);
-        result.put("z9",z9);
-
+        result.put("z9", z9);
 
 
         return result;
     }
+
     private Map<String, Object> getFETGrade(Double studentsGradeToTeacher,
                                             Double trainingGradeToTeacher,
                                             Double percenetOfFilledReactionEvaluationForms) {
@@ -1702,6 +1705,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Integer getNumberOfInCompletedReactionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1710,6 +1714,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Integer getNumberOfInCompletedExecutionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1718,6 +1723,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     public Integer getNumberOfCompletedReactionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1736,6 +1742,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Integer getNumberOfEmptyExecutionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1745,6 +1752,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Integer getNumberOfExportedEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1753,6 +1761,7 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Integer getNumberOfExportedExecutionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1761,19 +1770,20 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
+
     private Double getPercenetOfFilledReactionEvaluationForms(Set<ClassStudent> classStudents) {
         double r1 = getNumberOfFilledReactionEvaluationForms(classStudents);
         double r2 = getNumberOfFilledReactionEvaluationForms(classStudents) + (double) getNumberOfEmptyReactionEvaluationForms(classStudents);
-    if (r2!=0.0)
-        return (r1 / r2) * 100;
-    else
-        return null;
+        if (r2 != 0.0)
+            return (r1 / r2) * 100;
+        else
+            return null;
     }
 
     private Double getPercentOfFilledExecutionEvaluationForms(Set<ClassStudent> classStudents) {
-       double r1 = getNumberOfFilledExecutionEvaluationForms(classStudents);
+        double r1 = getNumberOfFilledExecutionEvaluationForms(classStudents);
         double r2 = getNumberOfFilledExecutionEvaluationForms(classStudents) + (double) getNumberOfEmptyExecutionEvaluationForms(classStudents);
-        if (r2!=0.0)
+        if (r2 != 0.0)
             return (r1 / r2) * 100;
         else
             return null;
@@ -1851,7 +1861,7 @@ public class TclassService implements ITclassService {
                         (classInfo[9] != null ? Long.parseLong(classInfo[9].toString()) : null),
                         (classInfo[10] != null ? classInfo[10].toString() : null),
                         null
-                        ));
+                ));
             }
         }
 
@@ -1902,7 +1912,7 @@ public class TclassService implements ITclassService {
 //        } else
 //            request.setCriteria(criteriaRq);
 
-        SearchDTO.SearchRs<TclassDTO.Info> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass,TclassDTO.Info.class));
+        SearchDTO.SearchRs<TclassDTO.Info> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
         for (TclassDTO.Info aClass : response.getList()) {
             Tclass tclass = getTClass(aClass.getId());
             Set<ClassStudent> classStudents = tclass.getClassStudents();
@@ -2289,14 +2299,17 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public Boolean hasAccessToChangeClassStatus( String groupIds) {
-        List<String> ids = Arrays.stream(groupIds.split( "," )).collect(Collectors.toList());;
-        return workGroupService.hasAccess(SecurityUtil.getUserId(),ids);
+    public Boolean hasAccessToChangeClassStatus(String groupIds) {
+        List<String> ids = Arrays.stream(groupIds.split(",")).collect(Collectors.toList());
+        ;
+        return workGroupService.hasAccess(SecurityUtil.getUserId(), ids);
     }
+
     @Override
-    public Map<String,Boolean> hasAccessToGroups( String groupIds) {
-        List<String> ids = Arrays.stream(groupIds.split( "," )).collect(Collectors.toList());;
-        return workGroupService.hasAccessToGroups(SecurityUtil.getUserId(),ids);
+    public Map<String, Boolean> hasAccessToGroups(String groupIds) {
+        List<String> ids = Arrays.stream(groupIds.split(",")).collect(Collectors.toList());
+        ;
+        return workGroupService.hasAccessToGroups(SecurityUtil.getUserId(), ids);
     }
 
     @Override
@@ -2317,7 +2330,8 @@ public class TclassService implements ITclassService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
         ParameterValueDTO.Info termParameter = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("defaultTerm")).findFirst().orElse(null);
         if (termParameter != null) {
-        String value = MyUtils.convertToEnglishDigits(termParameter.getValue());;
+            String value = MyUtils.convertToEnglishDigits(termParameter.getValue());
+            ;
             Term termByCode = termDAO.getTermByCode(value);
             if (termByCode != null) {
                 if (termByCode.getCode().startsWith(year)) return termByCode.getId();
@@ -2343,33 +2357,30 @@ public class TclassService implements ITclassService {
                 termScope.add(fromTerm.getCode());
                 termScope.add(toTerm.getCode());
                 return termScope;
-            }
-            else throw new TrainingException(TrainingException.ErrorType.NotFound);
+            } else throw new TrainingException(TrainingException.ErrorType.NotFound);
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
     @Override
     public boolean isValidForExam(long id) {
         final Optional<Tclass> optionalTclass = tclassDAO.findById(id);
-        if (optionalTclass.isPresent())
-        {
-            Tclass tclass=optionalTclass.get();
+        if (optionalTclass.isPresent()) {
+            Tclass tclass = optionalTclass.get();
             return tclass.getScoringMethod() != null &&
-                    (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3")) ;
-        }
-        else
-        return false;
+                    (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3"));
+        } else
+            return false;
     }
 
     @Override
     @Transactional
     public BaseResponse changeClassStatusToInProcess(Long classId) {
 
-        BaseResponse response=new BaseResponse();
+        BaseResponse response = new BaseResponse();
         Optional<Tclass> optionalTClass = tclassDAO.findById(classId);
 
         if (optionalTClass.isPresent()) {
-            Tclass tclass=optionalTClass.get();
+            Tclass tclass = optionalTClass.get();
             tclass.setClassStatus(ClassStatus.inProcess.getId().toString());
             tclassDAO.save(tclass);
             response.setStatus(200);
@@ -2405,7 +2416,7 @@ public class TclassService implements ITclassService {
 
 
                 if (evaluation != null) {
-                    answered ++;
+                    answered++;
                     List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers = evaluationService.getEvaluationFormAnswerDetail(evaluation);
 
                     for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
@@ -2419,11 +2430,11 @@ public class TclassService implements ITclassService {
                         //studentsGradeToTeacher
                         if (answer.getAnswerId() != null && answer.getDomainId().equals(53L)) {
 
-                            if(!answeredStudentsNo.containsKey(answer.getQuestion()))
+                            if (!answeredStudentsNo.containsKey(answer.getQuestion()))
                                 answeredStudentsNo.put(answer.getQuestion(), 1.0);
                             else {
                                 Double aDouble = answeredStudentsNo.get(answer.getQuestion());
-                                answeredStudentsNo.put(answer.getQuestion(), aDouble+1);
+                                answeredStudentsNo.put(answer.getQuestion(), aDouble + 1);
                             }
 
                             String answerValue = parameterValueDAO.findFirstById(answer.getAnswerId()).getValue();
@@ -2444,8 +2455,8 @@ public class TclassService implements ITclassService {
             for (Map.Entry<String, Double> entryAnswered : answeredStudentsNo.entrySet()) {
 
                 if (entry.getKey().equals(entryAnswered.getKey())) {
-                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue()/entryAnswered.getValue()));
-                    totalAverage += entry.getValue()/entryAnswered.getValue();
+                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue() / entryAnswered.getValue()));
+                    totalAverage += entry.getValue() / entryAnswered.getValue();
                 }
             }
         }
@@ -2526,7 +2537,7 @@ public class TclassService implements ITclassService {
         List<TclassDTO.TClassCurrentTerm> list = new ArrayList<>();
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq  criteriaRq = makeNewCriteria("term.id", termId, EOperator.equals, null);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("term.id", termId, EOperator.equals, null);
         searchRq.setCriteria(criteriaRq);
         SearchDTO.SearchRs<TclassDTO.Info> response = search(searchRq);
 
@@ -2541,63 +2552,61 @@ public class TclassService implements ITclassService {
     @Override
     @Transactional
     public List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO classType) {
-        if(!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING"))  && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK") ) && !(status.name().equals("INPROGRESS"))) {
+        if (!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING")) && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK")) && !(status.name().equals("INPROGRESS"))) {
             throw new TrainingException(TrainingException.ErrorType.InvalidClassStatus);
         }
-        if(!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING") ) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL" )) && !(classType.name().equals("WORKSHOP" ) ) ){
+        if (!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING")) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL")) && !(classType.name().equals("WORKSHOP"))) {
             throw new TrainingException(TrainingException.ErrorType.InvalidClassType);
         }
 
 
-        List<Long> longs=new ArrayList<>();
+        List<Long> longs = new ArrayList<>();
         List<ParameterValue> parameterValues = parameterValueDAO.findAllByTitle(classType.getValue());
-        if(parameterValues!=null)
+        if (parameterValues != null)
             parameterValues.forEach(parameterValue -> longs.add(parameterValue.getId()));
 
 
-        List<Tclass> list=tclassDAO.findAllClassWithThisFilter(longs,status.getKey()+"");
-
-
+        List<Tclass> list = tclassDAO.findAllClassWithThisFilter(longs, status.getKey() + "");
 
 
         return list;
     }
 
-    public ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO classType, String year, String term, int page, int size){
-        ClassBaseResponse classBaseResponse=new ClassBaseResponse();
-        if(!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING"))  && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK") ) && !(status.name().equals("INPROGRESS"))) {
+    public ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO classType, String year, String term, int page, int size) {
+        ClassBaseResponse classBaseResponse = new ClassBaseResponse();
+        if (!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING")) && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK")) && !(status.name().equals("INPROGRESS"))) {
             classBaseResponse.setStatus(409);
             classBaseResponse.setMessage("وضعیت کلاس معتبر نیست");
             classBaseResponse.setData(null);
             return classBaseResponse;
         }
-        if(!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING") ) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL" )) && !(classType.name().equals("WORKSHOP" ) ) ){
+        if (!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING")) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL")) && !(classType.name().equals("WORKSHOP"))) {
             classBaseResponse.setStatus(409);
             classBaseResponse.setMessage("وضعیت کلاس معتبر نیست");
             classBaseResponse.setData(null);
             return classBaseResponse;
         }
 
-        Term classTerm=new Term();
-        List<Long> longs=new ArrayList<>();
+        Term classTerm = new Term();
+        List<Long> longs = new ArrayList<>();
         List<ParameterValue> parameterValues = parameterValueDAO.findAllByTitle(classType.getValue());
-        if(parameterValues!=null)
+        if (parameterValues != null)
             parameterValues.forEach(parameterValue -> longs.add(parameterValue.getId()));
-        if( termDAO.getTermByCode(year+"-"+term)!=null) {
+        if (termDAO.getTermByCode(year + "-" + term) != null) {
             classTerm = termDAO.getTermByCode(year + "-" + term);
-            Pageable pageable=PageRequest.of(page,size,  Sort.by(
+            Pageable pageable = PageRequest.of(page, size, Sort.by(
                     Sort.Order.asc("c_title_class")));
-           Page<Tclass> classList = tclassDAO.findAllClassWithTermFilter(longs, status.getKey() + "", classTerm.getId(), pageable);
+            Page<Tclass> classList = tclassDAO.findAllClassWithTermFilter(longs, status.getKey() + "", classTerm.getId(), pageable);
             classBaseResponse.setStatus(200);
             classBaseResponse.setData(classList.stream().toList());
-            PaginationDto paginationDto=new PaginationDto();
+            PaginationDto paginationDto = new PaginationDto();
             paginationDto.setCurrent(page);
             paginationDto.setSize(size);
-            paginationDto.setTotal(classList.getTotalPages()-1);
+            paginationDto.setTotal(classList.getTotalPages() - 1);
             paginationDto.setTotalItems(classList.get().count());
             classBaseResponse.setPaginationDto(paginationDto);
             return classBaseResponse;
-        }else{
+        } else {
             classBaseResponse.setStatus(409);
             classBaseResponse.setMessage("با ترم یا سال وارد شده اطلاعاتی ثبت نشده است");
             classBaseResponse.setData(null);
@@ -2609,30 +2618,30 @@ public class TclassService implements ITclassService {
 
     @Override
     public ElsClassDetailResponse getClassDetail(String classCode) {
-        Tclass tclass= getClassByCode(classCode);
-        ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
+        Tclass tclass = getClassByCode(classCode);
+        ElsClassDetailResponse elsClassDto = new ElsClassDetailResponse();
         if (tclass != null) {
-            Optional<Course> course= courseDAO.findById(tclass.getCourseId());
-            StringBuilder courseTitle= new StringBuilder("");
-            StringBuilder complexTitle= new StringBuilder("");
+            Optional<Course> course = courseDAO.findById(tclass.getCourseId());
+            StringBuilder courseTitle = new StringBuilder("");
+            StringBuilder complexTitle = new StringBuilder("");
 
-            if (tclass.getComplexId()!=null){
+            if (tclass.getComplexId() != null) {
                 Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
                 complex.ifPresent(value -> complexTitle.append(value.getTitle()));
             }
 
-          List<ClassStudent> classStudents=  classStudentDAO.findByTclassId(tclass.getId());
-            if(classStudents!=null){
-                List<String> studentsNationalCodes=new ArrayList<>();
+            List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclass.getId());
+            if (classStudents != null) {
+                List<String> studentsNationalCodes = new ArrayList<>();
                 classStudents.stream().forEach(classStudent -> studentsNationalCodes.add(classStudent.getStudent().getNationalCode()));
                 elsClassDto.setStudentsNationalCodes(studentsNationalCodes);
             }
 
-            StringBuilder teacherFullName= new StringBuilder("");
-            StringBuilder teacherNationalCode= new StringBuilder("");
+            StringBuilder teacherFullName = new StringBuilder("");
+            StringBuilder teacherNationalCode = new StringBuilder("");
 
             Optional<Teacher> teacher = teacherDAO.findById(tclass.getTeacherId());
-            if (teacher.isPresent()){
+            if (teacher.isPresent()) {
                 Optional<PersonalInfo> personalInfo = personalInfoDAO.findById(teacher.get().getPersonalityId());
                 personalInfo.ifPresent(value -> teacherFullName.append(value.getFirstNameFa()).append(" ").append(value.getLastNameFa()));
                 personalInfo.ifPresent(value -> teacherNationalCode.append(value.getNationalCode()));
@@ -2641,9 +2650,8 @@ public class TclassService implements ITclassService {
             course.ifPresent(value -> courseTitle.append(value.getTitleFa()));
 
 
-
             elsClassDto.setId(tclass.getId());
-            if (tclass.getSupervisor()!=null){
+            if (tclass.getSupervisor() != null) {
 //                elsClassDto.setSupervisor(tclass.getSupervisor().getFirstName() + " "+tclass.getSupervisor().getLastName());
             }
             elsClassDto.setCode(tclass.getCode());
@@ -2687,7 +2695,8 @@ public class TclassService implements ITclassService {
                 default:
                     return true;
             }
-        } else throw new TrainingException(TrainingException.ErrorType.NotFound);    }
+        } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
 
     @Override
     public boolean getStudentForceToHasPhone() {
@@ -2771,6 +2780,7 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         return modelMapper.map(tclass, TclassDTO.TClassForAgreement.class);
     }
+
     @Transactional
     @Override
     public void addEducationalCalender(Long eCalenderId, List<Long> classIds) {
@@ -2786,20 +2796,22 @@ public class TclassService implements ITclassService {
         });
 
     }
+
     @Override
     @Transactional
     public void removeEducationalCalender(Long classId) {
         Optional<Tclass> tclass = tclassDAO.findById(classId);
         if (tclass.isPresent()) {
             Tclass c = tclass.get();
-           c.setEducationalCalenderId(null) ;
-           tclassDAO.save(c);
+            c.setEducationalCalenderId(null);
+            tclassDAO.save(c);
         }
 
     }
+
     @Override
     public void updateClassStatus() {
-           tclassDAO.updateClassStatus(DateUtil.todayDate());
+        tclassDAO.updateClassStatus(DateUtil.todayDate());
     }
 
     @Override
@@ -2842,29 +2854,27 @@ public class TclassService implements ITclassService {
     @Override
     public boolean checkClassScoring(ScoringClassDto scoringClassDto) {
 
-        double classScore= (  scoringClassDto.getClassScore() != null) ? Double.parseDouble(scoringClassDto.getClassScore()) : 0;
-        double practicalScore=(  scoringClassDto.getPracticalScore() != null) ? Double.parseDouble(scoringClassDto.getPracticalScore()) : 0;
+        double classScore = (scoringClassDto.getClassScore() != null) ? Double.parseDouble(scoringClassDto.getClassScore()) : 0;
+        double practicalScore = (scoringClassDto.getPracticalScore() != null) ? Double.parseDouble(scoringClassDto.getPracticalScore()) : 0;
 
         final Optional<Tclass> optionalTclass = tclassDAO.findById(scoringClassDto.getClassId());
-     try {
-         if (optionalTclass.isPresent())
-         {
-             Tclass tClass=optionalTclass.get();
+        try {
+            if (optionalTclass.isPresent()) {
+                Tclass tClass = optionalTclass.get();
 
 
-             if (tClass.getScoringMethod().equals("3")) {
-                 return classScore + practicalScore <= 20;
-             } else if (tClass.getScoringMethod().equals("2")) {
-                 return classScore + practicalScore <= 100;
-             } else {
-                 return false;
-             }
-         }
-         else
-             return false;
-     }catch (Exception e){
-         return false;
-     }
+                if (tClass.getScoringMethod().equals("3")) {
+                    return classScore + practicalScore <= 20;
+                } else if (tClass.getScoringMethod().equals("2")) {
+                    return classScore + practicalScore <= 100;
+                } else {
+                    return false;
+                }
+            } else
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 
@@ -2894,15 +2904,41 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public BaseResponse getCertification(String nationalCode, Long classId) {
-        BaseResponse response = new BaseResponse();
-        Long id = tclassDAO.getCertification(nationalCode, classId);
-        if (id != null) {
-            response.setStatus(HttpStatus.OK.value());
-        } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.setMessage("برای این فراگیر در این کلاس شرایط پایان یافته یا اختتام یافته بودن کلاس و قبول شدن فراگیر در آن برقرار نیست.");
+    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException {
+        List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
+        if (!data.isEmpty()) {
+            Object[] item = (Object[]) data.get(0);
+            final Map<String, Object> params = new HashMap<>();
+            String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
+            String course = item[1] != null ? item[1].toString() : "";
+            String to = item[2] != null ? item[2].toString() : "";
+            String from = item[3] != null ? item[3].toString() : "";
+            String duration = item[4] != null ? item[4].toString() : "";
+            String name = item[6] != null ? item[6].toString() : "";
+            String lastName = item[5] != null ? item[5].toString() : "";
+            String code = item[7] != null ? item[7].toString() : "";
+            String fullName = name.equals(lastName) ? name + " " + lastName : name;
+            StringBuilder qrData = new StringBuilder();
+            qrData.append("گواهی می شود ").append(fullName).append("با کد ملی ").append(nationalCode).append("دوره آموزشی ")
+                    .append(course).append("که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
+            params.put("nationalCode", nationalCode);
+            params.put("course", changeTextToSomeSize(course, 15));
+            params.put("from", from);
+            params.put("to", to);
+            params.put("date", DateUtil.todayDate());
+            params.put("duration", duration);
+            params.put("fullName", fullName);
+            params.put("letterNum", nationalCode + code);
+            params.put("qrCodeData", qrData);
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            params.put(ConstantVARs.REPORT_TYPE, "pdf");
+            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+            reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
+
+
         }
-        return response;
+
     }
+
+
 }

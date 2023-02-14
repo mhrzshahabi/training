@@ -6,6 +6,7 @@ import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
 import dto.ScoringClassDto;
+import net.sf.jasperreports.engine.JRException;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -21,6 +22,7 @@ import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -233,5 +235,5 @@ public interface ITclassService {
 
     List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode);
 
-    BaseResponse getCertification(String nationalCode, Long classId);
+    void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException;
 }

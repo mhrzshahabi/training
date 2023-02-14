@@ -245,18 +245,27 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     List<?> getPassedClassesByNationalCode(@Param("nationalCode") String nationalCode);
 
     @Query(value = """
-            SELECT
-                tbl_class.id
-            FROM
-                tbl_student
-                INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
-                INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
-            WHERE
-                tbl_class.c_status IN ( 3, 5 )
-                AND tbl_class_student.scores_state_id IN ( 400, 401 )
-                AND tbl_student.national_code =:nationalCode
-                AND tbl_class.id IN (:classId)
+     SELECT
+         tbl_class.id,
+         dev_devtraining.tbl_course.c_title_fa,
+         tbl_class.c_end_date,
+         tbl_class.c_start_date,
+         dev_devtraining.tbl_course.n_theory_duration,
+         tbl_student.last_name,
+         tbl_student.first_name,
+         tbl_class.c_code
+     FROM
+              tbl_student
+         INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
+         INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
+         INNER JOIN dev_devtraining.tbl_course ON tbl_class.f_course = dev_devtraining.tbl_course.id
+     WHERE
+         tbl_class.c_status IN ( 3, 5 )
+         AND tbl_class_student.scores_state_id IN ( 400, 401 )
+         AND tbl_student.national_code = :nationalcode
+          AND tbl_class.id IN (:classId)
+          ORDER BY tbl_class.id
     """, nativeQuery = true)
-    Long getCertification(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
+    List<?> getCertification(@Param("nationalCode") String nationalCode, @Param("classId") Long classId,Pageable limit);
 
 }
