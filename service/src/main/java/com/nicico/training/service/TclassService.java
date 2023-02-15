@@ -29,6 +29,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -122,6 +123,10 @@ public class TclassService implements ITclassService {
     private final IParameterValueService iParameterValueService;
     private final IViewReactionEvaluationFormulaReportService viewReactionEvaluationFormulaReportService;
     private final ReportUtil reportUtil;
+
+    @Value("${nicico.trainingUrl}")
+    private String trainingUrl;
+
 
 
     @Override
@@ -2897,7 +2902,9 @@ public class TclassService implements ITclassService {
                         (data[6] != null ? (data[6].toString()) : ""),
                         (data[7] != null ? (data[7].toString()) : ""),
                         (data[8] != null ? (data[8].toString()) : ""),
-                        (data[9] != null ? Float.parseFloat(data[9].toString()) : 0)
+                        (data[9] != null ? Float.parseFloat(data[9].toString()) : 0),
+                        trainingUrl+"anonymous/els/student/certification?classId="+
+                                (data[0] != null ? Long.parseLong(data[0].toString()) : 0)+"&nationalCode="+nationalCode
                 ));
             }
         }

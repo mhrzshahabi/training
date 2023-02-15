@@ -954,9 +954,10 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private String scoresState;
+        private String fileAddress;
         private Float score;
 
-        public PassedClasses(Long classId, String courseCode, String courseTitle, Float courseTheoryDuration, String termTitle, String teacherName, String startDate, String endDate, String scoresState, Float score) {
+        public PassedClasses(Long classId, String courseCode, String courseTitle, Float courseTheoryDuration, String termTitle, String teacherName, String startDate, String endDate, String scoresState, Float score,String fileAddress) {
             this.classId = classId;
             this.courseCode = courseCode;
             this.courseTitle = courseTitle;
@@ -967,6 +968,7 @@ public class TclassDTO {
             this.endDate = endDate;
             this.scoresState = scoresState;
             this.score = score;
+            this.fileAddress = fileAddress;
         }
     }
 }

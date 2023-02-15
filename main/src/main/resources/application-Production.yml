@@ -49,6 +49,8 @@ nicico:
   fmsActuatorUrl: 'http://apps.nicico.com/fms/actuator'
   masterDataActuatorUrl: 'http://apps.nicico.com/master-data/actuator'
   hrmBackend: 'http://apps.nicico.com/hrm-backend/api/v1'
+  trainingUrl: 'http://apps.nicico.com/training/'
+
 
 
 

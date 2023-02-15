@@ -37,6 +37,7 @@ nicico:
   hrmClient: 'http://uat.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   elsSmsUrl: 'https://mobiles.nicico.com'
+  trainingUrl: 'http://uat.icico.net.ir/training/'
   masterDataUrl: 'http://uat.icico.net.ir/master-data/api/v3'
   elsActuatorUrl: 'http://uat.icico.net.ir/els/actuator'
   fmsActuatorUrl: 'http://uat.icico.net.ir/fms/actuator'

@@ -66,7 +66,6 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import request.teachingHistory.ElsTeachingHistoryReqDto;
 import response.BaseResponse;
-import response.CertificateFileResponse;
 import response.PaginationDto;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
@@ -3166,8 +3165,8 @@ public class ElsRestController {
     }
 
     @GetMapping("/student/certification")
-    public CertificateFileResponse getStudentCertification(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException {
-           return   tclassService.getCertificationFile(nationalCode, classId,response);
+    public void getStudentCertification(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException {
+               tclassService.getCertification(nationalCode, classId,response);
     }
 
     @GetMapping("/passed-classes/by-nationalCode")

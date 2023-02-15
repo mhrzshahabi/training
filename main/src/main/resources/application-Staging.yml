@@ -39,6 +39,7 @@ nicico:
   elsUrl: 'http://staging.icico.net.ir/els/api/training'
   hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
+  trainingUrl: 'http://staging.icico.net.ir/training/'
   masterDataUrl: 'http://staging.icico.net.ir/master-data/api/v3'
   elsSmsUrl: 'http://staging.icico.net.ir/els'
   elsActuatorUrl: 'http://staging.icico.net.ir/els/actuator'

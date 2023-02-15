@@ -37,6 +37,7 @@ nicico:
   minioUrl: 'http://devapp01.icico.net.ir/fms/file'
   uploadMinioUrl: 'http://devapp01.icico.net.ir/fms/file'
   elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
+  trainingUrl: 'http://devapp01.icico.net.ir/training/'
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
