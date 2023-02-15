@@ -9,6 +9,7 @@ import dto.ScoringClassDto;
 import net.sf.jasperreports.engine.JRException;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
+import response.CertificateFileResponse;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
@@ -236,4 +237,6 @@ public interface ITclassService {
     List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode);
 
     void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException;
+
+    CertificateFileResponse getCertificationFile(String nationalCode, Long classId, HttpServletResponse response);
 }

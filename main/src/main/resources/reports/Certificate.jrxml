@@ -27,14 +27,14 @@
 	<title>
 		<band height="120" splitType="Stretch">
 			<textField>
-				<reportElement x="110" y="80" width="100" height="30" uuid="8a12e18e-2f9a-4c53-80c9-b6f0176df73c"/>
+				<reportElement x="105" y="79" width="110" height="30" uuid="8a12e18e-2f9a-4c53-80c9-b6f0176df73c"/>
 				<textElement>
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="110" y="53" width="100" height="30" uuid="a52316b5-ee2f-4536-91bc-cf69a3b8d234"/>
+				<reportElement x="44" y="53" width="170" height="30" uuid="a52316b5-ee2f-4536-91bc-cf69a3b8d234"/>
 				<textElement>
 					<font fontName="Shabnam-FD"/>
 				</textElement>
@@ -65,7 +65,7 @@
 				<textFieldExpression><![CDATA[$P{nationalCode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="313" y="77" width="100" height="30" uuid="a00715f1-d45b-464c-8707-cb63317619ae"/>
+				<reportElement x="207" y="77" width="203" height="30" uuid="a00715f1-d45b-464c-8707-cb63317619ae"/>
 				<textElement>
 					<font fontName="Shabnam-FD"/>
 				</textElement>

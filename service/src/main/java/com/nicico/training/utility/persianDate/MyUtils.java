@@ -12,6 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.WeekDays;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -565,12 +571,18 @@ public class MyUtils {
             return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
     }
 
-    public static String changeTextToSomeSize(String a,int size){
+    public static String addSpaceToStringBySize(String a,int size){
         if (a.length() < size) {
-            return a;
+            int space= (size -a.length()) / 2;
+            StringBuilder text=new StringBuilder();
+            text.append(" ".repeat(space));
+            text.append(a);
+            text.append(" ".repeat(space));
+            return text.toString();
         } else {
-            return a.substring(0, size);
+            return a.substring(0, size)+"...";
         }
     }
+
 
 }

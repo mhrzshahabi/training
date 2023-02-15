@@ -25,7 +25,7 @@ import com.nicico.training.utility.persianDate.MyUtils;
 import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -38,10 +38,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ResourceUtils;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerList;
 import response.BaseResponse;
+import response.CertificateFileResponse;
 import response.PaginationDto;
 import response.evaluation.dto.AveragePerQuestion;
 import response.evaluation.dto.EvalAverageResult;
@@ -54,8 +56,7 @@ import response.tclass.dto.TclassDto;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -65,7 +66,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.utility.persianDate.MyUtils.changeTextToSomeSize;
+import static com.nicico.training.utility.persianDate.MyUtils.addSpaceToStringBySize;
 import static com.nicico.training.utility.persianDate.MyUtils.getPrograms2;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
@@ -2913,32 +2914,105 @@ public class TclassService implements ITclassService {
             String course = item[1] != null ? item[1].toString() : "";
             String to = item[2] != null ? item[2].toString() : "";
             String from = item[3] != null ? item[3].toString() : "";
-            String duration = item[4] != null ? item[4].toString() : "";
+            String duration = item[4] != null ? item[4].toString()+" ساعت " : "-";
             String name = item[6] != null ? item[6].toString() : "";
             String lastName = item[5] != null ? item[5].toString() : "";
             String code = item[7] != null ? item[7].toString() : "";
+            String letterNum = nationalCode+"-"+code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             StringBuilder qrData = new StringBuilder();
             qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append(nationalCode).append(" دوره آموزشی ")
-                    .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" ساعت ").append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
+                    .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
             params.put("nationalCode", nationalCode);
-            params.put("course", changeTextToSomeSize(course, 50));
+            params.put("course", addSpaceToStringBySize(course, 30));
             params.put("from", from);
             params.put("to", to);
             params.put("date", DateUtil.todayDate());
             params.put("duration", duration);
             params.put("fullName", fullName);
-            params.put("letterNum", nationalCode+"-"+ code);
+            params.put("letterNum", letterNum);
             params.put("qrCodeData", qrData.toString());
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
             reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
 
-
         }
 
     }
 
+    @Override
+    public CertificateFileResponse getCertificationFile(String nationalCode, Long classId, HttpServletResponse httpServletResponse) {
+        CertificateFileResponse res=new CertificateFileResponse();
+        try {
+            byte[] dailyOrdersBytes = exportDailyOrders();
+            ByteArrayOutputStream out = new ByteArrayOutputStream(dailyOrdersBytes.length);
+            out.write(dailyOrdersBytes, 0, dailyOrdersBytes.length);
 
+            httpServletResponse.setContentType("application/pdf");
+            httpServletResponse.addHeader("Content-Disposition", "inline; filename=dailyOrdersReport.pdf");
+
+            OutputStream os;
+            try {
+                os = httpServletResponse.getOutputStream();
+                out.writeTo(os);
+                os.flush();
+                os.close();
+                res.setFile(dailyOrdersBytes);
+                res.setStatus(200);
+            } catch (IOException e) {
+                e.printStackTrace();
+                res.setStatus(404);
+
+            }
+
+
+        }catch (Exception e){
+            res.setStatus(404);
+
+        }
+
+       return res;
+    }
+
+
+    private byte[] exportDailyOrders() throws JRException, IOException {
+
+        final Map<String, Object> params = new HashMap<>();
+        String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
+        String course = "item[7] != null ? item[7].toString() : ";
+        String to = "item[7] != null ? item[7].toString() : ";
+        String from = "item[7] != null ? item[7].toString() : ";
+        String duration = "item[7] != null ? item[7].toString() : ";
+        String name = "item[7] != null ? item[7].toString() : ";
+        String lastName = "item[5] != null ? item[5].toString() : ";
+        String code = "item[7] != null ? item[7].toString() : ";
+        String letterNum = "nationalCode"+"-"+code;
+        String fullName = !name.equals(lastName) ? name + " " + lastName : name;
+        StringBuilder qrData = new StringBuilder();
+        qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append("nationalCode").append(" دوره آموزشی ")
+                .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
+        params.put("nationalCode", "nationalCode");
+        params.put("course", addSpaceToStringBySize(course, 30));
+        params.put("from", from);
+        params.put("to", to);
+        params.put("date", DateUtil.todayDate());
+        params.put("duration", duration);
+        params.put("fullName", fullName);
+        params.put("letterNum", letterNum);
+        params.put("qrCodeData", qrData.toString());
+        params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+        File file = ResourceUtils.getFile("classpath:reports/Certificate.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
+        ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
+        return byteArrayOutputStream.toByteArray();
+    }
+    ByteArrayOutputStream getByteArrayOutputStream(JasperPrint jasperPrint) throws JRException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
+        return byteArrayOutputStream;
+    }
 }
