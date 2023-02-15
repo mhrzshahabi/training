@@ -56,7 +56,8 @@ public class ViewTrainingFileService implements IViewTrainingFileService {
         queryString.append("       CASE");
         queryString.append("           WHEN (NVL(PRS.ID, 0) <> 0) THEN 'شرکتی'");
         queryString.append("           WHEN (NVL(PRS_REG.ID, 0) <> 0) THEN ' متفرقه'");
-        queryString.append("           ELSE NULL END AS STUDENT_TYPE_NUM");
+        queryString.append("           ELSE NULL END AS STUDENT_TYPE_NUM,");
+        queryString.append("           CLASS_STUDENT.id as classId");
         queryString.append(" FROM (SELECT DEP.ID                                                                                 AS DEP_ID,");
         queryString.append("             S.EMP_NO,");
         queryString.append("             S.PERSONNEL_NO,");
@@ -97,7 +98,7 @@ public class ViewTrainingFileService implements IViewTrainingFileService {
         queryString.append("             CO.C_TITLE_FA                                                                          AS COURSE_TITLE,");
         queryString.append("             TBL_TERM.C_TITLE_FA                                                                    AS TERM_TITLE,");
         queryString.append("             TBL_PERSONAL_INFO.C_FIRST_NAME_FA || ' ' || TBL_PERSONAL_INFO.C_LAST_NAME_FA           AS TEACHER,");
-        queryString.append("             CO.C_CODE                                                                              AS COURSE_CODE");
+        queryString.append("             CO.C_CODE                                                                              AS COURSE_CODE,  c.id");
         queryString.append("      FROM TBL_CLASS C");
         queryString.append("               INNER JOIN TBL_CLASS_STUDENT CS ON C.ID = CS.CLASS_ID");
         queryString.append("               INNER JOIN TBL_STUDENT S ON S.ID = CS.STUDENT_ID");
@@ -159,6 +160,7 @@ public class ViewTrainingFileService implements IViewTrainingFileService {
                 dto.setRunTypeNum(Integer.parseInt(record[27].toString()));
             dto.setPersonnelCode((String) record[28]);
             dto.setPersonType((String) record[29]);
+            dto.setClassId(Long.parseLong(record[30].toString()));
             dtoList.add(dto);
         }
 

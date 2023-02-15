@@ -3,11 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-//<script>
+// <script>
 
+    let userNationalCode="";
     var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         transformResponse: function (dsResponse) {
             if (JSON.parse(dsResponse.httpResponseText).response.info) {
+                userNationalCode="";
+                if (JSON.parse(dsResponse.httpResponseText).response.info!=null && JSON.parse(dsResponse.httpResponseText).response.info.nationalCode!=null && JSON.parse(dsResponse.httpResponseText).response.info.nationalCode!==undefined)
+                userNationalCode=JSON.parse(dsResponse.httpResponseText).response.info.nationalCode;
                 DynamicForm_TrainingFile.setValue("fullName", " " + JSON.parse(dsResponse.httpResponseText).response.info.firstName + "  " + JSON.parse(dsResponse.httpResponseText).response.info.lastName);
             }
             return this.Super("transformResponse", arguments);
@@ -48,6 +52,7 @@
             {name: "runType", title: "<spring:message code="course.run.type"/>"},
             {name: "postGradeTitle", title: "<spring:message code="post.grade"/>"},
             {name: "assistant", title: "<spring:message code="assistance"/>"},
+            {name: "classId",hidden: true},
         ],
     });
 
@@ -102,6 +107,33 @@
                 type: "SpacerItem",
                 colSpan: 2
             },
+            {
+                name: "certificateBtn",
+                ID: "certificateBtnJspTrainingFile",
+                title: "درخواست گواهی نامه آموزشی",
+                type: "ButtonItem",
+                startRow: false,
+                endRow: false,
+                click() {
+                     let record = ListGrid_TrainingFile_TrainingFileJSP.getSelectedRecord();
+                    if (record == null ){
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    }else {
+                            if ((record.scoresStateNum==null || record.scoresStateNum==undefined) ||( record.scoresStateNum!==400 && record.scoresStateNum!==401)){
+                                createDialog("info", "شما در این کلاس قبول نشده اید");
+                        }
+                        else if ((record.classStatusNum==null || record.classStatusNum==undefined) ||( record.classStatusNum!==3 && record.classStatusNum!==5)){
+                            createDialog("info", "کلاس شما پایان یافته یا اختتام نشده است");
+                        } else if (record.classId!=null && userNationalCode!==""){
+                                    printCertificate(record.classId);
+                                }
+                       }
+
+
+                }
+            }
+
+
         ],
         itemKeyPress: function (item, keyName) {
             if (keyName == "Enter") {
@@ -205,7 +237,8 @@
             {name: "personType", hidden: true},
             {name: "personnelCode", hidden: true},
             {name: "postGradeTitle"},
-            {name: "teacher", hidden: true}
+            {name: "teacher", hidden: true},
+            {name: "classId", hidden: true}
         ]
     });
 
@@ -220,5 +253,26 @@
                 ]
             })]
     });
+
+
+    function printCertificate(cassId) {
+        let criteriaForm = isc.DynamicForm.create({
+            method: "Get",
+            action: "<spring:url value="/anonymous/els/student/certification"/>",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "classId", type: "hidden"},
+                    {name: "nationalCode", type: "hidden"}
+                ]
+
+        })
+        criteriaForm.setValue("classId", cassId);
+        criteriaForm.setValue("nationalCode", userNationalCode);
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+
 
     //</script>

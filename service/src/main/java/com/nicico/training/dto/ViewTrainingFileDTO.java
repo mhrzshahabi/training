@@ -40,6 +40,7 @@ public class ViewTrainingFileDTO implements Serializable {
     private Integer runTypeNum;
     private String personnelCode;
     private Integer personTypeNum;
+    private Long classId;
 
     @Getter
     @Setter
