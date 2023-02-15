@@ -21,6 +21,7 @@ import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.SpecListUtil;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -54,6 +56,7 @@ import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -122,10 +125,10 @@ public class TclassService implements ITclassService {
     private final IParameterValueService iParameterValueService;
     private final IViewReactionEvaluationFormulaReportService viewReactionEvaluationFormulaReportService;
     private final ReportUtil reportUtil;
-
+    @Autowired
+    private final EntityManager entityManager;
     @Value("${nicico.trainingUrl}")
     private String trainingUrl;
-
 
 
     @Override
@@ -2884,31 +2887,127 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode) {
-
-        List<TclassDTO.PassedClasses> passedClassesDTO = new ArrayList<>();
-        List<?> passedClasses = tclassDAO.getPassedClassesByNationalCode(nationalCode);
-        if (passedClasses != null) {
-            for (Object passedClass : passedClasses) {
-                Object[] data = (Object[]) passedClass;
-                passedClassesDTO.add(new TclassDTO.PassedClasses(
-                        (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
-                        (data[1] != null ? (data[1].toString()) : ""),
-                        (data[2] != null ? (data[2].toString()) : ""),
-                        (data[3] != null ? Float.parseFloat(data[3].toString()) : 0),
-                        (data[4] != null ? (data[4].toString()) : ""),
-                        (data[5] != null ? (data[5].toString()) : ""),
-                        (data[6] != null ? (data[6].toString()) : ""),
-                        (data[7] != null ? (data[7].toString()) : ""),
-                        (data[8] != null ? (data[8].toString()) : ""),
-                        (data[9] != null ? Float.parseFloat(data[9].toString()) : 0),
-                        trainingUrl+"anonymous/els/student/certification?classId="+
-                                (data[0] != null ? Long.parseLong(data[0].toString()) : 0)+"&nationalCode="+nationalCode
-                ));
+    public ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDto search) {
+        ElsPassedCourses res = new ElsPassedCourses();
+        try {
+            String searchQuery = "";
+            if (search.getSearchDTOList().size()>0){
+                  searchQuery= SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
+          String query = getQuery(nationalCode, page, size,searchQuery);
+            List<TclassDTO.PassedClasses> passedClassesDTO = new ArrayList<>();
+            List<?> passedClasses = entityManager.createNativeQuery(query).getResultList();;
+           Long total = Long.valueOf(entityManager.createNativeQuery(getQueryCount(nationalCode,searchQuery)).getSingleResult().toString());
+            if (passedClasses != null) {
+                for (Object passedClass : passedClasses) {
+                    Object[] data = (Object[]) passedClass;
+                    passedClassesDTO.add(new TclassDTO.PassedClasses(
+                            (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
+                            (data[1] != null ? (data[1].toString()) : ""),
+                            (data[2] != null ? (data[2].toString()) : ""),
+                            (data[3] != null ? Float.parseFloat(data[3].toString()) : 0),
+                            (data[4] != null ? (data[4].toString()) : ""),
+                            (data[5] != null ? (data[5].toString()) : ""),
+                            (data[6] != null ? (data[6].toString()) : ""),
+                            (data[7] != null ? (data[7].toString()) : ""),
+                            (data[8] != null ? (data[8].toString()) : ""),
+                            (data[9] != null ? Float.parseFloat(data[9].toString()) : 0),
+                            trainingUrl + "anonymous/els/student/certification?classId=" +
+                                    (data[0] != null ? Long.parseLong(data[0].toString()) : 0) + "&nationalCode=" + nationalCode
+                    ));
+                }
+            }
+
+
+            int totalPage= size == 0 ? 0 : (int) Math.ceil((double) total / (double) size);
+            res.setPassedClasses(passedClassesDTO);
+            PaginationDto paginationDto = new PaginationDto();
+            paginationDto.setCurrent(page);
+            paginationDto.setSize(size);
+            paginationDto.setTotal(totalPage);
+            paginationDto.setLast(totalPage == 0 ? 0 : totalPage-1);
+            paginationDto.setTotalItems(total);
+            res.setPagination(paginationDto);
+            res.setStatus(200);
+
+        } catch (Exception e) {
+            res.setStatus(404);
+
         }
-        return passedClassesDTO;
+
+
+        return res;
     }
+
+    private String getQueryCount(String nationalCode, String searchQuery) {
+        StringBuffer queryString = new StringBuffer();
+        queryString.append(" SELECT COUNT(id) FROM ( ");
+        queryString.append(" SELECT * FROM ( ");
+        queryString.append(" SELECT tbl_class.id,");
+        queryString.append("  tbl_course.c_code as courseCode ,");
+        queryString.append("tbl_course.c_title_fa AS courseTitle, ");
+        queryString.append(" tbl_course.n_theory_duration as courseTheoryDuration,");
+        queryString.append("  tbl_term.c_title_fa AS termTitle,");
+        queryString.append("concat( concat( tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa ) AS teacherName, ");
+        queryString.append("  tbl_class.c_start_date as startDate, ");
+        queryString.append("tbl_class.c_end_date as endDate, ");
+        queryString.append(" tbl_parameter_value.c_title as scoresState,");
+        queryString.append("  tbl_class_student.score as score");
+        queryString.append("      FROM tbl_student ");
+        queryString.append(" INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id ");
+        queryString.append("  INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id");
+        queryString.append(" INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id ");
+        queryString.append("  INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id ");
+        queryString.append(" INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id ");
+        queryString.append(" INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id ");
+        queryString.append("  INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class_student.scores_state_id ");
+        queryString.append(" WHERE ");
+        queryString.append(" tbl_class.c_status IN ( 3, 5 ) ");
+        queryString.append(" AND tbl_class_student.scores_state_id IN ( 400, 401 ) ");
+
+        queryString.append("     AND tbl_student.national_code = ").append(nationalCode);
+        queryString.append("   ORDER BY id desc ");
+        queryString.append(" ) WHERE 1=1 ");
+        queryString.append(searchQuery);
+        queryString.append(" ) ");
+        return queryString.toString();
+    }
+
+    private String getQuery(String nationalCode, int page, int size, String searchQuery) {
+        StringBuffer queryString = new StringBuffer();
+        queryString.append(" SELECT * FROM ( ");
+        queryString.append(" SELECT tbl_class.id,");
+        queryString.append("  tbl_course.c_code as courseCode ,");
+        queryString.append("tbl_course.c_title_fa AS courseTitle, ");
+        queryString.append(" tbl_course.n_theory_duration as courseTheoryDuration,");
+        queryString.append("  tbl_term.c_title_fa AS termTitle,");
+        queryString.append("concat( concat( tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa ) AS teacherName, ");
+        queryString.append("  tbl_class.c_start_date as startDate, ");
+        queryString.append("tbl_class.c_end_date as endDate, ");
+        queryString.append(" tbl_parameter_value.c_title as scoresState,");
+        queryString.append("  tbl_class_student.score as score");
+        queryString.append("      FROM tbl_student ");
+        queryString.append(" INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id ");
+        queryString.append("  INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id");
+        queryString.append(" INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id ");
+        queryString.append("  INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id ");
+        queryString.append(" INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id ");
+        queryString.append(" INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id ");
+        queryString.append("  INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class_student.scores_state_id ");
+        queryString.append(" WHERE ");
+        queryString.append(" tbl_class.c_status IN ( 3, 5 ) ");
+        queryString.append(" AND tbl_class_student.scores_state_id IN ( 400, 401 ) ");
+
+        queryString.append("     AND tbl_student.national_code = ").append(nationalCode);
+        queryString.append("   ORDER BY id desc ");
+        queryString.append("     OFFSET  ").append(page);
+        queryString.append("     ROWS FETCH NEXT  ").append(size);
+        queryString.append("    ROWS ONLY )");
+        queryString.append(" WHERE 1=1 ");
+        queryString.append(searchQuery);
+        return queryString.toString();
+    }
+
 
     @Override
     public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException {
@@ -2920,11 +3019,11 @@ public class TclassService implements ITclassService {
             String course = item[1] != null ? item[1].toString() : "";
             String to = item[2] != null ? item[2].toString() : "";
             String from = item[3] != null ? item[3].toString() : "";
-            String duration = item[4] != null ? item[4].toString()+" ساعت " : "-";
+            String duration = item[4] != null ? item[4].toString() + " ساعت " : "-";
             String name = item[6] != null ? item[6].toString() : "";
             String lastName = item[5] != null ? item[5].toString() : "";
             String code = item[7] != null ? item[7].toString() : "";
-            String letterNum = nationalCode+"-"+code;
+            String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             StringBuilder qrData = new StringBuilder();
             qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append(nationalCode).append(" دوره آموزشی ")

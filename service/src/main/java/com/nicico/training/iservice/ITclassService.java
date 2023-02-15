@@ -233,7 +233,7 @@ public interface ITclassService {
 
     boolean checkClassScoring(ScoringClassDto scoringClassDto);
 
-    List<TclassDTO.PassedClasses> getPassedClassesByNationalCode(String nationalCode);
+    ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDto search);
 
     void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException;
 

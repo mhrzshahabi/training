@@ -24,6 +24,18 @@ public class SpecListUtil {
 
     private final ObjectMapper objectMapper;
 
+    public static String SearchQuery(List<com.nicico.training.dto.SearchDTO> searchDTOList) {
+      StringBuilder query=new StringBuilder();
+        if (searchDTOList.size()>0){
+            searchDTOList.forEach(search->{
+                query.append(" and ").append(search.getFieldName()).append(" like '%").append(search.getValue().toString()).append("%'");
+            });
+            return query.toString();
+
+        }else
+            return null;
+    }
+
     public <P extends SearchDTO.SearchRq, Q> Q createSearchRq(Integer startRow, Integer endRow, String operator, String criteria, String sortBy, Function<P, Q> work) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();

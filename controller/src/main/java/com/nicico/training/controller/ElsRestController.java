@@ -66,6 +66,7 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import request.teachingHistory.ElsTeachingHistoryReqDto;
 import response.BaseResponse;
+import com.nicico.training.dto.ElsPassedCourses;
 import response.PaginationDto;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
@@ -3169,13 +3170,20 @@ public class ElsRestController {
                tclassService.getCertification(nationalCode, classId,response);
     }
 
-    @GetMapping("/passed-classes/by-nationalCode")
-    public ResponseEntity<List<TclassDTO.PassedClasses>> passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam String nationalCode) {
+    @PostMapping("/passed-classes/by-nationalCode/{nationalCode}/{page}/{size}")
+    public ElsPassedCourses passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode
+            , @PathVariable int page, @PathVariable int size
+            ,@RequestBody SearchDto search
+    ) {
+        ElsPassedCourses res=new ElsPassedCourses();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-            List<TclassDTO.PassedClasses> passedClassesByNationalCode = tclassService.getPassedClassesByNationalCode(nationalCode);
-            return new ResponseEntity<>(passedClassesByNationalCode, HttpStatus.OK);
-        } else
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return tclassService.getPassedClassesByNationalCode(nationalCode,page,size,search);
+
+        } else{
+            res.setStatus(401);
+        }
+        return res;
+
     }
 
 
