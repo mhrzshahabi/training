@@ -48,7 +48,7 @@
             {name: "tclass.code"},
             {name: "tclass.titleClass"},
             {name: "tclass.teachingMethod.title"},
-            {name: "fullName"},
+            {name: "teacher.personality.lastNameFa"},
             {name: "tclass.holdingClassType.code"},
             {name: "teacher.personnelStatus"},
             {name: "teacher.personality.contactInfo.mobile"},
@@ -436,7 +436,8 @@
             {
                 name: "sessionHour",
                 title: "<spring:message code="session.time"/>",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                canFilter: false
             },
             {
                 name: "tclass.titleClass",
@@ -459,7 +460,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "fullName",
+                name: "teacher.personality.lastNameFa",
                 title: "<spring:message code="teacher.name"/>",
                 filterOperator: "iContains"
             },

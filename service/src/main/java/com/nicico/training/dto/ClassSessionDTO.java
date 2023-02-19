@@ -145,7 +145,6 @@ public class ClassSessionDTO implements Serializable {
         private String sessionHour;
         private TclassDTO.Info tclass;
         private TeacherDTO.Info teacher;
-        private String fullName;
 
         public String getSessionHour() {
             String result = "";
@@ -157,13 +156,6 @@ public class ClassSessionDTO implements Serializable {
                 result += sessionEndHour;
             }
             return result;
-        }
-
-        public String getFullName() {
-            if (teacher != null && teacher.getPersonality() != null) {
-                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            }
-            return null;
         }
 
     }
