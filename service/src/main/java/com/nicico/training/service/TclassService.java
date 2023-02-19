@@ -2891,7 +2891,7 @@ public class TclassService implements ITclassService {
         ElsPassedCourses res = new ElsPassedCourses();
         try {
             String searchQuery = "";
-            if (search.getSearchDTOList().size()>0){
+            if (search !=null && search.getSearchDTOList().size()>0){
                   searchQuery= SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
           String query = getQuery(nationalCode, page, size,searchQuery);
