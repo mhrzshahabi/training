@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -47,4 +48,11 @@ public interface IDepartmentService {
     String getComplexTitleById(Long id);
 
     Long getComplexIdByComplexTitle(String complexTitle);
+
+    List<Long> getComplexIdsByTitle(List<String> complexTitles);
+
+    List<Long> getAssistantIdsByTitle(List<String> assistantTitles);
+
+    List<Long> getAffairIdsByTitle(List<String> affairTitles);
+
 }

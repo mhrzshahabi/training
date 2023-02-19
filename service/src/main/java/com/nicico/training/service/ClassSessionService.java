@@ -9,6 +9,8 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSessionService;
+import com.nicico.training.iservice.IDepartmentService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +58,7 @@ public class ClassSessionService implements IClassSessionService {
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
     private final ClassStudentDAO classStudentDAO;
+    private final IDepartmentService departmentService;
 
     //********************************
 
@@ -751,6 +754,41 @@ public class ClassSessionService implements IClassSessionService {
         }
         resp.getList().sort(new StudentStatusSorter().thenComparing(new DateSorter()).thenComparing(new HourSorter()));
         return resp;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchWeeklyMeetingSchedule(SearchDTO.SearchRq request) {
+        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
+            request.getCriteria().getCriteria().forEach(criterion -> {
+                if (criterion.getFieldName().equals("complexTitle")) {
+                    List<String> complexes = criterion.getValue().stream().map(Object::toString).toList();
+                    List<Long> complexIdsByTitle = departmentService.getComplexIdsByTitle(complexes);
+                    criterion.setFieldName("tclass.complexId");
+                    criterion.setValue(complexIdsByTitle);
+                }
+                if (criterion.getFieldName().equals("assistant")) {
+                    List<String> assistants = criterion.getValue().stream().map(Object::toString).toList();
+                    List<Long> assistantIdsByTitle = departmentService.getAssistantIdsByTitle(assistants);
+                    criterion.setFieldName("tclass.assistantId");
+                    criterion.setValue(assistantIdsByTitle);
+                }
+                if (criterion.getFieldName().equals("affairs")) {
+                    List<String> affairs = criterion.getValue().stream().map(Object::toString).toList();
+                    List<Long> affairIdsByTitle = departmentService.getAffairIdsByTitle(affairs);
+                    criterion.setFieldName("tclass.affairsId");
+                    criterion.setValue(affairIdsByTitle);
+                }
+                if (criterion.getFieldName().equals("teacher.personnelStatus")) {
+                    if (criterion.getValue().get(0).equals("true")) {
+                        criterion.setValue(Boolean.TRUE);
+                    } else {
+                        criterion.setValue(Boolean.FALSE);
+                    }
+                }
+            });
+        }
+        return SearchUtil.search(classSessionDAO, request, classSession -> modelMapper.map(classSession, ClassSessionDTO.WeeklyMeetingSchedule.class));
     }
 
     private class StudentStatusSorter implements Comparator<ClassSessionDTO.WeeklySchedule> {

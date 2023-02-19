@@ -372,6 +372,21 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     }
 
     @Override
+    public List<Long> getComplexIdsByTitle(List<String> complexTitles) {
+        return departmentDAO.getComplexIdsByTitle(complexTitles);
+    }
+
+    @Override
+    public List<Long> getAssistantIdsByTitle(List<String> assistantTitles) {
+        return departmentDAO.getAssistantIdsByTitle(assistantTitles);
+    }
+
+    @Override
+    public List<Long> getAffairIdsByTitle(List<String> affairTitles) {
+        return departmentDAO.getAffairIdsByTitle(affairTitles);
+    }
+
+    @Override
     public DepartmentDTO.Info getByCode(String code) {
         Optional<Department> optional = departmentDAO.getByCode(code);
         return optional.map(department -> modelMapper.map(department, DepartmentDTO.Info.class)).orElse(null);

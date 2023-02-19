@@ -6,6 +6,7 @@
 // <script>
 
     let isCriteriaHoldingClassChanged_WS = false;
+    let dataValues;
     
     //------------------------------------------------- REST DataSources------------------------------------------------
 
@@ -39,22 +40,18 @@
         allowAdvancedCriteria: true,
     });
 
-    let RestDataSource_Result_WS = isc.TrDS.create({
+    RestDataSource_Result_WS = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "sessionDate"},
-            {name: "sessionTime"},
-            {name: "classTitle"},
-            {name: "classCode"},
-            {name: "teachingMethod"},
+            {name: "sessionHour"},
+            {name: "tclass.code"},
+            {name: "tclass.titleClass"},
+            {name: "tclass.teachingMethod.title"},
             {name: "fullName"},
-            {
-                name: "teacherType", valueMap: {
-                    "true": "داخلی",
-                    "false": "بیرونی"
-                }
-            },
-            {name: "teacherMobile"},
+            {name: "tclass.holdingClassType.code"},
+            {name: "teacher.personnelStatus"},
+            {name: "teacher.personality.contactInfo.mobile"},
         ],
         allowAdvancedCriteria: true,
         fetchDataURL: sessionServiceUrl + "weekly-meeting-schedule"
@@ -95,7 +92,7 @@
                 keyPressFilter: "[0-9/]",
                 length: 10,
                 showHintInField: true,
-                required: true,
+                required: false,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -140,7 +137,7 @@
                 keyPressFilter: "[0-9/]",
                 length: 10,
                 showHintInField: true,
-                required: true,
+                required: false,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -196,8 +193,6 @@
                     showFilterEditor: false
                 },
                 changed: function (form, item, value) {
-                    debugger
-
                     if (value === null) {
                         form.getItem("teachingMethodId").setValue(null);
                         form.getItem("teachingMethodId").disable()
@@ -362,35 +357,35 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
+            if (organSegmentFilter.getItem("department.mojtameCode").getValue() == undefined) {
+                organSegmentFilter.addFieldErrors("department.mojtameCode", "<spring:message code='validator.field.is.required'/>", true);
+                return;
+            }
+            organSegmentFilter.clearFieldErrors("department.mojtameCode", true);
             ListGrid_Result_WS.invalidateCache();
-            let dataValues = organSegmentFilter.getCriteria(DynamicForm_WS.getValuesAsAdvancedCriteria());
+            dataValues = organSegmentFilter.getCriteria(DynamicForm_WS.getValuesAsAdvancedCriteria());
             if (dataValues !== undefined && dataValues !== null) {
                 for (let i = 0; i < dataValues.criteria.length; i++) {
-                    if (dataValues.criteria[i].fieldName === "complexTitle") {
-                        dataValues.criteria[i].fieldName = "studentComplex"
-                    }
-                    if (dataValues.criteria[i].fieldName === "assistant") {
-                        dataValues.criteria[i].fieldName = "studentAssistant"
-                    }
-                    if (dataValues.criteria[i].fieldName === "affairs") {
-                        dataValues.criteria[i].fieldName = "studentAffairs"
-                    }
-                    if (dataValues.criteria[i].fieldName === "section") {
-                        dataValues.criteria[i].fieldName = "studentSection"
-                    }
-                    if (dataValues.criteria[i].fieldName === "unit") {
-                        dataValues.criteria[i].fieldName = "studentUnit"
-                    }
                     if (dataValues.criteria[i].fieldName === "tclassCode") {
-                        dataValues.criteria[i].fieldName = "classCode"
+                        dataValues.criteria[i].fieldName = "tclass.code"
+                        dataValues.criteria[i].value = dataValues.criteria[i].value.split(',')
+                        dataValues.criteria[i].operator = "inSet";
                     }
                     if (dataValues.criteria[i].fieldName === "startDate1") {
-                        dataValues.criteria[i].fieldName = "classStartDate";
+                        dataValues.criteria[i].fieldName = "sessionDate";
                         dataValues.criteria[i].operator = "greaterOrEqual";
                     }
                     if (dataValues.criteria[i].fieldName === "endDate1") {
-                        dataValues.criteria[i].fieldName = "classEndDate";
-                        dataValues.criteria[i].operator = "greaterOrEqual";
+                        dataValues.criteria[i].fieldName = "sessionDate";
+                        dataValues.criteria[i].operator = "lessOrEqual";
+                    }
+                    if (dataValues.criteria[i].fieldName === "holdingClassTypeId") {
+                        dataValues.criteria[i].fieldName = "tclass.holdingClassType.code";
+                        dataValues.criteria[i].operator = "inSet";
+                    }
+                    if (dataValues.criteria[i].fieldName === "teachingMethodId") {
+                        dataValues.criteria[i].fieldName = "tclass.teachingMethodId";
+                        dataValues.criteria[i].operator = "inSet";
                     }
                 }
             }
@@ -426,8 +421,8 @@
         ]
     });
 
-    let ListGrid_Result_WS = isc.TrLG.create({
-        filterOnKeypress: false,
+    ListGrid_Result_WS = isc.TrLG.create({
+        filterOnKeypress: true,
         showFilterEditor: true,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_Result_WS,
@@ -439,22 +434,27 @@
                 filterOperator: "iContains"
             },
             {
-                name: "sessionTime",
+                name: "sessionHour",
                 title: "<spring:message code="session.time"/>",
                 filterOperator: "iContains"
             },
             {
-                name: "classTitle",
+                name: "tclass.titleClass",
                 title: "<spring:message code="class.title"/>",
                 filterOperator: "iContains"
             },
             {
-                name: "classCode",
+                name: "tclass.code",
                 title: "<spring:message code="class.code"/>",
                 filterOperator: "iContains"
             },
             {
-                name: "teachingMethod",
+                name: "tclass.holdingClassType.code",
+                filterOperator: "iContains",
+                hidden: true
+            },
+            {
+                name: "tclass.teachingMethod.title",
                 title: "<spring:message code="teaching.method"/>",
                 filterOperator: "iContains"
             },
@@ -464,19 +464,23 @@
                 filterOperator: "iContains"
             },
             {
-                name: "teacherType",
+                name: "teacher.personnelStatus",
                 title: "<spring:message code="teacher.type"/>",
-                filterOperator: "iContains"
+                filterOperator: "equals",
+                valueMap: {
+                    true: "داخلی",
+                    false: "بیرونی"
+                }
             },
             {
-                name: "teacherMobile",
+                name: "teacher.personality.contactInfo.mobile",
                 title: "<spring:message code="teacher.mobile"/>",
                 filterOperator: "iContains"
             },
         ]
     });
 
-    let organSegmentFilter = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle", "assistant", "affairs", "section", "unit");
+    let organSegmentFilter = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle", "assistant", "affairs", "section", "unit");
     organSegmentFilter.getItem("department.mojtameCode").required = true
 
     let VLayout_Body_WS = isc.VLayout.create({
@@ -497,12 +501,12 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelOutput() {
-        if (ListGrid_Result_WS.getOriginalData().localData === undefined) {
+        let localData = ListGrid_Result_WS.getOriginalData().localData;
+        if (localData === undefined || localData.isEmpty()) {
             createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
-        } else {
-            let url = evalAnswerUrl + "excel/evaluation-index-by-field";
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_Result_WS, url, 0, null, '', "<spring:message code="evaluation.index.by.field.report"/>", ListGrid_Result_WS.getCriteria(), null);
+            return;
         }
+        ExportToFile.downloadExcelRestUrl(null, ListGrid_Result_WS, sessionServiceUrl + "weekly-meeting-schedule", 0, null, '', "گزارش برنامه جلسات هفتگی", ListGrid_Result_WS.getCriteria(), null);
     }
 
 
