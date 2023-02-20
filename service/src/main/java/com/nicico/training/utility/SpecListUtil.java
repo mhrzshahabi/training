@@ -3,6 +3,7 @@ package com.nicico.training.utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.SearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ public class SpecListUtil {
 
     private final ObjectMapper objectMapper;
 
-    public static String SearchQuery(List<com.nicico.training.dto.SearchDTO> searchDTOList) {
+    public static String SearchQuery(List<SearchDto> searchDTOList) {
       StringBuilder query=new StringBuilder();
         if (searchDTOList.size()>0){
             searchDTOList.forEach(search->{

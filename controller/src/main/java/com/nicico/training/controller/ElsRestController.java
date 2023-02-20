@@ -3173,7 +3173,7 @@ public class ElsRestController {
     @PostMapping("/passed-classes/by-nationalCode/{nationalCode}/{page}/{size}")
     public ElsPassedCourses passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode
             , @PathVariable int page, @PathVariable int size
-            ,@RequestBody SearchDto search
+            ,@RequestBody SearchDtoRequest search
     ) {
         ElsPassedCourses res=new ElsPassedCourses();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {

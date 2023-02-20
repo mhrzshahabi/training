@@ -1,13 +1,12 @@
 package com.nicico.training.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.List;
+@Data
 
-@Setter
-@Getter
 public class SearchDto {
-   private List<SearchDTO> searchDTOList;
 
+    private String fieldName;
+
+    private Object value;
 }

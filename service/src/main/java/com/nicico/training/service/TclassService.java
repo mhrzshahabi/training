@@ -2887,7 +2887,7 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDto search) {
+    public ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDtoRequest search) {
         ElsPassedCourses res = new ElsPassedCourses();
         try {
             String searchQuery = "";
