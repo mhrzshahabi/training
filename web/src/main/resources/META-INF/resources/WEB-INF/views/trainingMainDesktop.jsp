@@ -2655,6 +2655,12 @@
                                 }
                             },
                             {isSeparator: true},
+                            {
+                                title: "گزارش برنامه جلسات هفتگی",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/weeklyMeetingSchedule"/>");
+                                }
+                            },
                         ]
                 },
                 {isSeparator: true},

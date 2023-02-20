@@ -42,4 +42,7 @@ public interface IParameterValueService {
     ParameterValueDTO.Info getInfoByCode(String code);
 
     String getTitleByValue(String pId);
+
+    TotalResponse<ParameterValueDTO.Info> findAllByParameterCodes(List<String> parameterCodes);
+
 }

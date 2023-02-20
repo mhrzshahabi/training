@@ -162,4 +162,18 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         parameterValue.setDescription(des);
         dao.save(parameterValue);
     }
+
+    @Override
+    public TotalResponse<ParameterValueDTO.Info> findAllByParameterCodes(List<String> parameterCodes) {
+        List<ParameterValueDTO.Info> infos = new ArrayList<>();
+        List<ParameterValue> parameterValues = dao.findAllByParameterCodes(parameterCodes);
+        parameterValues.forEach(parameterValue -> {
+            ParameterValueDTO.Info info = modelMapper.map(parameterValue, ParameterValueDTO.Info.class);
+            info.setParameterTitle(parameterValue.getParameter().getTitle());
+            infos.add(info);
+        });
+        GridResponse grid = new GridResponse<>(infos);
+        grid.setTotalRows(infos.size());
+        return new TotalResponse<>(grid);
+    }
 }

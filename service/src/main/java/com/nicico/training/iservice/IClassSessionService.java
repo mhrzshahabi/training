@@ -51,6 +51,9 @@ public interface IClassSessionService {
     @Transactional
     SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);
 
+    @Transactional
+    SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchWeeklyMeetingSchedule(SearchDTO.SearchRq request);
+
     ClassSessionDTO.DeleteStatus deleteSessions(Long classId, @RequestBody List<Long> studentIds);
 
     ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId);

@@ -292,4 +292,16 @@ public class ClassSessionRestController {
     public ResponseEntity<String> classHasAnySession(@PathVariable Long classId) {
         return new ResponseEntity<>(iClassSessionService.loadSessions(classId).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
     }
+
+    @GetMapping(value = "/weekly-meeting-schedule")
+    public ResponseEntity<ISC<ClassSessionDTO.WeeklyMeetingSchedule>> getWeeklyTrainingSchedule(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchRs;
+        searchRs = iClassSessionService.searchWeeklyMeetingSchedule(searchRq);
+        ISC<ClassSessionDTO.WeeklyMeetingSchedule> res = ISC.convertToIscRs(searchRs, startRow);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }

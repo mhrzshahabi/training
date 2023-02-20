@@ -136,6 +136,33 @@ public class ClassSessionDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("ClassSessionWeeklyMeetingSchedule")
+    public static class WeeklyMeetingSchedule {
+        private Long id;
+        private String sessionDate;
+        private String sessionStartHour;
+        private String sessionEndHour;
+        private String sessionHour;
+        private TclassDTO.Info tclass;
+        private TeacherDTO.Info teacher;
+
+        public String getSessionHour() {
+            String result = "";
+            if (sessionStartHour != null) {
+                result += sessionStartHour;
+            }
+            if (sessionEndHour != null) {
+                result += " تا ";
+                result += sessionEndHour;
+            }
+            return result;
+        }
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ClassSessionWeeklyScheduleSpecRs")
     public static class ClassSessionWeeklyScheduleSpecRs {

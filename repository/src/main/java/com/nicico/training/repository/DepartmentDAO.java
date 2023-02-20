@@ -43,4 +43,40 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
 
     @Query(value = "SELECT c_mojtame_title FROM tbl_department where id =:id AND e_deleted IS NULL", nativeQuery = true)
     String getComplexTitleById(Long id);
+
+    @Query(value = """
+            SELECT
+                id
+            FROM
+                VIEW_COMPLEX
+            WHERE
+             c_title IN (
+                    :complexTitles
+                )
+            """, nativeQuery = true)
+    List<Long> getComplexIdsByTitle(@Param("complexTitles") List<String> complexTitles);
+
+    @Query(value = """
+            SELECT
+                id
+            FROM
+                VIEW_ASSISTANT
+            WHERE
+            C_MOAVENAT_TITLE IN (
+                    :assistantTitles
+                )
+            """, nativeQuery = true)
+    List<Long> getAssistantIdsByTitle(@Param("assistantTitles") List<String> assistantTitles);
+
+    @Query(value = """
+            SELECT
+                id
+            FROM
+                VIEW_AFFAIRS
+            WHERE
+             C_OMOR_TITLE IN (
+                    :affairsTitles
+                )
+            """, nativeQuery = true)
+    List<Long> getAffairIdsByTitle(@Param("affairsTitles") List<String> affairTitles);
 }
