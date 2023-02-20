@@ -26,6 +26,7 @@ public class CourseDto {
     private String behavioralLevel;
     private String evaluation;
     private boolean hasGoal;
+    private String createdDate;
     private String createdBy;
     private String lastModifiedBy;
     private Integer startEvaluation;
