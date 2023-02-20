@@ -2965,7 +2965,7 @@ public class TclassService implements ITclassService {
         queryString.append(" tbl_class.c_status IN ( 3, 5 ) ");
         queryString.append(" AND tbl_class_student.scores_state_id IN ( 400, 401 ) ");
 
-        queryString.append("     AND tbl_student.national_code = ").append(nationalCode);
+        queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
         queryString.append("   ORDER BY id desc ");
         queryString.append(" ) WHERE 1=1 ");
         queryString.append(searchQuery);
@@ -2998,7 +2998,7 @@ public class TclassService implements ITclassService {
         queryString.append(" tbl_class.c_status IN ( 3, 5 ) ");
         queryString.append(" AND tbl_class_student.scores_state_id IN ( 400, 401 ) ");
 
-        queryString.append("     AND tbl_student.national_code = ").append(nationalCode);
+        queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
         queryString.append("   ORDER BY id desc ");
         queryString.append("     OFFSET  ").append(page);
         queryString.append("     ROWS FETCH NEXT  ").append(size);
