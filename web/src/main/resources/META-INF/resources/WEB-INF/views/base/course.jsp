@@ -93,6 +93,7 @@
             {name: "levelType.titleFa"},
             {name: "theoType.titleFa"},
             {name: "duration"},
+            {name: "createdDate"},
             {name: "technicalType.titleFa"},
             {name: "minTeacherDegree"},
             {name: "minTeacherExpYears"},
@@ -399,6 +400,18 @@
                     keyPressFilter: "[0-9]",
                     // criteriaField: "theoryDuration",
                 },
+            },
+            {
+                name: "createdDate",
+                title: "<spring:message code="create.date"/>",
+                align: "center",
+                filterOperator: "equals",
+                formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }
             },
             {
                 name: "technicalType.titleFa", title: "<spring:message
