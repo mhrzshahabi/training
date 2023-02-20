@@ -5,8 +5,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.model.Category;
+import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.SubcategoryDAO;
@@ -30,6 +32,7 @@ public class SubcategoryService implements ISubcategoryService {
     private final ModelMapper modelMapper;
     private final SubcategoryDAO subCategoryDAO;
     private final CategoryDAO categoryDAO;
+    private final IParameterValueService parameterValueService;
 
     @Transactional(readOnly = true)
     @Override
@@ -168,5 +171,37 @@ public class SubcategoryService implements ISubcategoryService {
     @Override
     public Subcategory findByCategoryIdAndTitleFa(Long categoryId, String titleFa) {
         return subCategoryDAO.findByCategoryIdAndTitleFa(categoryId, titleFa);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Subcategory addClassificationToSubCategory(Long subCategoryId, Set<Long> classificationIds) {
+        Optional<Subcategory> subcategoryOptional = subCategoryDAO.findById(subCategoryId);
+        Subcategory subcategory = subcategoryOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Set<ParameterValue> classificationSet = subcategory.getClassifications();
+        classificationSet.addAll(parameterValueService.getParameterValueByIds(classificationIds));
+        subcategory.setClassifications(classificationSet);
+        return subCategoryDAO.saveAndFlush(subcategory);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Subcategory removeClassificationFromSubCategory(Long subCategoryId, Long classificationId) {
+        Optional<Subcategory> subcategoryOptional = subCategoryDAO.findById(subCategoryId);
+        Subcategory subcategory = subcategoryOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Set<ParameterValue> classificationSet = subcategory.getClassifications();
+        classificationSet.removeIf(item -> item.getId().equals(classificationId));
+        subcategory.setClassifications(classificationSet);
+        return subCategoryDAO.saveAndFlush(subcategory);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SubcategoryDTO.ClassificationList> classificationList(Long subCategoryId) {
+        Optional<Subcategory> subcategoryOptional = subCategoryDAO.findById(subCategoryId);
+        Subcategory subcategory = subcategoryOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        List<ParameterValue> classificationList = subcategory.getClassifications().stream().collect(Collectors.toList());
+        return modelMapper.map(classificationList, new TypeToken<List<SubcategoryDTO.ClassificationList>>() {
+        }.getType());
     }
 }

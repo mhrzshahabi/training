@@ -1417,11 +1417,17 @@
         <addForeignKeyConstraint baseColumnNames="f_group_id" baseTableName="tbl_personnel_in_group" constraintName="FK_group_in_tbl_tbl_personnel_in_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_group_of_personnel" validate="true"/>
     </changeSet>
 
-
     <changeSet author="namdari (generated)" id="1633842708000-12">
         <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_personnel_in_group" constraintName="FK_personnel_id_in_tbl_personnel_in_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-111">
+        <addForeignKeyConstraint baseColumnNames="f_sub_category_id" baseTableName="tbl_sub_category_parameter_value" constraintName="FK_sub_category_id_in_tbl_sub_category_parameter_value" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-112">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_id" baseTableName="tbl_sub_category_parameter_value" constraintName="FK_parameter_value_id_in_tbl_sub_category_parameter_value" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 
 
 </databaseChangeLog>

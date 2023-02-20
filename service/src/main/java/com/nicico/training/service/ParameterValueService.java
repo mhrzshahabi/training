@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -154,6 +153,15 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
             return parameterValueOptional.get().getTitle();
         else
             return "";
+    }
+
+    @Override
+    public Set<ParameterValue> getParameterValueByIds(Set<Long> ids) {
+        Set<ParameterValue> parameterValueSet = new HashSet<>();
+        if (!ids.isEmpty()) {
+            parameterValueSet = dao.findAllById(ids).stream().collect(Collectors.toSet());
+        }
+        return parameterValueSet;
     }
 
     public void editParameterValue(String des, String code, Long id) {

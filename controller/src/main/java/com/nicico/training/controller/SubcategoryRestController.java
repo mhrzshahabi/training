@@ -1,15 +1,11 @@
-package com.nicico.training.controller;/*
-com.nicico.training.controller
-@author : banifatemi
-@Date : 6/8/2019
-@Time :1:24 PM
-    */
+package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ISubcategoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -209,4 +206,41 @@ public class SubcategoryRestController {
         SearchDTO.SearchRs<SubcategoryDTO.SubCategoryInfoTuple> searchRs = subCategoryService.search(searchRq, i -> modelMapper.map(i, SubcategoryDTO.SubCategoryInfoTuple.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @Loggable
+    @PutMapping(value = "/add-classification/{subCategoryId}")
+    public ResponseEntity addClassificationToSubCategory(@PathVariable Long subCategoryId, @RequestBody Set<Long> classificationIds) {
+        try {
+            subCategoryService.addClassificationToSubCategory(subCategoryId, classificationIds);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @PutMapping(value = "/remove-classification/{subCategoryId}/{classificationId}")
+    public ResponseEntity removeClassificationFromSubCategory(@PathVariable Long subCategoryId, @PathVariable Long classificationId) {
+        try {
+            subCategoryService.removeClassificationFromSubCategory(subCategoryId, classificationId);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @GetMapping(value = "/classification-list/{id}")
+    public ResponseEntity<ISC<SubcategoryDTO.ClassificationList>> classificationList(HttpServletRequest iscRq, @PathVariable Long id) throws IOException {
+
+        List<SubcategoryDTO.ClassificationList> classificationList = subCategoryService.classificationList(id);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+
+        SearchDTO.SearchRs<SubcategoryDTO.ClassificationList> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) classificationList.size());
+        searchRs.setList(classificationList);
+
+        ISC<SubcategoryDTO.ClassificationList> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
 }
