@@ -6520,115 +6520,92 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = """
-            -- Report38 nerkh nofoz amozesh\s
-          \s
-           SELECT  \s
-          rowNum AS id, \s
-           res.* FROM( \s
-                           SELECT DISTINCT \s
-                    \s
-                               s.mojtama_id  as complex_id, \s
-                               s.mojtama     as complex, \s
-                               SUM(s.presence_hour) over (partition by  s.mojtama)  AS n_base_on_complex, \s
-                                \s
-                               s.moavenat_id as assistant_id, \s
-                               s.moavenat    as assistant, \s
-                               SUM(s.presence_hour) over (partition by  s.moavenat)  AS n_base_on_assistant, \s
-                                \s
-                               s.omoor_id   as affairs_id, \s
-                               s.omoor      as affairs, \s
-                               SUM(s.presence_hour) over (partition by  s.omoor)  AS n_base_on_affairs \s
-                            \s
-                           FROM \s
-                               ( \s
-                                   SELECT \s
-                                       class.id               AS class_id, \s
-                                       tbl_student.id                 AS student_id, \s
-                                       SUM( \s
-                                           CASE \s
-                                               WHEN att.c_state IN('1', '2') THEN \s
-                                                   round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) * \s
-                                                   24, 1) \s
-                                               ELSE \s
-                                                   0 \s
-                                           END \s
-                                       )                      AS presence_hour, \s
-                                       \s
-                                       class.c_start_date     AS class_start_date , \s
-                                       class.c_end_date       AS class_end_date, \s
-                                       view_complex.id        AS mojtama_id,
-                                       view_complex.c_title   AS mojtama,
-                                       view_assistant.id      AS moavenat_id,
-                                       view_assistant.c_title AS moavenat,
-                                       view_affairs.id        AS omoor_id,
-                                       view_affairs.c_title   AS omoor
-             \s
-                                   FROM \s
-                                            tbl_attendance att \s
-                                       INNER JOIN tbl_session csession ON att.f_session = csession.id \s
-                                       INNER JOIN tbl_class   class ON csession.f_class_id = class.id \s
-                                      \s
-                                       INNER JOIN
-                                          (
-                                            select
-                                                  tbl_student.id                                                         as id
-                                                 ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
-                                                 ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
-                                                 ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
-                                            \s
-                                             from tbl_student\s
-                                              LEFT JOIN view_last_md_employee_hr
-                                              ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
-                                          )
-                                           tbl_student ON att.f_student = tbl_student.id\s
-                                          RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
-                                          RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
-                                          RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
-          \s
-                                 WHERE 1=1 \s
-                                 and class.C_START_DATE >=  :fromDate
-                                 and class.C_START_DATE <=  :toDate
-                       --        and class.C_STATUS in (3,5) --finish/lock \s
-                                  \s
-                                 GROUP BY \s
-                                       class.id, \s
-                                       tbl_student.id, \s
-                                       class.c_start_date, \s
-                                       class.c_end_date,\s
-                                       csession.c_session_date, \s
-                                       class.c_code, \s
-                                       view_complex.id,
-                                      view_complex.c_title,
-                                      view_assistant.id,
-                                      view_assistant.c_title,
-                                      view_affairs.id,
-                                      view_affairs.c_title
-            \s
-                               ) s \s
-                               where 1=1 \s
-                                    and (  s.mojtama_id is not null \s
-                                            and moavenat_id is not null \s
-                                            and s.omoor_id is not null \s
-                                            and  s.omoor is not null \s
-                                        ) \s
-                           GROUP BY \s
-                               s.presence_hour, \s
-                               s.mojtama_id, \s
-                               s.mojtama, \s
-                               s.moavenat_id, \s
-                               s.moavenat, \s
-                               s.omoor_id, \s
-                               s.omoor, \s
-                               s.omoor  \s
-                       \s
-                       )res \s
-                                  \s
-          where  \s
-               (:complexNull = 1 OR complex IN (:complex))  \s
-               AND (:assistantNull = 1 OR assistant IN (:assistant))  \s
-               AND (:affairsNull = 1 OR affairs IN (:affairs))\s
-  """, nativeQuery = true)
+    @Query(value = " -- Report38 nerkh nofoz amozesh  \n" +
+            "            \n" +
+            "           SELECT    \n" +
+            "          rowNum AS id,   \n" +
+            "           res.* FROM(   \n" +
+            "                          SELECT DISTINCT            \n" +
+            "                                           SUM(s.presence_hour)  over (partition by  s.mojtama)  AS n_base_on_complex,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by  s.moavenat)  AS n_base_on_assistant,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by s.omoor)  AS n_base_on_affairs,            \n" +
+            "                                           s.mojtama_id as complex_id ,            \n" +
+            "                                           s.mojtama as  complex ,            \n" +
+            "                                           moavenat_id as assistant_id ,            \n" +
+            "                                           s.moavenat as assistant,            \n" +
+            "                                           s.omoor_id as affairs_id,            \n" +
+            "                                           s.omoor   as      affairs     \n" +
+            "                                                     \n" +
+            "                                       FROM            \n" +
+            "                                           (            \n" +
+            "                                               SELECT            \n" +
+            "                                                   class.id               AS class_id,            \n" +
+            "                                                   std.id                 AS student_id,            \n" +
+            "                                                   SUM(            \n" +
+            "                                                                  \n" +
+            "                                                               round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *            \n" +
+            "                                                               24, 1)            \n" +
+            "                                                                      \n" +
+            "                                                                  \n" +
+            "                                                   )                      AS presence_hour,            \n" +
+            "                                                              \n" +
+            "                                                   class.c_start_date     AS class_start_date ,            \n" +
+            "                                                   class.c_end_date       AS class_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_complex   AS mojtama,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant AS moavenat,            \n" +
+            "                                                   view_last_md_employee_hr.c_omor_code       AS omoor_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                               FROM            \n" +
+            "                                                        tbl_attendance att            \n" +
+            "                                                   INNER JOIN tbl_student std ON att.f_student = std.id            \n" +
+            "                                                   INNER JOIN tbl_session csession ON att.f_session = csession.id            \n" +
+            "                                                   INNER JOIN tbl_class   class ON csession.f_class_id = class.id            \n" +
+            "                                                   LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE        \n" +
+            "                                  \n" +
+            "                                              where 1=1                 \n" +
+            "                                                and class.C_START_DATE >= :fromDate            \n" +
+            "                                                                             and class.C_START_DATE <= :toDate            \n" +
+            "                                              --and class.C_START_DATE <=@            \n" +
+            "                                              --and class.C_END_DATE =>@            \n" +
+            "                                        --       and view_complex.id =@            \n" +
+            "                                       --       and view_affairs.id =@            \n" +
+            "                                       --       and view_assistant.id =@            \n" +
+            "                                                               \n" +
+            "                                               GROUP BY            \n" +
+            "                                                   class.id,            \n" +
+            "                                                   std.id,            \n" +
+            "                                                   class.c_start_date,            \n" +
+            "                                                   class.c_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code,            \n" +
+            "                                                  view_last_md_employee_hr.c_omor_code,            \n" +
+            "                                                  view_last_md_employee_hr.ccp_complex,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs,        \n" +
+            "                                                   csession.c_session_date,            \n" +
+            "                                                   class.c_code            \n" +
+            "                                           ) s            \n" +
+            "                                       GROUP BY            \n" +
+            "                                           s.presence_hour,            \n" +
+            "                                           s.class_id,             \n" +
+            "                                           s.class_end_date,            \n" +
+            "                                           s.class_start_date,              \n" +
+            "                                           s.mojtama_id,            \n" +
+            "                                           s.mojtama,            \n" +
+            "                                           moavenat_id,            \n" +
+            "                                           s.moavenat,            \n" +
+            "                                           s.omoor_id,            \n" +
+            "                                           s.omoor            \n" +
+            "                                        having  nvl(SUM(s.presence_hour) ,0)  !=0      \n" +
+            "                         \n" +
+            "                       )res   \n" +
+            "                                    \n" +
+            "          where    \n" +
+            "               (:complexNull = 1 OR complex IN (:complex))    \n" +
+            "               AND (:assistantNull = 1 OR assistant IN (:assistant))    \n" +
+            "               AND (:affairsNull = 1 OR affairs IN (:affairs))  ", nativeQuery = true)
     List<GenericStatisticalIndexReport> educationPenetrationRate(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -6642,101 +6619,93 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = "  -- nerkh nofoz amozesh dar kol\n" +
-            "\n" +
-            "\n" +
-            "SELECT \n" +
-            "                                                   rowNum AS id,\n" +
-            "                                                    res.* FROM(\n" +
-            "\n" +
-            "    SELECT DISTINCT\n" +
-            "        s.mojtama_id as complex_id,\n" +
-            "        s.mojtama as complex,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.mojtama)  AS n_base_on_complex,\n" +
-            "        \n" +
-            "        s.moavenat_id as assistant_id,\n" +
-            "         s.moavenat as assistant,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.moavenat)  AS n_base_on_assistant,\n" +
-            "        \n" +
-            "        s.omoor_id as affairs_id,\n" +
-            "        s.omoor as affairs,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.omoor)  AS n_base_on_affairs\n" +
-            "   \n" +
-            "    FROM\n" +
-            "        (\n" +
-            "            SELECT\n" +
-            "                class.id               AS class_id,\n" +
-            "                std.id                 AS student_id,\n" +
-            "                SUM(\n" +
-            "                    CASE\n" +
-            "                        WHEN att.c_state IN('1', '2') THEN\n" +
-            "                            round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                            24, 1)\n" +
-            "                        ELSE\n" +
-            "                            0\n" +
-            "                    END\n" +
-            "                )                      AS presence_hour,\n" +
-            "               \n" +
-            "                class.c_start_date     AS class_start_date ,\n" +
-            "                class.c_end_date       AS class_end_date,\n" +
-            "                class.complex_id       AS mojtama_id,\n" +
-            "                view_complex.c_title   AS mojtama,\n" +
-            "                class.assistant_id     AS moavenat_id,\n" +
-            "                view_assistant.c_title AS moavenat,\n" +
-            "                class.affairs_id       AS omoor_id,\n" +
-            "                view_affairs.c_title   AS omoor\n" +
-            "            FROM\n" +
-            "                     tbl_attendance att\n" +
-            "                INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "                INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "                INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "                LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "                LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "                LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "          WHERE 1=1\n" +
-            "           and class.C_STATUS in (3,5) --finish/lock\n" +
-            "               and class.C_START_DATE >= :fromDate  \n" +
-            "                                                                       and class.C_START_DATE <= :toDate\n" +
-            "           --and class.C_START_DATE <=@\n" +
-            "          --and class.C_END_DATE   =>@ \n" +
-            "     --     and view_complex.id =@\n" +
-            "    --      and view_affairs.id =@\n" +
-            "    --      and view_assistant.id =@\n" +
-            "                \n" +
-            "            GROUP BY\n" +
-            "                class.id,\n" +
-            "                std.id,\n" +
-            "                class.c_start_date,\n" +
-            "                class.c_end_date,\n" +
-            "                view_complex.c_title,\n" +
-            "                class.complex_id,\n" +
-            "                class.assistant_id,\n" +
-            "                class.affairs_id,\n" +
-            "                view_assistant.c_title,\n" +
-            "                view_affairs.c_title,\n" +
-            "                csession.c_session_date,\n" +
-            "                class.c_code\n" +
-            "        ) s\n" +
-            "        where 1=1\n" +
-            "             and (  s.mojtama_id is not null\n" +
-            "                     and moavenat_id is not null\n" +
-            "                     and s.omoor_id is not null\n" +
-            "                 )\n" +
-            "    GROUP BY\n" +
-            "        s.presence_hour,\n" +
-            "        s.mojtama_id,\n" +
-            "        s.mojtama,\n" +
-            "        s.moavenat_id,\n" +
-            "        s.moavenat,\n" +
-            "        s.omoor_id,\n" +
-            "        s.omoor\n" +
-            ")res\n" +
-            "          \n" +
-            "            where \n" +
-            "                                                        (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                                                  AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                                        AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
-            "\n", nativeQuery = true)
+    @Query(value = " -- Report38 nerkh nofoz amozesh  \n" +
+            "            \n" +
+            "           SELECT    \n" +
+            "          rowNum AS id,   \n" +
+            "           res.* FROM(   \n" +
+            "                          SELECT DISTINCT            \n" +
+            "                                           SUM(s.presence_hour)  over (partition by  s.mojtama)  AS n_base_on_complex,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by  s.moavenat)  AS n_base_on_assistant,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by s.omoor)  AS n_base_on_affairs,            \n" +
+            "                                           s.mojtama_id as complex_id ,            \n" +
+            "                                           s.mojtama as  complex ,            \n" +
+            "                                           moavenat_id as assistant_id ,            \n" +
+            "                                           s.moavenat as assistant,            \n" +
+            "                                           s.omoor_id as affairs_id,            \n" +
+            "                                           s.omoor   as      affairs     \n" +
+            "                                                     \n" +
+            "                                       FROM            \n" +
+            "                                           (            \n" +
+            "                                               SELECT            \n" +
+            "                                                   class.id               AS class_id,            \n" +
+            "                                                   std.id                 AS student_id,            \n" +
+            "                                                   SUM(            \n" +
+            "                                                                  \n" +
+            "                                                               round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *            \n" +
+            "                                                               24, 1)            \n" +
+            "                                                                      \n" +
+            "                                                                  \n" +
+            "                                                   )                      AS presence_hour,            \n" +
+            "                                                              \n" +
+            "                                                   class.c_start_date     AS class_start_date ,            \n" +
+            "                                                   class.c_end_date       AS class_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_complex   AS mojtama,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant AS moavenat,            \n" +
+            "                                                   view_last_md_employee_hr.c_omor_code       AS omoor_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                               FROM            \n" +
+            "                                                        tbl_attendance att            \n" +
+            "                                                   INNER JOIN tbl_student std ON att.f_student = std.id            \n" +
+            "                                                   INNER JOIN tbl_session csession ON att.f_session = csession.id            \n" +
+            "                                                   INNER JOIN tbl_class   class ON csession.f_class_id = class.id            \n" +
+            "                                                   LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE        \n" +
+            "                                  \n" +
+            "                                              where 1=1                 \n" +
+            "                                                and class.C_START_DATE >= :fromDate            \n" +
+            "                                                                             and class.C_START_DATE <= :toDate   \n" +
+            "                                                                             and class.C_STATUS in (3,5)\n" +
+            "                                              --and class.C_START_DATE <=@            \n" +
+            "                                              --and class.C_END_DATE =>@            \n" +
+            "                                        --       and view_complex.id =@            \n" +
+            "                                       --       and view_affairs.id =@            \n" +
+            "                                       --       and view_assistant.id =@            \n" +
+            "                                                               \n" +
+            "                                               GROUP BY            \n" +
+            "                                                   class.id,            \n" +
+            "                                                   std.id,            \n" +
+            "                                                   class.c_start_date,            \n" +
+            "                                                   class.c_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code,            \n" +
+            "                                                  view_last_md_employee_hr.c_omor_code,            \n" +
+            "                                                  view_last_md_employee_hr.ccp_complex,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs,        \n" +
+            "                                                   csession.c_session_date,            \n" +
+            "                                                   class.c_code            \n" +
+            "                                           ) s            \n" +
+            "                                       GROUP BY            \n" +
+            "                                           s.presence_hour,            \n" +
+            "                                           s.class_id,             \n" +
+            "                                           s.class_end_date,            \n" +
+            "                                           s.class_start_date,              \n" +
+            "                                           s.mojtama_id,            \n" +
+            "                                           s.mojtama,            \n" +
+            "                                           moavenat_id,            \n" +
+            "                                           s.moavenat,            \n" +
+            "                                           s.omoor_id,            \n" +
+            "                                           s.omoor            \n" +
+            "                                        having  nvl(SUM(s.presence_hour) ,0)  !=0      \n" +
+            "                         \n" +
+            "                       )res   \n" +
+            "                                    \n" +
+            "          where    \n" +
+            "               (:complexNull = 1 OR complex IN (:complex))    \n" +
+            "               AND (:assistantNull = 1 OR assistant IN (:assistant))    \n" +
+            "               AND (:affairsNull = 1 OR affairs IN (:affairs))  ", nativeQuery = true)
     List<GenericStatisticalIndexReport> rateOfEducationInGeneral(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -6749,103 +6718,93 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = "   -- nerkh nofoz amozesh dar yek sal morede andazeh ghiri\n" +
-            "\n" +
-            "SELECT \n" +
-            "                                                   rowNum AS id,\n" +
-            "                                                    res.* FROM(\n" +
-            "\n" +
-            "    SELECT DISTINCT\n" +
-            "       s.mojtama_id as complex_id,\n" +
-            "        s.mojtama as complex,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.mojtama)  AS n_base_on_complex,\n" +
-            "        \n" +
-            "         s.moavenat_id as assistant_id,\n" +
-            "        s.moavenat as assistant,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.moavenat)  AS n_base_on_assistant,\n" +
-            "        \n" +
-            "       s.omoor_id as affairs_id,\n" +
-            "        s.omoor as affairs,\n" +
-            "        SUM(s.presence_hour) over (partition by  s.omoor)  AS n_base_on_affairs\n" +
-            "   \n" +
-            "    FROM\n" +
-            "        (\n" +
-            "            SELECT\n" +
-            "                class.id               AS class_id,\n" +
-            "                std.id                 AS student_id,\n" +
-            "                SUM(\n" +
-            "                    CASE\n" +
-            "                        WHEN att.c_state IN('1', '2') THEN\n" +
-            "                            round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *\n" +
-            "                            24, 1)\n" +
-            "                        ELSE\n" +
-            "                            0\n" +
-            "                    END\n" +
-            "                )                      AS presence_hour,\n" +
-            "               \n" +
-            "                class.c_start_date     AS class_start_date ,\n" +
-            "                class.c_end_date       AS class_end_date,\n" +
-            "                class.complex_id       AS mojtama_id,\n" +
-            "                view_complex.c_title   AS mojtama,\n" +
-            "                class.assistant_id     AS moavenat_id,\n" +
-            "                view_assistant.c_title AS moavenat,\n" +
-            "                class.affairs_id       AS omoor_id,\n" +
-            "                view_affairs.c_title   AS omoor\n" +
-            "            FROM\n" +
-            "                     tbl_attendance att\n" +
-            "                INNER JOIN tbl_student std ON att.f_student = std.id\n" +
-            "                INNER JOIN tbl_session csession ON att.f_session = csession.id\n" +
-            "                INNER JOIN tbl_class   class ON csession.f_class_id = class.id\n" +
-            "                LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "                LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "                LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "          WHERE 1=1\n" +
-            "           and class.C_STATUS in (3,5) --finish/lock\n" +
-            "                 and class.C_START_DATE >= :fromDate  \n" +
-            "                                                                       and class.C_START_DATE <= :toDate\n" +
-            "           --and class.C_START_DATE <=@\n" +
-            "          --and class.C_END_DATE   =>@ \n" +
-            "     --     and view_complex.id =@\n" +
-            "    --      and view_affairs.id =@\n" +
-            "    --      and view_assistant.id =@\n" +
-            "                \n" +
-            "            GROUP BY\n" +
-            "                class.id,\n" +
-            "                std.id,\n" +
-            "                class.c_start_date,\n" +
-            "                class.c_end_date,\n" +
-            "                view_complex.c_title,\n" +
-            "                class.complex_id,\n" +
-            "                class.assistant_id,\n" +
-            "                class.affairs_id,\n" +
-            "                view_assistant.c_title,\n" +
-            "                view_affairs.c_title,\n" +
-            "                csession.c_session_date,\n" +
-            "                class.c_code\n" +
-            "        ) s\n" +
-            "        where 1=1\n" +
-            "             and (  s.mojtama_id is not null\n" +
-            "                     and moavenat_id is not null\n" +
-            "                     and s.omoor_id is not null\n" +
-            "                 )\n" +
-            "    GROUP BY\n" +
-            "        s.presence_hour,\n" +
-            "        s.mojtama_id,\n" +
-            "        s.mojtama,\n" +
-            "        s.moavenat_id,\n" +
-            "        s.moavenat,\n" +
-            "        s.omoor_id,\n" +
-            "        s.omoor\n" +
-            "   -- nerkh nofoz amozesh dar yek sal morede andazeh ghiri\n" +
-            "\n" +
-            "\n" +
-            ")res\n" +
-            "          \n" +
-            "            where \n" +
-            "                                                        (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                                                  AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
-            "                                                        AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
-            "\n", nativeQuery = true)
+    @Query(value = " -- Report38 nerkh nofoz amozesh  \n" +
+            "            \n" +
+            "           SELECT    \n" +
+            "          rowNum AS id,   \n" +
+            "           res.* FROM(   \n" +
+            "                          SELECT DISTINCT            \n" +
+            "                                           SUM(s.presence_hour)  over (partition by  s.mojtama)  AS n_base_on_complex,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by  s.moavenat)  AS n_base_on_assistant,            \n" +
+            "                                            SUM(s.presence_hour)  over (partition by s.omoor)  AS n_base_on_affairs,            \n" +
+            "                                           s.mojtama_id as complex_id ,            \n" +
+            "                                           s.mojtama as  complex ,            \n" +
+            "                                           moavenat_id as assistant_id ,            \n" +
+            "                                           s.moavenat as assistant,            \n" +
+            "                                           s.omoor_id as affairs_id,            \n" +
+            "                                           s.omoor   as      affairs     \n" +
+            "                                                     \n" +
+            "                                       FROM            \n" +
+            "                                           (            \n" +
+            "                                               SELECT            \n" +
+            "                                                   class.id               AS class_id,            \n" +
+            "                                                   std.id                 AS student_id,            \n" +
+            "                                                   SUM(            \n" +
+            "                                                                  \n" +
+            "                                                               round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *            \n" +
+            "                                                               24, 1)            \n" +
+            "                                                                      \n" +
+            "                                                                  \n" +
+            "                                                   )                      AS presence_hour,            \n" +
+            "                                                              \n" +
+            "                                                   class.c_start_date     AS class_start_date ,            \n" +
+            "                                                   class.c_end_date       AS class_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_complex   AS mojtama,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant AS moavenat,            \n" +
+            "                                                   view_last_md_employee_hr.c_omor_code       AS omoor_id,            \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs   AS omoor            \n" +
+            "                                               FROM            \n" +
+            "                                                        tbl_attendance att            \n" +
+            "                                                   INNER JOIN tbl_student std ON att.f_student = std.id            \n" +
+            "                                                   INNER JOIN tbl_session csession ON att.f_session = csession.id            \n" +
+            "                                                   INNER JOIN tbl_class   class ON csession.f_class_id = class.id            \n" +
+            "                                                   LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE        \n" +
+            "                                  \n" +
+            "                                              where 1=1                 \n" +
+            "                                                and class.C_START_DATE >= :fromDate            \n" +
+            "                                                                             and class.C_START_DATE <= :toDate   \n" +
+            "                                                                             and class.C_STATUS in (3,5)\n" +
+            "                                              --and class.C_START_DATE <=@            \n" +
+            "                                              --and class.C_END_DATE =>@            \n" +
+            "                                        --       and view_complex.id =@            \n" +
+            "                                       --       and view_affairs.id =@            \n" +
+            "                                       --       and view_assistant.id =@            \n" +
+            "                                                               \n" +
+            "                                               GROUP BY            \n" +
+            "                                                   class.id,            \n" +
+            "                                                   std.id,            \n" +
+            "                                                   class.c_start_date,            \n" +
+            "                                                   class.c_end_date,            \n" +
+            "                                                   view_last_md_employee_hr.c_mojtame_code,            \n" +
+            "                                                   view_last_md_employee_hr.c_moavenat_code,            \n" +
+            "                                                  view_last_md_employee_hr.c_omor_code,            \n" +
+            "                                                  view_last_md_employee_hr.ccp_complex,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_assistant,        \n" +
+            "                                                   view_last_md_employee_hr.ccp_affairs,        \n" +
+            "                                                   csession.c_session_date,            \n" +
+            "                                                   class.c_code            \n" +
+            "                                           ) s            \n" +
+            "                                       GROUP BY            \n" +
+            "                                           s.presence_hour,            \n" +
+            "                                           s.class_id,             \n" +
+            "                                           s.class_end_date,            \n" +
+            "                                           s.class_start_date,              \n" +
+            "                                           s.mojtama_id,            \n" +
+            "                                           s.mojtama,            \n" +
+            "                                           moavenat_id,            \n" +
+            "                                           s.moavenat,            \n" +
+            "                                           s.omoor_id,            \n" +
+            "                                           s.omoor            \n" +
+            "                                        having  nvl(SUM(s.presence_hour) ,0)  !=0      \n" +
+            "                         \n" +
+            "                       )res   \n" +
+            "                                    \n" +
+            "          where    \n" +
+            "               (:complexNull = 1 OR complex IN (:complex))    \n" +
+            "               AND (:assistantNull = 1 OR assistant IN (:assistant))    \n" +
+            "               AND (:affairsNull = 1 OR affairs IN (:affairs))  ", nativeQuery = true)
     List<GenericStatisticalIndexReport> rateOfEducationInOneYear(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -6859,591 +6818,845 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = "\n" +
-            "\n" +
-            "SELECT \n" +
-            "                                                   rowNum AS id,\n" +
-            "                                                    res.* FROM(\n" +
-            "SELECT\n" +
-            "DISTINCT\n" +
-            "\n" +
-            "    \n" +
-            "    CASE\n" +
-            "        WHEN kol = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round( post / kol, 5) * 100\n" +
-            "    END       AS  n_base_on_complex \n" +
-            "    \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as kol\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "             SELECT DISTINCT\n" +
-            "    tbl_post_grade.c_title_fa\n" +
-            "FROM\n" +
-            "    tbl_post_grade\n" +
-            "WHERE\n" +
-            "    tbl_post_grade.e_deleted IS NULL\n" +
-            "    AND tbl_post_grade.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND tbl_post_grade.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND\n" +
-            "    (\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%تکنسین%'\n" +
-            "    )\n" +
-            "             \n" +
-            "            )\n" +
-            "    ) kol ,\n" +
-            "    \n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as post\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                \n" +
-            "SELECT DISTINCT\n" +
-            "    * FROM\n" +
-            "    (\n" +
-            "\n" +
-            "select tposttitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    (\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%تکنسین%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%تکنسین%'\n" +
-            "    )\n" +
-            "\n" +
-            ")\n" +
-            "union\n" +
-            "select postTitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%تکنسین%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%تکنسین%'\n" +
-            ")\n" +
-            ")\n" +
-            " where\n" +
-            "post is not null\n" +
-            "     ) \n" +
-            "    ) post  , (SELECT\n" +
-            " \n" +
-            "\n" +
-            "   TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime\n" +
-            " \n" +
-            "   \n" +
-            "  \n" +
-            "FROM\n" +
-            "    tbl_needs_assessment\n" +
-            "WHERE\n" +
-            "    tbl_needs_assessment.e_deleted IS NULL\n" +
-            "\n" +
-            "\n" +
-            "    and\n" +
-            "     tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')\n" +
-            "     and\n" +
-            "     tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime\n" +
-            " \n" +
-            "     )res\n" +
-            " ", nativeQuery = true)
+    @Query(value = "         \n" +
+            "                        \n" +
+            "               SELECT          \n" +
+            "                                                                  rowNum AS id,         \n" +
+            "                                                                   res.* FROM(         \n" +
+            "               SELECT         \n" +
+            "               DISTINCT         \n" +
+            "                        \n" +
+            "                            \n" +
+            "                   CASE         \n" +
+            "                       WHEN kol = 0 THEN         \n" +
+            "                           0         \n" +
+            "                       ELSE         \n" +
+            "                           round( post / kol, 5) * 100         \n" +
+            "                   END       AS  n_base_on_complex          \n" +
+            "                            \n" +
+            "               FROM         \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as kol         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%تکنسین%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%تکنسین%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%تکنسین%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%تکنسین%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                         \n" +
+            "                    )          \n" +
+            "                   ) kol ,         \n" +
+            "                            \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as post         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%تکنسین%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%تکنسین%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%تکنسین%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%تکنسین%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                where         \n" +
+            "               post is not null         \n" +
+            "                    )            \n" +
+            "                   ) post  , (SELECT         \n" +
+            "                         \n" +
+            "                        \n" +
+            "                  TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime         \n" +
+            "                         \n" +
+            "                           \n" +
+            "                          \n" +
+            "               FROM         \n" +
+            "                   tbl_needs_assessment         \n" +
+            "               WHERE         \n" +
+            "                   tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                        \n" +
+            "                        \n" +
+            "                   and         \n" +
+            "                    tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')         \n" +
+            "                    and         \n" +
+            "                    tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime         \n" +
+            "                         \n" +
+            "                    )res         \n" +
+            "               ", nativeQuery = true)
     List<Object> lowerThanExpertise(String fromDate,
                                                        String toDate);
 
 
 
 
-    @Query(value = "SELECT \n" +
-            "                                                   rowNum AS id,\n" +
-            "                                                    res.* FROM(\n" +
-            "SELECT\n" +
-            "DISTINCT\n" +
-            "\n" +
-            "    \n" +
-            "    CASE\n" +
-            "        WHEN kol = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round( post / kol, 5) * 100\n" +
-            "    END       AS  n_base_on_complex\n" +
-            "    \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as kol\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "             SELECT DISTINCT\n" +
-            "    tbl_post_grade.c_title_fa\n" +
-            "FROM\n" +
-            "    tbl_post_grade\n" +
-            "WHERE\n" +
-            "    tbl_post_grade.e_deleted IS NULL\n" +
-            "    AND tbl_post_grade.d_created_date >= to_date(:fromDate  , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND tbl_post_grade.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND\n" +
-            "    (\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%سرپرست%'\n" +
-            "    )\n" +
-            "             \n" +
-            "            )\n" +
-            "    ) kol ,\n" +
-            "    \n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as post\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                \n" +
-            "SELECT DISTINCT\n" +
-            "    * FROM\n" +
-            "    (\n" +
-            "\n" +
-            "select tposttitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate  , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    (\n" +
-            "   tbl_post_grade.c_title_fa LIKE '%سرپرست%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%سرپرست%'\n" +
-            "    )\n" +
-            "\n" +
-            ")\n" +
-            "union\n" +
-            "select postTitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate  , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%سرپرست%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%سرپرست%'\n" +
-            ")\n" +
-            ")\n" +
-            "where\n" +
-            "post is not null\n" +
-            " \n" +
-            "     ) \n" +
-            "    ) post  , (SELECT\n" +
-            " \n" +
-            "\n" +
-            "   TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime\n" +
-            " \n" +
-            "   \n" +
-            "  \n" +
-            "FROM\n" +
-            "    tbl_needs_assessment\n" +
-            "WHERE\n" +
-            "    tbl_needs_assessment.e_deleted IS NULL\n" +
-            "\n" +
-            "\n" +
-            "    and\n" +
-            "     tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate  , 'yyyy/mm/dd','nls_calendar=persian')\n" +
-            "     and\n" +
-            "     tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime\n" +
-            " \n" +
-            "     )res\n" +
-            " ", nativeQuery = true)
+    @Query(value = "         \n" +
+            "                        \n" +
+            "               SELECT          \n" +
+            "                                                                  rowNum AS id,         \n" +
+            "                                                                   res.* FROM(         \n" +
+            "               SELECT         \n" +
+            "               DISTINCT         \n" +
+            "                        \n" +
+            "                            \n" +
+            "                   CASE         \n" +
+            "                       WHEN kol = 0 THEN         \n" +
+            "                           0         \n" +
+            "                       ELSE         \n" +
+            "                           round( post / kol, 5) * 100         \n" +
+            "                   END       AS  n_base_on_complex          \n" +
+            "                            \n" +
+            "               FROM         \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as kol         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%سرپرست%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%سرپرست%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%سرپرست%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%سرپرست%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                         \n" +
+            "                    )          \n" +
+            "                   ) kol ,         \n" +
+            "                            \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as post         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%سرپرست%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%سرپرست%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%سرپرست%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%سرپرست%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                where         \n" +
+            "               post is not null         \n" +
+            "                    )            \n" +
+            "                   ) post  , (SELECT         \n" +
+            "                         \n" +
+            "                        \n" +
+            "                  TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime         \n" +
+            "                         \n" +
+            "                           \n" +
+            "                          \n" +
+            "               FROM         \n" +
+            "                   tbl_needs_assessment         \n" +
+            "               WHERE         \n" +
+            "                   tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                        \n" +
+            "                        \n" +
+            "                   and         \n" +
+            "                    tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')         \n" +
+            "                    and         \n" +
+            "                    tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime         \n" +
+            "                         \n" +
+            "                    )res         \n" +
+            "               ", nativeQuery = true)
     List<Object> supervisionJob(String fromDate,
                                                        String toDate);
 
 
 
-    @Query(value = "\n" +
-            "SELECT \n" +
-            "                                                   rowNum AS id,\n" +
-            "                                                    res.* FROM(\n" +
-            "SELECT\n" +
-            "DISTINCT\n" +
-            "\n" +
-            "    \n" +
-            "    CASE\n" +
-            "        WHEN kol = 0 THEN\n" +
-            "            0\n" +
-            "        ELSE\n" +
-            "            round( post / kol, 5) * 100\n" +
-            "    END       AS  n_base_on_complex\n" +
-            "     \n" +
-            "FROM\n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as kol\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "             SELECT DISTINCT\n" +
-            "    tbl_post_grade.c_title_fa\n" +
-            "FROM\n" +
-            "    tbl_post_grade\n" +
-            "WHERE\n" +
-            "    tbl_post_grade.e_deleted IS NULL\n" +
-            "    AND tbl_post_grade.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND tbl_post_grade.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "    AND\n" +
-            "    (\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'\n" +
-            "   \n" +
-            "    )\n" +
-            "             \n" +
-            "            )\n" +
-            "    ) kol ,\n" +
-            "    \n" +
-            "    (\n" +
-            "        SELECT\n" +
-            "            COUNT(*) as post\n" +
-            "        FROM\n" +
-            "            (\n" +
-            "                \n" +
-            "SELECT DISTINCT\n" +
-            "    * FROM\n" +
-            "    (\n" +
-            "\n" +
-            "select tposttitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    (\n" +
-            "   tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%مسئول و کارشناس%'\n" +
-            "  \n" +
-            "    )\n" +
-            "\n" +
-            ")\n" +
-            "union\n" +
-            "select postTitle as post from (\n" +
-            "SELECT\n" +
-            "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-            "FROM\n" +
-            "         (\n" +
-            "        SELECT DISTINCT\n" +
-            "            tbl_needs_assessment.c_object_type,\n" +
-            "            tbl_needs_assessment.f_object,\n" +
-            "            tpost.f_post_grade_id AS tpost,\n" +
-            "            post.f_post_grade_id  AS post,\n" +
-            "            tbl_post_grade.c_title_fa as postTitle\n" +
-            "        FROM\n" +
-            "                 tbl_needs_assessment left\n" +
-            "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-            "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-            "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-            "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-            "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-            "        WHERE\n" +
-            "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-            "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-            "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-            "                   \n" +
-            "    ) f left\n" +
-            "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-            "    WHERE\n" +
-            "    tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'\n" +
-            "    OR\n" +
-            "    postTitle LIKE '%مسئول و کارشناس%'\n" +
-            "  \n" +
-            ")\n" +
-            ")\n" +
-            "where\n" +
-            "post is not null\n" +
-            " \n" +
-            "     ) \n" +
-            "    ) post  , (SELECT\n" +
-            " \n" +
-            "\n" +
-            "   TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime\n" +
-            " \n" +
-            "   \n" +
-            "  \n" +
-            "FROM\n" +
-            "    tbl_needs_assessment\n" +
-            "WHERE\n" +
-            "    tbl_needs_assessment.e_deleted IS NULL\n" +
-            "\n" +
-            "\n" +
-            "    and\n" +
-            "     tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')\n" +
-            "     and\n" +
-            "     tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime\n" +
-            " \n" +
-            "     )res\n" +
-            " ", nativeQuery = true)
+    @Query(value = "         \n" +
+            "                        \n" +
+            "               SELECT          \n" +
+            "                                                                  rowNum AS id,         \n" +
+            "                                                                   res.* FROM(         \n" +
+            "               SELECT         \n" +
+            "               DISTINCT         \n" +
+            "                        \n" +
+            "                            \n" +
+            "                   CASE         \n" +
+            "                       WHEN kol = 0 THEN         \n" +
+            "                           0         \n" +
+            "                       ELSE         \n" +
+            "                           round( post / kol, 5) * 100         \n" +
+            "                   END       AS  n_base_on_complex          \n" +
+            "                            \n" +
+            "               FROM         \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as kol         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%مسئول و کارشناس%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%مسئول و کارشناس%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                         \n" +
+            "                    )          \n" +
+            "                   ) kol ,         \n" +
+            "                            \n" +
+            "                   (         \n" +
+            "                       SELECT         \n" +
+            "                           COUNT(*) as post         \n" +
+            "                       FROM         \n" +
+            "                           (         \n" +
+            "                                        \n" +
+            "               SELECT DISTINCT         \n" +
+            "                   * FROM         \n" +
+            "                   (         \n" +
+            "                        \n" +
+            "               select tposttitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   (         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%مسئول و کارشناس%'         \n" +
+            "                   )         \n" +
+            "                        \n" +
+            "               )         \n" +
+            "               union         \n" +
+            "               select postTitle as post from (         \n" +
+            "               SELECT         \n" +
+            "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+            "               FROM         \n" +
+            "                        (         \n" +
+            "                       SELECT DISTINCT         \n" +
+            "                           tbl_needs_assessment.c_object_type,         \n" +
+            "                           tbl_needs_assessment.f_object,         \n" +
+            "                           tpost.f_post_grade_id AS tpost,         \n" +
+            "                           post.f_post_grade_id  AS post,         \n" +
+            "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+            "                       FROM         \n" +
+            "                                tbl_needs_assessment left         \n" +
+            "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+            "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+            "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+            "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+            "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+            "                       WHERE         \n" +
+            "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+            "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+            "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+            "                                           \n" +
+            "                   ) f left         \n" +
+            "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+            "                   WHERE         \n" +
+            "                   tbl_post_grade.c_title_fa LIKE '%مسئول و کارشناس%'         \n" +
+            "                   OR         \n" +
+            "                   postTitle LIKE '%مسئول و کارشناس%'         \n" +
+            "               )         \n" +
+            "               )         \n" +
+            "                where         \n" +
+            "               post is not null         \n" +
+            "                    )            \n" +
+            "                   ) post  , (SELECT         \n" +
+            "                         \n" +
+            "                        \n" +
+            "                  TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime         \n" +
+            "                         \n" +
+            "                           \n" +
+            "                          \n" +
+            "               FROM         \n" +
+            "                   tbl_needs_assessment         \n" +
+            "               WHERE         \n" +
+            "                   tbl_needs_assessment.e_deleted IS NULL         \n" +
+            "                        \n" +
+            "                        \n" +
+            "                   and         \n" +
+            "                    tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')         \n" +
+            "                    and         \n" +
+            "                    tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime         \n" +
+            "                         \n" +
+            "                    )res         \n" +
+            "               ", nativeQuery = true)
     List<Object> mastersJob(String fromDate,
                                                        String toDate);
 
 
-        @Query(value = "\n" +
-                "SELECT \n" +
-                "                                                   rowNum AS id,\n" +
-                "                                                    res.* FROM(\n" +
-                "SELECT\n" +
-                "DISTINCT\n" +
-                "\n" +
-                "    \n" +
-                "    CASE\n" +
-                "        WHEN kol = 0 THEN\n" +
-                "            0\n" +
-                "        ELSE\n" +
-                "            round( post / kol, 5) * 100\n" +
-                "    END       AS  n_base_on_complex\n" +
-                " \n" +
-                "    \n" +
-                "FROM\n" +
-                "    (\n" +
-                "        SELECT\n" +
-                "            COUNT(*) as kol\n" +
-                "        FROM\n" +
-                "            (\n" +
-                "             SELECT DISTINCT\n" +
-                "    tbl_post_grade.c_title_fa\n" +
-                "FROM\n" +
-                "    tbl_post_grade\n" +
-                "WHERE\n" +
-                "    tbl_post_grade.e_deleted IS NULL\n" +
-                "    AND tbl_post_grade.d_created_date >= to_date(:fromDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "    AND tbl_post_grade.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "    AND\n" +
-                "    (\n" +
-                "    tbl_post_grade.c_title_fa LIKE '%مدیر%'\n" +
-                "    )\n" +
-                "             \n" +
-                "            )\n" +
-                "    ) kol ,\n" +
-                "    \n" +
-                "    (\n" +
-                "        SELECT\n" +
-                "            COUNT(*) as post\n" +
-                "        FROM\n" +
-                "            (\n" +
-                "                \n" +
-                "SELECT DISTINCT\n" +
-                "    * FROM\n" +
-                "    (\n" +
-                "\n" +
-                "select tposttitle as post from (\n" +
-                "SELECT\n" +
-                "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-                "FROM\n" +
-                "         (\n" +
-                "        SELECT DISTINCT\n" +
-                "            tbl_needs_assessment.c_object_type,\n" +
-                "            tbl_needs_assessment.f_object,\n" +
-                "            tpost.f_post_grade_id AS tpost,\n" +
-                "            post.f_post_grade_id  AS post,\n" +
-                "            tbl_post_grade.c_title_fa as postTitle\n" +
-                "        FROM\n" +
-                "                 tbl_needs_assessment left\n" +
-                "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-                "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-                "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-                "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-                "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-                "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-                "        WHERE\n" +
-                "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-                "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-                "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-                "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "                   \n" +
-                "    ) f left\n" +
-                "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-                "    WHERE\n" +
-                "    (\n" +
-                "    tbl_post_grade.c_title_fa LIKE '%مدیر%'\n" +
-                "    OR\n" +
-                "    postTitle LIKE '%مدیر%'\n" +
-                "    )\n" +
-                "\n" +
-                ")\n" +
-                "union\n" +
-                "select postTitle as post from (\n" +
-                "SELECT\n" +
-                "    tbl_post_grade.c_title_fa AS tposttitle, postTitle \n" +
-                "FROM\n" +
-                "         (\n" +
-                "        SELECT DISTINCT\n" +
-                "            tbl_needs_assessment.c_object_type,\n" +
-                "            tbl_needs_assessment.f_object,\n" +
-                "            tpost.f_post_grade_id AS tpost,\n" +
-                "            post.f_post_grade_id  AS post,\n" +
-                "            tbl_post_grade.c_title_fa as postTitle\n" +
-                "        FROM\n" +
-                "                 tbl_needs_assessment left\n" +
-                "            JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id\n" +
-                "            LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id\n" +
-                "                                                             AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-                "            LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id\n" +
-                "                                                   AND tbl_needs_assessment.c_object_type = 'Post'\n" +
-                "            LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id\n" +
-                "        WHERE\n" +
-                "            ( tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-                "              OR tbl_needs_assessment.c_object_type = 'Post' )\n" +
-                "            AND tbl_needs_assessment.e_deleted IS NULL\n" +
-                "                AND tbl_needs_assessment.d_created_date >= to_date(:fromDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "                    AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')\n" +
-                "                   \n" +
-                "    ) f left\n" +
-                "    JOIN tbl_post_grade ON tpost = tbl_post_grade.id\n" +
-                "    WHERE\n" +
-                "    tbl_post_grade.c_title_fa LIKE '%مدیر%'\n" +
-                "    OR\n" +
-                "    postTitle LIKE '%مدیر%'\n" +
-                ")\n" +
-                ")\n" +
-                " where\n" +
-                "post is not null\n" +
-                "     ) \n" +
-                "    ) post  , (SELECT\n" +
-                " \n" +
-                "\n" +
-                "   TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime\n" +
-                " \n" +
-                "   \n" +
-                "  \n" +
-                "FROM\n" +
-                "    tbl_needs_assessment\n" +
-                "WHERE\n" +
-                "    tbl_needs_assessment.e_deleted IS NULL\n" +
-                "\n" +
-                "\n" +
-                "    and\n" +
-                "     tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
-                "     and\n" +
-                "     tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime\n" +
-                " \n" +
-                "       )res\n" +
-                " ", nativeQuery = true)
+        @Query(value = "         \n" +
+                "                        \n" +
+                "               SELECT          \n" +
+                "                                                                  rowNum AS id,         \n" +
+                "                                                                   res.* FROM(         \n" +
+                "               SELECT         \n" +
+                "               DISTINCT         \n" +
+                "                        \n" +
+                "                            \n" +
+                "                   CASE         \n" +
+                "                       WHEN kol = 0 THEN         \n" +
+                "                           0         \n" +
+                "                       ELSE         \n" +
+                "                           round( post / kol, 5) * 100         \n" +
+                "                   END       AS  n_base_on_complex          \n" +
+                "                            \n" +
+                "               FROM         \n" +
+                "                   (         \n" +
+                "                       SELECT         \n" +
+                "                           COUNT(*) as kol         \n" +
+                "                       FROM         \n" +
+                "                           (         \n" +
+                "                                        \n" +
+                "               SELECT DISTINCT         \n" +
+                "                   * FROM         \n" +
+                "                   (         \n" +
+                "                        \n" +
+                "               select tposttitle as post from (         \n" +
+                "               SELECT         \n" +
+                "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+                "               FROM         \n" +
+                "                        (         \n" +
+                "                       SELECT DISTINCT         \n" +
+                "                           tbl_needs_assessment.c_object_type,         \n" +
+                "                           tbl_needs_assessment.f_object,         \n" +
+                "                           tpost.f_post_grade_id AS tpost,         \n" +
+                "                           post.f_post_grade_id  AS post,         \n" +
+                "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+                "                       FROM         \n" +
+                "                                tbl_needs_assessment left         \n" +
+                "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+                "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+                "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+                "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+                "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+                "                       WHERE         \n" +
+                "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+                "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+                "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                           \n" +
+                "                   ) f left         \n" +
+                "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+                "                   WHERE         \n" +
+                "                   (         \n" +
+                "                   tbl_post_grade.c_title_fa LIKE '%مدیر%'        \n" +
+                "                   OR         \n" +
+                "                   postTitle LIKE '%مدیر%'        \n" +
+                "                   )         \n" +
+                "                        \n" +
+                "               )         \n" +
+                "               union         \n" +
+                "               select postTitle as post from (         \n" +
+                "               SELECT         \n" +
+                "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+                "               FROM         \n" +
+                "                        (         \n" +
+                "                       SELECT DISTINCT         \n" +
+                "                           tbl_needs_assessment.c_object_type,         \n" +
+                "                           tbl_needs_assessment.f_object,         \n" +
+                "                           tpost.f_post_grade_id AS tpost,         \n" +
+                "                           post.f_post_grade_id  AS post,         \n" +
+                "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+                "                       FROM         \n" +
+                "                                tbl_needs_assessment left         \n" +
+                "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+                "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+                "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+                "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+                "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+                "                       WHERE         \n" +
+                "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+                "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+                "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                           \n" +
+                "                   ) f left         \n" +
+                "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+                "                   WHERE         \n" +
+                "                   tbl_post_grade.c_title_fa LIKE '%مدیر%'        \n" +
+                "                   OR         \n" +
+                "                   postTitle LIKE '%مدیر%'       \n" +
+                "               )         \n" +
+                "               )         \n" +
+                "                         \n" +
+                "                    )          \n" +
+                "                   ) kol ,         \n" +
+                "                            \n" +
+                "                   (         \n" +
+                "                       SELECT         \n" +
+                "                           COUNT(*) as post         \n" +
+                "                       FROM         \n" +
+                "                           (         \n" +
+                "                                        \n" +
+                "               SELECT DISTINCT         \n" +
+                "                   * FROM         \n" +
+                "                   (         \n" +
+                "                        \n" +
+                "               select tposttitle as post from (         \n" +
+                "               SELECT         \n" +
+                "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+                "               FROM         \n" +
+                "                        (         \n" +
+                "                       SELECT DISTINCT         \n" +
+                "                           tbl_needs_assessment.c_object_type,         \n" +
+                "                           tbl_needs_assessment.f_object,         \n" +
+                "                           tpost.f_post_grade_id AS tpost,         \n" +
+                "                           post.f_post_grade_id  AS post,         \n" +
+                "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+                "                       FROM         \n" +
+                "                                tbl_needs_assessment left         \n" +
+                "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+                "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+                "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+                "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+                "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+                "                       WHERE         \n" +
+                "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+                "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+                "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                           \n" +
+                "                   ) f left         \n" +
+                "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+                "                   WHERE         \n" +
+                "                   (         \n" +
+                "                   tbl_post_grade.c_title_fa LIKE '%مدیر%'       \n" +
+                "                   OR         \n" +
+                "                   postTitle LIKE '%مدیر%'      \n" +
+                "                   )         \n" +
+                "                        \n" +
+                "               )         \n" +
+                "               union         \n" +
+                "               select postTitle as post from (         \n" +
+                "               SELECT         \n" +
+                "                   tbl_post_grade.c_title_fa AS tposttitle, postTitle          \n" +
+                "               FROM         \n" +
+                "                        (         \n" +
+                "                       SELECT DISTINCT         \n" +
+                "                           tbl_needs_assessment.c_object_type,         \n" +
+                "                           tbl_needs_assessment.f_object,         \n" +
+                "                           tpost.f_post_grade_id AS tpost,         \n" +
+                "                           post.f_post_grade_id  AS post,         \n" +
+                "                           tbl_post_grade.c_title_fa as postTitle         \n" +
+                "                       FROM         \n" +
+                "                                tbl_needs_assessment left         \n" +
+                "                           JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id         \n" +
+                "                           LEFT JOIN tbl_training_post tpost ON tbl_needs_assessment.f_object = tpost.id         \n" +
+                "                                                                            AND tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                           LEFT JOIN tbl_post          post ON tbl_needs_assessment.f_object = post.id         \n" +
+                "                                                                  AND tbl_needs_assessment.c_object_type = 'Post'         \n" +
+                "                           LEFT JOIN tbl_post_grade ON post.f_post_grade_id = tbl_post_grade.id         \n" +
+                "                       WHERE         \n" +
+                "                           ( tbl_needs_assessment.c_object_type = 'TrainingPost'         \n" +
+                "                             OR tbl_needs_assessment.c_object_type = 'Post' )         \n" +
+                "                           AND tbl_needs_assessment.e_deleted IS NULL         \n" +
+                "                               AND tbl_needs_assessment.d_created_date >= to_date(:fromDate , 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                   AND tbl_needs_assessment.d_created_date < to_date(:toDate, 'yyyy/mm/dd', 'nls_calendar=persian')         \n" +
+                "                                           \n" +
+                "                   ) f left         \n" +
+                "                   JOIN tbl_post_grade ON tpost = tbl_post_grade.id         \n" +
+                "                   WHERE         \n" +
+                "                   tbl_post_grade.c_title_fa LIKE '%مدیر%'   \n" +
+                "                   OR         \n" +
+                "                   postTitle LIKE '%مدیر%'         \n" +
+                "               )         \n" +
+                "               )         \n" +
+                "                where         \n" +
+                "               post is not null         \n" +
+                "                    )            \n" +
+                "                   ) post  , (SELECT         \n" +
+                "                         \n" +
+                "                        \n" +
+                "                  TO_CHAR(tbl_needs_assessment.d_created_date,'yyyy/mm/dd','nls_calendar=persian')     as createTime         \n" +
+                "                         \n" +
+                "                           \n" +
+                "                          \n" +
+                "               FROM         \n" +
+                "                   tbl_needs_assessment         \n" +
+                "               WHERE         \n" +
+                "                   tbl_needs_assessment.e_deleted IS NULL         \n" +
+                "                        \n" +
+                "                        \n" +
+                "                   and         \n" +
+                "                    tbl_needs_assessment.d_created_date >=  TO_DATE(:fromDate , 'yyyy/mm/dd','nls_calendar=persian')         \n" +
+                "                    and         \n" +
+                "                    tbl_needs_assessment.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian'))  dateTime         \n" +
+                "                         \n" +
+                "                    )res         \n" +
+                "               ", nativeQuery = true)
     List<Object> jobModiriati(String fromDate,
                                                        String toDate);
 
