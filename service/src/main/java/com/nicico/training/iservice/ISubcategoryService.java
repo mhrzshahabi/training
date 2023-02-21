@@ -44,4 +44,10 @@ public interface ISubcategoryService {
 
     Subcategory findByCategoryIdAndTitleFa(Long categoryId, String titleFa);
 
+    Subcategory addClassificationToSubCategory(Long subCategoryId, Set<Long> classificationIds);
+
+    Subcategory removeClassificationFromSubCategory(Long subCategoryId, Long classificationId);
+
+    List<SubcategoryDTO.ClassificationList> classificationList(Long id);
+
 }

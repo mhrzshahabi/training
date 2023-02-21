@@ -10058,7 +10058,72 @@ DECLARE
             </and>
         </preConditions>
         <dropView viewName="MDMS_TBL_MD_DEPARTMENT"/>
+    </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-108">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_reference" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-109">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'دسته بندی سوالات',
+                    'questionClassification');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-110">
+        <createTable tableName="tbl_sub_category_parameter_value">
+            <column name="f_sub_category_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_parameter_value_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-113">
+        <addColumn tableName="tbl_sub_category">
+            <column name="b_need_to_classification" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-114">
+        <addColumn tableName="tbl_question_bank">
+            <column name="n_classification_id" type="NUMBER(19, 0)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

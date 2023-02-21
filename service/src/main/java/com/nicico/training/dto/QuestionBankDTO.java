@@ -33,6 +33,8 @@ public class QuestionBankDTO {
     private Integer lines;
     private List<Integer> questionTargets;
     private Long enabled;
+    private String reference;
+    private Long classificationId;
 
     @Getter
     @Setter
@@ -75,6 +77,7 @@ public class QuestionBankDTO {
         private String questionDesigner;
         private Set<GroupQuestionDto> groupQuestions;
         private Set<Long> groupQuestionIds;
+        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
     }
 
     @Getter

@@ -502,8 +502,16 @@
 
     var RestDataSourceSubCategory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
+            ,{name: "needToClassification"}
         ],
         fetchDataURL: subCategoryUrl + "iscList"
+    });
+    let RestDataSource_SubCategory_Classification = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ]
     });
 
     AnswerTypeDS_questionBank = isc.TrDS.create({
@@ -1059,9 +1067,7 @@
 
     let QuestionBankDF_questionBank = isc.DynamicForm.create({
         ID: "QuestionBankDF_questionBank",
-        //width: 780,
-        overflow: "hidden",
-        //autoSize: false,
+        overflow: "clip-h",
         wrapItemTitles: true,
         numCols: 4,
         colWidths: ["10%", "25%", "10%", "25%"],
@@ -1133,6 +1139,8 @@
                             QuestionBankDF_questionBank.getItem("tclassId").setValue();
                             QuestionBankDF_questionBank.getItem("categoryId").setValue();
                             QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                            QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                            QuestionBankDF_questionBank.getItem("classificationId").disable();
                             QuestionBankDF_questionBank.getItem("teacherId").setValue();
                         }
                     }
@@ -1156,6 +1164,9 @@
                     QuestionBankDF_questionBank.getItem("tclassId").setValue();
                     QuestionBankDF_questionBank.getItem("categoryId").setValue();
                     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").disable();
+                    QuestionBankDF_questionBank.getItem("classificationId").setRequired(false);
 
                     if (!value) {
                         QuestionBankDF_questionBank.getItem("tclassId").disable();
@@ -1175,12 +1186,27 @@
                         QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
                         if (item.getSelectedRecord().subCategoryId) {
                             QuestionBankDF_questionBank.getItem("subCategoryId").setValue(item.getSelectedRecord().subCategoryId);
+                            RestDataSource_SubCategory_Classification.fetchDataURL = subCategoryUrl + "classification-list/" + item.getSelectedRecord().subCategoryId;
+                            QuestionBankDF_questionBank.getItem("classificationId").fetchData();
+                            QuestionBankDF_questionBank.getItem("classificationId").enable();
+
+                            if (item.getSelectedRecord().subCategory.needToClassification === true) {
+                                QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
+                                QuestionBankDF_questionBank.getItem("classificationId").setRequired(true);
+                            } else {
+                                QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
+                                QuestionBankDF_questionBank.getItem("classificationId").setRequired(false);
+                            }
                         } else {
                             QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                            QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                            QuestionBankDF_questionBank.getItem("classificationId").disable();
                         }
                     } else {
                         QuestionBankDF_questionBank.getItem("categoryId").setValue();
                         QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                        QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                        QuestionBankDF_questionBank.getItem("classificationId").disable();
                     }
                 }
             },
@@ -1421,6 +1447,18 @@
                 //     QuestionBankDF_questionBank.getItem("tclassId").setValue();
                 //     QuestionBankDF_questionBank.getItem("tclassId").disable();
                 // }
+            },
+            {
+                name: "classificationId",
+                title: "دسته بندی سوال",
+                textAlign: "center",
+                disabled: true,
+                autoFetchData: false,
+                width: "*",
+                required: false,
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_Classification
             },
             {
                 name: "teacherId",
@@ -1714,6 +1752,7 @@
                 sortDirection: "descending",
                 autoFetchData: false,
                 // width: "*",
+                colSpan: 1,
                 endRow: false,
                 pickListWidth: 550,
                 startRow: true,
@@ -1731,6 +1770,11 @@
                 pickListProperties: {
                     showFilterEditor: true
                 },
+            },
+            {
+                name: "reference",
+                title: "منبع سوال",
+                colSpan: 1
             },
             {
                 name: "lines",
@@ -2079,7 +2123,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                 questionBankMethod_questionBank = "PUT";
                 QuestionBankDF_questionBank.clearValues();
-
+                QuestionBankDF_questionBank.getItem("classificationId").setRequired(false);
 
                 QuestionBankWin_questionBank.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question.bank"/>" + '&nbsp;\'' + record.question + '\'');
 
@@ -2103,6 +2147,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                     QuestionBankDF_questionBank.getItem("categoryId").setValue();
                     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
                     QuestionBankDF_questionBank.getItem("teacherId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").disable();
 
                     QuestionBankDF_questionBank.getItem("tclassId").disable();
                 }
@@ -2110,8 +2156,26 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 if (record.categoryId) {
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories";
                     QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
+                    if (record.subCategoryId) {
+                        RestDataSource_SubCategory_Classification.fetchDataURL = subCategoryUrl + "classification-list/" + record.subCategoryId;
+                        QuestionBankDF_questionBank.getItem("classificationId").fetchData();
+                        QuestionBankDF_questionBank.getItem("classificationId").enable();
+
+                        if (record.subCategory.needToClassification === true) {
+                            QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
+                            QuestionBankDF_questionBank.getItem("classificationId").setRequired(true);
+                        } else {
+                            QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
+                            QuestionBankDF_questionBank.getItem("classificationId").setRequired(false);
+                        }
+                    } else {
+                        QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                        QuestionBankDF_questionBank.getItem("classificationId").disable();
+                    }
                 } else {
                     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").setValue();
+                    QuestionBankDF_questionBank.getItem("classificationId").disable();
                 }
 
                 if (!record.tclassId){

@@ -20,6 +20,22 @@
 
     // ------------------------------------------- Category -------------------------------------------
 
+    let RestDataSource_Classification = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/questionClassification"
+    });
+    let RestDataSource_SubCategory_Classification = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ]
+    });
+
     var DynamicForm_Category = isc.DynamicForm.create({
         width: "500",
         height: "180",
@@ -585,6 +601,11 @@
                     stopOnError: true,
                     errorMessage: "حداکثر تعداد کاراکتر مجاز 200 می باشد. "
                 }]
+            },
+            {
+                name: "needToClassification",
+                title: "نیاز به دسته بندی",
+                type: "boolean"
             }
         ]
     });
@@ -697,7 +718,7 @@
     var RestDataSource_Sub_Category = isc.TrDS.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
-            {name: "code"}
+            {name: "code"}, {name: "needToClassification"}
         ],
         fetchDataURL: category_SubCategoryDummyUrl
     });
@@ -768,7 +789,237 @@
                 }
             });
         }
-    };
+    }
+
+    function ListGrid_Sub_Category_Classification() {
+
+        let record = ListGrid_Sub_Category.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "رکوردی انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            Manage_Classification(record.id);
+        }
+    }
+
+    function Manage_Classification(subCategoryId) {
+
+        let ListGrid_Classifications = isc.TrLG.create({
+            height: "45%",
+            autoFetchData: true,
+            showFilterEditor: true,
+            filterOnKeypress: false,
+            selectionType: "simple",
+            selectionAppearance: "checkbox",
+            gridComponents: ["filterEditor", "header", "body"],
+            dataSource: RestDataSource_Classification,
+            fields: [
+                {
+                    name: "id", hidden: true
+                },
+                {
+                    name: "title",
+                    title: "<spring:message code="title"/>",
+                    width: "10%"
+                },
+                {
+                    name: "code",
+                    title: "<spring:message code="code"/>",
+                    width: "10%"
+                }
+            ]
+        });
+        let Section_Classifications = isc.SectionStack.create({
+            width: "100%",
+            height: "100%",
+            border: "1px solid green",
+            sections: [{
+                title: "لیست دسته بندی ها",
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [ListGrid_Classifications]
+            }]
+        });
+
+        let IButton_Add_Classification = isc.ToolStripButtonCreate.create({
+            title: "افزودن دسته بندی",
+            align: "center",
+            click: function () {
+                let selectedClassificationRecords = ListGrid_Classifications.getSelectedRecords();
+                AddClassificationToSubCategory(subCategoryId, selectedClassificationRecords, ListGrid_SubCategory_Classification);
+            }
+        });
+        let HLayOut_Add_Classification = isc.HLayout.create({
+            layoutMargin: 5,
+            showEdges: false,
+            edgeImage: "",
+            width: "100%",
+            height: "10%",
+            alignLayout: "center",
+            align: "center",
+            membersMargin: 10,
+            members: [
+                IButton_Add_Classification
+            ]
+        });
+
+        let ListGrid_SubCategory_Classification = isc.TrLG.create({
+            height: "45%",
+            filterOnKeypress: false,
+            showFilterEditor: true,
+            autoFetchData: true,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            gridComponents: ["filterEditor", "header", "body"],
+            dataSource: RestDataSource_SubCategory_Classification,
+            fields: [
+                {
+                    name: "id", hidden: true
+                },
+                {
+                    name: "title",
+                    title: "<spring:message code="title"/>",
+                    width: "10%"
+                },
+                {
+                    name: "code",
+                    title: "<spring:message code="code"/>",
+                    width: "10%"
+                },
+                {
+                    name: "removeIcon",
+                    width: "4%",
+                    align: "center",
+                    showTitle: false,
+                    canFilter: false,
+                    canEdit: false
+                }
+            ],
+            createRecordComponent: function (record, colNum) {
+
+                let fieldName = this.getFieldName(colNum);
+                if (fieldName === "removeIcon") {
+                    return isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/remove.png",
+                        prompt: "حذف",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                            let subCategoryId = ListGrid_Sub_Category.getSelectedRecord().id;
+                            ListGrid_SubCategory_Classification.selectSingleRecord(record);
+                            RemoveClassificationFromSubCategory(subCategoryId, record.id, ListGrid_SubCategory_Classification);
+                        }
+                    });
+                } else {
+                    return null;
+                }
+            }
+        });
+        let Section_Manage_Classification = isc.SectionStack.create({
+            width: "100%",
+            height: "100%",
+            border: "1px solid red",
+            sections: [{
+                title: "دسته بندی های انتخاب شده",
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [ListGrid_SubCategory_Classification]
+            }]
+        });
+
+        let IButton_Exit_Manage_Classification = isc.IButtonCancel.create({
+            title: "<spring:message code='close'/>",
+            align: "center",
+            click: function () {
+                Window_Manage_Classification.close();
+            }
+        });
+        let HLayOut_SaveOrExit_Manage_Classification = isc.HLayout.create({
+            layoutMargin: 5,
+            showEdges: false,
+            edgeImage: "",
+            width: "100%",
+            height: "10%",
+            alignLayout: "center",
+            align: "center",
+            membersMargin: 10,
+            members: [
+                IButton_Exit_Manage_Classification
+            ]
+        });
+
+        let Window_Manage_Classification = isc.Window.create({
+            title: "مدیریت دسته بندی ها",
+            width: "50%",
+            height: "70%",
+            align: "center",
+            autoSize: false,
+            dismissOnEscape: false,
+            items: [
+                isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    members: [
+                        Section_Classifications,
+                        HLayOut_Add_Classification,
+                        Section_Manage_Classification,
+                        HLayOut_SaveOrExit_Manage_Classification
+                    ]
+                })
+            ]
+        });
+
+        RestDataSource_SubCategory_Classification.fetchDataURL = subCategoryUrl + "classification-list/" + subCategoryId;
+        ListGrid_SubCategory_Classification.fetchData();
+        Window_Manage_Classification.show();
+    }
+
+    function RemoveClassificationFromSubCategory(subCategoryId, classificationId, ListGrid_SubCategory_Classification) {
+
+        if (subCategoryId == null || classificationId == null) {
+            createDialog("info", "رکوردی انتخاب نشده است!");
+        } else {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(subCategoryUrl + "remove-classification/" + subCategoryId + "/" + classificationId, "PUT", null, function (resp) {
+                wait.close();
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    ListGrid_SubCategory_Classification.invalidateCache();
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }
+    }
+
+    function AddClassificationToSubCategory(subCategoryId, selectedRecords, ListGrid_SubCategory_Classification) {
+
+        if (selectedRecords == null || selectedRecords.size() === 0) {
+            createDialog("info", "رکوردی انتخاب نشده است!");
+        } else {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(subCategoryUrl + "add-classification/" + subCategoryId, "PUT", JSON.stringify(selectedRecords.map(item => item.id)), function (resp) {
+                wait.close();
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    ListGrid_SubCategory_Classification.invalidateCache();
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }
+    }
 
     function ListGrid_Sub_Category_Add() {
         var crecord = ListGrid_Category.getSelectedRecord();
@@ -881,8 +1132,15 @@
             title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Sub_Category_Remove();
             }
-        }
-        </sec:authorize>]
+        },
+        </sec:authorize>
+            {
+                title: "مدیریت دسته بندی ها",
+                click: function () {
+                    ListGrid_Sub_Category_Classification();
+                }
+            }
+        ]
     });
 
     var ListGrid_Sub_Category = isc.TrLG.create({
@@ -899,7 +1157,8 @@
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
             {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
-            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"}
+            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"},
+            {name: "needToClassification", title: "نیاز به دسته بندی", align: "center", type: "boolean"}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -942,6 +1201,12 @@
             ListGrid_Sub_Category_Remove();
         }
     });
+    let ToolStripButton_Sub_Category_Classification = isc.ToolStripButton.create({
+        title: "مدیریت دسته بندی ها",
+        click: function () {
+            ListGrid_Sub_Category_Classification();
+        }
+    });
 
     let ToolStrip_Sub_Category_Export2EXcel = isc.ToolStrip.create({
         width: "100%",
@@ -968,6 +1233,7 @@
             <sec:authorize access="hasAuthority('SubCategory_D')">
             ToolStripButton_Sub_Category_Remove,
             </sec:authorize>
+            ToolStripButton_Sub_Category_Classification,
             <sec:authorize access="hasAuthority('SubCategory_P')">
             ToolStrip_Sub_Category_Export2EXcel,
             </sec:authorize>

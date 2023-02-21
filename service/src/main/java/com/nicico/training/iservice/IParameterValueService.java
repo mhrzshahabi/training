@@ -7,6 +7,7 @@ import com.nicico.training.model.ParameterValue;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface IParameterValueService {
     List<ParameterValueDTO.Info> list();
@@ -42,6 +43,9 @@ public interface IParameterValueService {
     ParameterValueDTO.Info getInfoByCode(String code);
 
     String getTitleByValue(String pId);
+
+    Set<ParameterValue> getParameterValueByIds(Set<Long> ids);
+
 
     TotalResponse<ParameterValueDTO.Info> findAllByParameterCodes(List<String> parameterCodes);
 

@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,4 +38,14 @@ public class Subcategory extends Auditable {
 
     @Column(name = "f_category_id")
     private Long categoryId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_sub_category_parameter_value",
+            joinColumns = {@JoinColumn(name = "f_sub_category_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_parameter_value_id", referencedColumnName = "id")})
+    private Set<ParameterValue> classifications;
+
+    @Column(name = "b_need_to_classification")
+    private Boolean needToClassification;
+
 }

@@ -140,8 +140,6 @@ public class QuestionBank extends Auditable {
     @Column(name = "C_QUESTION_DESIGNER")
     private String questionDesigner;
 
-
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tbl_group_question", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parent_id", "f_child_id"})},
             joinColumns = {@JoinColumn(name = "f_parent_id", referencedColumnName = "id")},
@@ -154,5 +152,11 @@ public class QuestionBank extends Auditable {
 
     @Column(name = "child_priority")
     private String childPriority;
+
+    @Column(name = "c_reference")
+    private String reference;
+
+    @Column(name = "n_classification_id")
+    private Long classificationId;
 }
 

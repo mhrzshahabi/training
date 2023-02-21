@@ -443,6 +443,7 @@ public class QuestionBankService implements IQuestionBankService {
         return questionBankDAO.findAllByCreatedBy(createBy);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Set<QuestionBankDTO.FullInfo> getChildrenQuestions(Long id) {
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);

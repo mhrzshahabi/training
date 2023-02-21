@@ -27,6 +27,7 @@ public class SubcategoryDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long categoryId;
+    private Boolean needToClassification;
 
     @Getter
     @Setter
@@ -49,6 +50,7 @@ public class SubcategoryDTO {
         private Long id;
         private String titleFa;
         private String titleEn;
+        private Boolean needToClassification;
     }
 
     @Getter
@@ -76,6 +78,16 @@ public class SubcategoryDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("SubCategoryClassificationList")
+    public static class ClassificationList {
+        private Long id;
+        private String title;
+        private String code;
     }
 
     @Getter
