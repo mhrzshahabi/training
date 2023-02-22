@@ -5,6 +5,12 @@
 
 // <script>
 
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='tclassCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     let isCriteriaHoldingClassChanged_WS = false;
 
     //------------------------------------------------- REST DataSources------------------------------------------------
@@ -93,7 +99,7 @@
                         }
                     }
                 ],
-                keyPressFilter: "[A-Z|0-9|;-]"
+                keyPressFilter: "[A-Z|0-9|,-]",
             },
             {
                 name: "temp",
