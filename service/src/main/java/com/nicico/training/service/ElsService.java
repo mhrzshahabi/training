@@ -31,9 +31,9 @@ public class ElsService implements IElsService {
     private final IStudentService studentService;
     private final IClassStudentService classStudentService;
 
-  @Override
+    @Override
     public BaseResponse checkValidScores(Long id, List<ExamResult> examResults) {
-        BaseResponse baseResponse =new BaseResponse();
+        BaseResponse baseResponse = new BaseResponse();
 
 
         return baseResponse;
@@ -95,7 +95,7 @@ public class ElsService implements IElsService {
                 Optional<QuestionBank> questionBank = allByTeacherId.stream()
                         .filter(q -> q.getQuestion().equals(qp.getQuestion().getTitle()) && MyUtils.convertQuestionType(q.getQuestionTypeId(), parameterValueService).equals(qp.getQuestion().getType()))
                         .findFirst();
-                if (questionBank.isPresent() && (questionBank.get().getIsChild()==null || (questionBank.get().getIsChild()!=null && !questionBank.get().getIsChild())))
+                if (questionBank.isPresent() && (questionBank.get().getIsChild() == null || (questionBank.get().getIsChild() != null && !questionBank.get().getIsChild())))
                     filteredQuestions.add(questionBank.get());
             }
         }
@@ -197,8 +197,8 @@ public class ElsService implements IElsService {
     }
 
     @Override
-    public Map<String,String> updateScores(List<ExamStudentDTO.Score> list) {
-        Map<String,String> notUpdatedNationalCodes = new HashMap<>();
+    public Map<String, String> updateScores(List<ExamStudentDTO.Score> list) {
+        Map<String, String> notUpdatedNationalCodes = new HashMap<>();
 
         list.forEach(item -> {
             ClassStudent classStudent = classStudentService.findById(item.getClassStudentId())
@@ -210,20 +210,23 @@ public class ElsService implements IElsService {
                 Float score = item.getScore();
                 Double classScore = item.getClassScore() != null ? item.getClassScore().doubleValue() : 0;
                 Float testScore = item.getTestScore() != null ? item.getTestScore() : 0;
-                Float descriptiveScore =item.getDescriptiveScore() != null ? item.getDescriptiveScore() : 0;
-                Double practicalScore =item.getPracticalScore() != null ? item.getPracticalScore().doubleValue() : 0;
+                Float descriptiveScore = item.getDescriptiveScore() != null ? item.getDescriptiveScore() : 0;
+                Double practicalScore = item.getPracticalScore() != null ? item.getPracticalScore().doubleValue() : 0;
                 String scoringMethod = tclassService.get(classStudent.getTclassId()).getScoringMethod();
+                String classClassScore = testQuestionService.getById(item.getExamId()).getClassScore();
+                String classPracticalScore = testQuestionService.getById(item.getExamId()).getPracticalScore();
                 String acceptanceLimit = tclassService.get(classStudent.getTclassId()).getAcceptancelimit();
-                boolean scoreInValidRange = isScoreInValidRange(score, scoringMethod,classScore,testScore,descriptiveScore,practicalScore);
+                boolean scoreInValidRange = isScoreInValidRange(score, scoringMethod, classScore, testScore, descriptiveScore, practicalScore);
+                boolean scoresAcceptable = isScoresAcceptable(classClassScore, classPracticalScore, classScore, practicalScore);
 
                 if (testQuestionType.equals("FinalTest")) {
                     boolean passedAcceptanceLimit = score >= Float.parseFloat(acceptanceLimit);
 
-                    if (scoreInValidRange) {
+                    if (scoreInValidRange && scoresAcceptable) {
                         ParameterValue parameterValue = updateScoreState(passedAcceptanceLimit);
 
                         if (parameterValue == null) {
-                            notUpdatedNationalCodes.put(item.getNationalCode(),"خطا در ثبت نمره");
+                            notUpdatedNationalCodes.put(item.getNationalCode(), "خطا در ثبت نمره");
                             return;
                         }
 
@@ -235,21 +238,21 @@ public class ElsService implements IElsService {
                         classStudent.setPracticalScore(practicalScore);
 
                     } else {
-                        notUpdatedNationalCodes.put(item.getNationalCode(),"نمرات ثبت شده در بازه ی درستی نیستند");
+                        notUpdatedNationalCodes.put(item.getNationalCode(), "نمرات ثبت شده در بازه ی درستی نیستند");
                     }
                 } else if (testQuestionType.equals("PreTest")) {
-                    if (scoreInValidRange) {
+                    if (scoreInValidRange && scoresAcceptable) {
                         classStudent.setPreTestScore(score);
                         classStudent.setTestScore(testScore);
                         classStudent.setDescriptiveScore(descriptiveScore);
                     } else {
-                        notUpdatedNationalCodes.put(item.getNationalCode(),"نمرات ثبت شده در بازه ی درستی نیستند");
+                        notUpdatedNationalCodes.put(item.getNationalCode(), "نمرات ثبت شده در بازه ی درستی نیستند");
                     }
                 }
                 classStudentService.save(classStudent);
 
             } catch (Exception e) {
-                notUpdatedNationalCodes.put(item.getNationalCode(),"خطا در ثبت نمره");
+                notUpdatedNationalCodes.put(item.getNationalCode(), "خطا در ثبت نمره");
             }
         });
 
@@ -257,12 +260,21 @@ public class ElsService implements IElsService {
 
     }
 
+    private boolean isScoresAcceptable(String cClassScore, String cPracticalScore, Double classScore, Double practicalScore) {
+        double importedClassScore = (classScore) == null ? 0 : classScore;
+        double importedPracticalScore = (practicalScore) == null ? 0 : practicalScore;
+        double classClassScore = (cClassScore) == null ? 0D : Double.parseDouble(cClassScore);
+        double classPracticalScore = (cPracticalScore) == null ? 0D : Double.parseDouble(cPracticalScore);
+        return importedClassScore <= classClassScore && importedPracticalScore <= classPracticalScore;
+
+    }
+
     private boolean isScoreInValidRange(Float score, String scoringMethod, Double classScore, Float testScore, Float descriptiveScore, Double practicalScore) {
         if (scoringMethod.equals("2")) { // از 100 نمره
-            return score >= 0 && score <= 100 && (classScore+testScore+descriptiveScore+practicalScore==score);
+            return score >= 0 && score <= 100 && (classScore + testScore + descriptiveScore + practicalScore == score);
         }
         if (scoringMethod.equals("3")) { // از 20 نمره
-            return score >= 0 && score <= 20 && (classScore+testScore+descriptiveScore+practicalScore==score);
+            return score >= 0 && score <= 20 && (classScore + testScore + descriptiveScore + practicalScore == score);
         }
         return false;
     }

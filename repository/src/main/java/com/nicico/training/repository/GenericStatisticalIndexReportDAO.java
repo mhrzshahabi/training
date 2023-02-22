@@ -7844,230 +7844,179 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        String toDate);
 
 
-    @Query(value = """
-         --Report47- nerkh_poshesh_arzeshyabi_sathe_vakoneshi\s
-        
-        SELECT rowNum AS id,
-               res.*
-        FROM(     \s
-        
-         with kol as (SELECT DISTINCT
-                    count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_kol_mojtama,
-                     count(distinct s.class_id)  over (partition by  s.moavenat)  AS count__kol_moavenat,
-                     count(distinct s.class_id)  over (partition by s.omoor)      AS count__kol_omoor,
-                     s.mojtama_id,
-                    s.mojtama,
-                    moavenat_id,
-                    s.moavenat,
-                    s.omoor_id,
-                    s.omoor
-                 \s
-                FROM
-                    (
-                        SELECT
-                            class.id               AS class_id,
-                            view_complex.id        AS mojtama_id,
-                            view_complex.c_title   AS mojtama,
-                            view_assistant.id      AS moavenat_id,
-                            view_assistant.c_title AS moavenat,
-                            view_affairs.id      AS omoor_id,
-                            view_affairs.c_title   AS omoor
-                        FROM
-                            tbl_class   class\s
-                            INNER JOIN tbl_class_student ON class.id = tbl_class_student.class_id
-                            INNER JOIN
-                            (
-                              select
-                                    tbl_student.id                                                         as id
-                                   ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
-                                   ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
-                                   ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
-                              \s
-                               from tbl_student\s
-                                LEFT JOIN view_last_md_employee_hr
-                                ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
-                            )
-                            tbl_student  ON tbl_class_student.student_id = tbl_student.id
-                            RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
-                            RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
-                            RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
-                       where 1=1
-                        and class.c_status IN ( 2, 3, 5 )\s
-                        and class.C_START_DATE >=  :fromDate
-                        and class.C_START_DATE <=  :toDate
-        
-                        \s
-                        GROUP BY
-                            class.id,
-                            view_complex.c_title,
-                            view_complex.id,
-                            view_assistant.id,
-                             view_affairs.id,
-                            view_assistant.c_title,
-                            view_affairs.c_title
-            \s
-                    ) s
-                GROUP BY
-                \s
-                    s.class_id,\s
-                    s.mojtama_id,
-                    s.mojtama,
-                    moavenat_id,
-                    s.moavenat,
-                    s.omoor_id,
-                    s.omoor
-                 having  nvl(count( s.class_id) ,0)  !=0
-                 ),
-               \s
-                khod as(
-                    SELECT DISTINCT
-                         count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_raftar_mojtama,
-                         count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_raftar_moavenat,
-                         count(distinct s.class_id)  over (partition by s.omoor)      AS count_raftar_omoor,
-                         s.mojtama_id,
-                         s.mojtama,
-                         moavenat_id,
-                         s.moavenat,
-                         s.omoor_id,
-                         s.omoor
-                 \s
-                   FROM
-                    (
-                        SELECT
-                            class.class_id         AS class_id,
-                            view_complex.id        AS mojtama_id,
-                            view_complex.c_title   AS mojtama,
-                            view_assistant.id      AS moavenat_id,
-                            view_assistant.c_title AS moavenat,
-                            view_affairs.id        AS omoor_id,
-                            view_affairs.c_title   AS omoor
-                        FROM
-                          ( \s
-                              select  \s
-                                  c.id             as class_id\s
-                                  ,c.C_START_DATE  as C_START_DATE
-                              from \s
-                                       TBL_CLASS c \s
-                                       inner join tbl_evaluation e \s
-                                         on  e.f_class_id = c.id \s
-                                          \s
-                                         left join (select c.id as id \s
-                                                     from \s
-                                                    TBL_CLASS c \s
-                                                left join TBL_EVALUATION_ANALYSIS   n     \s
-                                                  on  n.F_TCLASS = c.id  \s
-                                                where  n.B_REACTION_PASS = 1 -- pass shodeh \s
-                                                  )pass \s
-                                                 on pass.id = c.id \s
-                                       outer apply ( select to_number(c_value) as c_value from TBL_PARAMETER_VALUE v where v.C_CODE = 'minQusER' ) nr     \s
-                                       outer apply ( select id as id from TBL_PARAMETER_VALUE v where v.C_CODE = '52' ) faraghir \s
-                                       outer apply ( select id as id from TBL_PARAMETER_VALUE v where v.C_CODE = 'Reactive' ) arzyabi_vakoneshi \s
-                                where \s
-                                   e.F_EVALUATED_TYPE_ID = faraghir.id  -- 188 --faraghir  \s
-                                   and  e.f_evaluation_level_id =  arzyabi_vakoneshi.id --154  -- arzyabi_vakoneshi \s
-                                  \s
-                               group by \s
-                                   c.id
-                                   ,c.C_START_DATE
-                                  ,e.id \s
-                                  ,nr.c_value \s
-                                  ,pass.id \s
-                                   \s
-                               having ( cast ((count(pass.id) / count(e.id)  )*100 as decimal(6,2)) )  >= nr.c_value \s
-                             )    class
-                            INNER JOIN tbl_class_student ON class.class_id = tbl_class_student.class_id
-                             INNER JOIN
-                            (
-                              select
-                                    tbl_student.id                                                         as id
-                                   ,NVL(tbl_student.COMPLEX_TITLE,view_last_md_employee_hr.ccp_complex )   as COMPLEX_TITLE
-                                   ,NVL(tbl_student.CCP_ASSISTANT,view_last_md_employee_hr.ccp_assistant ) as CCP_ASSISTANT
-                                   ,NVL(tbl_student.CCP_AFFAIRS,view_last_md_employee_hr.ccp_affairs )     as CCP_AFFAIRS
-                              \s
-                               from tbl_student\s
-                                LEFT JOIN view_last_md_employee_hr
-                                ON tbl_student.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
-                            )
-                            tbl_student  ON tbl_class_student.student_id = tbl_student.id
-                            RIGHT JOIN view_complex ON tbl_student.COMPLEX_TITLE = view_complex.C_TITLE
-                            RIGHT JOIN view_affairs ON tbl_student.CCP_AFFAIRS = view_affairs.C_TITLE
-                            RIGHT JOIN view_assistant ON tbl_student.CCP_ASSISTANT = view_assistant.C_TITLE
-                       where 1=1\s
-         \s
-                         and class.C_START_DATE >=  :fromDate
-                         and class.C_START_DATE <=  :toDate
-                           \s
-                        GROUP BY
-                            class.class_id,
-                            view_complex.c_title,
-                             view_complex.id,
-                            view_assistant.id,
-                            view_affairs.id ,
-                            view_assistant.c_title,
-                            view_affairs.c_title
-            \s
-                    ) s
-                GROUP BY
-                \s
-                    s.class_id,\s
-                    s.mojtama_id,
-                    s.mojtama,
-                    moavenat_id,
-                    s.moavenat,
-                    s.omoor_id,
-                    s.omoor
-             \s
-                 )
-               \s
-                select DISTINCT
-               \s
-                kol.mojtama_id     as complex_id
-                ,kol.mojtama       as complex
-                ,  max(cast ((khod.count_raftar_mojtama /kol.count_kol_mojtama)*100 as decimal(6,2)) ) OVER ( PARTITION BY kol.mojtama_id ) AS  n_base_on_complex
-               \s
-                , kol.moavenat_id  as assistant_id
-                , kol.moavenat     as assistant
-                ,max( cast ( (khod.count_raftar_moavenat /kol.count__kol_moavenat)*100 as decimal(6,2))) OVER ( PARTITION BY  kol.moavenat_id ) AS n_base_on_assistant
-               \s
-                ,kol.omoor_id     as affairs_id
-                ,kol.omoor        as affairs
-                ,max(cast ( (khod.count_raftar_omoor /kol.count__kol_omoor)*100 as decimal(6,2)) ) OVER ( PARTITION BY kol.omoor_id ) AS n_base_on_affairs
-        
-                FROM
-                kol\s
-                LEFT JOIN  khod
-                on
-                 khod.mojtama_id = kol.mojtama_id
-                 and khod.moavenat_id = kol.moavenat_id
-                 and khod.omoor_id = kol.omoor_id
-          \s
-                where 1=1
-                      and (
-                           kol.mojtama_id is not null
-                           and kol.moavenat_id is not null
-                           and kol.omoor_id is not null
-                          )
-                \s
-                group by
-                kol.mojtama_id
-                ,kol.mojtama
-                ,khod.count_raftar_mojtama\s
-                ,khod.count_raftar_moavenat\s
-                ,khod.count_raftar_omoor\s
-                ,kol.count_kol_mojtama
-                ,kol.count__kol_moavenat
-                ,kol.count__kol_omoor
-                , kol.moavenat_id
-                , kol.moavenat
-                ,kol.omoor_id
-                ,kol.omoor
-        ) res
-         where 1=1
-             AND (:complexNull = 1 OR complex IN (:complex))\s
-             AND (:assistantNull = 1 OR assistant IN (:assistant))\s
-             AND (:affairsNull = 1 OR affairs IN (:affairs))\s  
-"""
-, nativeQuery = true)
+    @Query(value = "   SELECT          \n" +
+            "                                                          rowNum AS id,         \n" +
+            "                                                            res.* FROM(        \n" +
+            "                          with kol as (        \n" +
+            "                    SELECT DISTINCT\n" +
+            "                    count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_mojtama,\n" +
+            "                     count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_moavenat,\n" +
+            "                     count(distinct s.class_id)  over (partition by s.omoor)      AS count_omoor,\n" +
+            "                     s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                  \n" +
+            "                FROM\n" +
+            "                    (\n" +
+            "                        SELECT\n" +
+            "                            class.id               AS class_id,\n" +
+            "                         view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                         view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                         view_last_md_employee_hr.c_omor_code       AS omoor_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_affairs   AS omoor    \n" +
+            "                         \n" +
+            "                        FROM\n" +
+            "                            tbl_class   class \n" +
+            "                            INNER JOIN tbl_class_student ON class.id = tbl_class_student.class_id\n" +
+            "                              INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id\n" +
+            "                            LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE\n" +
+            "                           \n" +
+            "                       where 1=1\n" +
+            "                        and class.c_status IN ( 2, 3, 5 ) \n" +
+            "                        and class.C_START_DATE >=  :fromDate\n" +
+            "                        and class.C_START_DATE <=  :toDate\n" +
+            "        \n" +
+            "                         \n" +
+            "                        GROUP BY\n" +
+            "                            class.id,\n" +
+            "                           view_last_md_employee_hr.c_mojtame_code      ,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   ,\n" +
+            "                         view_last_md_employee_hr.c_moavenat_code   ,\n" +
+            "                         view_last_md_employee_hr.ccp_assistant ,\n" +
+            "                         view_last_md_employee_hr.c_omor_code     ,  \n" +
+            "                         view_last_md_employee_hr.ccp_affairs  \n" +
+            "                         \n" +
+            "             \n" +
+            "                    ) s\n" +
+            "                GROUP BY\n" +
+            "                 \n" +
+            "                    s.class_id, \n" +
+            "                    s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                 having  nvl(count( s.class_id) ,0)  !=0\n" +
+            "                               \n" +
+            "                           ),        \n" +
+            "                                  \n" +
+            "                          balaii as (        \n" +
+            "                          \n" +
+            "                          SELECT DISTINCT\n" +
+            "                    count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_mojtama,\n" +
+            "                     count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_moavenat,\n" +
+            "                     count(distinct s.class_id)  over (partition by s.omoor)      AS count_omoor,\n" +
+            "                     s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                  \n" +
+            "                FROM\n" +
+            "                    (\n" +
+            "                        SELECT\n" +
+            "                            class.id               AS class_id,\n" +
+            "                         view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                         view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                         view_last_md_employee_hr.c_omor_code       AS omoor_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_affairs   AS omoor    \n" +
+            "                         \n" +
+            "                        FROM\n" +
+            "                            tbl_class   class \n" +
+            "                            INNER JOIN tbl_class_student ON class.id = tbl_class_student.class_id\n" +
+            "                              INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id\n" +
+            "                            LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE\n" +
+            "                              LEFT JOIN tbl_evaluation_analysis  ON class.id = tbl_evaluation_analysis.f_tclass\n" +
+            "                           \n" +
+            "                       where 1=1\n" +
+            "                        and class.c_status IN ( 2, 3, 5 ) \n" +
+            "                        and class.C_START_DATE >=  :fromDate\n" +
+            "                        and class.C_START_DATE <=  :toDate\n" +
+            "                      and   tbl_evaluation_analysis.c_reaction_grade IS NOT NULL\n" +
+            "        \n" +
+            "                         \n" +
+            "                        GROUP BY\n" +
+            "                            class.id,\n" +
+            "                           view_last_md_employee_hr.c_mojtame_code      ,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   ,\n" +
+            "                         view_last_md_employee_hr.c_moavenat_code   ,\n" +
+            "                         view_last_md_employee_hr.ccp_assistant ,\n" +
+            "                         view_last_md_employee_hr.c_omor_code     ,  \n" +
+            "                         view_last_md_employee_hr.ccp_affairs  \n" +
+            "                         \n" +
+            "             \n" +
+            "                    ) s\n" +
+            "                GROUP BY\n" +
+            "                 \n" +
+            "                    s.class_id, \n" +
+            "                    s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                 having  nvl(count( s.class_id) ,0)  !=0\n" +
+            "                                     \n" +
+            "                          )        \n" +
+            "                                  \n" +
+            "                                  \n" +
+            "                          select DISTINCT        \n" +
+            "                                \n" +
+            "                          kol.mojtama_id as complex_id        \n" +
+            "                          ,kol.mojtama as complex        \n" +
+            "                          ,cast ((max(  (balaii.count_mojtama /kol.count_mojtama  ) *100) OVER ( PARTITION BY kol.mojtama_id )) as decimal(6,2)) AS n_base_on_complex        \n" +
+            "                                  \n" +
+            "                          , kol.moavenat_id as assistant_id        \n" +
+            "                          , kol.moavenat as assistant        \n" +
+            "                          ,cast ((max(  ( balaii.count_moavenat /kol.count_moavenat  )*100) OVER ( PARTITION BY  kol.moavenat_id )) as decimal(6,2)) AS n_base_on_assistant        \n" +
+            "                                   \n" +
+            "                          ,kol.omoor_id as affairs_id        \n" +
+            "                          ,kol.omoor as affairs        \n" +
+            "                          ,cast ((max(  ( balaii.count_omoor /kol.count_omoor  )*100 ) OVER ( PARTITION BY kol.omoor_id )) as decimal(6,2)) AS n_base_on_affairs        \n" +
+            "                                  \n" +
+            "                          FROM        \n" +
+            "                          kol         \n" +
+            "                          LEFT JOIN  balaii        \n" +
+            "                          on        \n" +
+            "                           balaii.mojtama_id = kol.mojtama_id        \n" +
+            "                           and balaii.moavenat_id = kol.moavenat_id        \n" +
+            "                           and balaii.omoor_id = kol.omoor_id        \n" +
+            "                                  \n" +
+            "                          where 1=1        \n" +
+            "                                and (        \n" +
+            "                                     kol.mojtama_id is not null        \n" +
+            "                                     and kol.moavenat_id is not null        \n" +
+            "                                     and kol.omoor_id is not null        \n" +
+            "                                    )        \n" +
+            "                                   \n" +
+            "                          group by        \n" +
+            "                          kol.mojtama_id        \n" +
+            "                          ,kol.mojtama        \n" +
+            "                          ,balaii.count_mojtama        \n" +
+            "                          ,balaii.count_moavenat        \n" +
+            "                          ,balaii.count_omoor        \n" +
+            "                          ,kol.count_mojtama        \n" +
+            "                          ,kol.count_moavenat        \n" +
+            "                          ,kol.count_omoor        \n" +
+            "                          ,kol.moavenat_id        \n" +
+            "                          ,kol.moavenat        \n" +
+            "                          ,kol.omoor_id        \n" +
+            "                          ,kol.omoor        \n" +
+            "                          )res          \n" +
+            "                                                         where         \n" +
+            "                                                            (:complexNull = 1 OR complex IN (:complex))         \n" +
+            "                                                       AND (:assistantNull = 1 OR assistant IN (:assistant))         \n" +
+            "                                                            AND (:affairsNull = 1 OR affairs IN (:affairs))  \n" +
+            "--    ", nativeQuery = true)
     List<GenericStatisticalIndexReport> reactiveEvaluationCoverage(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
@@ -8080,154 +8029,179 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = " -- nesbat dorehay daray ravesh arzeshyabi taeen shodeh\n" +
-            "\n" +
-            "SELECT rowNum AS id,\n" +
-            "                                          res.*\n" +
-            "                                   FROM (\n" +
-            "with kol as (\n" +
-            "SELECT  distinct\n" +
-            "            view_complex.id                                                                    as mojtama_id\n" +
-            "           ,view_complex.c_title                                                               as mojtama\n" +
-            "          , COUNT(distinct class.id)  over (partition by view_complex.id)      as class_mojtama\n" +
-            "          \n" +
-            "          ,view_assistant.id                                                                   as moavenat_id\n" +
-            "          ,view_assistant.c_title                                                              as moavenat\n" +
-            "          , COUNT(distinct class.id)  over (partition by view_assistant.id )   as class_moavenat\n" +
-            "          \n" +
-            "          ,view_affairs.id                                                                     as omoor_id \n" +
-            "          ,view_affairs.c_title                                                                as omoor \n" +
-            "          , COUNT(distinct class.id)  over (partition by view_affairs.id )     as class_omoor\n" +
-            "    \n" +
-            "     FROM tbl_class   class \n" +
-            "                INNER JOIN tbl_class_student classstd ON classstd.class_id = class.id\n" +
-            "                INNER JOIN TBL_EDUCATIONAL_CALENDER EU ON EU.ID = class.CALENDAR_ID\n" +
-            "                 LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "                LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "                LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "     WHERE 1=1\n" +
-            "           and (\n" +
-            "                 view_complex.id is not null\n" +
-            "                 and view_affairs.id  is not null\n" +
-            "                 and view_assistant.id  is not null\n" +
-            "               )\n" +
-            "                 and class.C_START_DATE >= :fromDate  \n" +
-            "                                                                                  and class.C_START_DATE <= :toDate\n" +
-            "                 --and class.C_START_DATE <=@\n" +
-            "                  --and class.C_END_DATE =>@\n" +
-            "         --         and view_complex.id =@\n" +
-            "            --       and view_affairs.id =@\n" +
-            "            --       and view_assistant.id =@\n" +
-            "    GROUP BY\n" +
-            "                class.id,\n" +
-            "                class.c_code,    \n" +
-            "                class.c_start_date,\n" +
-            "                class.c_end_date,\n" +
-            "                 view_complex.id,\n" +
-            "                view_assistant.id,\n" +
-            "                 view_affairs.id,\n" +
-            "                view_complex.c_title,\n" +
-            "                view_assistant.c_title,\n" +
-            "                view_affairs.c_title\n" +
-            "              \n" +
-            "\n" +
-            " ),\n" +
-            "\n" +
-            "ravesh as (\n" +
-            "     SELECT  distinct\n" +
-            "            view_complex.id                                                                    as mojtama_id\n" +
-            "           ,view_complex.c_title                                                               as mojtama\n" +
-            "          ,COUNT( distinct class.id)  over (partition by view_complex.id)      as count_class_ravesh_mojtama\n" +
-            "          \n" +
-            "          ,view_assistant.id                                                                   as moavenat_id\n" +
-            "          ,view_assistant.c_title                                                              as moavenat\n" +
-            "          ,COUNT( distinct class.id)  over (partition by view_assistant.id )   as count_class_ravesh_moavenat\n" +
-            "          \n" +
-            "          ,view_affairs.id                                                                     as omoor_id \n" +
-            "          ,view_affairs.c_title                                                                as omoor \n" +
-            "          ,COUNT( distinct class.id)  over (partition by view_affairs.id )     as count_class_ravesh_omoor\n" +
-            "    \n" +
-            "     FROM tbl_class   class \n" +
-            "                INNER JOIN tbl_class_student classstd ON classstd.class_id = class.id\n" +
-            "                LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
-            "                LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
-            "                LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
-            "     WHERE 1=1\n" +
-            "            and class.C_EVALUATION is not null\n" +
-            "           and (\n" +
-            "                 view_complex.id is not null\n" +
-            "                 and view_affairs.id  is not null\n" +
-            "                 and view_assistant.id  is not null\n" +
-            "               )\n" +
-            "               and class.C_START_DATE >= :fromDate  \n" +
-            "                                                                                  and class.C_START_DATE <= :toDate\n" +
-            "                 --and class.C_START_DATE <=@\n" +
-            "                  --and class.C_END_DATE =>@\n" +
-            "         --         and view_complex.id =@\n" +
-            "            --       and view_affairs.id =@\n" +
-            "            --       and view_assistant.id =@\n" +
-            "    GROUP BY\n" +
-            "                class.id,\n" +
-            "                class.c_code,    \n" +
-            "                class.c_start_date,\n" +
-            "                class.c_end_date,\n" +
-            "                 view_complex.id,\n" +
-            "                view_assistant.id,\n" +
-            "                 view_affairs.id,\n" +
-            "                view_complex.c_title,\n" +
-            "                view_assistant.c_title,\n" +
-            "                view_affairs.c_title,\n" +
-            "                class.n_h_duration\n" +
-            ")\n" +
-            "\n" +
-            "\n" +
-            "select DISTINCT\n" +
-            "\n" +
-            "kol.mojtama_id as complex_id\n" +
-            ",kol.mojtama as complex\n" +
-            ",max(cast ( (ravesh.count_class_ravesh_mojtama /kol.class_mojtama)*100  as decimal(6,2))  ) OVER ( PARTITION BY kol.mojtama_id ) AS n_base_on_complex\n" +
-            "\n" +
-            ", kol.moavenat_id  as assistant_id\n" +
-            ", kol.moavenat  as assistant\n" +
-            ",max( cast ( (ravesh.count_class_ravesh_moavenat /kol.class_moavenat)*100 as decimal(6,2))  *100) OVER ( PARTITION BY  kol.moavenat_id ) AS n_base_on_assistant\n" +
-            ",kol.omoor_id as affairs_id\n" +
-            ",kol.omoor as affairs\n" +
-            ",max(cast ( (ravesh.count_class_ravesh_omoor /kol.class_omoor)*100 as decimal(6,2))  *100 ) OVER ( PARTITION BY kol.omoor_id ) AS n_base_on_affairs\n" +
-            "\n" +
-            "FROM\n" +
-            "kol  \n" +
-            "LEFT JOIN  ravesh\n" +
-            "on\n" +
-            " kol.mojtama_id = ravesh.mojtama_id\n" +
-            " and kol.moavenat_id = ravesh.moavenat_id\n" +
-            " and kol.omoor_id = ravesh.omoor_id\n" +
-            "\n" +
-            "where 1=1\n" +
-            "      and (\n" +
-            "           kol.mojtama_id is not null\n" +
-            "           and kol.moavenat_id is not null\n" +
-            "           and kol.omoor_id is not null\n" +
-            "          )\n" +
-            " \n" +
-            "group by\n" +
-            "kol.mojtama_id\n" +
-            ",kol.mojtama\n" +
-            ",kol.class_mojtama\n" +
-            ",kol.class_moavenat\n" +
-            ",kol.class_omoor\n" +
-            ",ravesh.count_class_ravesh_mojtama\n" +
-            ",ravesh.count_class_ravesh_moavenat\n" +
-            ",ravesh.count_class_ravesh_omoor\n" +
-            ",kol.moavenat_id\n" +
-            ",kol.moavenat\n" +
-            ",kol.omoor_id\n" +
-            ",kol.omoor\n" +
-            ") res\n" +
-            "  where  \n" +
-            "                                                                    (:complexNull = 1 OR complex IN (:complex)) \n" +
-            "                                                               AND (:assistantNull = 1 OR assistant IN (:assistant))\n" +
-            "                                                                     AND (:affairsNull = 1 OR affairs IN (:affairs))\n" +
-            "\n", nativeQuery = true)
+    @Query(value = "   SELECT          \n" +
+            "                                                          rowNum AS id,         \n" +
+            "                                                            res.* FROM(        \n" +
+            "                          with kol as (        \n" +
+            "                    SELECT DISTINCT\n" +
+            "                    count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_mojtama,\n" +
+            "                     count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_moavenat,\n" +
+            "                     count(distinct s.class_id)  over (partition by s.omoor)      AS count_omoor,\n" +
+            "                     s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                  \n" +
+            "                FROM\n" +
+            "                    (\n" +
+            "                        SELECT\n" +
+            "                            class.id               AS class_id,\n" +
+            "                         view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                         view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                         view_last_md_employee_hr.c_omor_code       AS omoor_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_affairs   AS omoor    \n" +
+            "                         \n" +
+            "                        FROM\n" +
+            "                            tbl_class   class \n" +
+            "                            INNER JOIN tbl_class_student ON class.id = tbl_class_student.class_id\n" +
+            "                              INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id\n" +
+            "                            LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE\n" +
+            "                           \n" +
+            "                       where 1=1\n" +
+            "                        and class.c_status IN ( 2, 3, 5 ) \n" +
+            "                        and class.C_START_DATE >=  :fromDate\n" +
+            "                        and class.C_START_DATE <=  :toDate\n" +
+            "        \n" +
+            "                         \n" +
+            "                        GROUP BY\n" +
+            "                            class.id,\n" +
+            "                           view_last_md_employee_hr.c_mojtame_code      ,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   ,\n" +
+            "                         view_last_md_employee_hr.c_moavenat_code   ,\n" +
+            "                         view_last_md_employee_hr.ccp_assistant ,\n" +
+            "                         view_last_md_employee_hr.c_omor_code     ,  \n" +
+            "                         view_last_md_employee_hr.ccp_affairs  \n" +
+            "                         \n" +
+            "             \n" +
+            "                    ) s\n" +
+            "                GROUP BY\n" +
+            "                 \n" +
+            "                    s.class_id, \n" +
+            "                    s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                 having  nvl(count( s.class_id) ,0)  !=0\n" +
+            "                               \n" +
+            "                           ),        \n" +
+            "                                  \n" +
+            "                          balaii as (        \n" +
+            "                          \n" +
+            "                          SELECT DISTINCT\n" +
+            "                    count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_mojtama,\n" +
+            "                     count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_moavenat,\n" +
+            "                     count(distinct s.class_id)  over (partition by s.omoor)      AS count_omoor,\n" +
+            "                     s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                  \n" +
+            "                FROM\n" +
+            "                    (\n" +
+            "                        SELECT\n" +
+            "                            class.id               AS class_id,\n" +
+            "                         view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   AS mojtama,    \n" +
+            "                         view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_assistant AS moavenat,    \n" +
+            "                         view_last_md_employee_hr.c_omor_code       AS omoor_id,    \n" +
+            "                         view_last_md_employee_hr.ccp_affairs   AS omoor    \n" +
+            "                         \n" +
+            "                        FROM\n" +
+            "                            tbl_class   class \n" +
+            "                            INNER JOIN tbl_class_student ON class.id = tbl_class_student.class_id\n" +
+            "                              INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id\n" +
+            "                            LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE\n" +
+            "                             INNER JOIN tbl_course cource  ON class.f_course = cource.id\n" +
+            "                            \n" +
+            "                       where 1=1\n" +
+            "                        and class.c_status IN ( 2, 3, 5 ) \n" +
+            "                        and class.C_START_DATE >=  :fromDate\n" +
+            "                        and class.C_START_DATE <=  :toDate\n" +
+            "                         and cource.C_EVALUATION is not null\n" +
+            "         \n" +
+            "                         \n" +
+            "                        GROUP BY\n" +
+            "                            class.id,\n" +
+            "                           view_last_md_employee_hr.c_mojtame_code      ,    \n" +
+            "                         view_last_md_employee_hr.ccp_complex   ,\n" +
+            "                         view_last_md_employee_hr.c_moavenat_code   ,\n" +
+            "                         view_last_md_employee_hr.ccp_assistant ,\n" +
+            "                         view_last_md_employee_hr.c_omor_code     ,  \n" +
+            "                         view_last_md_employee_hr.ccp_affairs  \n" +
+            "                         \n" +
+            "             \n" +
+            "                    ) s\n" +
+            "                GROUP BY\n" +
+            "                 \n" +
+            "                    s.class_id, \n" +
+            "                    s.mojtama_id,\n" +
+            "                    s.mojtama,\n" +
+            "                    moavenat_id,\n" +
+            "                    s.moavenat,\n" +
+            "                    s.omoor_id,\n" +
+            "                    s.omoor\n" +
+            "                 having  nvl(count( s.class_id) ,0)  !=0\n" +
+            "                                     \n" +
+            "                          )        \n" +
+            "                                  \n" +
+            "                                  \n" +
+            "                          select DISTINCT        \n" +
+            "                                \n" +
+            "                          kol.mojtama_id as complex_id        \n" +
+            "                          ,kol.mojtama as complex        \n" +
+            "                          ,cast ((max(  (balaii.count_mojtama /kol.count_mojtama  ) *100) OVER ( PARTITION BY kol.mojtama_id )) as decimal(6,2)) AS n_base_on_complex        \n" +
+            "                                  \n" +
+            "                          , kol.moavenat_id as assistant_id        \n" +
+            "                          , kol.moavenat as assistant        \n" +
+            "                          ,cast ((max(  ( balaii.count_moavenat /kol.count_moavenat  )*100) OVER ( PARTITION BY  kol.moavenat_id )) as decimal(6,2)) AS n_base_on_assistant        \n" +
+            "                                   \n" +
+            "                          ,kol.omoor_id as affairs_id        \n" +
+            "                          ,kol.omoor as affairs        \n" +
+            "                          ,cast ((max(  ( balaii.count_omoor /kol.count_omoor  )*100 ) OVER ( PARTITION BY kol.omoor_id )) as decimal(6,2)) AS n_base_on_affairs        \n" +
+            "                                  \n" +
+            "                          FROM        \n" +
+            "                          kol         \n" +
+            "                          LEFT JOIN  balaii        \n" +
+            "                          on        \n" +
+            "                           balaii.mojtama_id = kol.mojtama_id        \n" +
+            "                           and balaii.moavenat_id = kol.moavenat_id        \n" +
+            "                           and balaii.omoor_id = kol.omoor_id        \n" +
+            "                                  \n" +
+            "                          where 1=1        \n" +
+            "                                and (        \n" +
+            "                                     kol.mojtama_id is not null        \n" +
+            "                                     and kol.moavenat_id is not null        \n" +
+            "                                     and kol.omoor_id is not null        \n" +
+            "                                    )        \n" +
+            "                                   \n" +
+            "                          group by        \n" +
+            "                          kol.mojtama_id        \n" +
+            "                          ,kol.mojtama        \n" +
+            "                          ,balaii.count_mojtama        \n" +
+            "                          ,balaii.count_moavenat        \n" +
+            "                          ,balaii.count_omoor        \n" +
+            "                          ,kol.count_mojtama        \n" +
+            "                          ,kol.count_moavenat        \n" +
+            "                          ,kol.count_omoor        \n" +
+            "                          ,kol.moavenat_id        \n" +
+            "                          ,kol.moavenat        \n" +
+            "                          ,kol.omoor_id        \n" +
+            "                          ,kol.omoor        \n" +
+            "                          )res          \n" +
+            "                                                         where         \n" +
+            "                                                            (:complexNull = 1 OR complex IN (:complex))         \n" +
+            "                                                       AND (:assistantNull = 1 OR assistant IN (:assistant))         \n" +
+            "                                                            AND (:affairsNull = 1 OR affairs IN (:affairs))  \n" +
+            "----    ", nativeQuery = true)
     List<GenericStatisticalIndexReport> coursesDeterminedEvaluationMethod(String fromDate,
                                                        String toDate,
                                                        List<Object> complex,
