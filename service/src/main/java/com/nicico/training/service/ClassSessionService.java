@@ -759,35 +759,44 @@ public class ClassSessionService implements IClassSessionService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchWeeklyMeetingSchedule(SearchDTO.SearchRq request) {
-        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
-            request.getCriteria().getCriteria().forEach(criterion -> {
-                if (criterion.getFieldName().equals("complexTitle")) {
-                    List<String> complexes = criterion.getValue().stream().map(Object::toString).toList();
-                    List<Long> complexIdsByTitle = departmentService.getComplexIdsByTitle(complexes);
-                    criterion.setFieldName("tclass.complexId");
-                    criterion.setValue(complexIdsByTitle);
-                }
-                if (criterion.getFieldName().equals("assistant")) {
-                    List<String> assistants = criterion.getValue().stream().map(Object::toString).toList();
-                    List<Long> assistantIdsByTitle = departmentService.getAssistantIdsByTitle(assistants);
-                    criterion.setFieldName("tclass.assistantId");
-                    criterion.setValue(assistantIdsByTitle);
-                }
-                if (criterion.getFieldName().equals("affairs")) {
-                    List<String> affairs = criterion.getValue().stream().map(Object::toString).toList();
-                    List<Long> affairIdsByTitle = departmentService.getAffairIdsByTitle(affairs);
-                    criterion.setFieldName("tclass.affairsId");
-                    criterion.setValue(affairIdsByTitle);
-                }
-                if (criterion.getFieldName().equals("teacher.personnelStatus")) {
-                    if (criterion.getValue().get(0).equals("true")) {
-                        criterion.setValue(Boolean.TRUE);
-                    } else {
-                        criterion.setValue(Boolean.FALSE);
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null) {
+                request.getCriteria().getCriteria().forEach(criterion -> {
+                    if (criterion.getFieldName().equals("complexTitle")) {
+                        List<String> complexes = criterion.getValue().stream().map(Object::toString).toList();
+                        List<Long> complexIdsByTitle = departmentService.getComplexIdsByTitle(complexes);
+                        criterion.setFieldName("tclass.complexId");
+                        criterion.setValue(complexIdsByTitle);
                     }
-                }
-            });
+                    if (criterion.getFieldName().equals("assistant")) {
+                        List<String> assistants = criterion.getValue().stream().map(Object::toString).toList();
+                        List<Long> assistantIdsByTitle = departmentService.getAssistantIdsByTitle(assistants);
+                        criterion.setFieldName("tclass.assistantId");
+                        criterion.setValue(assistantIdsByTitle);
+                    }
+                    if (criterion.getFieldName().equals("affairs")) {
+                        List<String> affairs = criterion.getValue().stream().map(Object::toString).toList();
+                        List<Long> affairIdsByTitle = departmentService.getAffairIdsByTitle(affairs);
+                        criterion.setFieldName("tclass.affairsId");
+                        criterion.setValue(affairIdsByTitle);
+                    }
+                    if (criterion.getFieldName().equals("teacher.personnelStatus")) {
+                        if (criterion.getValue().get(0).equals("true")) {
+                            criterion.setValue(Boolean.TRUE);
+                        } else {
+                            criterion.setValue(Boolean.FALSE);
+                        }
+                    }
+                });
+            } else {
+                request.getCriteria().getCriteria().add(makeNewCriteria(null, null, EOperator.and, new ArrayList<>()));
+            }
+        } else {
+            request.setCriteria(makeNewCriteria(null, null, EOperator.and, new ArrayList<>()));
         }
+
         return SearchUtil.search(classSessionDAO, request, classSession -> modelMapper.map(classSession, ClassSessionDTO.WeeklyMeetingSchedule.class));
     }
 

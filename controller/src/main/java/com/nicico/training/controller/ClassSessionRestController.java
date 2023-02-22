@@ -295,13 +295,9 @@ public class ClassSessionRestController {
 
     @GetMapping(value = "/weekly-meeting-schedule")
     public ResponseEntity<ISC<ClassSessionDTO.WeeklyMeetingSchedule>> getWeeklyTrainingSchedule(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchRs;
-        searchRs = iClassSessionService.searchWeeklyMeetingSchedule(searchRq);
-        ISC<ClassSessionDTO.WeeklyMeetingSchedule> res = ISC.convertToIscRs(searchRs, startRow);
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklyMeetingSchedule> searchRs = iClassSessionService.searchWeeklyMeetingSchedule(searchRq);
+        ISC<ClassSessionDTO.WeeklyMeetingSchedule> res = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

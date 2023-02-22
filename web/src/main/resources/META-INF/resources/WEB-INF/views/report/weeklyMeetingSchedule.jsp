@@ -6,8 +6,7 @@
 // <script>
 
     let isCriteriaHoldingClassChanged_WS = false;
-    let dataValues;
-    
+
     //------------------------------------------------- REST DataSources------------------------------------------------
 
     let RestDataSource_Class_WS = isc.TrDS.create({
@@ -70,13 +69,30 @@
                 title: "کد کلاس",
                 hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
-                icons: [{
-                    src: "[SKIN]/pickers/search_picker.png",
-                    click: function () {
-                        // DynamicForm_EIBAR.clearValues();
-                        Window_SelectClasses_WS.show();
+                icons: [
+                    {
+                        src: "[SKIN]/pickers/search_picker.png",
+                        click: function () {
+                            let classCodes = DynamicForm_WS.getField("tclassCode").getValue();
+                            if (classCodes == undefined || classCodes == "") {
+                                DynamicForm_SelectClassesWS.clearValues()
+                            }
+                            Window_SelectClasses_WS.show();
+                        }
+                    },
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
                     }
-                }],
+                ],
                 keyPressFilter: "[A-Z|0-9|;-]"
             },
             {
@@ -87,7 +103,7 @@
             {
                 name: "startDate1",
                 ID: "startDate1_WS",
-                title: "تاریخ شروع کلاس",
+                title: "جلسه از تاریخ:",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 length: 10,
@@ -132,7 +148,7 @@
             {
                 name: "endDate1",
                 ID: "endDate1_WS",
-                title: "تاریخ پایان کلاس",
+                title: "تا تاریخ:",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 length: 10,
@@ -142,7 +158,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('endDate1_WS', this, 'ymd', '/');
+                        displayDatePicker('endDate1_WS', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -262,6 +278,12 @@
             }
         ]
     });
+    DynamicForm_SelectClassesWS.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
+    DynamicForm_SelectClassesWS.getField("class.code").comboBox.pickListFields = [
+        {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
+        {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
+        {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
+    DynamicForm_SelectClassesWS.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
 
     //------------------------------------------------- Main Window ----------------------------------------------------
 
@@ -357,13 +379,12 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            if (organSegmentFilter.getItem("department.mojtameCode").getValue() == undefined) {
+            if (organSegmentFilter.getItem("department.mojtameCode").getValue() === undefined) {
                 organSegmentFilter.addFieldErrors("department.mojtameCode", "<spring:message code='validator.field.is.required'/>", true);
                 return;
             }
             organSegmentFilter.clearFieldErrors("department.mojtameCode", true);
-            ListGrid_Result_WS.invalidateCache();
-            dataValues = organSegmentFilter.getCriteria(DynamicForm_WS.getValuesAsAdvancedCriteria());
+            let dataValues = organSegmentFilter.getCriteria(DynamicForm_WS.getValuesAsAdvancedCriteria());
             if (dataValues !== undefined && dataValues !== null) {
                 for (let i = 0; i < dataValues.criteria.length; i++) {
                     if (dataValues.criteria[i].fieldName === "tclassCode") {
@@ -389,6 +410,7 @@
                     }
                 }
             }
+            ListGrid_Result_WS.invalidateCache();
             ListGrid_Result_WS.fetchData(dataValues);
         }
     });
@@ -421,8 +443,8 @@
         ]
     });
 
-    ListGrid_Result_WS = isc.TrLG.create({
-        filterOnKeypress: true,
+    let ListGrid_Result_WS = isc.TrLG.create({
+        filterOnKeypress: false,
         showFilterEditor: true,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_Result_WS,
@@ -450,9 +472,9 @@
                 filterOperator: "iContains"
             },
             {
-                name: "tclass.holdingClassType.code",
-                filterOperator: "iContains",
-                hidden: true
+                name: "tclass.holdingClassType.title",
+                title: "<spring:message code="course_eruntype"/>",
+                filterOperator: "iContains"
             },
             {
                 name: "tclass.teachingMethod.title",
