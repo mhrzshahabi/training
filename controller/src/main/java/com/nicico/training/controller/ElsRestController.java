@@ -3119,11 +3119,16 @@ public class ElsRestController {
             try {
                 notUpdatedNationalCodes = elsService.updateScores(scoreList);
                 response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
-                if (notUpdatedNationalCodes.isEmpty())
-                response.setStatus(200);
-                else
+                if (notUpdatedNationalCodes.isEmpty()){
+                    response.setStatus(200);
+                    response.setMessage("successful");
+                }
+                else{
                     response.setStatus(400);
-                response.setMessage("successful");
+                    response.setMessage("ثبت نمرات انجام نشد");
+                }
+
+
             } catch (TrainingException e1) {
                 response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
                 response.setStatus(HttpStatus.NOT_FOUND.value());
