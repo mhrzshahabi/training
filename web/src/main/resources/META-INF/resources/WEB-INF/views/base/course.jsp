@@ -406,6 +406,7 @@
                 title: "<spring:message code="create.date"/>",
                 align: "center",
                 filterOperator: "equals",
+                canFilter: false,
                 formatCellValue: function (value) {
                     if (value) {
                         let d = new Date(value);

@@ -411,6 +411,8 @@
                     }
                     if (dataValues.criteria[i].fieldName === "tclassCode") {
                         dataValues.criteria[i].fieldName = "classCode"
+                        dataValues.criteria[i].value = dataValues.criteria[i].value.split(',')
+                        dataValues.criteria[i].operator = "inSet"
                     }
                     if (dataValues.criteria[i].fieldName === "domainId") {
                         dataValues.criteria[i].fieldName = "evaluationField"
