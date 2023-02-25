@@ -8406,9 +8406,9 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "                                                                     res.*           \n" +
             "                                                              FROM (           \n" +
             "                                  SELECT DISTINCT                   \n" +
-            "                                                         SUM(s.presence_hour)  over (partition by  s.mojtama)  AS count_mojtama,                   \n" +
-            "                                                          SUM(s.presence_hour)  over (partition by  s.moavenat)  AS count_moavenat,                   \n" +
-            "                                                          SUM(s.presence_hour)  over (partition by s.omoor)  AS count_omoor,                   \n" +
+            "                                                         SUM(s.presence_hour)  over (partition by  s.mojtama)  AS n_base_on_complex,                   \n" +
+            "                                                          SUM(s.presence_hour)  over (partition by  s.moavenat)  AS n_base_on_assistant,                   \n" +
+            "                                                          SUM(s.presence_hour)  over (partition by s.omoor)  AS n_base_on_affairs,                   \n" +
             "                                                         s.mojtama_id as complex_id,                   \n" +
             "                                                         s.mojtama as complex,                   \n" +
             "                                                         moavenat_id as assistant_id,                   \n" +
