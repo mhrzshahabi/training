@@ -34,6 +34,7 @@ import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
+import com.nicico.training.repository.SynHrmViewFetchParentPostDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
@@ -66,7 +67,6 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import request.teachingHistory.ElsTeachingHistoryReqDto;
 import response.BaseResponse;
-import com.nicico.training.dto.ElsPassedCourses;
 import response.PaginationDto;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
@@ -127,6 +127,7 @@ public class ElsRestController {
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
     private final IPersonalInfoService iPersonalInfoService;
+    private final SynHrmViewFetchParentPostDAO synHrmViewFetchParentPostDAO;
     private final ElsClient client;
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
@@ -203,7 +204,7 @@ public class ElsRestController {
                 paramValMap.put("user_name", getPrefix(evalTargetUser.getGender()) + evalTargetUser.getLastName());
                 paramValMap.put("evaluation_title", tclass.getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
-                sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()),null,tclass.getId(),evalTargetUser.getStudentId());
+                sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()), null, tclass.getId(), evalTargetUser.getStudentId());
             }
         } catch (Exception e) {
             log.error("Exception evaluation ", e);
@@ -230,7 +231,7 @@ public class ElsRestController {
             paramValMap.put("user_name", getPrefix(teacher.getGender()) + teacher.getLastName());
             paramValMap.put("evaluation_title", tclass.getTitleClass());
             paramValMap.put("url", elsSmsUrl);
-            sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()),null,tclass.getId(),tclass.getTeacherId());
+            sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()), null, tclass.getId(), tclass.getTeacherId());
 
         } catch (Exception e) {
             log.error("Exception evaluation ", e);
@@ -3115,15 +3116,14 @@ public class ElsRestController {
         UpdateScoreResponse response = new UpdateScoreResponse();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            Map<String,String> notUpdatedNationalCodes = new HashMap<>();
+            Map<String, String> notUpdatedNationalCodes = new HashMap<>();
             try {
                 notUpdatedNationalCodes = elsService.updateScores(scoreList);
                 response.setNotUpdatedNationalCodes(notUpdatedNationalCodes);
-                if (notUpdatedNationalCodes.isEmpty()){
+                if (notUpdatedNationalCodes.isEmpty()) {
                     response.setStatus(200);
                     response.setMessage("successful");
-                }
-                else{
+                } else {
                     response.setStatus(400);
                     response.setMessage("ثبت نمرات انجام نشد");
                 }
@@ -3175,22 +3175,38 @@ public class ElsRestController {
 
     @GetMapping("/student/certification")
     public void getStudentCertification(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException {
-               tclassService.getCertification(nationalCode, classId,response);
+        tclassService.getCertification(nationalCode, classId, response);
     }
 
     @PostMapping("/passed-classes/by-nationalCode/{nationalCode}/{page}/{size}")
     public ElsPassedCourses passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode
             , @PathVariable int page, @PathVariable int size
-            ,@RequestBody SearchDtoRequest search
+            , @RequestBody SearchDtoRequest search
     ) {
-        ElsPassedCourses res=new ElsPassedCourses();
+        ElsPassedCourses res = new ElsPassedCourses();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-            return tclassService.getPassedClassesByNationalCode(nationalCode,page,size,search);
+            return tclassService.getPassedClassesByNationalCode(nationalCode, page, size, search);
 
-        } else{
+        } else {
             res.setStatus(401);
         }
         return res;
+
+    }
+
+
+    @GetMapping("/get-parent-national-code/{national_code}")
+    public String getParentNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable("national_code") String nationalCode
+    ) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            if (nationalCode != null)
+                return synHrmViewFetchParentPostDAO.getParent(nationalCode);
+            else
+                return null;
+
+        } else {
+            return null;
+        }
 
     }
 
