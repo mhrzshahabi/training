@@ -16,6 +16,7 @@ import request.exam.ExamResult;
 import response.BaseResponse;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -123,7 +124,11 @@ public class ElsService implements IElsService {
                 questionProtocol.setExamId(info.getId());
                 questionProtocol.setTime(qp.getTime());
                 questionProtocol.setCorrectAnswerTitle(question.getDescriptiveAnswer());
+                 if (qp.getMark()!=null)
                 questionProtocol.setQuestionMark(Float.valueOf(qp.getMark().toString()));
+                 else {
+                     questionProtocol.setQuestionMark(getGroupQuestionMark(testQuestionDTO,question.getGroupQuestions()));
+                 }
                 questionProtocols.add(questionProtocol);
             }
 
@@ -138,6 +143,21 @@ public class ElsService implements IElsService {
         } else {
             testQuestionService.delete(info.getId());
         }
+    }
+
+    private Float getGroupQuestionMark(TestQuestionDTO.Import testQuestionDTO, Set<QuestionBank> groupQuestions) {
+        AtomicReference<Float> mark= new AtomicReference<>(0F);
+        if (groupQuestions!=null){
+            groupQuestions.forEach(questionBank -> {
+                ElsImportedQuestionProtocol qp = testQuestionDTO.getQuestionProtocols().stream()
+                        .filter(questionProtocol -> questionProtocol.getQuestion().getTitle().equals(questionBank.getQuestion()))
+                        .findFirst()
+                        .orElse(null);
+                mark.set((float) (mark.get() + ((qp!=null && qp.getMark()!=null) ? qp.getMark() : 0F)));
+
+            });
+        }
+        return mark.get();
     }
 
     @Override
