@@ -2476,7 +2476,7 @@ public abstract class EvaluationBeanMapper {
             for (ExamResult data : examResult) {
                 double practicalScore = 0D;
 
-                if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
+                if (data.getPracticalScore() != null && !data.getPracticalScore().equals("-")) {
                     String englishFinalResult = new BigDecimal(data.getPracticalScore()).toString();
                     practicalScore = Double.parseDouble(englishFinalResult);
                     if (practicalScore > Double.parseDouble(allPracticalScore))
