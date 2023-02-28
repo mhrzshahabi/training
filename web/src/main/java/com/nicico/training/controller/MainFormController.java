@@ -323,6 +323,9 @@ public class MainFormController {
     @RequestMapping("/selfDeclaration")
     public String showSelfDeclarationForm() { return "base/selfDeclaration"; }
 
+    @RequestMapping("/trainingCourseRequest")
+    public String showTrainingCourseRequestForm() { return "base/trainingCourseRequest"; }
+
     @PostMapping("/print/{entityUrl}/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");

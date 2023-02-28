@@ -2184,6 +2184,14 @@
                         createTab(this.title, "<spring:url value="web/selfDeclaration/"/>");
                     }
                 }
+<%--                <sec:authorize access="hasAuthority('Menu_Run')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="trainingCourseRequest"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/web/trainingCourseRequest"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <%--{isSeparator: true},--%>
                 <%--{--%>

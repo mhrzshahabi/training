@@ -9,13 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SynHrmViewFetchParentPostDAO extends JpaRepository<SynHrmViewFetchParentPost, Long>, JpaSpecificationExecutor<SynHrmViewFetchParentPost> {
 
-    @Query(value = "SELECT\n" +
-            "     \n" +
-            "    syn_hrm_view_fetch_parent_post.c_national_code_prnt_output\n" +
-            "FROM\n" +
-            "    syn_hrm_view_fetch_parent_post\n" +
-            "    WHERE\n" +
-            "    syn_hrm_view_fetch_parent_post.c_national_code_input = :nationalCode", nativeQuery = true)
-    String getParent(String nationalCode);
+    @Query(value = """
+SELECT
+   rowNum AS id,  res.*\s
+ FROM (
+    SELECT
+        * FROM syn_hrm_view_fetch_parent_post
+WHERE
+    syn_hrm_view_fetch_parent_post.c_national_code_input = :nationalCode) res
+""", nativeQuery = true)
+    SynHrmViewFetchParentPost getParent(String nationalCode);
 
 }

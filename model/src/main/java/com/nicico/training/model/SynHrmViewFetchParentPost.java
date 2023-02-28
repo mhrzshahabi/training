@@ -32,5 +32,11 @@ public class SynHrmViewFetchParentPost implements Serializable {
     @Column(name = "c_national_code_prnt_output")
     private String parent;
 
+    @Column(name = "c_first_name_prnt_output")
+    private String firstName;
+
+    @Column(name = "c_last_name_prnt_output")
+    private String lastName;
+
 
 }

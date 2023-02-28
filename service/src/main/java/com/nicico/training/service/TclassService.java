@@ -71,6 +71,7 @@ import java.util.stream.Collectors;
 
 import static com.nicico.training.utility.persianDate.MyUtils.addSpaceToStringBySize;
 import static com.nicico.training.utility.persianDate.MyUtils.getPrograms2;
+import static com.nicico.training.utility.persianDate.PersianDate.findDuration;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Slf4j
@@ -2891,13 +2892,14 @@ public class TclassService implements ITclassService {
         ElsPassedCourses res = new ElsPassedCourses();
         try {
             String searchQuery = "";
-            if (search !=null && search.getSearchDTOList().size()>0){
-                  searchQuery= SpecListUtil.SearchQuery(search.getSearchDTOList());
+            if (search != null && search.getSearchDTOList().size() > 0) {
+                searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-          String query = getQuery(nationalCode, page, size,searchQuery);
+            String query = getQuery(nationalCode, page, size, searchQuery);
             List<TclassDTO.PassedClasses> passedClassesDTO = new ArrayList<>();
-            List<?> passedClasses = entityManager.createNativeQuery(query).getResultList();;
-           Long total = Long.valueOf(entityManager.createNativeQuery(getQueryCount(nationalCode,searchQuery)).getSingleResult().toString());
+            List<?> passedClasses = entityManager.createNativeQuery(query).getResultList();
+            ;
+            Long total = Long.valueOf(entityManager.createNativeQuery(getQueryCount(nationalCode, searchQuery)).getSingleResult().toString());
             if (passedClasses != null) {
                 for (Object passedClass : passedClasses) {
                     Object[] data = (Object[]) passedClass;
@@ -2919,13 +2921,13 @@ public class TclassService implements ITclassService {
             }
 
 
-            int totalPage= size == 0 ? 0 : (int) Math.ceil((double) total / (double) size);
+            int totalPage = size == 0 ? 0 : (int) Math.ceil((double) total / (double) size);
             res.setPassedClasses(passedClassesDTO);
             PaginationDto paginationDto = new PaginationDto();
             paginationDto.setCurrent(page);
             paginationDto.setSize(size);
             paginationDto.setTotal(totalPage);
-            paginationDto.setLast(totalPage == 0 ? 0 : totalPage-1);
+            paginationDto.setLast(totalPage == 0 ? 0 : totalPage - 1);
             paginationDto.setTotalItems(total);
             res.setPagination(paginationDto);
             res.setStatus(200);
@@ -3015,6 +3017,7 @@ public class TclassService implements ITclassService {
         if (!data.isEmpty()) {
             Object[] item = (Object[]) data.get(0);
             final Map<String, Object> params = new HashMap<>();
+            final Map<String, Object> params2 = new HashMap<>();
             String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
             String course = item[1] != null ? item[1].toString() : "";
             String to = item[2] != null ? item[2].toString() : "";
@@ -3039,8 +3042,13 @@ public class TclassService implements ITclassService {
             params.put("qrCodeData", qrData.toString());
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
-            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
+            params2.put(ConstantVARs.REPORT_TYPE, "pdf");
+            params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است"+ System.lineSeparator()+" جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+
+            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0))))
+                reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
+            else
+                reportUtil.export("/reports/message.jasper", params2, jsonDataSource, response);
 
         }
 

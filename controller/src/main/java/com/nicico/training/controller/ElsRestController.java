@@ -3196,17 +3196,25 @@ public class ElsRestController {
 
 
     @GetMapping("/get-parent-national-code/{national_code}")
-    public String getParentNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable("national_code") String nationalCode
+    public ParentDto getParentNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable("national_code") String nationalCode
     ) {
+        ParentDto parentDto=new ParentDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-            if (nationalCode != null)
-                return synHrmViewFetchParentPostDAO.getParent(nationalCode);
-            else
-                return null;
+            if (nationalCode != null){
+                SynHrmViewFetchParentPost parent=  synHrmViewFetchParentPostDAO.getParent(nationalCode);
+                parentDto.setNationalCode(parent.getParent());
+                parentDto.setFullName(parent.getFirstName() + " " + parent.getLastName());
+            } else
+            {
+                parentDto.setFullName(null);
+                parentDto.setNationalCode(null);
+            }
 
         } else {
-            return null;
+            parentDto.setFullName(null);
+            parentDto.setNationalCode(null);
         }
+        return parentDto;
 
     }
 
