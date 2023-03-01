@@ -56,18 +56,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.academicBK.ElsAcademicBKReqDto;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.employmentHistory.ElsEmploymentHistoryReqDto;
-import request.evaluation.ElsUserEvaluationListResponseDto;
-import request.evaluation.StudentEvaluationAnswerDto;
-import request.evaluation.TeacherEvaluationAnswerDto;
+import request.evaluation.*;
 import request.exam.*;
 import request.teachingHistory.ElsTeachingHistoryReqDto;
 import response.BaseResponse;
 import response.PaginationDto;
+import response.TrainingRequestDTO;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
 import response.employmentHistory.ElsCollaborationTypeDto;
@@ -116,6 +116,7 @@ public class ElsRestController {
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final PersonBeanMapper personBeanMapper;
     private final EvaluationAnswerService answerService;
+    private final IOperationalRoleService operationalRoleService;
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
@@ -3198,14 +3199,13 @@ public class ElsRestController {
     @GetMapping("/get-parent-national-code/{national_code}")
     public ParentDto getParentNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable("national_code") String nationalCode
     ) {
-        ParentDto parentDto=new ParentDto();
+        ParentDto parentDto = new ParentDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-            if (nationalCode != null){
-                SynHrmViewFetchParentPost parent=  synHrmViewFetchParentPostDAO.getParent(nationalCode);
+            if (nationalCode != null) {
+                SynHrmViewFetchParentPost parent = synHrmViewFetchParentPostDAO.getParent(nationalCode);
                 parentDto.setNationalCode(parent.getParent());
                 parentDto.setFullName(parent.getFirstName() + " " + parent.getLastName());
-            } else
-            {
+            } else {
                 parentDto.setFullName(null);
                 parentDto.setNationalCode(null);
             }
@@ -3215,6 +3215,62 @@ public class ElsRestController {
             parentDto.setNationalCode(null);
         }
         return parentDto;
+
+    }
+
+    @GetMapping("/run-supervisor/task-list/by-type/{objectType}")
+    public ResponseEntity<TrainingRequestDTO.TrainingRequestSpecRs> getRunSupervisorTaskListByType(@PathVariable("objectType") String objectType) {
+        Long userId = SecurityUtil.getUserId();
+         List<TrainingRequestDTO.Info> listWithPermission= new ArrayList<>();
+         List<TrainingRequestDTO.Info> allData= new ArrayList<>();
+
+        List<TrainingRequestDTO.Info>   list = client.getRunSupervisorTaskListByType(objectType);
+        List<TrainingRequestDTO.Info>   listOfExpert = client.getRunExpertTaskListByType(SecurityUtil.getNationalCode(),objectType);
+        Set<String> courseList =  list.stream().map(TrainingRequestDTO.Info::getObjectCode).collect(Collectors.toSet());
+        Set<String> courseWithPermission = courseService.getCourseWithPermission(userId,courseList);
+        listWithPermission = list.stream().filter(a->courseWithPermission.contains(a.getObjectCode())).toList();
+        allData.addAll(listWithPermission);
+        allData.addAll(listOfExpert);
+        final TrainingRequestDTO.SpecRs specResponse = new TrainingRequestDTO.SpecRs();
+        specResponse.setData(allData)
+                .setStartRow(0)
+                .setEndRow(allData.size())
+                .setTotalRows(allData.size());
+
+        final TrainingRequestDTO.TrainingRequestSpecRs specRs = new TrainingRequestDTO.TrainingRequestSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/review/run-Supervisor")
+    public  ResponseEntity<BaseResponse> reviewRunSupervisor(@RequestBody ReviewByRunSupervisor reviewByRunSupervisor) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            TrainingRequestDTO.Info info= client.reviewRunSupervisor(reviewByRunSupervisor);
+            baseResponse.setStatus(200);
+        }catch (Exception e){
+            baseResponse.setStatus(400);
+            baseResponse.setMessage(e.toString());
+
+        }
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+    }
+
+
+
+    @Scheduled(cron = "0 30 17 1/1 * ?")
+    public void reviewAllElsExpertTasks() {
+        List<TrainingRequestDTO.Info>   list = client.getAllRunExpertTaskList();
+        list.forEach( task ->{
+            Boolean isInClass=classStudentService.checkStudentIsInClass(task.getRequesterNationalCode(),task.getObjectCode());
+            if (isInClass){
+                ReviewByRunExpert reviewByRunExpert = new ReviewByRunExpert();
+                reviewByRunExpert.setId(task.getId());
+                client.reviewByRunExpert(reviewByRunExpert);
+            }
+        });
+
 
     }
 

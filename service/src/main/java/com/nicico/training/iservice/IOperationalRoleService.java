@@ -61,4 +61,8 @@ public interface IOperationalRoleService {
     Set<Subcategory> getSubCategories(Long id);
 
     Set<Long> findAllByObjectType(String objectType);
+
+    boolean isSupervisor(Long userId);
+
+    Set<Long> findAllByObjectTypeAndPermission(String type, String code);
 }

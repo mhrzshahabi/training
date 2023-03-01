@@ -1349,6 +1349,7 @@
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const trainingRequestManagementUrl = rootUrl + "/training-request-management";
+    const elsUrl = baseUrl + "/anonymous/els";
     const educationalDecisionHeaderRequestUrl = rootUrl + "/header";
     const committeeRequestUrl = rootUrl + "/CommitteeOfExperts";
     const educationalDecisionRequestUrl = rootUrl + "/decision";
@@ -2183,15 +2184,15 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/selfDeclaration/"/>");
                     }
-                }
-<%--                <sec:authorize access="hasAuthority('Menu_Run')">--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="trainingCourseRequest"/>",--%>
-<%--                    click: function () {--%>
-<%--                        createTab(this.title, "<spring:url value="/web/trainingCourseRequest"/>");--%>
-<%--                    }--%>
-<%--                },--%>
-<%--                </sec:authorize>--%>
+                },
+                <sec:authorize access="hasAuthority('Menu_Run')">
+                {
+                    title: "<spring:message code="trainingCourseRequest"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/trainingCourseRequest"/>");
+                    }
+                },
+                </sec:authorize>
 
                 <%--{isSeparator: true},--%>
                 <%--{--%>

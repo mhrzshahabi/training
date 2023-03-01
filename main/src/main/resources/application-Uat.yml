@@ -33,7 +33,7 @@ nicico:
   #    sys-password: password
   minioQuestionsGroup: '60a388a05341e747ff3e59c6'
   minioUrl: 'http://storage.icico.net.ir/fms/'
-  elsUrl: 'http://staging.icico.net.ir/els/api/training'
+  elsUrl: 'http://staging.icico.net.ir/els/api'
   hrmClient: 'http://uat.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   elsSmsUrl: 'https://mobiles.nicico.com'

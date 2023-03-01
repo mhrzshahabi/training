@@ -36,7 +36,7 @@ nicico:
   minioQuestionsGroup: '61502f8082da585df04a50dd'
   minioUrl: 'http://storage.icico.net.ir/fms/file'
   uploadMinioUrl: 'http://storage.icico.net.ir/fms/file'
-  elsUrl: 'http://staging.icico.net.ir/els/api/training'
+  elsUrl: 'http://staging.icico.net.ir/els/api'
   hrmClient: 'http://staging.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   trainingUrl: 'http://staging.icico.net.ir/training/'

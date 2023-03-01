@@ -985,6 +985,11 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
+    public Boolean checkStudentIsInClass(String requesterNationalCode, String objectCode) {
+        return !classStudentDAO.checkStudentIsInClass(requesterNationalCode,objectCode).isEmpty();
+    }
+
+    @Override
     public boolean IsStudentAttendanceAllowable(Long classStudentId) {
         try {
             ClassStudent classStudentById = getClassStudent(classStudentId);

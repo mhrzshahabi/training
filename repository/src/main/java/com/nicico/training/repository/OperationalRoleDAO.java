@@ -97,4 +97,35 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
             "    F_OPERATIONAL_ROLE = :id " , nativeQuery = true)
     List<Long> getSubCategories(Long id);
 
+
+    @Query(value = """
+SELECT
+    tbl_operational_role_user_ids.user_ids as id
+FROM
+         tbl_operational_role
+    INNER JOIN tbl_operational_role_user_ids ON tbl_operational_role.id = tbl_operational_role_user_ids.
+    f_operational_role
+    WHERE object_type = 'EXECUTIVE_SUPERVISOR'
+    and user_ids = :id
+""" , nativeQuery = true)
+    List<Long> isSupervisor(@Param("id") Long userId);
+
+
+    @Query(value = """
+SELECT DISTINCT
+    *
+FROM
+         tbl_operational_role
+    INNER JOIN tbl_operational_role_user_ids ON tbl_operational_role.id = tbl_operational_role_user_ids.f_operational_role
+    INNER JOIN tbl_operational_role_subcategory ON tbl_operational_role_user_ids.f_operational_role =\s
+    tbl_operational_role_subcategory.f_operational_role
+    INNER JOIN tbl_course ON tbl_operational_role_subcategory.f_subcategory = tbl_course.
+    subcategory_id
+WHERE
+
+   \s
+     tbl_operational_role.object_type = :objectType
+    and tbl_course.c_code = :code
+""" , nativeQuery = true)
+    List<OperationalRole> findAllByObjectTypeAndPermission(String objectType, String code);
 }

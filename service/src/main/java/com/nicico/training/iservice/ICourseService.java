@@ -9,6 +9,7 @@ import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 public interface ICourseService {
@@ -110,4 +111,6 @@ public interface ICourseService {
     String getClassCourseLevelType(Long classId);
 
     CourseDTO.CourseSpecRs updateIsSpecial(Long courseId, Boolean isSpecial);
+
+    Set<String> getCourseWithPermission(Long userId, Set<String> courseList);
 }

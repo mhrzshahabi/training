@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface CourseDAO extends NicicoRepository<Course> {
@@ -216,4 +217,21 @@ public interface CourseDAO extends NicicoRepository<Course> {
     void updateDurationByCourseCode(String code, Float theoryDuration);
 
     Optional<Course>findFirstByCode(String code);
+
+    @Query(value = """
+SELECT DISTINCT
+    tbl_course.c_code
+FROM
+         tbl_operational_role
+    INNER JOIN tbl_operational_role_user_ids ON tbl_operational_role.id = tbl_operational_role_user_ids.f_operational_role
+    INNER JOIN tbl_operational_role_subcategory ON tbl_operational_role_user_ids.f_operational_role =\s
+    tbl_operational_role_subcategory.f_operational_role
+    INNER JOIN tbl_course ON tbl_operational_role_subcategory.f_subcategory = tbl_course.
+    subcategory_id
+WHERE
+        tbl_operational_role_user_ids.user_ids = :id
+    AND tbl_operational_role.object_type = 'EXECUTIVE_SUPERVISOR'
+    and tbl_course.c_code in (:code)
+""",nativeQuery = true)
+    Set<String> getCourseWithPermission(Long id, Set<String> code);
 }

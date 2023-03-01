@@ -794,6 +794,11 @@ public class CourseService implements ICourseService {
         return beanMapper.toSpecRs(updatedCourse);
     }
 
+    @Override
+    public Set<String> getCourseWithPermission(Long userId, Set<String> courseList) {
+        return courseDAO.getCourseWithPermission(userId,courseList);
+    }
+
 }
 
 

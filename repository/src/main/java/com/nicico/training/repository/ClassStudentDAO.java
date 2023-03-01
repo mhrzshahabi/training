@@ -1255,4 +1255,19 @@ WHERE
     tbl_parameter_value.c_code = :scoreCode
 """,nativeQuery = true)
     List<ClassStudent> getAllStudentWithScoreCondition(Long classId,String scoreCode);
+
+
+
+    @Query(value = """
+SELECT  *
+FROM
+         tbl_class_student
+    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+    WHERE tbl_student.national_code = :nationalCode
+    and
+    tbl_course.c_code = :code
+""",nativeQuery = true)
+    List<ClassStudent> checkStudentIsInClass(String nationalCode, String code);
 }

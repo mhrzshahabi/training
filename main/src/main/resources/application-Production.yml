@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:oracle:thin:@//srv-oraprd1.nicico.com:1521/pdb_prd01
-    username: n_training
-    password: 2tqNXUzgXKx3iDqC
+    url: jdbc:oracle:thin:@//10.1.254.131:1521/fgostardb
+    username: PRD_TRAINING
+    password: dWcOHoHBHZuPGs0vmZ8S
     hikari:
       maximum-pool-size: 60
       connection-timeout: 60000
@@ -34,9 +34,16 @@ spring:
     activate:
       on-profile: Production
 
+jasypt:
+    encryptor:
+      bean: stringEncryptor
+
 nicico:
   server:
     url: http://devapp01.icico.net.ir/training
+  security:
+    sys-password: ENC(A7vRozXK8KtdP35y279QeRvnlzhFE23bRni6KJODwdQ=)
+
   minioQuestionsGroup: '614f0560d9bd82744565c05f'
   minioUrl: 'http://fms.nicico.com/fms/file'
   uploadMinioUrl: 'https://fms.nicico.com/fms/file'

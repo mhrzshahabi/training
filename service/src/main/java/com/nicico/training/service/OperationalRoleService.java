@@ -205,6 +205,29 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
+    public boolean isSupervisor(Long userId) {
+        try {
+            return !operationalRoleDAO.isSupervisor(userId).isEmpty();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public Set<Long> findAllByObjectTypeAndPermission(String objectType, String code) {
+        Set<Long>users=new HashSet<>();
+        if (objectType!=null){
+            List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByObjectTypeAndPermission(objectType,code);
+            if (operationalRoles.size() != 0){
+                operationalRoles.stream().map(OperationalRole::getUserIds).collect(Collectors.toSet()).forEach(users::addAll);
+            }
+        }
+        return users;
+    }
+
+
+    @Override
     public List<String> getOperationalRoleTitlesByIds(List<Long> ids) {
         return operationalRoleDAO.findAllById(ids).stream().map(OperationalRole::getTitle).collect(Collectors.toList());
     }

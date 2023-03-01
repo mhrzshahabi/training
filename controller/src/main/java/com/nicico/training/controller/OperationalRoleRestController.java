@@ -180,6 +180,25 @@ public class OperationalRoleRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
 
     }
+    @Loggable
+    @GetMapping(value = "/findAllByObjectTypeAndPermission/{type}/{code}")
+    public ResponseEntity<OperationalRoleDTO.OathUserSpecRs> findAllByObjectTypeAndPermission( @PathVariable String type, @PathVariable String code) throws IOException {
+        final OperationalRoleDTO.SpecOauthRs specResponse = new OperationalRoleDTO.SpecOauthRs();
+        Set<Long>  data=operationalRoleService.findAllByObjectTypeAndPermission(type,code);
+        List<SynonymOAUser> list=  synonymOAUserService.listOfUser(data.stream().toList());
+          List<OperationalRoleDTO.OathInfo> dtoList=modelMapper.map(list, new TypeToken<List<OperationalRoleDTO.OathInfo>>() {
+          }.getType());
+        specResponse.setData(dtoList)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final OperationalRoleDTO.OathUserSpecRs specRs = new OperationalRoleDTO.OathUserSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+
+    }
 
 
 

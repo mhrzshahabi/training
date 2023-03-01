@@ -91,7 +91,6 @@ public class TclassService implements ITclassService {
     private final EvaluationDAO evaluationDAO;
     private final EvaluationAnswerService evaluationAnswerService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
-
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassSessionService classSessionService;
     private final TermDAO termDAO;
