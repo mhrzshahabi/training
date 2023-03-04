@@ -3204,23 +3204,91 @@
     function confirmRequestItemProcessByRunSupervisor(record, window) {
 
         let baseUrl = requestItemBPMSUrl;
-        let url = "/tasks/run-supervisor/request-item/review/" + record.courseCode;
+        let expertsAssignListUrl = "/experts-assign-List/request-item/" + record.processInstanceId + "/" + record.courseCode;
 
-        let reviewTaskRequest = {
-            taskId: record.taskId,
-            approve: true,
-            userName: userUserName,
-            processInstanceId: record.processInstanceId,
-            variables: {}
-        };
+        let ListGrid_Experts_List = isc.ListGrid.create({
+            width: "100%",
+            height: "100%",
+            selectionType: "simple",
+            selectCellTextOnClick: true,
+            selectionAppearance: "checkbox",
+            fields: [
+                {name: "expertNationalCode", title: "کدملی"},
+                {name: "expertFullName", title: "نام و نام خانوادگی"}
+            ]
+        });
+        let Button_Experts_List_Confirm = isc.IButton.create({
+            title: "تایید کارشناس و ادامه",
+            align: "center",
+            width: "140",
+            click: function () {
+
+                let records = ListGrid_Experts_List.getSelectedRecords();
+                if (records == null || records.size() !== 1) {
+                    createDialog("info", "حتما و فقط یک کارشناس انتخاب شود");
+                } else {
+
+                    let url = "/tasks/run-supervisor/request-item/review/" + records[0].expertNationalCode;
+                    let reviewTaskRequest = {
+                        taskId: record.taskId,
+                        approve: true,
+                        userName: userUserName,
+                        processInstanceId: record.processInstanceId,
+                        variables: {}
+                    };
+
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+                        wait.close();
+                        let response = JSON.parse(resp.httpResponseText);
+                        Window_Experts_List.close();
+                        window.close();
+                        createDialog("info", response.message);
+                        ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                    }));
+                }
+            }
+        });
+        let Button_Experts_List_Close = isc.IButton.create({
+            title: "بستن",
+            align: "center",
+            width: "140",
+            click: function () {
+                Window_Experts_List.close();
+            }
+        });
+        let HLayout_Experts_List = isc.HLayout.create({
+            width: "100%",
+            height: "5%",
+            align: "center",
+            membersMargin: 10,
+            members: [
+                Button_Experts_List_Confirm,
+                Button_Experts_List_Close
+            ]
+        });
+        let Window_Experts_List = isc.Window.create({
+            title: "انتخاب کارشناس اجرا",
+            autoSize: false,
+            width: "40%",
+            height: "50%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            autoCenter: true,
+            isModal: false,
+            items: [
+                ListGrid_Experts_List,
+                HLayout_Experts_List
+            ]
+        });
 
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + expertsAssignListUrl, "GET", null, function (resp) {
             wait.close();
-            let response = JSON.parse(resp.httpResponseText);
-            window.close();
-            createDialog("info", response.message);
-            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+            let expertsList = JSON.parse(resp.httpResponseText);
+            ListGrid_Experts_List.setData(expertsList);
+            Window_Experts_List.show();
         }));
     }
     function confirmRequestItemProcessByRunExperts(record, window) {

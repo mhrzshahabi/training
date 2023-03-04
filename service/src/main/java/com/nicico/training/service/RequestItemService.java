@@ -778,7 +778,26 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String courseCode) {
+    public List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> getExpertsAssignList(String processInstanceId, String courseCode) {
+
+        List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> expertsAssignList = new ArrayList<>();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(processInstanceId);
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+            List<RequestItemCoursesDetailDTO.Info> courseCodeDetailDTO = courses.stream().filter(item -> item.getCourseCode().equals(courseCode)).collect(Collectors.toList());
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courseCodeDetailDTO);
+
+            expertsAssignList = getCourseExpertsAssigneeList(courseCategoryInfos);
+        }
+        return expertsAssignList;
+    }
+
+    @Override
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String expertNationalCode) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
@@ -786,22 +805,14 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
-            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findFirstByRequestItemIdAndRoleName(requestItem.getId(), "planningChief");
-            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
-            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
-            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getExpertsAssigneeList(courseCategoryInfos);
-//            if (coursesAssigneeList.stream().anyMatch(item -> item.getExpertsAssigneeList().size() == 0)) {
-            if (coursesAssigneeList.stream().filter(item -> item.getCourseCode().equals(courseCode)).anyMatch(item -> item.getExpertsAssigneeList().size() != 1)) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-            } else {
-//                Collection<String> expertsAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getExpertsAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
-                Collection<String> expertsAssigneeList = coursesAssigneeList.stream().filter(item -> item.getCourseCode().equals(courseCode)).map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getExpertsAssigneeList).flatMap(Collection::stream).collect(Collectors.toList());
-                Map<String, Object> map = reviewTaskRequest.getVariables();
-                map.put("expertsAssigneeList", expertsAssigneeList);
-                map.put("requestItemId", requestItem.getId());
-                response.setStatus(200);
-            }
+            Collection<String> expertsAssigneeList = new ArrayList<>();
+            expertsAssigneeList.add(expertNationalCode);
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("expertsAssigneeList", expertsAssigneeList);
+            map.put("requestItemId", requestItem.getId());
+            response.setStatus(200);
+
         } else {
             response.setStatus(404);
         }
@@ -814,8 +825,6 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
-        } else if (response.getStatus() == 400) {
-            response.setMessage("برای دوره موردنظر کارشناس اجرا تعریف نشده است یا بیش از یک کارشناس تعریف شده است");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -1162,8 +1171,35 @@ public class RequestItemService implements IRequestItemService {
         return courseCategoryInfos;
     }
 
-    @Override
-    public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
+//    @Override
+//    public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
+//
+//        String complexTitle;
+//        Long complexId;
+//        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+//        if (departmentId != null) {
+//            complexTitle = departmentService.getComplexTitleById(departmentId);
+//            if (complexTitle == null) {
+//                complexTitle = "مدیر مجتمع مس سرچشمه";
+//            }
+//        } else {
+//            complexTitle = "مدیر مجتمع مس سرچشمه";
+//        }
+//        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
+//
+//        courseCategoryInfos.forEach(item -> {
+//            List<String> expertsAssigneeList = new ArrayList<>();
+//            List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTION_EXPERT", item.getCategoryId(), item.getSubCategoryId());
+//            Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
+//            for (Long userId : userIds) {
+//                expertsAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
+//            }
+//            item.setExpertsAssigneeList(expertsAssigneeList);
+//        });
+//        return courseCategoryInfos;
+//    }
+
+    public List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> getCourseExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
 
         String complexTitle;
         Long complexId;
@@ -1178,16 +1214,18 @@ public class RequestItemService implements IRequestItemService {
         }
         complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
+        List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> expertsListInfos = new ArrayList<>();
         courseCategoryInfos.forEach(item -> {
-            List<String> expertsAssigneeList = new ArrayList<>();
             List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTION_EXPERT", item.getCategoryId(), item.getSubCategoryId());
             Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
             for (Long userId : userIds) {
-                expertsAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
+                RequestItemCoursesDetailDTO.CourseExpertsListInfo courseExpert = new RequestItemCoursesDetailDTO.CourseExpertsListInfo();
+                courseExpert.setExpertNationalCode(synonymOAUserService.getNationalCodeByUserId(userId));
+                courseExpert.setExpertFullName(synonymOAUserService.getFullNameByUserId(userId));
+                expertsListInfos.add(courseExpert);
             }
-            item.setExpertsAssigneeList(expertsAssigneeList);
         });
-        return courseCategoryInfos;
+        return expertsListInfos;
     }
 
     @Override

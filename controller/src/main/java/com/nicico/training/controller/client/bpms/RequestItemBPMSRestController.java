@@ -5,6 +5,7 @@ import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.AppUtils;
+import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.iservice.IRequestItemService;
 import dto.bpms.*;
 import lombok.RequiredArgsConstructor;
@@ -161,9 +162,15 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/run-supervisor/request-item/review/{courseCode}"})
-    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String courseCode) {
-        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest, courseCode);
+    @GetMapping({"/experts-assign-List/request-item/{processInstanceId}/{courseCode}"})
+    public List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> getExpertsAssignList(@PathVariable String processInstanceId, @PathVariable String courseCode) {
+        return requestItemService.getExpertsAssignList(processInstanceId, courseCode);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-supervisor/request-item/review/{expertNationalCode}"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String expertNationalCode) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest, expertNationalCode);
     }
 
     @Loggable

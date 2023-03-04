@@ -83,6 +83,15 @@ public class RequestItemCoursesDetailDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("RequestItemCourseExpertsListInfo")
+    public static class CourseExpertsListInfo {
+        private String expertNationalCode;
+        private String expertFullName;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("RequestItemCoursesDetailCreate")
     public static class Create extends RequestItemCoursesDetailDTO {
     }
