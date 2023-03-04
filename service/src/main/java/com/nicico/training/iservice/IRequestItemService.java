@@ -82,7 +82,9 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunChiefNeedToPass(ReviewTaskRequest reviewTaskRequest);
 
-    BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String courseCode);
+    List<RequestItemCoursesDetailDTO.CourseExpertsListInfo> getExpertsAssignList(String processInstanceId, String courseCode);
+
+    BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest, String expertNationalCode);
 
     BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest, String courseCode);
 
@@ -108,7 +110,7 @@ public interface IRequestItemService {
 
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
-    List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
+//    List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
     void updateProcessStatus(Long requestItemId, String processStatus);
 
