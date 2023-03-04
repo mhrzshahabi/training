@@ -237,4 +237,5 @@ public interface ITclassService {
 
     void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException;
 
+    ActiveCoursesDto getActiveCourses(int page, int size, SearchDtoRequest search);
 }

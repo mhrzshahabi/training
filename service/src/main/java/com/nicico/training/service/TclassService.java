@@ -3008,6 +3008,62 @@ public class TclassService implements ITclassService {
         queryString.append(searchQuery);
         return queryString.toString();
     }
+    private String getActiveCourses(int page, int size, String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                            *
+                        FROM
+                            (
+                               SELECT
+                                   tbl_course.c_code,
+                                   tbl_course.c_title_fa,
+                                   tbl_course.id
+                               FROM
+                                        tbl_course
+                                   INNER JOIN tbl_class ON tbl_course.id = tbl_class.f_course
+                               WHERE
+                                   tbl_class.c_status = 1
+                                     ORDER BY
+                                                                   tbl_course.id DESC
+                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        """,
+                page,
+                size,
+                searchQuery
+        );
+    }
+    private String getCountActiveCourses(String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                             COUNT(id)
+                        FROM
+                            (
+                               SELECT
+                                   tbl_course.c_code,
+                                   tbl_course.c_title_fa,
+                                   tbl_course.id
+                               FROM
+                                        tbl_course
+                                   INNER JOIN tbl_class ON tbl_course.id = tbl_class.f_course
+                               WHERE
+                                   tbl_class.c_status = 1
+                                     ORDER BY
+                                                                   tbl_course.id DESC
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        """,
+                searchQuery
+        );
+    }
+
 
 
     @Override
@@ -3051,6 +3107,50 @@ public class TclassService implements ITclassService {
 
         }
 
+    }
+
+    @Override
+    public ActiveCoursesDto getActiveCourses(int page, int size, SearchDtoRequest search) {
+        ActiveCoursesDto res = new ActiveCoursesDto();
+        try {
+            String searchQuery = "";
+            if (search != null && search.getSearchDTOList().size() > 0) {
+                searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
+            }
+            String query = getActiveCourses( page, size, searchQuery);
+            List<ActiveCourses> activeCourses = new ArrayList<>();
+            List<?> activeData = entityManager.createNativeQuery(query).getResultList();
+            ;
+            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveCourses( searchQuery)).getSingleResult().toString());
+            if (activeData != null) {
+                for (Object course : activeData) {
+                    Object[] data = (Object[]) course;
+                    activeCourses.add(new ActiveCourses(
+                            (data[2] != null ? Long.parseLong(data[2].toString()) : 0),
+                            (data[0] != null ? (data[0].toString()) : ""),
+                            (data[1] != null ? (data[1].toString()) : "")
+
+                    ));
+                }
+            }
+
+
+            int totalPage = size == 0 ? 0 : (int) Math.ceil((double) total / (double) size);
+            res.setActiveCourses(activeCourses);
+            PaginationDto paginationDto = new PaginationDto();
+            paginationDto.setCurrent(page);
+            paginationDto.setSize(size);
+            paginationDto.setTotal(totalPage);
+            paginationDto.setLast(totalPage == 0 ? 0 : totalPage - 1);
+            paginationDto.setTotalItems(total);
+            res.setPagination(paginationDto);
+            res.setStatus(200);
+
+        } catch (Exception e) {
+            res.setStatus(404);
+
+        }
+        return res;
     }
 
 }
