@@ -3073,6 +3073,74 @@ public class TclassService implements ITclassService {
                 searchQuery
         );
     }
+    private String getActiveClassesWithUserNationalCode(String nationalCode,int page, int size, String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                            *
+                        FROM
+                            (
+                           SELECT
+                               tbl_class.id,
+                               tbl_class.c_code        AS code,
+                               tbl_class.c_title_class AS title,
+                               tbl_class.c_start_date  AS startDate,
+                               tbl_class.c_end_date    AS endDate
+                           
+                           FROM
+                                    tbl_class
+                               INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id
+                               INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+                                 WHERE
+                                 tbl_student.national_code = '%s'
+                           and                                    tbl_class.c_status = 1
+                            ORDER BY
+                                tbl_class.id DESC
+                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        """,
+                nationalCode,
+                page,
+                size,
+                searchQuery
+        );
+    }
+    private String getCountActiveClassesWithUserNationalCode(String nationalCode, String searchQuery) {
+        return String.format(
+                """
+                        SELECT
+                             COUNT(id)
+                        FROM
+                            (
+                           SELECT
+                               tbl_class.id,
+                               tbl_class.c_code        AS code,
+                               tbl_class.c_title_class AS title,
+                               tbl_class.c_start_date  AS startDate,
+                               tbl_class.c_end_date    AS endDate
+                           
+                           FROM
+                                    tbl_class
+                               INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id
+                               INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+                                 WHERE
+                                 tbl_student.national_code = '%s'
+                                  and       tbl_class.c_status = 1
+
+                            ORDER BY
+                                tbl_class.id DESC
+                            )
+                        WHERE
+                            1 = 1
+                            %s
+                        """,
+                nationalCode,
+                searchQuery
+        );
+    }
     private String getCountActiveCourses(String searchQuery) {
         return String.format(
                 """
@@ -3117,8 +3185,6 @@ public class TclassService implements ITclassService {
                             
                             FROM
                                      tbl_class
-                                INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
-                                LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
                             WHERE
                                     tbl_class.c_status = 1
                                 AND tbl_class.f_course = %s
@@ -3235,6 +3301,52 @@ public class TclassService implements ITclassService {
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
             Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClasses( courseId,searchQuery)).getSingleResult().toString());
+            if (activeData != null) {
+                for (Object course : activeData) {
+                    Object[] data = (Object[]) course;
+                    activeClasses.add(new ActiveClasses(
+                            (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
+                            (data[1] != null ? (data[1].toString()) : ""),
+                            (data[2] != null ? (data[2].toString()) : ""),
+                            (data[3] != null ? (data[3].toString()) : ""),
+                            (data[4] != null ? (data[4].toString()) : "")
+
+                    ));
+                }
+            }
+
+
+            int totalPage = size == 0 ? 0 : (int) Math.ceil((double) total / (double) size);
+            res.setActiveClasses(activeClasses);
+            PaginationDto paginationDto = new PaginationDto();
+            paginationDto.setCurrent(page);
+            paginationDto.setSize(size);
+            paginationDto.setTotal(totalPage);
+            paginationDto.setLast(totalPage == 0 ? 0 : totalPage - 1);
+            paginationDto.setTotalItems(total);
+            res.setPagination(paginationDto);
+            res.setStatus(200);
+
+        } catch (Exception e) {
+            res.setStatus(404);
+
+        }
+        return res;
+    }
+
+    @Override
+    public ActiveClassesDto getMyActiveClasses(String nationalCode, int page, int size, SearchDtoRequest search) {
+        ActiveClassesDto res = new ActiveClassesDto();
+        try {
+            String searchQuery = "";
+            if (search != null && search.getSearchDTOList().size() > 0) {
+                searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
+            }
+            String query = getActiveClassesWithUserNationalCode( nationalCode,page, size, searchQuery);
+            List<ActiveClasses> activeClasses = new ArrayList<>();
+            List<?> activeData = entityManager.createNativeQuery(query).getResultList();
+            ;
+            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClassesWithUserNationalCode( nationalCode,searchQuery)).getSingleResult().toString());
             if (activeData != null) {
                 for (Object course : activeData) {
                     Object[] data = (Object[]) course;

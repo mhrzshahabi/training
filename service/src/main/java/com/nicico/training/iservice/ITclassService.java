@@ -240,4 +240,6 @@ public interface ITclassService {
     ActiveCoursesDto getActiveCourses(int page, int size, SearchDtoRequest search);
 
     ActiveClassesDto getActiveClasses(long courseId, int page, int size, SearchDtoRequest search);
+
+    ActiveClassesDto getMyActiveClasses(String nationalCode, int page, int size, SearchDtoRequest search);
 }
