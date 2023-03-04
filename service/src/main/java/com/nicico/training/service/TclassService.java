@@ -3012,7 +3012,7 @@ public class TclassService implements ITclassService {
 
 
     @Override
-    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException {
+    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         if (!data.isEmpty()) {
             Object[] item = (Object[]) data.get(0);
@@ -3040,8 +3040,8 @@ public class TclassService implements ITclassService {
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             String text = "با کد ملی " + nationalCode +
                           " دوره آموزشی " + course +
-                          " که از تاریخ " + from +
-                          " تا تاریخ " + to +
+                          " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                          " تا تاریخ " + MyUtils.changeDateDirection(to) +
                           " به مدت " + duration +
                           " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
             params.put("text", text);
@@ -3059,7 +3059,7 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException {
+    public void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertificationConfirmation(nationalCode, classId);
 
         if (!data.isEmpty()) {
@@ -3083,8 +3083,8 @@ public class TclassService implements ITclassService {
                 text = "آقا/خانم " + fullName +
                        " با کد ملی " + nationalCode +
                        " دوره آموزشی " + course +
-                       " که از تاریخ " + from +
-                       " تا تاریخ " + to +
+                       " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                       " تا تاریخ " + MyUtils.changeDateDirection(to) +
                        " به مدت " + duration +
                        " برگزار گردیده است را با نمره قبولی " + score +
                        " به پایان رسانیده اند.";
