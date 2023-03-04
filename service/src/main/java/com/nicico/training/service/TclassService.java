@@ -3081,8 +3081,8 @@ public class TclassService implements ITclassService {
                         FROM
                             (
                                SELECT
-                                   tbl_course.c_code,
-                                   tbl_course.c_title_fa,
+                                   tbl_course.c_code as courseCode,
+                                   tbl_course.c_title_fa as courseTitle,
                                    tbl_course.id
                                FROM
                                         tbl_course
@@ -3102,9 +3102,9 @@ public class TclassService implements ITclassService {
     }
     private String getCountActiveClasses(long courseId, String searchQuery) {
         return String.format(
-                """
-                        SELECT
-                            *
+                """        
+                            SELECT
+                             COUNT(id)
                         FROM
                             (
                             SELECT
