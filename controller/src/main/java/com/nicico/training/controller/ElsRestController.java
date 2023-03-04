@@ -3291,6 +3291,23 @@ public class ElsRestController {
         return res;
 
     }
+    @PostMapping("/active-classes/{courseId}/{page}/{size}")
+    public ActiveClassesDto getActiveClasses(@RequestHeader(name = "X-Auth-Token") String header
+            , @PathVariable int page
+            , @PathVariable long courseId,
+                                             @PathVariable int size
+            , @RequestBody SearchDtoRequest search
+    ) {
+        ActiveClassesDto res = new ActiveClassesDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            return tclassService.getActiveClasses( courseId,page, size, search);
+
+        } else {
+            res.setStatus(401);
+        }
+        return res;
+
+    }
 
 
 
