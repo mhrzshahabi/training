@@ -23,6 +23,7 @@ import response.tclass.dto.TclassDto;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -235,7 +236,9 @@ public interface ITclassService {
 
     ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDtoRequest search);
 
-    void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException;
+    void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+
+    void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
     ActiveCoursesDto getActiveCourses(int page, int size, SearchDtoRequest search);
 

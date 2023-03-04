@@ -3202,7 +3202,7 @@ public class TclassService implements ITclassService {
 
 
     @Override
-    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException {
+    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         if (!data.isEmpty()) {
             Object[] item = (Object[]) data.get(0);
@@ -3218,22 +3218,24 @@ public class TclassService implements ITclassService {
             String code = item[7] != null ? item[7].toString() : "";
             String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
-            StringBuilder qrData = new StringBuilder();
-            qrData.append("گواهی می شود ").append(fullName).append(" با کد ملی ").append(nationalCode).append(" دوره آموزشی ")
-                    .append(course).append(" که از تاریخ ").append(from).append(" تا تاریخ ").append(to).append(" به مدت ").append(duration).append(" برگزار گردیده است را با موفقیت به پایان رسانیده اند");
             params.put("nationalCode", nationalCode);
             params.put("course", addSpaceToStringBySize(course, 30));
-            params.put("from", from);
-            params.put("to", to);
             params.put("date", DateUtil.todayDate());
-            params.put("duration", duration);
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
-            params.put("qrCodeData", qrData.toString());
+            params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            String text = "با کد ملی " + nationalCode +
+                          " دوره آموزشی " + course +
+                          " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                          " تا تاریخ " + MyUtils.changeDateDirection(to) +
+                          " به مدت " + duration +
+                          " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
+            params.put("text", text);
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
-            params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است"+ System.lineSeparator()+" جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+            params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است" + System.lineSeparator() + " جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");
+            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
             if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0))))
                 reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
@@ -3241,7 +3243,54 @@ public class TclassService implements ITclassService {
                 reportUtil.export("/reports/message.jasper", params2, jsonDataSource, response);
 
         }
+    }
 
+    @Override
+    public void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+        List<?> data = tclassDAO.getCertificationConfirmation(nationalCode, classId);
+
+        if (!data.isEmpty()) {
+            Object[] item = (Object[]) data.get(0);
+            final Map<String, Object> params = new HashMap<>();
+            String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
+            String scoreStateId = item[0] != null ? item[0].toString() : "";
+            String score = item[1] != null ? item[1].toString() : "";
+            String firstName = item[2] != null ? item[2].toString() : "";
+            String lastName = item[3] != null ? item[3].toString() : "";
+            String fullName = !firstName.equals(lastName) ? firstName + " " + lastName : firstName;
+            String course = item[4] != null ? item[4].toString() : "";
+            String duration = item[5] != null ? item[5] + " ساعت " : "-";
+            String from = item[6] != null ? item[6].toString() : "";
+            String to = item[7] != null ? item[7].toString() : "";
+
+            String text;
+
+            if (scoreStateId.equals("400") || scoreStateId.equals("401")) { // قبول با نمره یا قبول بدون نمره
+                text = "آقا/خانم " + fullName +
+                       " با کد ملی " + nationalCode +
+                       " دوره آموزشی " + course +
+                       " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                       " تا تاریخ " + MyUtils.changeDateDirection(to) +
+                       " به مدت " + duration +
+                       " برگزار گردیده است را با نمره قبولی " + score +
+                       " به پایان رسانیده اند.";
+            } else {
+                text = "آقا/خانم " + fullName +
+                       " با کد ملی " + nationalCode +
+                       " در دوره آموزشی " + course +
+                       " که از تاریخ " + from +
+                       " تا تاریخ " + to +
+                       " به مدت " + duration +
+                       " برگزار گردیده است را با نمره " + score +
+                       "مردود گردیده است.";
+            }
+            params.put("text", text);
+            params.put("profileName", fullName);
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certificate_confirmation.jpg")));
+            params.put(ConstantVARs.REPORT_TYPE, "pdf");
+            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+            reportUtil.export("/reports/CertificateConfirmation.jasper", params, jsonDataSource, response);
+        }
     }
 
     @Override

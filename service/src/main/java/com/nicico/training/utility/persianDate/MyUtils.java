@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -584,5 +586,10 @@ public class MyUtils {
         }
     }
 
-
+    public static String changeDateDirection(String oldDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Date newDate = sdf.parse(oldDate);
+        sdf.applyPattern("dd/MM/yyyy");
+        return sdf.format(newDate);
+    }
 }
