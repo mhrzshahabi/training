@@ -3100,7 +3100,7 @@ public class TclassService implements ITclassService {
             }
             params.put("text", text);
             params.put("profileName", fullName);
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certconfirmation.jpg")));
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certificate_confirmation.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
             reportUtil.export("/reports/CertificateConfirmation.jasper", params, jsonDataSource, response);
