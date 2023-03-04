@@ -3033,7 +3033,7 @@ public class TclassService implements ITclassService {
             params.put("date", DateUtil.todayDate());
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
-            params.put("qrCodeData", trainingUrl + "anonymous/els/student/qr-code/certification/" + nationalCode + "/" + classId);
+            params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             String text = "با کد ملی " + nationalCode +
                           " دوره آموزشی " + course +
