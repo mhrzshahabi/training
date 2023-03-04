@@ -3276,7 +3276,7 @@ public class ElsRestController {
 
 
 
-    @PostMapping("/passed-classes/by-nationalCode/{nationalCode}/{page}/{size}")
+    @PostMapping("/active-courses/{page}/{size}")
     public ActiveCoursesDto getActiveCourses(@RequestHeader(name = "X-Auth-Token") String header
             , @PathVariable int page, @PathVariable int size
             , @RequestBody SearchDtoRequest search
