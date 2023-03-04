@@ -3178,6 +3178,11 @@ public class ElsRestController {
         tclassService.getCertification(nationalCode, classId, response);
     }
 
+    @GetMapping("/student/certification/qr-code/{nationalCode}/{classId}")
+    public void getCertificationByQRCode(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, SQLException, IOException {
+        tclassService.getCertificationByQRCode(nationalCode, classId, response);
+    }
+
     @PostMapping("/passed-classes/by-nationalCode/{nationalCode}/{page}/{size}")
     public ElsPassedCourses passedClassesByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode
             , @PathVariable int page, @PathVariable int size

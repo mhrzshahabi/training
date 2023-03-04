@@ -2,15 +2,11 @@
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Certificate" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="1cd19ba2-3995-42a2-a55b-e91b62711eac">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="nationalCode" class="java.lang.String"/>
-	<parameter name="course" class="java.lang.String"/>
-	<parameter name="from" class="java.lang.String"/>
-	<parameter name="to" class="java.lang.String"/>
-	<parameter name="duration" class="java.lang.String"/>
 	<parameter name="fullName" class="java.lang.String"/>
 	<parameter name="letterNum" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="qrCodeData" class="java.lang.String"/>
+	<parameter name="text" class="java.lang.String"/>
 	<parameter name="backImg" class="java.lang.Object"/>
 	<queryString>
 		<![CDATA[]]>
@@ -28,15 +24,15 @@
 		<band height="120" splitType="Stretch">
 			<textField>
 				<reportElement x="105" y="79" width="110" height="30" uuid="8a12e18e-2f9a-4c53-80c9-b6f0176df73c"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
+				<textElement textAlignment="Left">
+					<font fontName="B Nazanin"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="44" y="53" width="170" height="30" uuid="a52316b5-ee2f-4536-91bc-cf69a3b8d234"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
+				<reportElement x="60" y="49" width="154" height="26" uuid="a52316b5-ee2f-4536-91bc-cf69a3b8d234"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="B Nazanin"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{letterNum}]]></textFieldExpression>
 			</textField>
@@ -58,46 +54,19 @@
 	<detail>
 		<band height="196" splitType="Stretch">
 			<textField>
-				<reportElement x="497" y="77" width="100" height="30" uuid="90e6885f-76cd-428d-afc6-716bdec85735"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{nationalCode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="207" y="77" width="203" height="30" uuid="a00715f1-d45b-464c-8707-cb63317619ae"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{course}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="510" y="106" width="100" height="30" uuid="9c743c13-1617-4506-bfb7-04311a29a356"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{from}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="380" y="106" width="100" height="30" uuid="1eda3212-d95d-4078-bc82-537f00ba935f"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{to}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="268" y="106" width="100" height="30" uuid="08e376fb-230f-41aa-b797-ee7057fc84cb"/>
-				<textElement>
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{duration}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="367" y="22" width="100" height="30" uuid="f1bcb11d-9643-4f84-a8df-76d0dd9af833"/>
-				<textElement>
-					<font fontName="Shabnam-FD" size="18" isBold="true"/>
+				<reportElement x="60" y="22" width="540" height="30" uuid="f1bcb11d-9643-4f84-a8df-76d0dd9af833"/>
+				<textElement textAlignment="Center">
+					<font fontName="B Nazanin" size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="60" width="540" height="100" uuid="f04c9db2-1e7c-4a47-a1b1-39f23bdc8f31"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="none">
+					<font fontName="B Nazanin" size="18" isBold="true"/>
+					<paragraph lineSpacing="Double" lineSpacingSize="1.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{text}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
