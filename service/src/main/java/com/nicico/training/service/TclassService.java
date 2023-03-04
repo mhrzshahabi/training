@@ -3030,10 +3030,7 @@ public class TclassService implements ITclassService {
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             params.put("nationalCode", nationalCode);
             params.put("course", addSpaceToStringBySize(course, 30));
-//            params.put("from", from);
-//            params.put("to", to);
             params.put("date", DateUtil.todayDate());
-//            params.put("duration", duration);
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             params.put("qrCodeData", trainingUrl + "anonymous/els/student/qr-code/certification/" + nationalCode + "/" + classId);
