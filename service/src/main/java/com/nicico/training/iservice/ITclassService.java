@@ -237,7 +237,7 @@ public interface ITclassService {
     ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDtoRequest search);
 
     void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
-    Map<String, Object> getCertificationParams(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+    byte[] getCertificationFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
     void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
@@ -246,4 +246,6 @@ public interface ITclassService {
     ActiveClassesDto getActiveClasses(long courseId, int page, int size, SearchDtoRequest search);
 
     ActiveClassesDto getMyActiveClasses(String nationalCode, int page, int size, SearchDtoRequest search);
+
+    byte[] getCertificationByQRCodeFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, ParseException;
 }

@@ -47,7 +47,7 @@ nicico:
   minioQuestionsGroup: '614f0560d9bd82744565c05f'
   minioUrl: 'http://fms.nicico.com/fms/file'
   uploadMinioUrl: 'https://fms.nicico.com/fms/file'
-  elsUrl: 'http://mobiles.nicico.com/api/training'
+  elsUrl: 'http://mobiles.nicico.com/api'
   hrmClient: 'https://apps.nicico.com/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://apps.nicico.com/master-data/api/v3'

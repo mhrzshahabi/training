@@ -3332,10 +3332,14 @@ public class ElsRestController {
     }
 
 
-    @GetMapping("/student/certification/params")
-    public Map<String, Object> getStudentCertificationParams(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-       return tclassService.getCertificationParams(nationalCode, classId, response);
+    @GetMapping("/student/certification/file")
+    public byte[] getCertificationFile(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+       return tclassService.getCertificationFile(nationalCode, classId, response);
     }
 
+    @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
+    public byte[] getCertificationByQRCodeFile(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, SQLException, IOException, ParseException {
+      return   tclassService.getCertificationByQRCodeFile(nationalCode, classId, response);
+    }
 
 }
