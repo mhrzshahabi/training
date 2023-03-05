@@ -3454,7 +3454,7 @@ public class TclassService implements ITclassService {
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+//            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
