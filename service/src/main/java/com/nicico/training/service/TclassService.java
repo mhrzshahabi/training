@@ -3429,4 +3429,52 @@ public class TclassService implements ITclassService {
         return res;
     }
 
+
+
+    @Override
+    public  Map<String, Object> getCertificationParams(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+        List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
+        if (!data.isEmpty()) {
+            Object[] item = (Object[]) data.get(0);
+            final Map<String, Object> params = new HashMap<>();
+            final Map<String, Object> params2 = new HashMap<>();
+            String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
+            String course = item[1] != null ? item[1].toString() : "";
+            String to = item[2] != null ? item[2].toString() : "";
+            String from = item[3] != null ? item[3].toString() : "";
+            String duration = item[4] != null ? item[4].toString() + " ساعت " : "-";
+            String name = item[6] != null ? item[6].toString() : "";
+            String lastName = item[5] != null ? item[5].toString() : "";
+            String code = item[7] != null ? item[7].toString() : "";
+            String letterNum = nationalCode + "-" + code;
+            String fullName = !name.equals(lastName) ? name + " " + lastName : name;
+            params.put("nationalCode", nationalCode);
+            params.put("course", addSpaceToStringBySize(course, 30));
+            params.put("date", DateUtil.todayDate());
+            params.put("fullName", fullName);
+            params.put("letterNum", letterNum);
+            params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            String text = "با کد ملی " + nationalCode +
+                    " دوره آموزشی " + course +
+                    " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                    " تا تاریخ " + MyUtils.changeDateDirection(to) +
+                    " به مدت " + duration +
+                    " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
+            params.put("text", text);
+            params.put(ConstantVARs.REPORT_TYPE, "pdf");
+            params2.put(ConstantVARs.REPORT_TYPE, "pdf");
+            params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است" + System.lineSeparator() + " جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");
+            JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
+
+//            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0))))
+//                reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
+//            else
+//                reportUtil.export("/reports/message.jasper", params2, jsonDataSource, response);
+return params;
+        }
+        return null;
+    }
+
+
 }

@@ -3332,6 +3332,10 @@ public class ElsRestController {
     }
 
 
+    @GetMapping("/student/certification/params")
+    public Map<String, Object> getStudentCertificationParams(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+       return tclassService.getCertificationParams(nationalCode, classId, response);
+    }
 
 
 }

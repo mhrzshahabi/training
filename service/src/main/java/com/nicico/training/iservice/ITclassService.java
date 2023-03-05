@@ -237,6 +237,7 @@ public interface ITclassService {
     ElsPassedCourses getPassedClassesByNationalCode(String nationalCode, int page, int size, SearchDtoRequest search);
 
     void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+    Map<String, Object> getCertificationParams(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
     void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
