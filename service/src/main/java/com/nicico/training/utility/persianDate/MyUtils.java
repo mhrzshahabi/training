@@ -12,12 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.WeekDays;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -571,19 +565,6 @@ public class MyUtils {
             return false;
         else
             return classEndDate.compareTo(classBasisDate.getValue()) >= 0;
-    }
-
-    public static String addSpaceToStringBySize(String a,int size){
-        if (a.length() < size) {
-            int space= (size -a.length()) / 2;
-            StringBuilder text=new StringBuilder();
-            text.append(" ".repeat(space));
-            text.append(a);
-            text.append(" ".repeat(space));
-            return text.toString();
-        } else {
-            return a.substring(0, size)+"...";
-        }
     }
 
     public static String changeDateDirection(String oldDate) throws ParseException {

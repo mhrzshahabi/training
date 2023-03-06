@@ -70,7 +70,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.utility.persianDate.MyUtils.addSpaceToStringBySize;
 import static com.nicico.training.utility.persianDate.MyUtils.getPrograms2;
 import static com.nicico.training.utility.persianDate.PersianDate.findDuration;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
@@ -3227,7 +3226,7 @@ public class TclassService implements ITclassService {
             String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             params.put("nationalCode", nationalCode);
-            params.put("course", addSpaceToStringBySize(course, 30));
+            params.put("course", course);
             params.put("date", DateUtil.todayDate());
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
@@ -3523,7 +3522,7 @@ public class TclassService implements ITclassService {
             String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             params.put("nationalCode", nationalCode);
-            params.put("course", addSpaceToStringBySize(course, 30));
+            params.put("course", course);
             params.put("date", DateUtil.todayDate());
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
