@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +42,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ResourceUtils;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerList;
@@ -3344,7 +3344,7 @@ public class TclassService implements ITclassService {
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certificate_confirmation.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file = ResourceUtils.getFile("classpath:reports/CertificateConfirmation.jrxml");
+            File file =   new ClassPathResource("reports/CertificateConfirmation.jrxml").getFile();
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3354,7 +3354,7 @@ public class TclassService implements ITclassService {
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put("message", "گواهی نامه بابت این دوره وجود ندارد" );
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file = ResourceUtils.getFile("classpath:reports/message.jrxml");
+            File file =   new ClassPathResource("reports/message.jrxml").getFile();
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3539,14 +3539,14 @@ public class TclassService implements ITclassService {
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
             if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))){
-                File file = ResourceUtils.getFile("classpath:reports/Certificate.jrxml");
+                File file =   new ClassPathResource("reports/Certificate.jrxml").getFile();
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
                 return byteArrayOutputStream.toByteArray();
 
             }else {
-                File file = ResourceUtils.getFile("classpath:reports/message.jrxml");
+                File file =   new ClassPathResource("reports/message.jrxml").getFile();
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3558,7 +3558,7 @@ public class TclassService implements ITclassService {
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put("message", "گواهی نامه بابت این دوره وجود ندارد" );
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file = ResourceUtils.getFile("classpath:reports/message.jrxml");
+            File file =   new ClassPathResource("reports/message.jrxml").getFile();
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
