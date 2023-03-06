@@ -84,5 +84,7 @@ public interface IClassStudentService {
 
     Boolean isAcceptByCertification(Long classStudentId);
 
+    Boolean checkStudentIsInCourse(String requesterNationalCode, String objectCode);
+
     Boolean checkStudentIsInClass(String requesterNationalCode, String objectCode);
 }

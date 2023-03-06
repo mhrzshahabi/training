@@ -131,7 +131,6 @@ if (ListGrid_training_Managment_class_req.getSelectedRecord().trainingRequestTyp
             {
                 name: "trainingRequestTypeTitle",
                 title: " نوع درخواست ",
-                hidden:true,
                 width: "10%",
                 align: "center"
             },

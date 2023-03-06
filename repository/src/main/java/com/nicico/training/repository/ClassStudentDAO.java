@@ -1269,5 +1269,19 @@ FROM
     and
     tbl_course.c_code = :code
 """,nativeQuery = true)
+    List<ClassStudent> checkStudentIsInCourse(String nationalCode, String code);
+
+
+
+    @Query(value = """
+SELECT  *
+FROM
+         tbl_class_student
+    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+    WHERE tbl_student.national_code = :nationalCode
+    and
+    tbl_class.c_code = :code
+""",nativeQuery = true)
     List<ClassStudent> checkStudentIsInClass(String nationalCode, String code);
 }

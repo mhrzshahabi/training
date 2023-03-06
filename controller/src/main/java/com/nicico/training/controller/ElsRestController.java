@@ -3275,7 +3275,19 @@ public class ElsRestController {
     public void reviewAllElsExpertTasks() {
         List<TrainingRequestDTO.Info>   list = client.getAllRunExpertTaskList();
         list.forEach( task ->{
-            Boolean isInClass=classStudentService.checkStudentIsInClass(task.getRequesterNationalCode(),task.getObjectCode());
+            Boolean isInClass=false;
+            if (task.getObjectType().equals("Course")){
+                 isInClass=classStudentService.checkStudentIsInCourse(task.getRequesterNationalCode(),task.getObjectCode());
+
+            }
+            else if (task.getObjectType().equals("Class") && (task.getTrainingRequestTypeTitle().equals("درخواست افزودن فراگیر به کلاس"))){
+                isInClass=classStudentService.checkStudentIsInClass(task.getRequesterNationalCode(),task.getObjectCode());
+
+            }
+            else if (task.getObjectType().equals("Class") && (task.getTrainingRequestTypeTitle().equals("درخواست حذف فراگیر از کلاس"))){
+                isInClass=!classStudentService.checkStudentIsInClass(task.getRequesterNationalCode(),task.getObjectCode());
+
+            }
             if (isInClass){
                 ReviewByRunExpert reviewByRunExpert = new ReviewByRunExpert();
                 reviewByRunExpert.setId(task.getId());
