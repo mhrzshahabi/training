@@ -59,10 +59,7 @@ import response.tclass.dto.TclassDto;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -3539,12 +3536,10 @@ public class TclassService implements ITclassService {
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
             if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))){
-                File file =   new ClassPathResource("reports/Certificate.jrxml").getFile();
-                System.out.println("zaza:");
-                System.out.println(file.getAbsolutePath().toString());
-                JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-                System.out.println("zaza:");
-                System.out.println(jasperReport.toString());
+                InputStream file =   new ClassPathResource("reports/Certificate.jrxml").getInputStream();
+           File   asd=  convertInputStreamToFileCommonWay(file);
+
+                           JasperReport jasperReport = JasperCompileManager.compileReport(asd.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
                 return byteArrayOutputStream.toByteArray();
@@ -3575,6 +3570,36 @@ public class TclassService implements ITclassService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
         return byteArrayOutputStream;
+    }
+
+    public static File convertInputStreamToFileCommonWay(InputStream is) throws IOException
+    {
+        OutputStream outputStream = null;
+        File file = null;
+        try
+        {
+            String fileFullPath = "Certificate.jrxml";
+
+             file = new File(fileFullPath);
+            outputStream = new FileOutputStream(file);
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = is.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+        finally
+        {
+            if(outputStream != null)
+            {
+                outputStream.close();
+                return file;
+
+            }
+        }
+        return null;
+
     }
 
 
