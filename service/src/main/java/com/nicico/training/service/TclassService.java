@@ -3540,7 +3540,11 @@ public class TclassService implements ITclassService {
 
             if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))){
                 File file =   new ClassPathResource("reports/Certificate.jrxml").getFile();
+                System.out.println("zaza:");
+                System.out.println(file.getAbsolutePath().toString());
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+                System.out.println("zaza:");
+                System.out.println(jasperReport.toString());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
                 return byteArrayOutputStream.toByteArray();
