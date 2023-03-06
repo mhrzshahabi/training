@@ -21,6 +21,7 @@ import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.ScoringClassDto;
@@ -120,10 +121,8 @@ public class TclassService implements ITclassService {
     private final ComplexDAO complexDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
-    private final EducationalCalenderDAO educationalCalenderDAO;
     private final QuestionnaireDAO questionnaireDAO;
     private final IParameterValueService iParameterValueService;
-    private final IViewReactionEvaluationFormulaReportService viewReactionEvaluationFormulaReportService;
     private final ReportUtil reportUtil;
     @Autowired
     private final EntityManager entityManager;
@@ -3348,7 +3347,7 @@ public class TclassService implements ITclassService {
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
             InputStream inputStream = new ClassPathResource("reports/CertificateConfirmation.jrxml").getInputStream();
-            File file = convertInputStreamToFileCommonWay("CertificateConfirmation.jrxml", inputStream);
+            File file = MakeExcelOutputUtil.convertInputStreamToFile("CertificateConfirmation.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3359,7 +3358,7 @@ public class TclassService implements ITclassService {
             params2.put("message", "گواهی نامه بابت این دوره وجود ندارد");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
             InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
-            File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
+            File file = MakeExcelOutputUtil.convertInputStreamToFile("message.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3544,7 +3543,7 @@ public class TclassService implements ITclassService {
 
             if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))) {
                 InputStream inputStream = new ClassPathResource("reports/Certificate.jrxml").getInputStream();
-                File file = convertInputStreamToFileCommonWay("Certificate.jrxml", inputStream);
+                File file = MakeExcelOutputUtil.convertInputStreamToFile("Certificate.jrxml", inputStream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3552,7 +3551,7 @@ public class TclassService implements ITclassService {
 
             } else {
                 InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
-                File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
+                File file = MakeExcelOutputUtil.convertInputStreamToFile("message.jrxml", inputStream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3565,7 +3564,7 @@ public class TclassService implements ITclassService {
             params2.put("message", "گواهی نامه بابت این دوره وجود ندارد");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
             InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
-            File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
+            File file = MakeExcelOutputUtil.convertInputStreamToFile("message.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3580,30 +3579,6 @@ public class TclassService implements ITclassService {
         return byteArrayOutputStream;
     }
 
-    public static File convertInputStreamToFileCommonWay(String fileName, InputStream is) throws IOException {
-        OutputStream outputStream = null;
-        File file = null;
-        try {
-            String fileFullPath = fileName;
-
-            file = new File(fileFullPath);
-            outputStream = new FileOutputStream(file);
-
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = is.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-                return file;
-
-            }
-        }
-        return null;
-
-    }
 
 
 }

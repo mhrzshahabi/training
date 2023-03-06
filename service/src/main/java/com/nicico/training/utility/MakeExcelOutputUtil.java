@@ -11,8 +11,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -492,4 +491,30 @@ public class MakeExcelOutputUtil {
             return true;
         }
     }
+
+    public static File convertInputStreamToFile(String fileName, InputStream is) throws IOException {
+        OutputStream outputStream = null;
+        File file = null;
+        try {
+            String fileFullPath = fileName;
+
+            file = new File(fileFullPath);
+            outputStream = new FileOutputStream(file);
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = is.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+                return file;
+
+            }
+        }
+        return null;
+
+    }
+
 }
