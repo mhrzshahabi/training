@@ -326,6 +326,9 @@ public class MainFormController {
     @RequestMapping("/trainingCourseRequest")
     public String showTrainingCourseRequestForm() { return "base/trainingCourseRequest"; }
 
+    @RequestMapping("/trainingClassRequest")
+    public String showTrainingClassRequestForm() { return "base/trainingClassRequest"; }
+
     @PostMapping("/print/{entityUrl}/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");

@@ -11,7 +11,7 @@
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
-    RestDataSource_Management_course_req = isc.TrDS.create({
+    RestDataSource_Management_class_req = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "trainingRequestTypeTitle"},
@@ -28,12 +28,12 @@
             {name: "description"},
             {name: "createdDate"}
         ],
-        fetchDataURL: elsUrl + "/run-supervisor/task-list/by-type/Course"
+        fetchDataURL: elsUrl + "/run-supervisor/task-list/by-type/Class"
     });
 
-
-    let RestDataSource_TrainingCourseRequestManagement = isc.TrDS.create({
-        ID: "RestDataSource_TrainingCourseRequestManagement",
+    //
+    let RestDataSource_TrainingClassRequestManagement = isc.TrDS.create({
+        ID: "RestDataSource_TrainingClassRequestManagement",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nationalCode", hidden: true},
@@ -45,14 +45,14 @@
 
     //--------------------------------------------------------Actions---------------------------------------------------
 
-    ToolStripButton_Accept_training_Managment = isc.ToolStripButtonCreate.create({
+    ToolStripButton_Accept_training_class_Managment = isc.ToolStripButtonCreate.create({
         title: "تایید درخواست",
         click: function () {
-            if (ListGrid_training_Managment_course_req.getSelectedRecord() !== undefined && ListGrid_training_Managment_course_req.getSelectedRecord() !== null) {
-if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTypeTitle!== undefined && ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTypeTitle!==null &&
-    ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestStateTitle!=="درانتظار بررسی کارشناس اجرا"){
-
-    addTrainingCourseRequestManagement();
+            if (ListGrid_training_Managment_class_req.getSelectedRecord() !== undefined && ListGrid_training_Managment_class_req.getSelectedRecord() !== null) {
+if (ListGrid_training_Managment_class_req.getSelectedRecord().trainingRequestTypeTitle!== undefined && ListGrid_training_Managment_class_req.getSelectedRecord().trainingRequestTypeTitle!==null &&
+    ListGrid_training_Managment_class_req.getSelectedRecord().trainingRequestStateTitle!=="درانتظار بررسی کارشناس اجرا"){
+    
+    addTrainingClassRequestManagement();
 
 }else {
     createDialog("info", "در صورتی که درخواست در وضعیت (( درانتظار بررسی کارشناس اجرا )) باشد نیاز به تایید درخواست وجود ندارد و بعد اضافه شدن فراگیر به کلاس به صورت اتوماتیک درخواست تایید خواهد شد");
@@ -73,23 +73,23 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
         }
     });
 
-    ToolStripButton_Refresh_Managment_course_req = isc.ToolStripButtonRefresh.create({
+    ToolStripButton_Refresh_Managment_class_req = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_training_Managment_course_req.invalidateCache();
+            ListGrid_training_Managment_class_req.invalidateCache();
         }
     });
 
-    ToolStrip_Actions_Requests_Managment_course_req = isc.ToolStrip.create({
+    ToolStrip_Actions_Requests_Managment_class_req = isc.ToolStrip.create({
         width: "100%",
         border: '0px',
         membersMargin: 5,
         members: [
-            ToolStripButton_Accept_training_Managment,
+            ToolStripButton_Accept_training_class_Managment,
             isc.ToolStrip.create({
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Managment_course_req
+                    ToolStripButton_Refresh_Managment_class_req
                 ]
             })
         ]
@@ -97,12 +97,12 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
 
     //------------------------------------------------------List Grids--------------------------------------------------
 
-    ListGrid_training_Managment_course_req = isc.TrLG.create({
+    ListGrid_training_Managment_class_req = isc.TrLG.create({
         showFilterEditor: true,
         canAutoFitFields: true,
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_Management_course_req,
+        dataSource: RestDataSource_Management_class_req,
         autoFetchData: true,
         alternateRecordStyles: true,
         wrapCells: false,
@@ -220,16 +220,16 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
 
     //------------------------------------------------------Main Layout-------------------------------------------------
 
-    VLayout_Managment_course_req = isc.VLayout.create({
+    VLayout_Managment_class_req = isc.VLayout.create({
         width: "100%",
         height: "1%",
         members: [
-            ToolStrip_Actions_Requests_Managment_course_req,
-            ListGrid_training_Managment_course_req
+            ToolStrip_Actions_Requests_Managment_class_req,
+            ListGrid_training_Managment_class_req
         ]
     });
 
-    HLayout_Body_Managment_course_req_Jsp = isc.HLayout.create({
+    HLayout_Body_Managment_class_req_Jsp = isc.HLayout.create({
         minWidth: "100%",
         width: "100%",
         members: [
@@ -237,7 +237,7 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
                 sections: [
                     {
                         title: "درخواست های دوره آموشی",
-                        items: VLayout_Managment_course_req,
+                        items: VLayout_Managment_class_req,
                         showHeader: false,
                         expanded: true
                     }
@@ -246,19 +246,19 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
         ]
     });
 
-    VLayout_Body_Managment_course_req_Jsp = isc.VLayout.create({
+    VLayout_Body_Managment_class_req_Jsp = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            HLayout_Body_Managment_course_req_Jsp
+            HLayout_Body_Managment_class_req_Jsp
         ]
     });
 
     //-------------------------------------------------------Functions--------------------------------------------------
 
 
-    function addTrainingCourseRequestManagement() {
-        let Window_TrainingCourseRequestManagement = isc.Window.create({
+    function addTrainingClassRequestManagement() {
+        let Window_TrainingClassRequestManagement = isc.Window.create({
             title: "انتخاب کارشناس اجرا",
             width: "50%",
             height: "50%",
@@ -269,8 +269,8 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
                 isc.TrVLayout.create({
                     members: [
                         isc.TrLG.create({
-                            ID: "ListGrid_AllHeadTRCM",
-                            dataSource: RestDataSource_TrainingCourseRequestManagement,
+                            ID: "ListGrid_AllHeadTRClassM",
+                            dataSource: RestDataSource_TrainingClassRequestManagement,
                             showHeaderContextMenu: false,
                             selectionType: "single",
                             filterOnKeypress: true,
@@ -322,12 +322,12 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
                                 isc.IButton.create({
                                     title: "تایید",
                                     click: function () {
-                                        if (ListGrid_AllHeadTRCM.getSelectedRecord() !== undefined && ListGrid_AllHeadTRCM.getSelectedRecord() !== null) {
+                                        if (ListGrid_AllHeadTRClassM.getSelectedRecord() !== undefined && ListGrid_AllHeadTRClassM.getSelectedRecord() !== null) {
                                             let data = {};
-                                            data.id = ListGrid_training_Managment_course_req.getSelectedRecord().id;
+                                            data.id = ListGrid_training_Managment_class_req.getSelectedRecord().id;
                                             data.runSupervisorComment = reasonTRCMForm.getField("runSupervisorComment").getValue();
-                                            data.runExpertNationalCode = ListGrid_AllHeadTRCM.getSelectedRecord().nationalCode;
-                                            reviewRunSupervisor(data,Window_TrainingCourseRequestManagement)
+                                            data.runExpertNationalCode = ListGrid_AllHeadTRClassM.getSelectedRecord().nationalCode;
+                                            reviewRunSupervisorFoClass(data,Window_TrainingClassRequestManagement)
 
 
                                         }else {
@@ -350,7 +350,7 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
 //icon: "<spring:url value="remove.png"/>",
                                     orientation: "vertical",
                                     click: function () {
-                                        Window_TrainingCourseRequestManagement.close()
+                                        Window_TrainingClassRequestManagement.close()
                                     }
                                 })]
                         })
@@ -358,18 +358,18 @@ if (ListGrid_training_Managment_course_req.getSelectedRecord().trainingRequestTy
                 })]
         });
 
-        RestDataSource_TrainingCourseRequestManagement.fetchDataURL=operationalRoleUrl + "/findAllByObjectTypeAndPermission/"+"EXECUTION_EXPERT"+"/"+ListGrid_training_Managment_course_req.getSelectedRecord().objectCode;
-        ListGrid_AllHeadTRCM.invalidateCache();
-        Window_TrainingCourseRequestManagement.show();
+        RestDataSource_TrainingClassRequestManagement.fetchDataURL=operationalRoleUrl + "/findAllByClassTypeAndPermission/"+"EXECUTION_EXPERT"+"/"+ListGrid_training_Managment_class_req.getSelectedRecord().objectCode;
+        ListGrid_AllHeadTRClassM.invalidateCache();
+        Window_TrainingClassRequestManagement.show();
     }
 
-    function reviewRunSupervisor(dataReq,form) {
+    function reviewRunSupervisorFoClass(dataReq,form) {
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(elsUrl + "/review/run-Supervisor", "POST", JSON.stringify(dataReq), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();
                 form.close();
-                ListGrid_training_Managment_course_req.invalidateCache();
+                ListGrid_training_Managment_class_req.invalidateCache();
                 isc.say("عملیات با موفقیت انجام شد.");
 
             } else {

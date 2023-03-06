@@ -2489,6 +2489,11 @@ public class TclassService implements ITclassService {
     }
 
     @Override
+    public String getCourseCodeByClassByCode(String classCode) {
+        return (String) tclassDAO.getCourseCodeByClassByCode(classCode);
+    }
+
+    @Override
     @Transactional
     public ElsSessionResponse getClassSessionsByCode(String classCode) {
 

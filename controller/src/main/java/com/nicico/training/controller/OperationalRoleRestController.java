@@ -9,6 +9,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.iservice.ISynonymOAUserService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.model.OperationalRole;
 import com.nicico.training.model.Subcategory;
@@ -36,6 +37,7 @@ import java.util.Set;
 public class OperationalRoleRestController {
 
     private final IOperationalRoleService operationalRoleService;
+    private final ITclassService iTclassService;
     private final ISynonymOAUserService synonymOAUserService;
     private final ObjectMapper objectMapper;
     private final OperationalRoleBeanMapper mapper;
@@ -188,6 +190,33 @@ public class OperationalRoleRestController {
         List<SynonymOAUser> list=  synonymOAUserService.listOfUser(data.stream().toList());
           List<OperationalRoleDTO.OathInfo> dtoList=modelMapper.map(list, new TypeToken<List<OperationalRoleDTO.OathInfo>>() {
           }.getType());
+        specResponse.setData(dtoList)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final OperationalRoleDTO.OathUserSpecRs specRs = new OperationalRoleDTO.OathUserSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+
+    }
+
+    @Loggable
+    @GetMapping(value = "/findAllByClassTypeAndPermission/{type}/{code}")
+    public ResponseEntity<OperationalRoleDTO.OathUserSpecRs> findAllByClassTypeAndPermission( @PathVariable String type, @PathVariable String code) throws IOException {
+        final OperationalRoleDTO.SpecOauthRs specResponse = new OperationalRoleDTO.SpecOauthRs();
+        String courseCode="";
+        String courseCodeOptional=iTclassService.getCourseCodeByClassByCode(code);
+        if (courseCodeOptional != null)
+            courseCode=courseCodeOptional;
+
+
+        Set<Long>  data=operationalRoleService.findAllByObjectTypeAndPermission(type,courseCode);
+
+        List<SynonymOAUser> list=  synonymOAUserService.listOfUser(data.stream().toList());
+        List<OperationalRoleDTO.OathInfo> dtoList=modelMapper.map(list, new TypeToken<List<OperationalRoleDTO.OathInfo>>() {
+        }.getType());
         specResponse.setData(dtoList)
                 .setStartRow(0)
                 .setEndRow(list.size())

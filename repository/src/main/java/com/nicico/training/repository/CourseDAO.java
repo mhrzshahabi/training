@@ -234,4 +234,22 @@ WHERE
     and tbl_course.c_code in (:code)
 """,nativeQuery = true)
     Set<String> getCourseWithPermission(Long id, Set<String> code);
+    @Query(value = """
+SELECT DISTINCT
+    tbl_class.c_code
+FROM
+         tbl_operational_role
+    INNER JOIN tbl_operational_role_user_ids ON tbl_operational_role.id = tbl_operational_role_user_ids.f_operational_role
+    INNER JOIN tbl_operational_role_subcategory ON tbl_operational_role_user_ids.f_operational_role = tbl_operational_role_subcategory.
+    f_operational_role
+    INNER JOIN tbl_course ON tbl_operational_role_subcategory.f_subcategory = tbl_course.subcategory_id
+    INNER JOIN tbl_class ON tbl_course.id = tbl_class.f_course
+WHERE
+ tbl_operational_role_user_ids.user_ids = :id
+\s
+ and   tbl_operational_role.object_type = 'EXECUTIVE_SUPERVISOR'
+\s
+  and tbl_class.c_code in (:code)
+""",nativeQuery = true)
+    Set<String> getClassWithPermission(Long id, Set<String> code);
 }

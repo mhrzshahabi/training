@@ -113,4 +113,5 @@ public interface ICourseService {
     CourseDTO.CourseSpecRs updateIsSpecial(Long courseId, Boolean isSpecial);
 
     Set<String> getCourseWithPermission(Long userId, Set<String> courseList);
+    Set<String> getClassWithPermission(Long userId, Set<String> classList);
 }

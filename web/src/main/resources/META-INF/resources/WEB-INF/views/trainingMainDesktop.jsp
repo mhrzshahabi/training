@@ -2193,6 +2193,14 @@
                     }
                 },
                 </sec:authorize>
+                <sec:authorize access="hasAuthority('Menu_Run')">
+                {
+                    title: "<spring:message code="trainingClassRequest"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/trainingClassRequest"/>");
+                    }
+                },
+                </sec:authorize>
 
                 <%--{isSeparator: true},--%>
                 <%--{--%>

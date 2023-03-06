@@ -798,6 +798,10 @@ public class CourseService implements ICourseService {
     public Set<String> getCourseWithPermission(Long userId, Set<String> courseList) {
         return courseDAO.getCourseWithPermission(userId,courseList);
     }
+    @Override
+    public Set<String> getClassWithPermission(Long userId, Set<String> classList) {
+        return courseDAO.getClassWithPermission(userId,classList);
+    }
 
 }
 

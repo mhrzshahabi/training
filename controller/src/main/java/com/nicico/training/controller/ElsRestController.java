@@ -3232,8 +3232,15 @@ public class ElsRestController {
         List<TrainingRequestDTO.Info>   list = client.getRunSupervisorTaskListByType(objectType);
         List<TrainingRequestDTO.Info>   listOfExpert = client.getRunExpertTaskListByType(SecurityUtil.getNationalCode(),objectType);
         Set<String> courseList =  list.stream().map(TrainingRequestDTO.Info::getObjectCode).collect(Collectors.toSet());
-        Set<String> courseWithPermission = courseService.getCourseWithPermission(userId,courseList);
-        listWithPermission = list.stream().filter(a->courseWithPermission.contains(a.getObjectCode())).toList();
+        Set<String> objectWithPermission=new HashSet<>();
+        if (objectType.equals("Course")){
+            objectWithPermission = courseService.getCourseWithPermission(userId,courseList);
+
+        }else if(objectType.equals("Class")){
+            objectWithPermission = courseService.getClassWithPermission(userId,courseList);
+        }
+        Set<String> finalObjectWithPermission = objectWithPermission;
+        listWithPermission = list.stream().filter(a-> finalObjectWithPermission.contains(a.getObjectCode())).toList();
         allData.addAll(listWithPermission);
         allData.addAll(listOfExpert);
         final TrainingRequestDTO.SpecRs specResponse = new TrainingRequestDTO.SpecRs();

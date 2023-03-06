@@ -2,21 +2,21 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.enums.ClassStatusDTO;
+import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
 import dto.ScoringClassDto;
 import net.sf.jasperreports.engine.JRException;
+import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.StudentEvaluationAnswerDto;
+import request.evaluation.TeacherEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
-import org.springframework.transaction.annotation.Transactional;
-import request.evaluation.TeacherEvaluationAnswerDto;
 import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
-import com.nicico.training.dto.enums.ClassStatusDTO;
-import com.nicico.training.dto.enums.ClassTypeDTO;
 import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
@@ -159,6 +159,8 @@ public interface ITclassService {
     void changeClassToOnlineStatus(Long classId, boolean state);
 
     Tclass getClassByCode(String classCode);
+
+    String getCourseCodeByClassByCode(String classCode);
 
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
