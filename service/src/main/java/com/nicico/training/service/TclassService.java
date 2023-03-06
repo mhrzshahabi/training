@@ -3011,6 +3011,7 @@ public class TclassService implements ITclassService {
         queryString.append(searchQuery);
         return queryString.toString();
     }
+
     private String getActiveCourses(int page, int size, String searchQuery) {
         return String.format(
                 """
@@ -3040,7 +3041,8 @@ public class TclassService implements ITclassService {
                 searchQuery
         );
     }
-    private String getActiveClasses(long courseId,int page, int size, String searchQuery) {
+
+    private String getActiveClasses(long courseId, int page, int size, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -3076,7 +3078,8 @@ public class TclassService implements ITclassService {
                 searchQuery
         );
     }
-    private String getActiveClassesWithUserNationalCode(String nationalCode,int page, int size, String searchQuery) {
+
+    private String getActiveClassesWithUserNationalCode(String nationalCode, int page, int size, String searchQuery) {
         return String.format(
                 """
                         SELECT
@@ -3111,6 +3114,7 @@ public class TclassService implements ITclassService {
                 searchQuery
         );
     }
+
     private String getCountActiveClassesWithUserNationalCode(String nationalCode, String searchQuery) {
         return String.format(
                 """
@@ -3144,6 +3148,7 @@ public class TclassService implements ITclassService {
                 searchQuery
         );
     }
+
     private String getCountActiveCourses(String searchQuery) {
         return String.format(
                 """
@@ -3171,6 +3176,7 @@ public class TclassService implements ITclassService {
         );
 
     }
+
     private String getCountActiveClasses(long courseId, String searchQuery) {
         return String.format(
                 """        
@@ -3229,11 +3235,11 @@ public class TclassService implements ITclassService {
             params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
             String text = "با کد ملی " + nationalCode +
-                          " دوره آموزشی " + course +
-                          " که از تاریخ " + MyUtils.changeDateDirection(from) +
-                          " تا تاریخ " + MyUtils.changeDateDirection(to) +
-                          " به مدت " + duration +
-                          " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
+                    " دوره آموزشی " + course +
+                    " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                    " تا تاریخ " + MyUtils.changeDateDirection(to) +
+                    " به مدت " + duration +
+                    " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
             params.put("text", text);
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
@@ -3270,22 +3276,22 @@ public class TclassService implements ITclassService {
 
             if (scoreStateId.equals("400") || scoreStateId.equals("401")) { // قبول با نمره یا قبول بدون نمره
                 text = "آقا/خانم " + fullName +
-                       " با کد ملی " + nationalCode +
-                       " دوره آموزشی " + course +
-                       " که از تاریخ " + MyUtils.changeDateDirection(from) +
-                       " تا تاریخ " + MyUtils.changeDateDirection(to) +
-                       " به مدت " + duration +
-                       " برگزار گردیده است را با نمره قبولی " + score +
-                       " به پایان رسانیده اند.";
+                        " با کد ملی " + nationalCode +
+                        " دوره آموزشی " + course +
+                        " که از تاریخ " + MyUtils.changeDateDirection(from) +
+                        " تا تاریخ " + MyUtils.changeDateDirection(to) +
+                        " به مدت " + duration +
+                        " برگزار گردیده است را با نمره قبولی " + score +
+                        " به پایان رسانیده اند.";
             } else {
                 text = "آقا/خانم " + fullName +
-                       " با کد ملی " + nationalCode +
-                       " در دوره آموزشی " + course +
-                       " که از تاریخ " + from +
-                       " تا تاریخ " + to +
-                       " به مدت " + duration +
-                       " برگزار گردیده است را با نمره " + score +
-                       "مردود گردیده است.";
+                        " با کد ملی " + nationalCode +
+                        " در دوره آموزشی " + course +
+                        " که از تاریخ " + from +
+                        " تا تاریخ " + to +
+                        " به مدت " + duration +
+                        " برگزار گردیده است را با نمره " + score +
+                        "مردود گردیده است.";
             }
             params.put("text", text);
             params.put("profileName", fullName);
@@ -3341,17 +3347,19 @@ public class TclassService implements ITclassService {
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certificate_confirmation.jpg")));
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file =   new ClassPathResource("reports/CertificateConfirmation.jrxml").getFile();
+            InputStream inputStream = new ClassPathResource("reports/CertificateConfirmation.jrxml").getInputStream();
+            File file = convertInputStreamToFileCommonWay("CertificateConfirmation.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
             return byteArrayOutputStream.toByteArray();
-        }else {
+        } else {
             final Map<String, Object> params2 = new HashMap<>();
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
-            params2.put("message", "گواهی نامه بابت این دوره وجود ندارد" );
+            params2.put("message", "گواهی نامه بابت این دوره وجود ندارد");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file =   new ClassPathResource("reports/message.jrxml").getFile();
+            InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
+            File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3368,11 +3376,11 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveCourses( page, size, searchQuery);
+            String query = getActiveCourses(page, size, searchQuery);
             List<ActiveCourses> activeCourses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
-            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveCourses( searchQuery)).getSingleResult().toString());
+            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveCourses(searchQuery)).getSingleResult().toString());
             if (activeData != null) {
                 for (Object course : activeData) {
                     Object[] data = (Object[]) course;
@@ -3412,11 +3420,11 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClasses( courseId,page, size, searchQuery);
+            String query = getActiveClasses(courseId, page, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
-            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClasses( courseId,searchQuery)).getSingleResult().toString());
+            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClasses(courseId, searchQuery)).getSingleResult().toString());
             if (activeData != null) {
                 for (Object course : activeData) {
                     Object[] data = (Object[]) course;
@@ -3458,11 +3466,11 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClassesWithUserNationalCode( nationalCode,page, size, searchQuery);
+            String query = getActiveClassesWithUserNationalCode(nationalCode, page, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
-            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClassesWithUserNationalCode( nationalCode,searchQuery)).getSingleResult().toString());
+            Long total = Long.valueOf(entityManager.createNativeQuery(getCountActiveClassesWithUserNationalCode(nationalCode, searchQuery)).getSingleResult().toString());
             if (activeData != null) {
                 for (Object course : activeData) {
                     Object[] data = (Object[]) course;
@@ -3497,9 +3505,8 @@ public class TclassService implements ITclassService {
     }
 
 
-
     @Override
-    public  byte[] getCertificationFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+    public byte[] getCertificationFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
 
@@ -3535,29 +3542,30 @@ public class TclassService implements ITclassService {
             params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است" + System.lineSeparator() + " جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
-            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))){
-                InputStream file =   new ClassPathResource("reports/Certificate.jrxml").getInputStream();
-           File   asd=  convertInputStreamToFileCommonWay(file);
-
-                           JasperReport jasperReport = JasperCompileManager.compileReport(asd.getAbsolutePath());
+            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))) {
+                InputStream inputStream = new ClassPathResource("reports/Certificate.jrxml").getInputStream();
+                File file = convertInputStreamToFileCommonWay("Certificate.jrxml", inputStream);
+                JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
                 return byteArrayOutputStream.toByteArray();
 
-            }else {
-                File file =   new ClassPathResource("reports/message.jrxml").getFile();
+            } else {
+                InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
+                File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
                 ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
                 return byteArrayOutputStream.toByteArray();
             }
 
-        }else {
+        } else {
             final Map<String, Object> params2 = new HashMap<>();
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
-            params2.put("message", "گواهی نامه بابت این دوره وجود ندارد" );
+            params2.put("message", "گواهی نامه بابت این دوره وجود ندارد");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
-            File file =   new ClassPathResource("reports/message.jrxml").getFile();
+            InputStream inputStream = new ClassPathResource("reports/message.jrxml").getInputStream();
+            File file = convertInputStreamToFileCommonWay("message.jrxml", inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
@@ -3572,15 +3580,13 @@ public class TclassService implements ITclassService {
         return byteArrayOutputStream;
     }
 
-    public static File convertInputStreamToFileCommonWay(InputStream is) throws IOException
-    {
+    public static File convertInputStreamToFileCommonWay(String fileName, InputStream is) throws IOException {
         OutputStream outputStream = null;
         File file = null;
-        try
-        {
-            String fileFullPath = "Certificate.jrxml";
+        try {
+            String fileFullPath = fileName;
 
-             file = new File(fileFullPath);
+            file = new File(fileFullPath);
             outputStream = new FileOutputStream(file);
 
             int read = 0;
@@ -3588,11 +3594,8 @@ public class TclassService implements ITclassService {
             while ((read = is.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
-        }
-        finally
-        {
-            if(outputStream != null)
-            {
+        } finally {
+            if (outputStream != null) {
                 outputStream.close();
                 return file;
 
