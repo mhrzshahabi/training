@@ -84,10 +84,7 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
 import response.question.dto.*;
-import response.tclass.ElsClassDetailResponse;
-import response.tclass.ElsSessionAttendanceResponse;
-import response.tclass.ElsSessionResponse;
-import response.tclass.ElsStudentAttendanceListResponse;
+import response.tclass.*;
 import response.tclass.dto.ElsClassListDto;
 import response.tclass.dto.ElsClassListV2Dto;
 import response.tclass.dto.ElsSessionDetailsResponse;
@@ -3359,6 +3356,25 @@ public class ElsRestController {
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
     public byte[] getCertificationByQRCodeFile(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, SQLException, IOException, ParseException {
       return   tclassService.getCertificationByQRCodeFile(nationalCode, classId, response);
+    }
+    @PostMapping("/sessions")
+    public ElsSessionByMessageResponse getSessionsPerFiles(@RequestHeader(name = "X-Auth-Token") String header, @RequestBody List<MessageDTO.WithSession> messages) {
+        ElsSessionByMessageResponse response = new ElsSessionByMessageResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                response = classSessionService.getSessionDetailsByMessage(messages);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage(HttpStatus.OK.getReasonPhrase());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage(e.getMessage());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        }
+        return response;
     }
 
 }

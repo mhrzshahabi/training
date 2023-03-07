@@ -1,9 +1,11 @@
 package com.nicico.training.mapper.ClassSession;
 
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.MessageDTO;
 import com.nicico.training.model.*;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
+import response.tclass.ElsMessageWithSessionDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -35,6 +37,10 @@ public interface ClassSessionMapper {
     ClassSessionDTO.TClassSessionsDetail toClassSessionDetails(ClassSession classSession);
 
     List<ClassSessionDTO.TClassSessionsDetail> toClassSessionDetailsList(List<ClassSession> classSessions);
+
+    ElsMessageWithSessionDTO toElsMessageWithSessionDTO(MessageDTO.WithSession message);
+
+    List<ElsMessageWithSessionDTO> toElsMessageWithSessionDTOs(List<MessageDTO.WithSession> messages);
 
     @Named("getStudentsCount")
     default Long getStudentsCount(Set<ClassStudent> classStudents){

@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,5 +42,28 @@ public class MessageDTO {
         private Long id;
         private List<MessageContactDTO.Info> messageContactList;
     }
+    
+    
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Message-Info")
+    public static class WithSession {
+        private Long messageId;
+        private String title;
+        private String context;
+        private String groupId;
+
+        //session attributes
+        private Long sessionId;
+        private String dayName;
+        private Long classId;
+        private String titleClass;
+        private String sessionDate;
+        private String sessionStartHour;
+        private String sessionEndHour;
+    }
+    
 
 }
