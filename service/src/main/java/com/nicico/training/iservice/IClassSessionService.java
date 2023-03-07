@@ -2,12 +2,15 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.MessageDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import response.event.EventListDto;
 import response.tclass.ElsSessionAttendanceResponse;
+import response.tclass.ElsMessageWithSessionDTO;
+import response.tclass.ElsSessionByMessageResponse;
 import response.tclass.dto.ElsSessionDetailsResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -69,4 +72,6 @@ public interface IClassSessionService {
 
 
     ElsSessionDetailsResponse getSessionDetails(Long sessionId);
+
+    ElsSessionByMessageResponse getSessionDetailsByMessage(List<MessageDTO.WithSession> messages);
 }

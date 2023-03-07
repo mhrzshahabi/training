@@ -5,12 +5,10 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IClassSessionService;
 import com.nicico.training.iservice.IDepartmentService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import response.event.EventDto;
 import response.event.EventListDto;
 import response.tclass.ElsSessionAttendanceResponse;
+import response.tclass.ElsSessionByMessageResponse;
 import response.tclass.dto.ElsSessionAttendanceUserInfoDto;
 import response.tclass.dto.ElsSessionDetailsResponse;
 
@@ -59,6 +58,7 @@ public class ClassSessionService implements IClassSessionService {
     private final TeacherDAO teacherDAO;
     private final ClassStudentDAO classStudentDAO;
     private final IDepartmentService departmentService;
+    private final ClassSessionMapper classSessionMapper;
 
     //********************************
 
@@ -968,5 +968,24 @@ public class ClassSessionService implements IClassSessionService {
         return eventListDto;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ElsSessionByMessageResponse getSessionDetailsByMessage(List<MessageDTO.WithSession> messages) {
+        ElsSessionByMessageResponse response = new ElsSessionByMessageResponse();
 
+        messages.forEach(m -> {
+            Long sessionId = m.getSessionId();
+            ClassSession classSession = classSessionDAO.findById(sessionId).orElse(null);
+            if (classSession != null) {
+                m.setDayName(classSession.getDayName());
+                m.setClassId(classSession.getClassId());
+                m.setTitleClass(classSession.getTclass().getTitleClass());
+                m.setSessionDate(classSession.getSessionDate());
+                m.setSessionStartHour(classSession.getSessionStartHour());
+                m.setSessionEndHour(classSession.getSessionEndHour());
+            }
+        });
+        response.setMessages(classSessionMapper.toElsMessageWithSessionDTOs(messages));
+        return response;
+    }
 }
