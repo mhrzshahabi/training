@@ -3205,8 +3205,14 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
             if (nationalCode != null) {
                 SynHrmViewFetchParentPost parent = synHrmViewFetchParentPostDAO.getParent(nationalCode);
-                parentDto.setNationalCode(parent.getParent());
-                parentDto.setFullName(parent.getFirstName() + " " + parent.getLastName());
+                if (parent!=null){
+                    parentDto.setNationalCode(parent.getParent());
+                    parentDto.setFullName(parent.getFirstName() + " " + parent.getLastName());
+                }else {
+                    parentDto.setFullName(null);
+                    parentDto.setNationalCode(null);
+                }
+
             } else {
                 parentDto.setFullName(null);
                 parentDto.setNationalCode(null);
