@@ -3022,7 +3022,7 @@ public class TclassService implements ITclassService {
                             *
                         FROM
                             (
-                               SELECT
+                               SELECT DISTINCT
                                    tbl_course.c_code as courseCode,
                                    tbl_course.c_title_fa as courseTitle,
                                    tbl_course.id
@@ -3159,7 +3159,7 @@ public class TclassService implements ITclassService {
                              COUNT(id)
                         FROM
                             (
-                               SELECT
+                               SELECT DISTINCT
                                    tbl_course.c_code as courseCode,
                                    tbl_course.c_title_fa as courseTitle,
                                    tbl_course.id
