@@ -3383,4 +3383,10 @@ public class ElsRestController {
         return response;
     }
 
+
+    @GetMapping("/user-sessions/{nationalCode}")
+    public List<Long> getListOfSessionOfUser( @PathVariable String nationalCode) {
+        return iClassSessionService.getListOfSessionOfUser(nationalCode);
+    }
+
 }

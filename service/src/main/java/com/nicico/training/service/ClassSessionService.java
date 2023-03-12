@@ -988,4 +988,9 @@ public class ClassSessionService implements IClassSessionService {
         response.setMessages(classSessionMapper.toElsMessageWithSessionDTOs(messages));
         return response;
     }
+
+    @Override
+    public List<Long> getListOfSessionOfUser(String nationalCode) {
+        return classSessionDAO.getListOfSessionOfUser(nationalCode);
+    }
 }

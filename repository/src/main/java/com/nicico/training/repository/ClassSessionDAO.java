@@ -43,4 +43,18 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     @Query(value = "SELECT tbl_session.c_session_date  ,  tbl_session.c_session_start_hour, tbl_session.c_session_end_hour, tbl_training_place.c_title_fa,  tbl_class.c_title_class,  tbl_personal_info.c_national_code , tbl_session.id, tbl_class.c_code, tbl_class.id as idClass FROM   tbl_session INNER JOIN tbl_training_place ON tbl_session.f_training_place_id = tbl_training_place.id  INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id  INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id WHERE tbl_personal_info.c_national_code=:nationalCode AND tbl_session.c_session_date >=:startDate AND  tbl_session.c_session_date <=:endDate", nativeQuery = true)
     List<Object> getTeacherEvent(String nationalCode, String startDate, String endDate);
+
+    @Query(value = """
+SELECT\s
+DISTINCT
+    tbl_session.id
+FROM
+         tbl_session
+    INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id
+    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id
+    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+   \s
+    WHERE tbl_student.national_code = :std
+""", nativeQuery = true)
+    List<Long> getListOfSessionOfUser(String std);
 }
