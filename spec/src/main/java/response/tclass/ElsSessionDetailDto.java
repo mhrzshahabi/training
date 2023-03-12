@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ElsSessionDetailDto {
+    private Long classId;
     private Long sessionId;
     private String day;
     private String startTime;

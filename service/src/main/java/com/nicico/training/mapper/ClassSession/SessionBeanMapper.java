@@ -4,17 +4,14 @@ package com.nicico.training.mapper.ClassSession;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IClassSessionService;
-import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.service.TeacherService;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.tclass.ElsSessionDetailDto;
 import response.tclass.ElsSessionResponse;
-import response.tclass.dto.ElsSessionUsersDto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,6 +49,7 @@ public abstract class SessionBeanMapper {
             calendar.setTime(gregorianSessionDate);
 
             ElsSessionDetailDto elsSessionDetailDto = new ElsSessionDetailDto();
+            elsSessionDetailDto.setClassId(session.getClassId());
             elsSessionDetailDto.setSessionId(session.getId());
             elsSessionDetailDto.setDay(session.getDayName());
             elsSessionDetailDto.setStartTime(session.getSessionStartHour());

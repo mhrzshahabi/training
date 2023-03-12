@@ -47,7 +47,7 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
     @Query(value = """
 SELECT\s
 DISTINCT
-    tbl_session.id
+    tbl_class.id
 FROM
          tbl_session
     INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id
