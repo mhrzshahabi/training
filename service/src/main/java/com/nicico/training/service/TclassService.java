@@ -3249,7 +3249,7 @@ public class TclassService implements ITclassService {
             params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است" + System.lineSeparator() + " جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
-            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0))))
+            if (findDuration(from, to) * 8 >= (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0))))
                 reportUtil.export("/reports/Certificate.jasper", params, jsonDataSource, response);
             else
                 reportUtil.export("/reports/message.jasper", params2, jsonDataSource, response);
@@ -3545,7 +3545,7 @@ public class TclassService implements ITclassService {
             params2.put("message", "مدت دوره بیشتر از اختلاف شروع و انتهای کلاس است" + System.lineSeparator() + " جهت اصلاح مدت دوره به واحد اجرا مراجعه کنید");
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(z.getBytes(Charset.forName("UTF-8"))));
 
-            if (findDuration(from, to) * 8 > (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))) {
+            if (findDuration(from, to) * 8 >= (Long.parseLong(item[4] != null ? item[4].toString() : String.valueOf(0)))) {
                 InputStream inputStream = new ClassPathResource("reports/Certificate.jrxml").getInputStream();
                 File file = MakeExcelOutputUtil.convertInputStreamToFile("Certificate.jrxml", inputStream);
                 JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
