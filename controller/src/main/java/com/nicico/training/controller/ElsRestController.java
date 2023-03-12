@@ -3388,5 +3388,9 @@ public class ElsRestController {
     public List<Long> getListOfSessionOfUser( @PathVariable String nationalCode) {
         return iClassSessionService.getListOfSessionOfUser(nationalCode);
     }
+    @GetMapping("/class-of-session/{sessionId}")
+    public Long getClassOfSession( @PathVariable Long sessionId) {
+        return iClassSessionService.getClassIdBySessionId(sessionId);
+    }
 
 }
