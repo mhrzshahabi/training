@@ -3007,11 +3007,11 @@ public class TclassService implements ITclassService {
 
         queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
         queryString.append("   ORDER BY id desc ");
-        queryString.append("     OFFSET  ").append(page);
-        queryString.append("     ROWS FETCH NEXT  ").append(size);
         queryString.append("    ROWS ONLY )");
         queryString.append(" WHERE 1=1 ");
         queryString.append(searchQuery);
+        queryString.append("     OFFSET  ").append(page);
+        queryString.append("     ROWS FETCH NEXT  ").append(size);
         return queryString.toString();
     }
 
@@ -3033,15 +3033,16 @@ public class TclassService implements ITclassService {
                                    tbl_class.c_status = 1
                                      ORDER BY
                                                                    tbl_course.id DESC
-                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
+                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+
                         """,
+                searchQuery,
                 page,
-                size,
-                searchQuery
+                size
         );
     }
 
@@ -3069,16 +3070,18 @@ public class TclassService implements ITclassService {
                                 AND tbl_class.f_course = %s
                             ORDER BY
                                 tbl_class.id DESC
-                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
+                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+
+                            
                         """,
                 courseId,
+                searchQuery,
                 page,
-                size,
-                searchQuery
+                size
         );
     }
 
@@ -3105,16 +3108,18 @@ public class TclassService implements ITclassService {
                            and                                    tbl_class.c_status = 1
                             ORDER BY
                                 tbl_class.id DESC
-                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
+                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+
                         """,
                 nationalCode,
+                searchQuery,
                 page,
-                size,
-                searchQuery
+                size
+
         );
     }
 
