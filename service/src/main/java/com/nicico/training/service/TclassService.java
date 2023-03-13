@@ -2983,7 +2983,6 @@ public class TclassService implements ITclassService {
     private String getQuery(String nationalCode, int page, int size, String searchQuery) {
         StringBuffer queryString = new StringBuffer();
         queryString.append(" SELECT * FROM ( ");
-        queryString.append(" SELECT * FROM ( ");
         queryString.append(" SELECT tbl_class.id,");
         queryString.append("  tbl_course.c_code as courseCode ,");
         queryString.append("tbl_course.c_title_fa AS courseTitle, ");
@@ -3007,27 +3006,18 @@ public class TclassService implements ITclassService {
         queryString.append(" AND tbl_class_student.scores_state_id IN ( 400, 401 ) ");
 
         queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
-
+        queryString.append("   ORDER BY id desc ");
+        queryString.append("     OFFSET  ").append(page);
+        queryString.append("     ROWS FETCH NEXT  ").append(size);
+        queryString.append("    ROWS ONLY )");
         queryString.append(" WHERE 1=1 ");
         queryString.append(searchQuery);
-        queryString.append(") OFFSET ");
-        queryString.append(page);
-        queryString.append(" ROWS FETCH NEXT ");
-        queryString.append(size);
-        queryString.append(" ROWS ONLY");
-
-        queryString.append("   ORDER BY id desc ");
-
         return queryString.toString();
     }
 
     private String getActiveCourses(int page, int size, String searchQuery) {
         return String.format(
                 """
-                         SELECT
-                            *
-                        FROM
-                            (
                         SELECT
                             *
                         FROM
@@ -3041,30 +3031,23 @@ public class TclassService implements ITclassService {
                                    INNER JOIN tbl_class ON tbl_course.id = tbl_class.f_course
                                WHERE
                                    tbl_class.c_status = 1
-                                  
+                                     ORDER BY
+                                                                   tbl_course.id DESC
+                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
-                            ) z
-                               ORDER BY
-                                                                   z.id DESC
-                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-
                         """,
-                searchQuery,
                 page,
-                size
+                size,
+                searchQuery
         );
     }
 
     private String getActiveClasses(long courseId, int page, int size, String searchQuery) {
         return String.format(
                 """
-                         SELECT
-                            *
-                        FROM
-                            (
                         SELECT
                             *
                         FROM
@@ -3084,32 +3067,24 @@ public class TclassService implements ITclassService {
                             WHERE
                                     tbl_class.c_status = 1
                                 AND tbl_class.f_course = %s
-                            
+                            ORDER BY
+                                tbl_class.id DESC
+                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
-                            ) z
-                            ORDER BY
-                                z.id DESC
-                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-
-                            
                         """,
                 courseId,
-                searchQuery,
                 page,
-                size
+                size,
+                searchQuery
         );
     }
 
     private String getActiveClassesWithUserNationalCode(String nationalCode, int page, int size, String searchQuery) {
         return String.format(
                 """
-                        SELECT
-                            *
-                        FROM
-                            (
                         SELECT
                             *
                         FROM
@@ -3128,22 +3103,18 @@ public class TclassService implements ITclassService {
                                  WHERE
                                  tbl_student.national_code = '%s'
                            and                                    tbl_class.c_status = 1
-                        
+                            ORDER BY
+                                tbl_class.id DESC
+                                OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
                             )
                         WHERE
                             1 = 1
                             %s
-                            ) z
-                                ORDER BY
-                                z.id DESC
-                                                            OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
-
                         """,
                 nationalCode,
-                searchQuery,
                 page,
-                size
-
+                size,
+                searchQuery
         );
     }
 
