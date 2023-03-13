@@ -3046,9 +3046,9 @@ public class TclassService implements ITclassService {
                         WHERE
                             1 = 1
                             %s
-                            )
+                            ) z
                                ORDER BY
-                                                                   tbl_course.id DESC
+                                                                   z.id DESC
                                                             OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
 
                         """,
@@ -3089,9 +3089,9 @@ public class TclassService implements ITclassService {
                         WHERE
                             1 = 1
                             %s
-                            )
+                            ) z
                             ORDER BY
-                                tbl_class.id DESC
+                                z.id DESC
                                                             OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
 
                             
@@ -3133,9 +3133,9 @@ public class TclassService implements ITclassService {
                         WHERE
                             1 = 1
                             %s
-                            )
+                            ) z
                                 ORDER BY
-                                tbl_class.id DESC
+                                z.id DESC
                                                             OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
 
                         """,
