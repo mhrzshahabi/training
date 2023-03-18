@@ -284,6 +284,8 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setIsActive(questionBank.getEnabled() == null);
             elsQuestionDto.setQuestionCode(questionBank.getCode());
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
+            elsQuestionDto.setReference(questionBank.getReference());
+            elsQuestionDto.setClassificationId(questionBank.getClassificationId());
             if(questionBank.getDisplayTypeId()!=null){
                 Long id= questionBank.getDisplayTypeId();
                 ParameterValue displayType=  parameterValueService.get(id);

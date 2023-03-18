@@ -16,4 +16,5 @@ public class ElsClassV2Dto implements Serializable {
     private String categoryName;
     private String subCategoryName;
     private Boolean canEnterPractical;
+    private Boolean needToClassification;
 }
