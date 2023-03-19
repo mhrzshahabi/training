@@ -72,4 +72,6 @@ public interface IPersonnelService {
 
     boolean changeDepartment(Long id, Long depId);
     boolean isPresentByNationalCode(String nationalCode);
+
+    boolean changeDeleted(Long id);
 }

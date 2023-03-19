@@ -14,9 +14,11 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.*;
-import com.nicico.training.model.*;
-
+import com.nicico.training.iservice.IContactInfoService;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.ISynonymPersonnelService;
+import com.nicico.training.model.Personnel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -24,7 +26,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -289,6 +290,11 @@ public class PersonnelRestController {
     @PutMapping(value = "/change-department")
     public boolean changeDepartment(@RequestParam Long id,@RequestParam Long depId) {
         return iPersonnelService.changeDepartment(id,depId);
+    }
+    @Loggable
+    @PutMapping(value = "/change-deleted")
+    public boolean changeDeleted(@RequestParam Long id) {
+        return iPersonnelService.changeDeleted(id);
     }
 
 }
