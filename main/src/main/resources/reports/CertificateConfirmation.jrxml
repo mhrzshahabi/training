@@ -35,7 +35,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 					<paragraph lineSpacing="Double" leftIndent="40" rightIndent="0"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{text}]]></textFieldExpression>
@@ -46,7 +46,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="10" isBold="true"/>
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 					<paragraph lineSpacing="Double" leftIndent="0" rightIndent="0"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{profileName}]]></textFieldExpression>
