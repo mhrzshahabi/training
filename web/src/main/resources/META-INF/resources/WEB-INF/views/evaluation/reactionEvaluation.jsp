@@ -486,7 +486,7 @@
                                     if (resp.httpResponseCode == 200) {
 
                                         let id = [];
-                                        JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).forEach(p => id.push(p.id));
+                                        JSON.parse(resp.data).response.data.filter(p => p.classAttendanceStatus && p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).forEach(p => id.push(p.id));
 
                                         if (JSON.parse(resp.data).response.data.filter(p => (p.evaluationStatusReaction == 1)).length == 0) {
 
@@ -557,6 +557,13 @@
                                                 width: 100,
                                                 align: "center"
                                             },
+                                            {
+                                                name: "classAttendanceStatus",
+                                                title: "وضعیت حضور در کلاس",
+                                                width: 100,
+                                                valueMap: {"true":"حاضر","false":"غایب"},
+                                                align: "center"
+                                            }
                                         ];
                                         MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
                                         MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";

@@ -16,7 +16,6 @@ import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.mapper.tclass.TclassStudentMapper;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
-import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.utility.persianDate.CalendarTool;
@@ -131,10 +130,10 @@ public class ClassStudentRestController {
         ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
         List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
-        List<Long> studentIds = tmplist.stream().map(ClassStudentDTO.ClassStudentInfo::getStudentId).collect(Collectors.toList());
-        Map<Long, ContactInfo> contactInfoMap = contactInfoService.fetchAndUpdateLastHrMobile(studentIds, "Student", iscRq.getHeader("Authorization"));
+//        List<Long> studentIds = tmplist.stream().map(ClassStudentDTO.ClassStudentInfo::getStudentId).collect(Collectors.toList());
+//        Map<Long, ContactInfo> contactInfoMap = contactInfoService.fetchAndUpdateLastHrMobile(studentIds, "Student", iscRq.getHeader("Authorization"));
         for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
-            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfoMap.get(studentInfo.getStudentId()), ContactInfoDTO.Info.class));
+//            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfoMap.get(studentInfo.getStudentId()), ContactInfoDTO.Info.class));
             studentInfo.setClassAttendanceStatus(iClassStudentService.IsStudentAttendanceAllowable(studentInfo.getId()));
         }
 
