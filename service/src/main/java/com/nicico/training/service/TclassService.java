@@ -14,7 +14,10 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
-import com.nicico.training.iservice.*;
+import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IParameterValueService;
+import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -3228,6 +3231,7 @@ public class TclassService implements ITclassService {
             String name = item[6] != null ? item[6].toString() : "";
             String lastName = item[5] != null ? item[5].toString() : "";
             String code = item[7] != null ? item[7].toString() : "";
+            String complexTitle = item[8] != null ? item[8].toString() : "";
             String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             params.put("nationalCode", nationalCode);
@@ -3236,7 +3240,7 @@ public class TclassService implements ITclassService {
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3524,6 +3528,7 @@ public class TclassService implements ITclassService {
             String name = item[6] != null ? item[6].toString() : "";
             String lastName = item[5] != null ? item[5].toString() : "";
             String code = item[7] != null ? item[7].toString() : "";
+            String complexTitle = item[8] != null ? item[8].toString() : "";
             String letterNum = nationalCode + "-" + code;
             String fullName = !name.equals(lastName) ? name + " " + lastName : name;
             params.put("nationalCode", nationalCode);
@@ -3532,7 +3537,7 @@ public class TclassService implements ITclassService {
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             params.put("qrCodeData", elsUrl + "/training/certification/qr-code/" + nationalCode + "/" + classId);
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3583,6 +3588,17 @@ public class TclassService implements ITclassService {
         return byteArrayOutputStream;
     }
 
+    private void setCertificationBackground(Map<String, Object> params, String complexTitle) throws IOException {
+        if (complexTitle.contains("آذربایجان")) {
+
+        } else if (complexTitle.contains("شهربابک")) {
+
+        } else if (complexTitle.contains("سرچشمه") || complexTitle.equals("")) {
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+        } else {
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+        }
+    }
 
 
 }

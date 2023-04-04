@@ -225,27 +225,38 @@ FROM
 
 
     @Query(value = """
-     SELECT
-         tbl_class.id,
-         tbl_course.c_title_fa,
-         tbl_class.c_end_date,
-         tbl_class.c_start_date,
-         tbl_course.n_theory_duration,
-         tbl_student.last_name,
-         tbl_student.first_name,
-         tbl_class.c_code
-     FROM
-              tbl_student
-         INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
-         INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
-         INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
-     WHERE
-         tbl_class.c_status IN ( 3, 5 )
-         AND tbl_class_student.scores_state_id IN ( 400, 401 )
-         AND tbl_student.national_code = :nationalCode
-          AND tbl_class.id IN (:classId)
-          ORDER BY tbl_class.id
-    """, nativeQuery = true)
+            SELECT
+                tbl_class.id,
+                tbl_course.c_title_fa,
+                tbl_class.c_end_date,
+                tbl_class.c_start_date,
+                tbl_course.n_theory_duration,
+                tbl_student.last_name,
+                tbl_student.first_name,
+                tbl_class.c_code,
+                view_complex.c_title
+            FROM
+                tbl_student
+                INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id
+                INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id
+                INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+                INNER JOIN view_complex ON tbl_class.complex_id = view_complex.id
+            WHERE
+                tbl_class.id IN (
+                    :classId
+                )
+                AND tbl_class.c_status IN (
+                    3,
+                    5
+                )
+                AND tbl_class_student.scores_state_id IN (
+                    400,
+                    401
+                )
+                AND tbl_student.national_code = :nationalCode
+            ORDER BY
+                tbl_class.id
+            """, nativeQuery = true)
     List<?> getCertification(@Param("nationalCode") String nationalCode, @Param("classId") Long classId, Pageable limit);
 
     @Query(value = """
