@@ -2940,8 +2940,6 @@ public class ElsRestController {
                         return questionBankDto;
 
                     }
-
-
                 } else {
                     ElsQuestionBankDto dto = new ElsQuestionBankDto();
                     ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
@@ -2950,8 +2948,6 @@ public class ElsRestController {
                     dto.setQuestions(null);
                     return dto;
                 }
-
-
             } catch (Exception e) {
                 ElsQuestionBankDto dto = new ElsQuestionBankDto();
                 ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
@@ -2959,13 +2955,9 @@ public class ElsRestController {
                 dto.setQuestions(null);
                 return dto;
             }
-
-
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
-
-
     }
 
     @GetMapping("/teacher/class-to-els/{classId}")
@@ -3360,7 +3352,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
-    public byte[] getCertificationByQRCodeFile(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, SQLException, IOException, ParseException {
+    public byte[] getCertificationByQRCodeFile(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, IOException, ParseException {
       return   tclassService.getCertificationByQRCodeFile(nationalCode, classId, response);
     }
     @PostMapping("/sessions")
@@ -3391,6 +3383,11 @@ public class ElsRestController {
     @GetMapping("/class-of-session/{sessionId}")
     public Long getClassOfSession( @PathVariable Long sessionId) {
         return iClassSessionService.getClassIdBySessionId(sessionId);
+    }
+
+    @GetMapping(value = "/classification-list/{subCategoryId}")
+    public List<SubcategoryDTO.ClassificationList> classificationList(@PathVariable Long subCategoryId) {
+        return subcategoryService.classificationList(subCategoryId);
     }
 
 }

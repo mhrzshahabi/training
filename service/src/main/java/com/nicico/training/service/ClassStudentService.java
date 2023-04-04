@@ -755,6 +755,7 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
             elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
             elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setNeedToClassification(tclass.getCourse().getSubCategory().getNeedToClassification());
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
             elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
             result.add(elsClassDto);

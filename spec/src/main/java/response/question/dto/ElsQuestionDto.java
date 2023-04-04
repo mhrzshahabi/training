@@ -73,6 +73,9 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private Boolean isChild;
     @ApiModelProperty
     private Boolean isActive;
-
+    @ApiModelProperty
+    private String reference;
+    @ApiModelProperty
+    private Long classificationId;
 
 }
