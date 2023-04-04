@@ -30,7 +30,7 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     @Query(value = "SELECT DISTINCT tbl_department.c_hoze_title FROM tbl_department WHERE tbl_department.c_hoze_title IS NOT NULL ORDER BY  tbl_department.c_hoze_title", nativeQuery = true)
     List<String> findAllAreasFromDepartment();
 
-    @Query(value = "SELECT DISTINCT tbl_department.c_hoze_title FROM tbl_department WHERE tbl_department.c_hoze_title IS NOT NULL ORDER BY  tbl_department.c_hoze_title", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT tbl_department.c_mojtame_title FROM tbl_department WHERE tbl_department.c_mojtame_title IS NOT NULL ORDER BY  tbl_department.c_mojtame_title", nativeQuery = true)
     List<String> findAllComplexsFromDepartment();
 
     @Query(value = "SELECT DISTINCT tbl_department.c_ghesmat_title FROM tbl_department WHERE tbl_department.c_ghesmat_title IS NOT NULL ORDER BY  tbl_department.c_ghesmat_title", nativeQuery = true)

@@ -3628,7 +3628,7 @@
                                     width: "280",
                                     editorType: "ComboBoxItem",
                                     pickListWidth: 700,
-                                    optionDataSource: liRestDataSource_Class_JspClass,
+                                    optionDataSource: RestDataSource_Class_JspClass,
                                     displayField: "titleClass",
                                     valueField: "id",
                                     filterFields: ["titleClass", "code"],
