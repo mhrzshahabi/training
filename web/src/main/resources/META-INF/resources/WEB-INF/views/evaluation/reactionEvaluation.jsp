@@ -761,11 +761,19 @@
         }
     });
 
+    let ToolStripButton_FormIssuanceForAllPresentStudents_RE = isc.ToolStripButton.create({
+        title: "صدور فرم ارزیابی واکنشی برای فراگیران حاضر",
+        baseStyle: "sendFile",
+        click: function () {
+            Student_Reaction_Form_Inssurance_All_RE("present");
+        }
+    });
+
     var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
         title: "صدور فرم ارزیابی واکنشی برای همه فراگیران",
         baseStyle: "sendFile",
         click: function () {
-            Student_Reaction_Form_Inssurance_All_RE();
+            Student_Reaction_Form_Inssurance_All_RE("all");
         }
     });
 
@@ -1208,6 +1216,7 @@
                                         membersMargin: 5,
                                         members: [
                                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                                            ToolStripButton_FormIssuanceForAllPresentStudents_RE,
                                             ToolStripButton_FormIssuanceForAll_RE,
                                             ToolStripButton_FormIssuanceDeleteForAll_RE,
                                             </sec:authorize>
@@ -2134,7 +2143,7 @@
         titr.redraw();
     }
 
-    function Student_Reaction_Form_Inssurance_All_RE() {
+    function Student_Reaction_Form_Inssurance_All_RE(classAttendanceStatus) {
         let check = false;
         for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
             let record = ListGrid_student_RE.getData().localData[j];
@@ -2165,7 +2174,13 @@
                             if (record.evaluationStatusReaction == null
                                 || record.evaluationStatusReaction == 0
                                 || record.evaluationStatusReaction == undefined) {
-                                stdIds.push(record.id);
+                                if (classAttendanceStatus === "all") {
+                                    stdIds.push(record.id);
+                                } else if (classAttendanceStatus === "present") {
+                                    if (record.classAttendanceStatus) {
+                                        stdIds.push(record.id);
+                                    }
+                                }
                             }
                         }
                         create_multiple_evaluation_form_RE(null, ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, stdIds, 188, classRecord_RE.id, 504, 139, 154, check)
