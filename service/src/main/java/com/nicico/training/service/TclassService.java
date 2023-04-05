@@ -3246,7 +3246,7 @@ public class TclassService implements ITclassService {
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
                     " تا تاریخ " + MyUtils.changeDateDirection(to) +
                     " به مدت " + duration +
-                    " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
+                    "برگزار گردیده است را با موفقیت به پایان رسانیده اند.";
             params.put("text", text);
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
@@ -3543,7 +3543,7 @@ public class TclassService implements ITclassService {
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
                     " تا تاریخ " + MyUtils.changeDateDirection(to) +
                     " به مدت " + duration +
-                    " برگزار گردیده است را با موفقیت به پایان رسانیده اند";
+                    "برگزار گردیده است را با موفقیت به پایان رسانیده اند.";
             params.put("text", text);
             params.put(ConstantVARs.REPORT_TYPE, "pdf");
             params2.put(ConstantVARs.REPORT_TYPE, "pdf");
@@ -3590,13 +3590,13 @@ public class TclassService implements ITclassService {
 
     private void setCertificationBackground(Map<String, Object> params, String complexTitle) throws IOException {
         if (complexTitle.contains("آذربایجان")) {
-
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
         } else if (complexTitle.contains("شهربابک")) {
-
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/shahr-babak.jpg")));
         } else if (complexTitle.contains("سرچشمه") || complexTitle.equals("")) {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
         } else {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/back.jpg")));
+            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
         }
     }
 
