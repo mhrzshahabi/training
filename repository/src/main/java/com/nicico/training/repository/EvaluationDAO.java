@@ -220,4 +220,18 @@ WHERE
                                              @Param("catIdNullCheck") int catIdNullCheck,
                                              @Param("subCatIds") List<Object> subCatIds,
                                              @Param("subCatIdNullCheck") int subCatIdNullCheck);
+
+
+    @Query(value = """
+            SELECT
+                DISTINCT
+                tbl_evaluation.f_questionnaire_id
+            FROM
+                tbl_evaluation
+                INNER JOIN tbl_parameter_value ON tbl_evaluation.f_evaluation_level_id = tbl_parameter_value.id
+            WHERE
+                tbl_parameter_value.c_code = 'Behavioral'
+                AND tbl_evaluation.f_class_id = :classid
+                        """, nativeQuery = true)
+    int getDistinctBehavioralEvaluationsCount(@Param("classid") long classId);
 }
