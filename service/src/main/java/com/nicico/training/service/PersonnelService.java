@@ -635,7 +635,8 @@ public class PersonnelService implements IPersonnelService {
             Optional<Personnel>optionalPersonnel=personnelDAO.findById(id);
             if (optionalPersonnel.isPresent()){
                 Personnel personnel=optionalPersonnel.get();
-                personnel.setDeleted(null);
+                personnel.setDeleted(0);
+                personnel.setActive(1);
                 personnelDAO.save(personnel);
                 return true;
             }else

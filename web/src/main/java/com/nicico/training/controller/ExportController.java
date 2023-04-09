@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCoursePassedOrNotPaseedNAReportViewService;
+import com.nicico.training.iservice.IViewTrainingFileService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
@@ -20,10 +21,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +50,7 @@ public class ExportController {
     private final IPersonnelCoursePassedOrNotPaseedNAReportViewService personnelCoursePassedOrNotPaseedNAReportViewService;
     private final ViewReactionEvaluationFormulaReportForCourseDAO daoForCourse;
     private final ViewBehavioralEvaluationFormulaReportDAO viewBehavioralEvaluationFormulaReportDAO;
+    private final IViewTrainingFileService viewTrainingFileService;
 
     @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -171,11 +170,10 @@ public class ExportController {
     public void getExcelDataForFormulaReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
 
 
-
         SearchDTO.CriteriaRq criteriaRq;
 
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
         try {
             criteriaRq.setOperator(EOperator.valueOf("and"))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
@@ -183,72 +181,73 @@ public class ExportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String start="";
-        String end="";
-        List<Object> categoryList=new ArrayList<>();
-        List<Object> subCategoryList=new ArrayList<>();
-         for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
+        String start = "";
+        String end = "";
+        List<Object> categoryList = new ArrayList<>();
+        List<Object> subCategoryList = new ArrayList<>();
+        for (int f = 0; f < criteriaRq.getCriteria().get(0).getCriteria().size(); f++) {
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
-            start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+                start = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
-                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
-          categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")){
-               subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+                end = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")) {
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
             }
 
         }
 
-        List<ViewReactionEvaluationFormulaReport>    firstData=  viewReactionEvaluationFormulaReportDAO.getAll(start,end);
+        List<ViewReactionEvaluationFormulaReport> firstData = viewReactionEvaluationFormulaReportDAO.getAll(start, end);
         List<Object> finalCategoryList = categoryList;
         List<Object> finalSubCategoryList = subCategoryList;
         List<ViewReactionEvaluationFormulaReport> secondData;
         List<ViewReactionEvaluationFormulaReport> data;
-       if (categoryList.size()>0){
-           secondData  =firstData.stream()
-                   .filter(first -> finalCategoryList.stream()
-                           .anyMatch(category -> first.getCategory_titlefa().equals(category)))
-                   .collect(Collectors.toList());
-       }else{
-            secondData=firstData;
-       }
-       if (subCategoryList.size()>0){
-           data =secondData.stream()
-                   .filter(sec -> finalSubCategoryList.stream()
-                           .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
-                   .collect(Collectors.toList());
-       }else {
-           data=secondData;
-       }
+        if (categoryList.size() > 0) {
+            secondData = firstData.stream()
+                    .filter(first -> finalCategoryList.stream()
+                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
+                    .collect(Collectors.toList());
+        } else {
+            secondData = firstData;
+        }
+        if (subCategoryList.size() > 0) {
+            data = secondData.stream()
+                    .filter(sec -> finalSubCategoryList.stream()
+                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
+                    .collect(Collectors.toList());
+        } else {
+            data = secondData;
+        }
 
-       data.forEach(item -> {
-           if (item.getFinal_teacher() != null) {
-               item.setFinal_teacher(
-                       String.valueOf(Math.round(Float.parseFloat(item.getFinal_teacher())))
-               );
-           }
-           if (item.getReactione_evaluation_grade() != null) {
-               item.setReactione_evaluation_grade(
-                       String.valueOf(Math.round(Float.parseFloat(item.getReactione_evaluation_grade())))
-               );
-           }
-           if (item.getTeacher_grade_to_class() != null) {
-               item.setTeacher_grade_to_class(
-                       String.valueOf(Math.round(Float.parseFloat(item.getTeacher_grade_to_class())))
-               );
-           }
-           if (item.getTraining_grade_to_teacher() != null) {
-               item.setTraining_grade_to_teacher(
-                       String.valueOf(Math.round(Float.parseFloat(item.getTraining_grade_to_teacher())))
-               );
-           }
-           if (item.getStudentEvaluation() != null) {
-               item.setStudentEvaluation(
-                       String.valueOf(Math.round(Float.parseFloat(item.getStudentEvaluation())))
-               );
-           }
-       });
+        data.forEach(item -> {
+            if (item.getFinal_teacher() != null) {
+                item.setFinal_teacher(
+                        String.valueOf(Math.round(Float.parseFloat(item.getFinal_teacher())))
+                );
+            }
+            if (item.getReactione_evaluation_grade() != null) {
+                item.setReactione_evaluation_grade(
+                        String.valueOf(Math.round(Float.parseFloat(item.getReactione_evaluation_grade())))
+                );
+            }
+            if (item.getTeacher_grade_to_class() != null) {
+                item.setTeacher_grade_to_class(
+                        String.valueOf(Math.round(Float.parseFloat(item.getTeacher_grade_to_class())))
+                );
+            }
+            if (item.getTraining_grade_to_teacher() != null) {
+                item.setTraining_grade_to_teacher(
+                        String.valueOf(Math.round(Float.parseFloat(item.getTraining_grade_to_teacher())))
+                );
+            }
+            if (item.getStudentEvaluation() != null) {
+                item.setStudentEvaluation(
+                        String.valueOf(Math.round(Float.parseFloat(item.getStudentEvaluation())))
+                );
+            }
+        });
 
         String fileFullPath = "export.xlsx";
         Workbook workbook = null;
@@ -507,46 +506,60 @@ public class ExportController {
                         case "student_per_number": {
                             row.createCell(i).setCellValue(map.getStudent_per_number());
                             break;
-                        } case "student_post_title": {
+                        }
+                        case "student_post_title": {
                             row.createCell(i).setCellValue(map.getStudent_post_title());
                             break;
-                        } case "student_post_code": {
+                        }
+                        case "student_post_code": {
                             row.createCell(i).setCellValue(map.getStudent_post_code());
                             break;
-                        } case "student_hoze": {
+                        }
+                        case "student_hoze": {
                             row.createCell(i).setCellValue(map.getStudent_hoze());
                             break;
-                        } case "student_omor": {
+                        }
+                        case "student_omor": {
                             row.createCell(i).setCellValue(map.getStudent_omor());
                             break;
-                        } case "total_std": {
+                        }
+                        case "total_std": {
                             row.createCell(i).setCellValue(map.getTotal_std());
                             break;
-                        } case "training_grade_to_teacher": {
+                        }
+                        case "training_grade_to_teacher": {
                             row.createCell(i).setCellValue(map.getTraining_grade_to_teacher());
                             break;
-                        } case "teacher_grade_to_class": {
+                        }
+                        case "teacher_grade_to_class": {
                             row.createCell(i).setCellValue(map.getTeacher_grade_to_class());
                             break;
-                        } case "reactione_evaluation_grade": {
+                        }
+                        case "reactione_evaluation_grade": {
                             row.createCell(i).setCellValue(map.getReactione_evaluation_grade());
                             break;
-                        } case "final_teacher": {
+                        }
+                        case "final_teacher": {
                             row.createCell(i).setCellValue(map.getFinal_teacher());
                             break;
-                         } case "tedadJavabDade": {
+                        }
+                        case "tedadJavabDade": {
                             row.createCell(i).setCellValue(map.getJavab_dade());
                             break;
-                        }  case "percent_reaction": {
+                        }
+                        case "percent_reaction": {
                             row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
-                        }  case "class_teacher": {
+                        }
+                        case "class_teacher": {
                             row.createCell(i).setCellValue(map.getClassTeacher());
                             break;
-                        }  case "facilities_equipment": {
+                        }
+                        case "facilities_equipment": {
                             row.createCell(i).setCellValue(map.getFacilitiesEquipment());
                             break;
-                        }  case "class_content": {
+                        }
+                        case "class_content": {
                             row.createCell(i).setCellValue(map.getClassContent());
                             break;
                         }
@@ -692,16 +705,15 @@ public class ExportController {
             , @RequestParam(value = "courseCategory") String courseCategory
     ) {
 
-        String isPassed=passedOrUnPassed.replace("\"", "");
-        String catgories=courseCategory.replace("\"", "").replace("[","").replace("]","");
-        List<Long> catIds=new ArrayList<>();
-         final String[] discagem = catgories.split(",");
+        String isPassed = passedOrUnPassed.replace("\"", "");
+        String catgories = courseCategory.replace("\"", "").replace("[", "").replace("]", "");
+        List<Long> catIds = new ArrayList<>();
+        final String[] discagem = catgories.split(",");
         for (int i = 0; i < discagem.length; i++) {
             catIds.add(Long.valueOf(discagem[i]));
         }
 
-        List<PersonnelCoursePassedOrNotPaseedNAReportView>    data=  personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed(catIds,isPassed);
-
+        List<PersonnelCoursePassedOrNotPaseedNAReportView> data = personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed(catIds, isPassed);
 
 
         String fileFullPath = "export.xlsx";
@@ -822,9 +834,9 @@ public class ExportController {
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
             if (isPassed.equals("unPassed"))
-            cell2.setCellValue("گزارش دوره های نگذرانده پرسنل");
+                cell2.setCellValue("گزارش دوره های نگذرانده پرسنل");
             else
-            cell2.setCellValue("گزارش دوره های گذرانده پرسنل");
+                cell2.setCellValue("گزارش دوره های گذرانده پرسنل");
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -899,19 +911,24 @@ public class ExportController {
                         case "personnel_first_name": {
                             row.createCell(i).setCellValue(map.getPersonnelFirstName());
                             break;
-                        } case "personnel_last_name": {
+                        }
+                        case "personnel_last_name": {
                             row.createCell(i).setCellValue(map.getPersonnelLastName());
                             break;
-                        } case "personnel_national_code": {
+                        }
+                        case "personnel_national_code": {
                             row.createCell(i).setCellValue(map.getPersonnelNationalCode());
                             break;
-                        } case "personnel_emp_no": {
+                        }
+                        case "personnel_emp_no": {
                             row.createCell(i).setCellValue(map.getPersonnelPersonnelNo2());
                             break;
-                        } case "personnel_post_code": {
+                        }
+                        case "personnel_post_code": {
                             row.createCell(i).setCellValue(map.getPersonnelPostCode());
                             break;
-                        } case "personnel_post_title": {
+                        }
+                        case "personnel_post_title": {
                             row.createCell(i).setCellValue(map.getPersonnelPostTitle());
                             break;
                         }
@@ -979,7 +996,6 @@ public class ExportController {
     public void getExcelDataForFormulaReport2(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
 
 
-
         SearchDTO.CriteriaRq criteriaRq;
 
         criteria = "[" + criteria + "]";
@@ -991,46 +1007,46 @@ public class ExportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String start="";
-        String end="";
-        List<Object> categoryList=new ArrayList<>();
-        List<Object> subCategoryList=new ArrayList<>();
-        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
+        String start = "";
+        String end = "";
+        List<Object> categoryList = new ArrayList<>();
+        List<Object> subCategoryList = new ArrayList<>();
+        for (int f = 0; f < criteriaRq.getCriteria().get(0).getCriteria().size(); f++) {
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
-                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+                start = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
-                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
-                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")){
-                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+                end = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")) {
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
             }
 
         }
 
-        List<ViewReactionEvaluationFormulaReportForCourse>    firstData=  daoForCourse.getAllForCourse(start,end);
-
+        List<ViewReactionEvaluationFormulaReportForCourse> firstData = daoForCourse.getAllForCourse(start, end);
 
 
         List<Object> finalCategoryList = categoryList;
         List<Object> finalSubCategoryList = subCategoryList;
         List<ViewReactionEvaluationFormulaReportForCourse> secondData;
         List<ViewReactionEvaluationFormulaReportForCourse> data;
-        if (categoryList.size()>0){
-            secondData  =firstData.stream()
+        if (categoryList.size() > 0) {
+            secondData = firstData.stream()
                     .filter(first -> finalCategoryList.stream()
                             .anyMatch(category -> first.getCategory_titlefa().equals(category)))
                     .collect(Collectors.toList());
-        }else{
-            secondData=firstData;
+        } else {
+            secondData = firstData;
         }
-        if (subCategoryList.size()>0){
-            data =secondData.stream()
+        if (subCategoryList.size() > 0) {
+            data = secondData.stream()
                     .filter(sec -> finalSubCategoryList.stream()
                             .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
                     .collect(Collectors.toList());
-        }else {
-            data=secondData;
+        } else {
+            data = secondData;
         }
 
         data.forEach(item -> {
@@ -1268,25 +1284,31 @@ public class ExportController {
                             break;
                         }
 
-                     case "total_std": {
+                        case "total_std": {
                             row.createCell(i).setCellValue(map.getTotal_std());
                             break;
-                        } case "training_grade_to_teacher": {
+                        }
+                        case "training_grade_to_teacher": {
                             row.createCell(i).setCellValue(map.getTraining_grade_to_teacher());
                             break;
-                        } case "teacher_grade_to_class": {
+                        }
+                        case "teacher_grade_to_class": {
                             row.createCell(i).setCellValue(map.getTeacher_grade_to_class());
                             break;
-                        } case "reactione_evaluation_grade": {
+                        }
+                        case "reactione_evaluation_grade": {
                             row.createCell(i).setCellValue(map.getReactione_evaluation_grade());
                             break;
-                        } case "final_teacher": {
+                        }
+                        case "final_teacher": {
                             row.createCell(i).setCellValue(map.getFinal_teacher());
                             break;
-                        } case "tedadJavabDade": {
+                        }
+                        case "tedadJavabDade": {
                             row.createCell(i).setCellValue(map.getJavab_dade());
                             break;
-                        }  case "percent_reaction": {
+                        }
+                        case "percent_reaction": {
                             row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
                         }
@@ -1366,7 +1388,6 @@ public class ExportController {
     public void getExcelDataForFormulaReportLearning(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
 
 
-
         SearchDTO.CriteriaRq criteriaRq;
 
         criteria = "[" + criteria + "]";
@@ -1423,10 +1444,12 @@ public class ExportController {
                 endTo = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryId")) {
-                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+                ;
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
-                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+                ;
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassYear")) {
                 classYear = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
@@ -1469,8 +1492,6 @@ public class ExportController {
             affairList = new ArrayList<>();
             affairList.add("");
         }
-
-
 
 
         if (classCodeList == null) {
@@ -1748,58 +1769,58 @@ public class ExportController {
                             break;
                         }
 
-                       case "total_std": {
+                        case "total_std": {
                             row.createCell(i).setCellValue(map.getTotal_std());
                             break;
                         }
-                       case "miangin_pretest": {
-                           String pish="0";
-                           if (map.getMiangin_pretest()!=null)
-                               pish=map.getMiangin_pretest();
+                        case "miangin_pretest": {
+                            String pish = "0";
+                            if (map.getMiangin_pretest() != null)
+                                pish = map.getMiangin_pretest();
                             row.createCell(i).setCellValue(pish);
                             break;
                         }
-                       case "miangin_asli": {
+                        case "miangin_asli": {
                             row.createCell(i).setCellValue(map.getMiangin_asli());
                             break;
                         }
-                       case "nerkh": {
+                        case "nerkh": {
                             row.createCell(i).setCellValue(map.getNerkh());
                             break;
                         }
-                       case "darsad_javab_dade_asli": {
+                        case "darsad_javab_dade_asli": {
                             row.createCell(i).setCellValue(map.getDarsad_javab_dade_asli());
                             break;
                         }
-                       case "darsad_javab_dade_pre": {
+                        case "darsad_javab_dade_pre": {
                             row.createCell(i).setCellValue(map.getDarsad_javab_dade_pre());
                             break;
                         }
-                       case "darsad_ghabol": {
+                        case "darsad_ghabol": {
                             row.createCell(i).setCellValue(map.getDarsad_ghabol());
                             break;
                         }
-                       case "darsad_noghabol": {
+                        case "darsad_noghabol": {
                             row.createCell(i).setCellValue(map.getDarsad_noghabol());
                             break;
                         }
-                       case "learning": {
+                        case "learning": {
                             row.createCell(i).setCellValue(map.getLearning());
                             break;
                         }
-                       case "max_nahaii": {
+                        case "max_nahaii": {
                             row.createCell(i).setCellValue(map.getMax_nahaii());
                             break;
                         }
-                       case "min_pre": {
+                        case "min_pre": {
                             row.createCell(i).setCellValue(map.getMin_pre());
                             break;
                         }
-                       case "pishraft": {
+                        case "pishraft": {
                             row.createCell(i).setCellValue(map.getPishraft());
                             break;
                         }
-                       case "percent_reaction": {
+                        case "percent_reaction": {
                             row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
                         }
@@ -1929,10 +1950,12 @@ public class ExportController {
                 endTo = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryId")) {
-                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+                ;
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
-                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+                ;
             }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassYear")) {
                 classYear = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
@@ -2117,7 +2140,6 @@ public class ExportController {
                         columns[z] = "total_std";
                         break;
                     }
-
 
 
                     case 13: {
@@ -2307,9 +2329,9 @@ public class ExportController {
                             break;
                         }
                         case "nore_pish": {
-                            String pish="0";
-                            if (map.getNore_pish()!= null)
-                                pish=map.getNore_pish();
+                            String pish = "0";
+                            if (map.getNore_pish() != null)
+                                pish = map.getNore_pish();
                             row.createCell(i).setCellValue(pish);
                             break;
                         }
@@ -2752,6 +2774,363 @@ public class ExportController {
 
             reportUtil.export("/reports/behavioralEvaluation.jasper", params, jsonDataSource, response);
         }
+    }
+
+
+    @PostMapping(value = {"/excel/group/training-file"})
+    public void getGroupTrainingFile(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+        SearchDTO.CriteriaRq criteriaRq;
+
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        try {
+            criteriaRq.setOperator(EOperator.valueOf("and"))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Set<String> nationalCodes = new HashSet<>();
+        if (criteriaRq.getCriteria() != null)
+            for (int i = 0; i < criteriaRq.getCriteria().size(); i++) {
+                if (criteriaRq.getCriteria().get(0) != null)
+                    for (int z = 0; z < criteriaRq.getCriteria().get(0).getValue().size(); z++) {
+                        String nationalCode = criteriaRq.getCriteria().get(0).getValue().get(z).toString();
+                        if (nationalCode.matches("[0-9]+") && nationalCode.length() == 10)
+                            nationalCodes.add(nationalCode);
+                    }
+
+
+            }
+
+        List<ViewLmsTrainingFileDTO> data = new ArrayList<>();
+        nationalCodes.forEach(nationalCode -> data.addAll(viewTrainingFileService.getDtoListByNationalCode(nationalCode)));
+        String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
+        try {
+            String[] headers = new String[23];
+            String[] columns = new String[23];
+
+
+            for (int z = 0; z < 25; z++) {
+
+                switch (z) {
+                    case 0: {
+                        headers[z] = "نام";
+                        columns[z] = "firstName";
+                        break;
+                    }
+                    case 1: {
+                        headers[z] = "نام خانوادگی";
+                        columns[z] = "lastName";
+                        break;
+                    }
+                    case 2: {
+                        headers[z] = "کد ملی";
+                        columns[z] = "nationalCode";
+                        break;
+                    }
+                    case 3: {
+                        headers[z] = "شماره پرسنلی";
+                        columns[z] = "empNo";
+                        break;
+                    }
+                    case 4: {
+                        headers[z] = "پست";
+                        columns[z] = "postTitle";
+                        break;
+                    }
+                    case 5: {
+                        headers[z] = " کد پست";
+                        columns[z] = "postCode";
+                        break;
+                    }
+                    case 6: {
+                        headers[z] = " شغل";
+                        columns[z] = "jobTitle";
+
+                        break;
+                    }
+                    case 7: {
+                        headers[z] = " رده پستی";
+                        columns[z] = "postGradeTitle";
+                        break;
+                    }
+                    case 8: {
+                        headers[z] = "مجتمع ";
+                        columns[z] = "complex";
+                        break;
+                    }
+                    case 9: {
+                        headers[z] = "معاونت";
+                        columns[z] = "assistant";
+                        break;
+                    }
+                    case 10: {
+                        headers[z] = "امور";
+                        columns[z] = "affairs";
+                        break;
+                    }
+                    case 11: {
+                        headers[z] = "ترم";
+                        columns[z] = "termTitleFa";
+                        break;
+                    }
+                    case 12: {
+                        headers[z] = " وضعیت قبولی ";
+                        columns[z] = "scoresState";
+                        break;
+                    }
+
+
+                    case 13: {
+                        headers[z] = "نمره";
+                        columns[z] = "score";
+                        break;
+                    }
+                    case 14: {
+                        headers[z] = "وضعیت کلاس";
+                        columns[z] = "classStatus";
+                        break;
+                    }
+                    case 15: {
+                        headers[z] = "کد کلاس";
+                        columns[z] = "classCode";
+                        break;
+                    }
+                    case 16: {
+                        headers[z] = "تاریخ شروع";
+                        columns[z] = "startDate";
+                        break;
+                    }
+                    case 17: {
+                        headers[z] = "تاریخ پایان";
+                        columns[z] = "endDate";
+                        break;
+                    }
+                    case 18: {
+                        headers[z] = "کد دوره";
+                        columns[z] = "courseCode";
+                        break;
+                    }
+                    case 19: {
+                        headers[z] = "دوره";
+                        columns[z] = "courseTitle";
+                        break;
+                    }
+                    case 20: {
+                        headers[z] = "استاد";
+                        columns[z] = "teacher";
+                        break;
+                    }
+                    case 21: {
+                        headers[z] = "نوع پرسنل";
+                        columns[z] = "personType";
+                        break;
+                    }
+                    case 22: {
+                        headers[z] = "مدت دوره";
+                        columns[z] = "duration";
+                        break;
+                    }
+
+
+                }
+            }
+
+            workbook = new XSSFWorkbook();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            Sheet sheet = workbook.createSheet("گزارش excel");
+            sheet.setRightToLeft(true);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setFontHeightInPoints((short) 12);
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue("گزارش گروهی پرونده آموزشی");
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+            int rowNum = 1;
+            for (ViewLmsTrainingFileDTO map : data) {
+                Row row = sheet.createRow(++rowNum);
+
+                for (int i = 0; i < columns.length; i++) {
+
+                    switch (columns[i]) {
+                        case "firstName": {
+                            row.createCell(i).setCellValue(map.getFirstName() != null ? map.getFirstName() : null);
+                            break;
+                        }
+                        case "lastName": {
+                            row.createCell(i).setCellValue(map.getLastName() != null ? map.getLastName() : null);
+                            break;
+                        }
+                        case "nationalCode": {
+                            row.createCell(i).setCellValue(map.getNationalCode() != null ? map.getNationalCode() : null);
+                            break;
+                        }
+                        case "empNo": {
+                            row.createCell(i).setCellValue(map.getEmpNo() != null ? map.getEmpNo() : null);
+                            break;
+                        }
+                        case "postTitle": {
+                            row.createCell(i).setCellValue(map.getPostTitle() != null ? map.getPostTitle() : null);
+                            break;
+                        }
+                        case "postCode": {
+                            row.createCell(i).setCellValue(map.getPostCode() != null ? map.getPostCode() : null);
+                            break;
+                        }
+                        case "jobTitle": {
+                            row.createCell(i).setCellValue(map.getJobTitle() != null ? map.getJobTitle() : null);
+                            break;
+                        }
+                        case "postGradeTitle": {
+                            row.createCell(i).setCellValue(map.getPostGradeTitle() != null ? map.getPostGradeTitle() : null);
+                            break;
+                        }
+                        case "complex": {
+                            row.createCell(i).setCellValue(map.getComplex() != null ? map.getComplex() : null);
+                            break;
+                        }
+                        case "assistant": {
+                            row.createCell(i).setCellValue(map.getAssistant() != null ? map.getAssistant() : " ");
+                            break;
+                        }
+                        case "affairs": {
+                            row.createCell(i).setCellValue(map.getAffairs() != null ? map.getAffairs() : " ");
+                            break;
+                        }
+
+                        case "termTitleFa": {
+                            row.createCell(i).setCellValue(map.getTermTitleFa() != null ? map.getTermTitleFa() : " ");
+                            break;
+                        }
+
+                        case "scoresState": {
+                            row.createCell(i).setCellValue(map.getScoresState() != null ? map.getScoresState() : " ");
+                            break;
+                        }
+                        case "score": {
+                            row.createCell(i).setCellValue(map.getScore() != null ? map.getScore().toString() : " ");
+                            break;
+                        }
+                        case "classStatus": {
+                            row.createCell(i).setCellValue(map.getClassStatus() != null ? map.getClassStatus() : " ");
+                            break;
+                        }
+                        case "classCode": {
+                            row.createCell(i).setCellValue(map.getClassCode() != null ? map.getClassCode() : " ");
+                            break;
+                        }
+                        case "startDate": {
+                            row.createCell(i).setCellValue(map.getStartDate() != null ? map.getStartDate() : " ");
+                            break;
+                        }
+                        case "endDate": {
+                            row.createCell(i).setCellValue(map.getEndDate() != null ? map.getEndDate() : " ");
+                            break;
+                        }
+                        case "courseCode": {
+                            row.createCell(i).setCellValue(map.getCourseCode() != null ? map.getCourseCode() : " ");
+                            break;
+                        }
+                        case "courseTitle": {
+                            row.createCell(i).setCellValue(map.getCourseTitle() != null ? map.getCourseTitle() : " ");
+                            break;
+                        }
+                        case "teacher": {
+                            row.createCell(i).setCellValue(map.getTeacher() != null ? map.getTeacher() : " ");
+                            break;
+                        }
+                        case "personType": {
+                            row.createCell(i).setCellValue(map.getPersonType() != null ? map.getPersonType() : " ");
+
+                            break;
+                        }
+                        case "duration": {
+                            row.createCell(i).setCellValue(map.getDuration() != null ? map.getDuration().toString() : " ");
+                            break;
+                        }
+
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
+            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            File file = new File(fileFullPath);
+            in = new FileInputStream(file);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            response.setContentLength((int) file.length());
+            OutputStream outStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            outStream.flush();
+            in.close();
+
+        } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
 }

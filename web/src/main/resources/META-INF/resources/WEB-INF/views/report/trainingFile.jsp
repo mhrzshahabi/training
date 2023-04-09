@@ -1,7 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
 
@@ -88,6 +91,17 @@
                         ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
                         ListGrid_TrainingFile_TrainingFileJSP.fetchData();
                     }
+                }
+            },
+            {
+                name: "groupBtn",
+                ID: "groupBtn",
+                title: "گزارش گروهی پرونده آموزشی",
+                type: "ButtonItem",
+                startRow: false,
+                endRow: false,
+                click() {
+                    trainingFileInGroup();
                 }
             },
             {
@@ -273,6 +287,271 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
+    function printInGroup(data) {
+        let criteriaObject = {};
+        criteriaObject.fieldName = "nationalCodes";
+        criteriaObject.operator = "inSet";
+        criteriaObject.value = data;
+         let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/export/excel/group/training-file",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "criteria", type: "hidden"},
+                    {name: "myToken", type: "hidden"}
+                ]
+        });
+        downloadForm.setValue("myToken", "<%=accessToken%>");
+        downloadForm.setValue("criteria", JSON.stringify(criteriaObject));
+        downloadForm.show();
+        downloadForm.submitForm();
+
+
+        <%--isc.RPCManager.sendRequest({--%>
+        <%--    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+        <%--    useSimpleHttp: true,--%>
+        <%--    contentType: "application/json; charset=utf-8",--%>
+        <%--    actionURL: baseUrl + "/export/excel/group/training-file",--%>
+        <%--    httpMethod: "POST",--%>
+        <%--    data: JSON.stringify(data),--%>
+        <%--    serverOutputAsString: false,--%>
+        <%--    callback: function (resp) {--%>
+
+        <%--    }--%>
+        <%--});--%>
+    }
+
+    function trainingFileInGroup() {
+        let TabSet_trainingFileInGroup_JspStudent = isc.TabSet.create({
+            ID: "trainingFileleftTabSet",
+            autoDraw: false,
+            tabBarPosition: "top",
+            width: "100%",
+            height: 115,
+            tabs: [
+                {
+                    title: "فایل اکسل", width: 200, overflow: "hidden",
+                    pane: isc.DynamicForm.create({
+                        height: "100%",
+                        width: "100%",
+                        numCols: 4,
+                        colWidths: ["10%", "40%", "20%", "20%"],
+                        fields: [
+                            {
+                                ID: "DynamicForm_GroupInsert_FileUploader_trainingFile",
+                                name: "DynamicForm_GroupInsert_FileUploader_trainingFile",
+                                type: "imageFile",
+                                title: "مسیر فایل",
+                            },
+                            {
+                                type: "button",
+                                startRow: false,
+                                title: "آپلود فايل",
+                                click: function () {
+                                    let address = DynamicForm_GroupInsert_FileUploader_trainingFile.getValue();
+
+                                    if (address == null) {
+                                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                                    } else {
+                                        var ExcelToJSON = function () {
+
+                                            this.parseExcel = function (file) {
+                                                var reader = new FileReader();
+                                                var records = [];
+
+                                                reader.onload = function (e) {
+                                                    var data = e.target.result;
+                                                    var workbook = XLSX.read(data, {
+                                                        type: 'binary'
+                                                    });
+                                                    var isEmpty = true;
+
+                                                    workbook.SheetNames.forEach(function (sheetName) {
+                                                        // Here is your object
+                                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                                        //var json_object = JSON.stringify(XL_row_object);
+
+                                                        for (let i = 0; i < XL_row_object.length; i++) {
+                                                            if (isNaN(Object.values(XL_row_object[i])[0])) {
+                                                                continue;
+                                                            } else if (GroupSelectedPersonnelTrainingFileLG.data.filter(function (item) {
+                                                                return item.nationalCode == Object.values(XL_row_object[i])[0];
+                                                            }).length == 0) {
+                                                                let current = {
+                                                                    nationalCode: Object.values(XL_row_object[i])[0],
+                                                                };
+                                                                records.add(current);
+                                                                isEmpty = false;
+
+                                                                continue;
+                                                            } else {
+                                                                isEmpty = false;
+
+                                                                continue;
+                                                            }
+                                                        }
+
+                                                        DynamicForm_GroupInsert_FileUploader_trainingFile.setValue('');
+                                                    });
+
+                                                    if (records.length > 0) {
+
+                                                        let uniqueRecords = [];
+
+                                                        for (let i = 0; i < records.length; i++) {
+                                                            if (uniqueRecords.filter(function (item) {
+                                                                return item.nationalCode == records[i].nationalCode;
+                                                            }).length == 0) {
+                                                                uniqueRecords.push(records[i]);
+                                                            }
+                                                        }
+
+
+                                                        GroupSelectedPersonnelTrainingFileLG.setData(GroupSelectedPersonnelTrainingFileLG.data.concat(uniqueRecords));
+                                                        GroupSelectedPersonnelTrainingFileLG.invalidateCache();
+                                                        GroupSelectedPersonnelTrainingFileLG.fetchData();
+
+
+                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes, uniqueRecords.map(function (item) {
+                                                            return item.nationalCode;
+                                                        }), false);
+
+
+                                                        createDialog("info", "فایل به لیست اضافه شد.");
+                                                    } else {
+                                                        if (isEmpty) {
+                                                            createDialog("info", "خطا در محتویات فایل");
+                                                        } else {
+                                                            createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                                        }
+
+                                                    }
+
+                                                };
+
+                                                reader.onerror = function (ex) {
+                                                    createDialog("info", "خطا در باز کردن فایل");
+                                                };
+
+                                                reader.readAsBinaryString(file);
+                                            };
+                                        };
+                                        let split = $('[name="DynamicForm_GroupInsert_FileUploader_trainingFile"]')[0].files[0].name.split('.');
+
+                                        if (split[split.length - 1] == 'xls' || split[split.length - 1] == 'csv' || split[split.length - 1] == 'xlsx') {
+                                            var xl2json = new ExcelToJSON();
+                                            xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_trainingFile"]')[0].files[0]);
+                                        } else {
+                                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                        }
+
+                                    }
+                                }
+                            },
+                            {
+                                type: "button",
+                                title: "فرمت فايل ورودی",
+                                click: function () {
+                                    window.open("excel/personel-nationalCode.xlsx");
+                                }
+                            }
+                        ]
+                    })
+                }
+            ]
+        });
+
+        let Win_training_file_GroupInsert = isc.Window.create({
+            ID: "Win_training_file_GroupInsert",
+
+            width: 1450,
+            height: 750,
+            minWidth: 1450,
+            minHeight: 500,
+            autoSize: false,
+            overflow: "hidden",
+            title: "اضافه کردن گروهی",
+            items: [isc.HLayout.create({
+                width: 1450,
+                height: "88%",
+                autoDraw: false,
+                overflow: "auto",
+                align: "center",
+                members: [
+                    isc.TrLG.create({
+                        ID: "GroupSelectedPersonnelTrainingFileLG",
+                        showFilterEditor: false,
+                        editEvent: "click",
+                        //listEndEditAction: "next",
+                        enterKeyEditAction: "nextRowStart",
+                        canSort: false,
+                        canEdit: true,
+                        filterOnKeypress: true,
+                        selectionType: "single",
+                        fields: [
+                            {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true, width: "10%"},
+                            {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false, autoFithWidth: true},
+                        ],
+                        gridComponents: [TabSet_trainingFileInGroup_JspStudent, "header", "body"],
+                        canRemoveRecords: true,
+                        deferRemoval: true,
+                        removeRecordClick: function (rowNum) {
+                            GroupSelectedPersonnelTrainingFileLG.data.removeAt(rowNum);
+                        }
+                    })
+                ]
+            }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButtonSave.create({
+                            top: 260,
+                            title: "گزارش اکسل",
+                            align: "center",
+                            icon: "[SKIN]/actions/excel.png",
+                            click: function () {
+                                let len = GroupSelectedPersonnelTrainingFileLG.data.length;
+                                let list = GroupSelectedPersonnelTrainingFileLG.data;
+                                let result = [];
+
+                                for (let index = 0; index < len; index++) {
+                                    if (list[index].nationalCode != "" && list[index].nationalCode != null && typeof (list[index].nationalCode) != "undefined") {
+                                        if (result.filter(function (item) {
+                                            return (item.nationalCode && item.nationalCode == GroupSelectedPersonnelTrainingFileLG.data[index].nationalCode);
+                                        }).length == 0) {
+                                            result.push(list[index].nationalCode)
+                                        }
+                                    }
+                                }
+                                if (len>0){
+                                    printInGroup(result)
+                                }else {
+                                    createDialog("info", "فایل با کد ملی اضافه نشده است");
+
+                                }
+
+
+                            }
+                        }), isc.IButtonCancel.create({
+                            top: 260,
+                            title: "<spring:message code='cancel'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/cancel.png",
+                            click: function () {
+                                Win_training_file_GroupInsert.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+        TabSet_trainingFileInGroup_JspStudent.selectTab(0);
+        Win_training_file_GroupInsert.show();
+    }
+
+
+
 
 
     //</script>
