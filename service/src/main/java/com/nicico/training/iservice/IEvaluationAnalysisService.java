@@ -31,7 +31,9 @@ public interface IEvaluationAnalysisService {
 
     void updateBehavioral(Long classId);
 
-    void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams,  String suggestions, String opinion) throws Exception;
+    void printForCourseWithMultipleQuestionnaires(HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams, String suggestions, String opinion) throws Exception;
+
+    void printForCourseWithSingleQuestionnaire(HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams, String suggestions, String opinion) throws Exception;
 
     void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception;
 

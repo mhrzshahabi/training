@@ -339,7 +339,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public void print(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+    public void printForCourseWithMultipleQuestionnaires(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
         Optional<Tclass> byId = tclassDAO.findById(classId);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
@@ -456,6 +456,12 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    @Transactional
+    @Override
+    public void printForCourseWithSingleQuestionnaire(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+
     }
 
     public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {

@@ -3,7 +3,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.model.EvaluationAnalysis;
+import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.service.EvaluationAnalysisService;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,7 @@ import java.util.Arrays;
 public class EvaluationAnalysisFormController {
 
     private final EvaluationAnalysisService evaluationAnalysisService;
+    private final IEvaluationService evaluationService;
     private final ParameterService parameterService;
 
     @RequestMapping("/show-form")
@@ -281,7 +282,13 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "suggestions") String suggestions,
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
-        evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
+        int questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(ClassId);
+
+        if (questionnairesCount == 1) {
+            evaluationAnalysisService.printForCourseWithSingleQuestionnaire(response, type, fileName, ClassId, Params, suggestions, opinion);
+        } else if (questionnairesCount > 1) {
+            evaluationAnalysisService.printForCourseWithMultipleQuestionnaires(response, type, fileName, ClassId, Params, suggestions, opinion);
+        }
     }
 
     @PostMapping(value = {"/printBehavioralChangeReport"})

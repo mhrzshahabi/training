@@ -236,6 +236,6 @@ WHERE
                         tbl_parameter_value.c_code = 'Behavioral'
                         AND tbl_evaluation.f_class_id = :classid
                 )
-                                    """, nativeQuery = true)
-    int getDistinctBehavioralEvaluationsCount(@Param("classid") long classId);
+            """, nativeQuery = true)
+    int getBehavioralEvaluationQuestionnairesCount(@Param("classid") long classId);
 }
