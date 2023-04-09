@@ -1181,6 +1181,8 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluationLevelId").toString()));
     }
 
-
-
+    @Override
+    public int getBehavioralEvaluationQuestionnairesCount(long classId) {
+        return evaluationDAO.getBehavioralEvaluationQuestionnairesCount(classId);
+    }
 }

@@ -96,4 +96,6 @@ public interface IEvaluationService {
     ViewActivePersonnel findPersonnelByPersonnelNo(String personnelId);
 
     boolean changeStatus(List<Evaluation> list);
+
+    int getBehavioralEvaluationQuestionnairesCount(long classId);
 }
