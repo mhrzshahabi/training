@@ -4,6 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
 import com.nicico.training.service.EvaluationAnalysisService;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -31,6 +33,7 @@ public class EvaluationAnalysisFormController {
     private final EvaluationAnalysisService evaluationAnalysisService;
     private final IEvaluationService evaluationService;
     private final ParameterService parameterService;
+    private final IQuestionnaireQuestionService questionnaireQuestionService;
 
     @RequestMapping("/show-form")
     public String showForm() {
@@ -282,11 +285,12 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "suggestions") String suggestions,
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
-        int questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(ClassId);
+        List<Long> questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(ClassId);
 
-        if (questionnairesCount == 1) {
-            evaluationAnalysisService.printForCourseWithSingleQuestionnaire(response, type, fileName, ClassId, Params, suggestions, opinion);
-        } else if (questionnairesCount > 1) {
+        if (questionnairesCount.size() == 1) {
+            List<?> questions = questionnaireQuestionService.getQuestionsByQuestionnaireId(questionnairesCount.get(0));
+            evaluationAnalysisService.printForCourseWithSingleQuestionnaire(response, type, fileName, ClassId, Params, questions, suggestions, opinion);
+        } else if (questionnairesCount.size() > 1) {
             evaluationAnalysisService.printForCourseWithMultipleQuestionnaires(response, type, fileName, ClassId, Params, suggestions, opinion);
         }
     }

@@ -223,19 +223,14 @@ WHERE
 
 
     @Query(value = """
-            SELECT
-                COUNT(*)
+            SELECT DISTINCT
+                tbl_evaluation.f_questionnaire_id
             FROM
-                (
-                    SELECT DISTINCT
-                        tbl_evaluation.f_questionnaire_id
-                    FROM
-                        tbl_evaluation
-                        INNER JOIN tbl_parameter_value ON tbl_evaluation.f_evaluation_level_id = tbl_parameter_value.id
-                    WHERE
-                        tbl_parameter_value.c_code = 'Behavioral'
-                        AND tbl_evaluation.f_class_id = :classid
-                )
+                tbl_evaluation
+                INNER JOIN tbl_parameter_value ON tbl_evaluation.f_evaluation_level_id = tbl_parameter_value.id
+            WHERE
+                tbl_parameter_value.c_code = 'Behavioral'
+                AND tbl_evaluation.f_class_id = :classid            
             """, nativeQuery = true)
-    int getBehavioralEvaluationQuestionnairesCount(@Param("classid") long classId);
+    List<Long> getBehavioralEvaluationQuestionnairesCount(@Param("classid") long classId);
 }

@@ -460,8 +460,131 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public void printForCourseWithSingleQuestionnaire(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+    public void printForCourseWithSingleQuestionnaire(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, List<?> questions, String suggestions, String opinion) throws Exception {
+        Optional<Tclass> byId = tclassDAO.findById(classId);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
+        List<Map> studentsList = new ArrayList();
+        for (ClassStudent student : tclass.getClassStudents()) {
+            Map<String, String> std = new HashMap<>();
+            std.put("studentFullName", student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            std.put("personnelCode", student.getStudent().getPersonnelNo());
+            studentsList.add(std);
+        }
+
+        EvaluationDTO.BehavioralResult result = evaluationService.getBehavioralEvaluationResult(classId);
+        List<Map> indicesList = new ArrayList();
+        List<Map> behavioralChart = new ArrayList();
+        int i = 1;
+
+        List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
+        if (editedGoalList != null && editedGoalList.size() != 0) {
+            for (ClassEvaluationGoals classEvaluationGoals : editedGoalList) {
+                if (classEvaluationGoals.getSkillId() != null) {
+                    Map<String, String> indice = new HashMap<>();
+                    indice.put("indicatorEx", classEvaluationGoals.getQuestion());
+                    indice.put("indicatorNo", "شاخص " + i);
+                    indicesList.add(indice);
+
+                    Map<String, Object> behavior = new HashMap<>();
+                    behavior.put("behaviorVal", result.getIndicesGrade().get("s" + classEvaluationGoals.getSkillId()));
+                    behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                    behavioralChart.add(behavior);
+
+                    i++;
+                }
+                if (classEvaluationGoals.getGoalId() != null) {
+                    Map<String, String> indice = new HashMap<>();
+                    indice.put("indicatorEx", classEvaluationGoals.getQuestion());
+                    indice.put("indicatorNo", "شاخص " + i);
+                    indicesList.add(indice);
+
+                    Map<String, Object> behavior = new HashMap<>();
+                    behavior.put("behaviorVal", result.getIndicesGrade().get("g" + classEvaluationGoals.getGoalId()));
+                    behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                    behavioralChart.add(behavior);
+
+                    i++;
+                }
+            }
+        } else {
+            for (Goal goal : tclass.getCourse().getGoalSet()) {
+                Map<String, String> indice = new HashMap<>();
+                indice.put("indicatorEx", goal.getTitleFa());
+                indice.put("indicatorNo", "شاخص " + i);
+                indicesList.add(indice);
+
+                Map<String, Object> behavior = new HashMap<>();
+                behavior.put("behaviorVal", result.getIndicesGrade().get("g" + goal.getId()));
+                behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                behavioralChart.add(behavior);
+
+                i++;
+            }
+            for (Skill skill : tclass.getCourse().getSkillSet()) {
+                Map<String, String> indice = new HashMap<>();
+                indice.put("indicatorEx", skill.getTitleFa());
+                indice.put("indicatorNo", "شاخص " + i);
+                indicesList.add(indice);
+
+                Map<String, Object> behavior = new HashMap<>();
+                behavior.put("behaviorVal", result.getIndicesGrade().get("s" + skill.getId()));
+                behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                behavioralChart.add(behavior);
+
+                i++;
+            }
+
+        }
+
+        for (Object question : questions) {
+            Map<String, String> questionnaireQuestions = new HashMap<>();
+            Object[] objects = (Object[]) question;
+            questionnaireQuestions.put("indicatorNo", objects[1] != null ? objects[1].toString() : "-");
+            questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
+            indicesList.add(questionnaireQuestions);
+        }
+
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+        params.put("today", DateUtil.todayDate());
+        params.put("course", tclass.getCourse().getTitleFa());
+        params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
+        params.put("criticisim", suggestions);
+        params.put("comment", opinion);
+        params.put("course_code", tclass.getCourse().getCode());
+        params.put("class_code", tclass.getCode());
+        params.put("report_header", "گزارش تغییر رفتار دوره ");
+        params.put("with_code", " با کد ");
+        params.put("and_class_code", " و کد کلاس ");
+        params.put(ConstantVARs.REPORT_TYPE, type);
+
+        List<Map> behavioralScoreChart = new ArrayList();
+        String[] classStudentsName = result.getClassStudentsName();
+        Double[] behavioralGrades = result.getBehavioralGrades();
+        for (int z = 0; z < result.getClassStudentsName().length; z++) {
+            Map<String, Object> behavior = new HashMap<>();
+            behavior.put("scoreVal", behavioralGrades[z]);
+            behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder(classStudentsName[z]));
+            behavioralScoreChart.add(behavior);
+        }
+
+        Map<String, Object> behavior = new HashMap<>();
+        behavior.put("scoreVal", result.getBehavioralGrade());
+        behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder("میانگین تغییر رفتار دوره"));
+        behavioralScoreChart.add(behavior);
+
+        String data = "";
+        data = "{" + "\"courseRegistered\": " + objectMapper.writeValueAsString(studentsList) + "," +
+               "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
+               "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
+               "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
+
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
     public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {

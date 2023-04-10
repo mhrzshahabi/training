@@ -24,4 +24,7 @@ public interface IQuestionnaireQuestionService {
     List<QuestionnaireQuestion> getEvaluationQuestion(Long l);
 
     QuestionnaireQuestion getById(Long QuestionnaireQuestionId);
+
+    List<?> getQuestionsByQuestionnaireId(Long questionnaireId);
+
 }

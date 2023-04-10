@@ -57,4 +57,9 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
     public QuestionnaireQuestion getById(Long QuestionnaireQuestionId) {
         return questionnaireQuestionDAO.getById(QuestionnaireQuestionId);
     }
+
+    @Override
+    public List<?> getQuestionsByQuestionnaireId(Long questionnaireId) {
+        return questionnaireQuestionDAO.getQuestionsByQuestionnaireId(questionnaireId);
+    }
 }

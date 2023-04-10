@@ -1182,7 +1182,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public int getBehavioralEvaluationQuestionnairesCount(long classId) {
+    public List<Long> getBehavioralEvaluationQuestionnairesCount(long classId) {
         return evaluationDAO.getBehavioralEvaluationQuestionnairesCount(classId);
     }
 }
