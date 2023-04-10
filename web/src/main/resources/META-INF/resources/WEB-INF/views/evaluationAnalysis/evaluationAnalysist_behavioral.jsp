@@ -136,6 +136,10 @@
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
             let allRecords = ListGrid_evaluation_behavioral_analysist.getData();
+            if (allRecords.totalRows === 0) {
+                createDialog("info", "فرم ارزیابی ای وجود ندارد.");
+                return;
+            }
             printBehaviorChangeReport(allRecords, "all");
         }
     });

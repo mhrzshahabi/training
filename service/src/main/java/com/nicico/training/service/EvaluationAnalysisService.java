@@ -339,7 +339,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public void printForCourseWithMultipleQuestionnaires(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+    public void printBehavioralAnalysisReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, List<?> questions, int questionnaireCount, String suggestions, String opinion) throws Exception {
         Optional<Tclass> byId = tclassDAO.findById(classId);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
@@ -416,6 +416,16 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         }
 
+        if (questionnaireCount == 1) {
+            for (Object question : questions) {
+                Map<String, String> questionnaireQuestions = new HashMap<>();
+                Object[] objects = (Object[]) question;
+                questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
+                questionnaireQuestions.put("indicatorNo", objects[1] != null ? objects[1].toString() : "-");
+                indicesList.add(questionnaireQuestions);
+            }
+        }
+
         final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
@@ -449,19 +459,13 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         String data = "";
         data = "{" + "\"courseRegistered\": " + objectMapper.writeValueAsString(studentsList) + "," +
-                "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
-                "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
-                "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
+               "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
+               "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
+               "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
 
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
-    }
-
-    @Transactional
-    @Override
-    public void printForCourseWithSingleQuestionnaire(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
-
     }
 
     public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {

@@ -97,5 +97,5 @@ public interface IEvaluationService {
 
     boolean changeStatus(List<Evaluation> list);
 
-    int getBehavioralEvaluationQuestionnairesCount(long classId);
+    List<Long> getBehavioralEvaluationQuestionnairesCount(long classId);
 }
