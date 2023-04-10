@@ -286,13 +286,8 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
         List<Long> questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(ClassId);
-
-        if (questionnairesCount.size() == 1) {
-            List<?> questions = questionnaireQuestionService.getQuestionsByQuestionnaireId(questionnairesCount.get(0));
-            evaluationAnalysisService.printForCourseWithSingleQuestionnaire(response, type, fileName, ClassId, Params, questions, suggestions, opinion);
-        } else if (questionnairesCount.size() > 1) {
-            evaluationAnalysisService.printForCourseWithMultipleQuestionnaires(response, type, fileName, ClassId, Params, suggestions, opinion);
-        }
+        List<?> questions = questionnaireQuestionService.getQuestionsByQuestionnaireId(questionnairesCount.get(0));
+        evaluationAnalysisService.printBehavioralAnalysisReport(response, type, fileName, ClassId, Params, questions, questionnairesCount.size(), suggestions, opinion);
     }
 
     @PostMapping(value = {"/printBehavioralChangeReport"})
