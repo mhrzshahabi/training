@@ -2144,132 +2144,153 @@
     }
 
     function Student_Reaction_Form_Inssurance_All_RE(classAttendanceStatus) {
-        let check = false;
+        let checkAll = false;
+        let checkPresents = false;
         for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
             let record = ListGrid_student_RE.getData().localData[j];
-            if (record.evaluationStatusReaction == null
-                || record.evaluationStatusReaction == 0
-                || record.evaluationStatusReaction == undefined) {
-                check = true;
+            if (classAttendanceStatus === "all") {
+                if (record.evaluationStatusReaction == null
+                    || record.evaluationStatusReaction == 0
+                    || record.evaluationStatusReaction == undefined) {
+                    checkAll = true;
+                }
             }
+            if (classAttendanceStatus === "present" && record.classAttendanceStatus === true) {
+                if (record.evaluationStatusReaction == null
+                    || record.evaluationStatusReaction == 0
+                    || record.evaluationStatusReaction == undefined) {
+                    checkPresents = true;
+                }
+            }
+
         }
-        if (check) {
-            let titr = isc.HTMLFlow.create({
-                align: "center",
-                border: "1px solid black",
-                width: "25%"
-            });
-            titr.contents = "";
-            let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
-                title: "صدور/ارسال به کارتابل",
-                width: 150,
-                click: function () {
-                    if (ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined) {
-                        createDialog("info", "پرسشنامه ای انتخاب نشده است.");
-                    } else {
-                        let stdIds = new Array();
-                        Window_SelectQuestionnarie_RE.close();
-                        for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
-                            let record = ListGrid_student_RE.getData().localData[j];
-                            if (record.evaluationStatusReaction == null
-                                || record.evaluationStatusReaction == 0
-                                || record.evaluationStatusReaction == undefined) {
-                                if (classAttendanceStatus === "all") {
+        if (classAttendanceStatus === "present" && checkAnyPresentStudentExists() === false) {
+            createDialog("info", "فراگیر حاضری در این کلاس وجود ندارد");
+            // evalWait_RE.close();
+            return;
+        }
+        if (classAttendanceStatus === "all" && !checkAll) {
+            createDialog("info", "برای تمام فراگیران کلاس فرم ارزیابی واکنشی صادر شده است.");
+            // evalWait_RE.close();
+            return;
+        }
+        if (classAttendanceStatus === "present" && !checkPresents) {
+            createDialog("info", "برای تمام فراگیران حاضر کلاس فرم ارزیابی واکنشی صادر شده است.");
+            // evalWait_RE.close();
+            return;
+        }
+
+        let titr = isc.HTMLFlow.create({
+            align: "center",
+            border: "1px solid black",
+            width: "25%"
+        });
+        titr.contents = "";
+        let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
+            title: "صدور/ارسال به کارتابل",
+            width: 150,
+            click: function () {
+                if (ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined) {
+                    createDialog("info", "پرسشنامه ای انتخاب نشده است.");
+                } else {
+                    let stdIds = new Array();
+                    Window_SelectQuestionnarie_RE.close();
+                    for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
+                        let record = ListGrid_student_RE.getData().localData[j];
+                        if (record.evaluationStatusReaction == null
+                            || record.evaluationStatusReaction == 0
+                            || record.evaluationStatusReaction == undefined) {
+                            if (classAttendanceStatus === "all") {
+                                stdIds.push(record.id);
+                            } else if (classAttendanceStatus === "present") {
+                                if (record.classAttendanceStatus) {
                                     stdIds.push(record.id);
-                                } else if (classAttendanceStatus === "present") {
-                                    if (record.classAttendanceStatus) {
-                                        stdIds.push(record.id);
-                                    }
                                 }
                             }
                         }
-                        create_multiple_evaluation_form_RE(null, ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, stdIds, 188, classRecord_RE.id, 504, 139, 154, check)
                     }
+                    create_multiple_evaluation_form_RE(null, ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, stdIds, 188, classRecord_RE.id, 504, 139, 154, checkAll)
                 }
-            });
-            let RestDataSource_Questionnarie_RE = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {
-                        name: "title",
-                        title: "<spring:message code="title"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {name: "questionnaireTypeId", hidden: true},
-                    {
-                        name: "questionnaireType.title",
-                        title: "<spring:message code="type"/>",
-                        required: true,
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
-                ],
-                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
-            });
-            let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
-                width: "100%",
-                dataSource: RestDataSource_Questionnarie_RE,
-                selectionType: "single",
-                selectionAppearance: "checkbox",
-                fields: [{name: "title"}, {name: "questionnaireType.title"}, {name: "description"}, {
-                    name: "id",
-                    hidden: true
-                }]
-            });
-            let Window_SelectQuestionnarie_RE = isc.Window.create({
-                width: 1024,
-                placement: "fillScreen",
-                keepInParentRect: true,
-                title: "انتخاب پرسشنامه",
-                items: [
-                    isc.HLayout.create({
-                        width: "100%",
-                        height: "80%",
-                        members: [ListGrid_SelectQuestionnarie_RE]
-                    }),
-                    isc.TrHLayoutButtons.create({
-                        width: "100%",
-                        height: "5%",
-                        members: [
-                            titr
-                        ]
-                    }),
-                    isc.TrHLayoutButtons.create({
-                        width: "100%",
-                        height: "5%",
-                        members: [
-                            IButtonSave_SelectQuestionnarie_RE,
+            }
+        });
+        let RestDataSource_Questionnarie_RE = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "title",
+                    title: "<spring:message code="title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "questionnaireTypeId", hidden: true},
+                {
+                    name: "questionnaireType.title",
+                    title: "<spring:message code="type"/>",
+                    required: true,
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            ],
+            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
+        });
+        let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
+            width: "100%",
+            dataSource: RestDataSource_Questionnarie_RE,
+            selectionType: "single",
+            selectionAppearance: "checkbox",
+            fields: [{name: "title"}, {name: "questionnaireType.title"}, {name: "description"}, {
+                name: "id",
+                hidden: true
+            }]
+        });
+        let Window_SelectQuestionnarie_RE = isc.Window.create({
+            width: 1024,
+            placement: "fillScreen",
+            keepInParentRect: true,
+            title: "انتخاب پرسشنامه",
+            items: [
+                isc.HLayout.create({
+                    width: "100%",
+                    height: "80%",
+                    members: [ListGrid_SelectQuestionnarie_RE]
+                }),
+                isc.TrHLayoutButtons.create({
+                    width: "100%",
+                    height: "5%",
+                    members: [
+                        titr
+                    ]
+                }),
+                isc.TrHLayoutButtons.create({
+                    width: "100%",
+                    height: "5%",
+                    members: [
+                        IButtonSave_SelectQuestionnarie_RE,
 
-                            isc.IButtonCancel.create({
-                                click: function () {
-                                    Window_SelectQuestionnarie_RE.close();
-                                }
-                            })
-                        ]
-                    })
-                ],
-                minWidth: 1024
-            });
-            let criteria = {
-                _constructor: "AdvancedCriteria",
-                operator: "and",
-                criteria: [
-                    {fieldName: "enabled", operator: "isNull"},
-                    {fieldName: "questionnaireTypeId", operator: "equals", value: 139}
-                ]
-            };
-            ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
-            ListGrid_SelectQuestionnarie_RE.invalidateCache();
-            Window_SelectQuestionnarie_RE.show();
-            titr.contents = "<span style='color:rgba(199,23,15,0.91); font-size:13px;'>" + "کاربر گرامی در صورتی که قبلا فرم ارزیابی واکنشی برای این کلاس صادر شده باشد، فقط پرسشنامه ی منتخب  قبلی در اینجا به شما نشان داده می شود، در صورتی که پرسشنامه ای مشاهده نمیکنید، فعال و غیرفعال بودن پرسشنامه ها را چک کنید." + "</span>";
-            titr.redraw();
-        }
-        else{
-            createDialog("info", "برای تمام فراگیران کلاس فرم ارزیابی واکنشی صادر شده است.");
-            evalWait_RE.close();
-        }
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_SelectQuestionnarie_RE.close();
+                            }
+                        })
+                    ]
+                })
+            ],
+            minWidth: 1024
+        });
+        let criteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "enabled", operator: "isNull"},
+                {fieldName: "questionnaireTypeId", operator: "equals", value: 139}
+            ]
+        };
+        ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
+        ListGrid_SelectQuestionnarie_RE.invalidateCache();
+        Window_SelectQuestionnarie_RE.show();
+        titr.contents = "<span style='color:rgba(199,23,15,0.91); font-size:13px;'>" + "کاربر گرامی در صورتی که قبلا فرم ارزیابی واکنشی برای این کلاس صادر شده باشد، فقط پرسشنامه ی منتخب  قبلی در اینجا به شما نشان داده می شود، در صورتی که پرسشنامه ای مشاهده نمیکنید، فعال و غیرفعال بودن پرسشنامه ها را چک کنید." + "</span>";
+        titr.redraw();
     }
 
     function register_Student_Reaction_Form_RE(StdRecord) {
@@ -3706,6 +3727,17 @@
             ]
         });
         Window_Eval_Answer_History.show();
+    }
+
+    function checkAnyPresentStudentExists() {
+        let cnt = 0;
+        let student = ListGrid_student_RE.getData().localData;
+        for (let i = 0; i < student.length; i++) {
+            if (student[i].classAttendanceStatus === true) {
+                cnt++;
+            }
+        }
+        return cnt > 0;
     }
 
 // </script>
