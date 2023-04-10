@@ -1294,7 +1294,6 @@
                             let result = JSON.parse(resp.httpResponseText).response.data;
                             description = result[0].description;
                             evaluationId = result[0].evaluationId;
-                            debugger
                             for(let i=0;i<result.size();i++){
                                 let item = {};
                                 if(result[i].questionSourceId === 199){
