@@ -15,6 +15,7 @@ import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.ClassEvaluationGoalsDAO;
@@ -46,6 +47,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
     private final IEvaluationService evaluationService;
+    private final IQuestionnaireQuestionService questionnaireQuestionService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ClassStudentDAO classStudentDAO;
@@ -339,7 +341,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public void printBehavioralAnalysisReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, List<?> questions, int questionnaireCount, String suggestions, String opinion) throws Exception {
+    public void printBehavioralAnalysisReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
         Optional<Tclass> byId = tclassDAO.findById(classId);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
@@ -416,13 +418,26 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         }
 
-        if (questionnaireCount == 1) {
+        List<Long> questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(classId);
+        List<?> questions = questionnaireQuestionService.getQuestionsByQuestionnaireId(questionnairesCount.get(0));
+
+        if (questionnairesCount.size() == 1) {
             for (Object question : questions) {
                 Map<String, String> questionnaireQuestions = new HashMap<>();
                 Object[] objects = (Object[]) question;
                 questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
-                questionnaireQuestions.put("indicatorNo", objects[1] != null ? objects[1].toString() : "-");
+                questionnaireQuestions.put("indicatorNo", String.format("شاخص %s (%s)", i, objects[1] != null ? objects[1].toString() : "-"));
                 indicesList.add(questionnaireQuestions);
+            }
+
+            Map<String, Double> questionGrade = result.getQuestionGrade();
+            if (!questionGrade.isEmpty()) {
+                for (String questionTitle : questionGrade.keySet()) {
+                    Map<String, Object> qg = new HashMap<>();
+                    qg.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                    qg.put("behaviorVal", questionGrade.get(questionTitle));
+                    behavioralChart.add(qg);
+                }
             }
         }
 

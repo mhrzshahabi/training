@@ -192,5 +192,6 @@ public class EvaluationDTO implements Serializable {
         private Double behavioralGrade;
         private Boolean behavioralPass;
         private Map<String, Double> indicesGrade;
+        private Map<String, Double> questionGrade;
     }
 }

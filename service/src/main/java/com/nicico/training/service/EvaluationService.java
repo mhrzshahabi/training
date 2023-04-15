@@ -860,8 +860,9 @@ public class EvaluationService implements IEvaluationService {
             evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
             evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
             evaluationAnswerFullData.setDescription(evaluation.getDescription());
+            evaluationAnswerFullData.setQuestionnaireTypeId(evaluation.getQuestionnaireTypeId());
 
-            if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
+            if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) { // پرسشنامه
                 Optional<QuestionnaireQuestion> optionalQuestionnaireQuestion = questionnaireQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getOrder).orElse(null));
                 evaluationAnswerFullData.setWeight(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getWeight).orElse(null));
@@ -874,7 +875,7 @@ public class EvaluationService implements IEvaluationService {
                     evaluationAnswerFullData.setDomainId(null);
 
                 }
-            } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
+            } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) { // اهداف اصلی - اهداف جزیی
                 Optional<DynamicQuestion> optionalDynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(optionalDynamicQuestion.map(DynamicQuestion::getOrder).orElse(null));
                 evaluationAnswerFullData.setWeight(optionalDynamicQuestion.map(DynamicQuestion::getWeight).orElse(null));
@@ -916,6 +917,7 @@ public class EvaluationService implements IEvaluationService {
 
         Map<String, Integer> indicesTotalWeight = new HashMap<>();
         Map<String, Double> indicesGrade = new HashMap<>();
+        Map<String, Double> questionGrade = new HashMap<>();
 
         List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
         if (editedGoalList != null && editedGoalList.size() != 0) {
@@ -945,10 +947,10 @@ public class EvaluationService implements IEvaluationService {
         for (ClassStudent classStudent : tclass.getClassStudents()) {
             List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
                     classId,
-                    156L,
-                    230L,
+                    156L,    // رفتاری
+                    230L, // ارزیابی دیگری از فراگیر
                     classStudent.getId(),
-                    188L,
+                    188L,    // فراگیر
                     true);
             studentGrade[index] = 0.0;
             supervisorGrade[index] = 0.0;
@@ -989,27 +991,33 @@ public class EvaluationService implements IEvaluationService {
                             else
                                 index1++;
                             res += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight();
+                            if (re.getQuestionSourceId() != null && re.getQuestionSourceId() == 199) { // پرسشنامه
+                                questionGrade.put(
+                                        parameterValueDAO.findFirstById(re.getQuestionnaireTypeId()).getTitle(),
+                                        (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight()
+                                );
+                            }
                         }
                     }
                 }
                 if (index1 != 0)
                     res = res / index1;
-                if (evaluation.getEvaluatorTypeId().equals(189L)) {
+                if (evaluation.getEvaluatorTypeId().equals(189L)) { // همکار
                     coWorkersGradeNum++;
                     coWorkersGradeMeanNum++;
                     coWorkersGradeMean += res;
                     coWorkersGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(190L)) {
+                } else if (evaluation.getEvaluatorTypeId().equals(190L)) { // سرپرست
                     supervisorGradeNum++;
                     supervisorGradeMeanNum++;
                     supervisorGradeMean += res;
                     supervisorGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(188L)) {
+                } else if (evaluation.getEvaluatorTypeId().equals(188L)) { // فراگیر
                     studentGradeNum++;
                     studentGradeMeanNum++;
                     studentGradeMean += res;
                     studentGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(454L)) {
+                } else if (evaluation.getEvaluatorTypeId().equals(454L)) { // نماینده آموزش
                     trainingGradeNum++;
                     trainingGradeMeanNum++;
                     trainingGradeMean += res;
@@ -1077,6 +1085,7 @@ public class EvaluationService implements IEvaluationService {
         evaluationResult.setSupervisorGrade(supervisorGrade);
         evaluationResult.setTrainingGrade(trainingGrade);
         evaluationResult.setBehavioralGrades(behavioralGrades);
+        evaluationResult.setQuestionGrade(questionGrade);
 
         evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
         evaluationResult.setTrainingGradeMean(trainingGradeMean);
