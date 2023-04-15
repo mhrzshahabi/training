@@ -542,6 +542,7 @@
                         valueField: "id",
                         displayField: "title",
                         changed: function (form, item, value) {
+                            personnel_listGrid_fetch_Type.getItem("personnelLGFetchTypeRadioGroup").setValue("0");
                             if(value == 190){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
@@ -605,6 +606,104 @@
                     },
                 ],
             });
+            let personnel_listGrid_fetch_Type = isc.DynamicForm.create({
+                numCols: 4,
+                padding: 5,
+                titleAlign: "left",
+                styleName: "teacher-form",
+                colWidths: ["10%", "10%", "5%", "75%"],
+                fields: [
+                    {
+                        name: "personnelLGFetchTypeRadioGroup",
+                        showTitle: false,
+                        type: "radioGroup",
+                        width: 700,
+                        autoFit: true,
+                        valueMap: {
+                            0: "برپایه اطلاعات منابع انسانی",
+                            1: "انتخاب دستی",
+                        },
+                        vertical: false,
+                        defaultValue: 0,
+                        changed: function (form, item, value) {
+                            if (value === "0") {
+                                if((evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined) && evaluation_Audience_Type.getValue("audiencePost") == 188){
+                                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
+                                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                        if(resp.data.size() === 0){
+                                            EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                            EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                            EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                            EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                        }
+                                    });
+                                }
+                                else if (EvaluationListGrid_PeronalLIst_BE.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
+                                    if(evaluation_Audience_Type.getValue("audiencePost") == 190)
+                                    {
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                            if(resp.data.size() == 0){
+                                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                            }
+                                        });
+                                    }
+                                    else if(evaluation_Audience_Type.getValue("audiencePost") == 189)
+                                    {
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                            if(resp.data.size() == 0){
+                                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                            }
+                                        });
+                                    }
+                                    else if(evaluation_Audience_Type.getValue("audiencePost") == 454)
+                                    {
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                            if(resp.data.size() == 0){
+                                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                            }
+                                        });
+                                    }
+                                    else if(evaluation_Audience_Type.getValue("audiencePost") == 814)
+                                    {
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                }
+
+                            }
+                            if (value === "1") {
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                            }
+
+                        }
+                    }
+                ]
+            });
             let Buttons_List_HLayout = isc.HLayout.create({
                 width: "100%",
                 height: "30px",
@@ -664,6 +763,7 @@
                 autoDraw: false,
                 members: [
                     evaluation_Audience_Type,
+                    personnel_listGrid_fetch_Type,
                     EvaluationListGrid_PeronalLIst_BE,
                     Buttons_List_HLayout
                 ]
