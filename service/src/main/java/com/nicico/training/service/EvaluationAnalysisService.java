@@ -425,62 +425,67 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             for (Object question : questions) {
                 Map<String, String> questionnaireQuestions = new HashMap<>();
                 Object[] objects = (Object[]) question;
+                String indicatorNo = "شاخص " + (indicesList.size() + 1) + "(" + (objects[1] != null ? objects[1].toString() : "-") + ")";
+                questionnaireQuestions.put("indicatorNo", indicatorNo);
                 questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
-                questionnaireQuestions.put("indicatorNo", String.format("شاخص %s (%s)", i, objects[1] != null ? objects[1].toString() : "-"));
                 indicesList.add(questionnaireQuestions);
-            }
 
-            Map<String, Double> questionGrade = result.getQuestionGrade();
-            if (!questionGrade.isEmpty()) {
-                for (String questionTitle : questionGrade.keySet()) {
-                    Map<String, Object> qg = new HashMap<>();
-                    qg.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
-                    qg.put("behaviorVal", questionGrade.get(questionTitle));
-                    behavioralChart.add(qg);
+                Map<String, Object> behavior = new HashMap<>();
+                behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                behavior.put("behaviorVal", 0);
+                behavioralChart.add(behavior);
+
+                if (!result.getQuestionGrades().isEmpty()) {
+                    for (Map<String, Object> questionGrade : result.getQuestionGrades()) {
+                        if (objects[0] != null && questionGrade.get("question").equals(objects[0])) {
+                            behavior.replace("behaviorVal", questionGrade.get("grade"));
+                        }
+                    }
                 }
+                i++;
             }
-        }
 
-        final Gson gson = new Gson();
-        Type resultType = new TypeToken<HashMap<String, Object>>() {
-        }.getType();
-        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
-        params.put("today", DateUtil.todayDate());
-        params.put("course", tclass.getCourse().getTitleFa());
-        params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
-        params.put("criticisim", suggestions);
-        params.put("comment", opinion);
-        params.put("course_code", tclass.getCourse().getCode());
-        params.put("class_code", tclass.getCode());
-        params.put("report_header", "گزارش تغییر رفتار دوره ");
-        params.put("with_code", " با کد ");
-        params.put("and_class_code", " و کد کلاس ");
-        params.put(ConstantVARs.REPORT_TYPE, type);
+            final Gson gson = new Gson();
+            Type resultType = new TypeToken<HashMap<String, Object>>() {
+            }.getType();
+            final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+            params.put("today", DateUtil.todayDate());
+            params.put("course", tclass.getCourse().getTitleFa());
+            params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
+            params.put("criticisim", suggestions);
+            params.put("comment", opinion);
+            params.put("course_code", tclass.getCourse().getCode());
+            params.put("class_code", tclass.getCode());
+            params.put("report_header", "گزارش تغییر رفتار دوره ");
+            params.put("with_code", " با کد ");
+            params.put("and_class_code", " و کد کلاس ");
+            params.put(ConstantVARs.REPORT_TYPE, type);
 
-        List<Map> behavioralScoreChart = new ArrayList();
-        String[] classStudentsName = result.getClassStudentsName();
-        Double[] behavioralGrades = result.getBehavioralGrades();
-        for (int z = 0; z < result.getClassStudentsName().length; z++) {
+            List<Map> behavioralScoreChart = new ArrayList();
+            String[] classStudentsName = result.getClassStudentsName();
+            Double[] behavioralGrades = result.getBehavioralGrades();
+            for (int z = 0; z < result.getClassStudentsName().length; z++) {
+                Map<String, Object> behavior = new HashMap<>();
+                behavior.put("scoreVal", behavioralGrades[z]);
+                behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder(classStudentsName[z]));
+                behavioralScoreChart.add(behavior);
+            }
+
             Map<String, Object> behavior = new HashMap<>();
-            behavior.put("scoreVal", behavioralGrades[z]);
-            behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder(classStudentsName[z]));
+            behavior.put("scoreVal", result.getBehavioralGrade());
+            behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder("میانگین تغییر رفتار دوره"));
             behavioralScoreChart.add(behavior);
+
+            String data = "";
+            data = "{" + "\"courseRegistered\": " + objectMapper.writeValueAsString(studentsList) + "," +
+                   "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
+                   "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
+                   "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
+
+            JsonDataSource jsonDataSource = null;
+            jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+            reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
         }
-
-        Map<String, Object> behavior = new HashMap<>();
-        behavior.put("scoreVal", result.getBehavioralGrade());
-        behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder("میانگین تغییر رفتار دوره"));
-        behavioralScoreChart.add(behavior);
-
-        String data = "";
-        data = "{" + "\"courseRegistered\": " + objectMapper.writeValueAsString(studentsList) + "," +
-               "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + "," +
-               "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + "," +
-               "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
-
-        JsonDataSource jsonDataSource = null;
-        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
     public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
