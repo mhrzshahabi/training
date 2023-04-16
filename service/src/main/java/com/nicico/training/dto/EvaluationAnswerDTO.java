@@ -88,6 +88,7 @@ public class EvaluationAnswerDTO implements Serializable {
         private Long evaluationId;
         private Long evaluationQuestionId;
         private Long questionSourceId;
+        private Long questionnaireTypeId;
         private Long answerId;
         private Integer order;
         private Integer weight;

@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -285,9 +284,7 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "suggestions") String suggestions,
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
-        List<Long> questionnairesCount = evaluationService.getBehavioralEvaluationQuestionnairesCount(ClassId);
-        List<?> questions = questionnaireQuestionService.getQuestionsByQuestionnaireId(questionnairesCount.get(0));
-        evaluationAnalysisService.printBehavioralAnalysisReport(response, type, fileName, ClassId, Params, questions, questionnairesCount.size(), suggestions, opinion);
+        evaluationAnalysisService.printBehavioralAnalysisReport(response, type, fileName, ClassId, Params, suggestions, opinion);
     }
 
     @PostMapping(value = {"/printBehavioralChangeReport"})
