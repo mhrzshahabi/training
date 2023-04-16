@@ -917,7 +917,7 @@ public class EvaluationService implements IEvaluationService {
 
         Map<String, Integer> indicesTotalWeight = new HashMap<>();
         Map<String, Double> indicesGrade = new HashMap<>();
-        Map<String, Double> questionGrade = new HashMap<>();
+        List<Map<String, Object>> questionGrades = new ArrayList<>();
 
         List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
         if (editedGoalList != null && editedGoalList.size() != 0) {
@@ -991,11 +991,14 @@ public class EvaluationService implements IEvaluationService {
                             else
                                 index1++;
                             res += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight();
-                            if (re.getQuestionSourceId() != null && re.getQuestionSourceId() == 199) { // پرسشنامه
-                                questionGrade.put(
-                                        parameterValueDAO.findFirstById(re.getQuestionnaireTypeId()).getTitle(),
-                                        (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight()
-                                );
+                            if (re.getQuestionSourceId() != null && re.getQuestionSourceId().equals(199L)) { // پرسشنامه
+                                String type = parameterValueDAO.findFirstById(re.getQuestionnaireTypeId()).getTitle();
+                                double grade = (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight();
+                                Map<String, Object> questionGrade = new HashMap<>();
+                                questionGrade.put("type", type);
+                                questionGrade.put("question", re.getQuestion());
+                                questionGrade.put("grade", grade);
+                                questionGrades.add(questionGrade);
                             }
                         }
                     }
@@ -1085,7 +1088,7 @@ public class EvaluationService implements IEvaluationService {
         evaluationResult.setSupervisorGrade(supervisorGrade);
         evaluationResult.setTrainingGrade(trainingGrade);
         evaluationResult.setBehavioralGrades(behavioralGrades);
-        evaluationResult.setQuestionGrade(questionGrade);
+        evaluationResult.setQuestionGrades(questionGrades);
 
         evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
         evaluationResult.setTrainingGradeMean(trainingGradeMean);

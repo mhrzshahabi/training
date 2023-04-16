@@ -425,20 +425,24 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             for (Object question : questions) {
                 Map<String, String> questionnaireQuestions = new HashMap<>();
                 Object[] objects = (Object[]) question;
+                String indicatorNo = "شاخص " + (indicesList.size() + 1) + "(" + (objects[1] != null ? objects[1].toString() : "-") + ")";
+                questionnaireQuestions.put("indicatorNo", indicatorNo);
                 questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
-                questionnaireQuestions.put("indicatorNo", String.format("شاخص %s (%s)", i, objects[1] != null ? objects[1].toString() : "-"));
                 indicesList.add(questionnaireQuestions);
+
+                if (!result.getQuestionGrades().isEmpty()) {
+                    for (Map<String, Object> questionGrade : result.getQuestionGrades()) {
+                        if (objects[0] != null && questionGrade.get("question").equals(objects[0])) {
+                            Map<String, Object> behavior = new HashMap<>();
+                            behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                            behavior.put("behaviorVal", questionGrade.get("grade"));
+                            behavioralChart.add(behavior);
+                        }
+                    }
+                }
+                i++;
             }
 
-            Map<String, Double> questionGrade = result.getQuestionGrade();
-            if (!questionGrade.isEmpty()) {
-                for (String questionTitle : questionGrade.keySet()) {
-                    Map<String, Object> qg = new HashMap<>();
-                    qg.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
-                    qg.put("behaviorVal", questionGrade.get(questionTitle));
-                    behavioralChart.add(qg);
-                }
-            }
         }
 
         final Gson gson = new Gson();
