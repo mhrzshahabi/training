@@ -17,7 +17,7 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> list();
 
-    PersonnelDTO.Info get(Long id);
+    PersonnelDTO.Info get(Long id,Boolean callFromSynonymPersonnel);
 
     Personnel getPersonnel(Long id);
 

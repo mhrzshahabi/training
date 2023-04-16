@@ -7,6 +7,7 @@
 // <script>
     {
         var url = '';
+        var isSynonymSelected = false;
         let oPersonnelInformationDetails=null;
         // <<-------------------------------------- Create - ToolStripButton --------------------------------------
         {
@@ -756,11 +757,12 @@
                 }
 
                     if (tab.title === "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>") {
-
+                        isSynonymSelected=true
                         if (oPersonnelInformationDetails != null)
                         oPersonnelInformationDetails.PersonnelInfo_Tab.disableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_ContactInfo").first());
                 } else {
-                    if (oPersonnelInformationDetails != null)
+                        isSynonymSelected=false
+                        if (oPersonnelInformationDetails != null)
                         oPersonnelInformationDetails.PersonnelInfo_Tab.enableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_ContactInfo").first());
                 }
                 if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {

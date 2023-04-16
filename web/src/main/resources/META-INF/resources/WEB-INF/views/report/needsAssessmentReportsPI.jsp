@@ -1162,6 +1162,10 @@
         chartData_NABOP_PI.forEach(value1 => value1.duration=0);
         switch (reportType_NABOP_PI) {
             case "0":
+                let isSynonym=false
+                if (isSynonymSelected!==undefined && isSynonymSelected !== null ){
+                    isSynonym=isSynonymSelected
+                }
                 titleReportExcel="<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     selectedPerson_NABOP_PI.firstName+ " " + selectedPerson_NABOP_PI.lastName +
                     " <spring:message code='national.code'/> " + selectedPerson_NABOP_PI.nationalCode +
@@ -1170,7 +1174,7 @@
                     " <spring:message code='area'/> " + selectedPerson_NABOP_PI.ccpArea +
                     " <spring:message code='affairs'/> " + selectedPerson_NABOP_PI.ccpAffairs
 
-                CourseDS_NABOP_PI.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP_PI.id + "&personnelId=" + selectedPerson_NABOP_PI.id + "&objectType=Post";
+                CourseDS_NABOP_PI.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP_PI.id + "&personnelId=" + selectedPerson_NABOP_PI.id + "&objectType=Post&callFromSynonymPersonnel="+isSynonym;
                 DynamicForm_Title_NABOP_PI.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NABOP_PI.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP_PI.lastName, 2, "red", "b") +
                     " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP_PI.nationalCode, 2, "red", "b") +

@@ -97,7 +97,7 @@ public class CalenderCurrentTermRestController {
 
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list = null;
         if (postId != null && personnelId != null)
-            list = needsAssessmentReportsService.search(null, postId, "Post", personnelId);
+            list = needsAssessmentReportsService.search(null, postId, "Post", personnelId,null);
 
 
         if (list != null && list.getList().size() > 0) {
@@ -168,7 +168,7 @@ public class CalenderCurrentTermRestController {
 
         List<CalenderCurrentTermDTO.tclass> y = new ArrayList<>();//لیست کلاسهای فرد بر اساس دوره های ترم جاری
         List<ClassStudent> classStudents = null;//لیست کلاس هایی که فرد ثبت نام شده
-        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelId);//دوره های نیازسنجی
+        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelId,null);//دوره های نیازسنجی
         // totalPersonnelClass=tclassService.findAllPersonnelClass("2559979705");//کل کلاس های فرد
         Long count = list.getTotalCount();
         for (int i = 0; i < count; i++) {

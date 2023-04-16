@@ -1428,7 +1428,7 @@
                 break;
             case "2":
                 if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
-                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelId=" + selectedPerson_NABOP.id + "&objectType=TrainingPost";
+                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelId=" + selectedPerson_NABOP.id + "&objectType=TrainingPost&callFromSynonymPersonnel="+SynonymPersonnelSelected;
                     refreshLG_NABOP(CourseDS_NABOP);
                 }
                 let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");

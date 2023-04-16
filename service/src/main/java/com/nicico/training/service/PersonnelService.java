@@ -53,14 +53,16 @@ public class PersonnelService implements IPersonnelService {
 
     @Transactional(readOnly = true)
     @Override
-    public PersonnelDTO.Info get(Long id) {
-        Personnel personnel=getPersonnel(id);
-        if (personnel!=null)
-            return modelMapper.map(getPersonnel(id), PersonnelDTO.Info.class);
-        else {
+    public PersonnelDTO.Info get(Long id,Boolean callFromSynonymPersonnel) {
+        if (callFromSynonymPersonnel!=null && callFromSynonymPersonnel){
             SynonymPersonnel synonymPersonnel=getSynonymPersonnel(id);
             return modelMapper.map(synonymPersonnel, PersonnelDTO.Info.class);
-
+        }else {
+            Personnel personnel=getPersonnel(id);
+            if (personnel!=null)
+                return modelMapper.map(getPersonnel(id), PersonnelDTO.Info.class);
+            else
+                return null;
         }
     }
 

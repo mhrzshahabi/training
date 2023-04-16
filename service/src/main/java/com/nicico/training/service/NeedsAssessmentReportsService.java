@@ -68,8 +68,8 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     @Transactional(readOnly = true)
 //    @Override
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
-        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelId);
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId ,Boolean callFromSynonymPersonnel) {
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelId,callFromSynonymPersonnel);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
         rs.setList(needsAssessmentReportList);
@@ -81,7 +81,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     public SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchForGap(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
         List<NeedsAssessmentWithGapDTO.ReportInfo> needsAssessmentReportList = getCourseListForGap(objectId, objectType, personnelId);
         for (NeedsAssessmentWithGapDTO.ReportInfo  info: needsAssessmentReportList){
-            PersonnelDTO.Info student = personnelService.get(personnelId);
+            PersonnelDTO.Info student = personnelService.get(personnelId,null);
 
             if (info.getSkill()!=null && info.getSkill().getCourse()!=null && student!=null && student.getNationalCode()!=null){
                 String score =iScoresByCommitteeService.getScore(student.getNationalCode(),info.getSkill().getCourse().getId());
@@ -97,7 +97,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     @Transactional(readOnly = true)
     @Override
-    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId) {
+    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId, Boolean callFromSynonymPersonnel) {
 
         Long passedCodeId = parameterValueService.getId("Passed");
         Long notPassedCodeId = parameterValueService.getId("false");
@@ -107,7 +107,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         List<NeedsAssessmentReportsDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentReportsDTO.ReportInfo>>() {
         }.getType());
         if (personnelId != null && !mustPass.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.get(personnelId);
+            PersonnelDTO.Info student = personnelService.get(personnelId,callFromSynonymPersonnel);
             if (student == null) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
@@ -166,7 +166,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         List<NeedsAssessmentWithGapDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentWithGapDTO.ReportInfo>>() {
         }.getType());
         if (personnelId != null && !mustPass.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.get(personnelId);
+            PersonnelDTO.Info student = personnelService.get(personnelId,null);
             if (student == null) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
@@ -958,7 +958,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         Map<Long, ParameterValue> needsAssessmentPriorityParamMap = getLongParameterValueMap("NeedsAssessmentPriority");
 
         for (NeedAssessmentGroupJobPromotionDto dto : needAssessmentGroupJobPromotionDtos) {
-            List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(Long.valueOf(dto.getPostId()), "TrainingPost", Long.valueOf(dto.getPersonnelId()));
+            List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(Long.valueOf(dto.getPostId()), "TrainingPost", Long.valueOf(dto.getPersonnelId()),null);
             TrainingPost currentTrainingPost = trainingPostDAO.findById(Long.valueOf(dto.getPostId())).orElseThrow(trainingExceptionSupplier);
 
             Personnel personnel = personnelDAO.getById(Long.valueOf(dto.getPersonnelId()));

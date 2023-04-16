@@ -4,7 +4,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.NeedAssessmentGroupResult;
 import com.nicico.training.model.NeedsAssessment;
-import org.springframework.transaction.annotation.Transactional;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 
@@ -22,7 +21,7 @@ public interface INeedsAssessmentReportsService {
 
     List<NeedAssessmentGroupJobPromotionResponseDto.Info> getGroupJobPromotionListByUser(String userName);
 
-    List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId);
+    List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId, Boolean callFromSynonymPersonnel);
 
     List<NeedsAssessment> getNeedsAssessmentListForBpms(String postCode, String objectType);
 
@@ -36,6 +35,6 @@ public interface INeedsAssessmentReportsService {
     NAReportForLMSResponseDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
 
     SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq searchRq, Long courseId, Boolean passedReport);
-    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId);
+    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId,Boolean callFromSynonymPersonnel);
     SearchDTO.SearchRs<NeedsAssessmentWithGapDTO.ReportInfo> searchForGap(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId);
 }

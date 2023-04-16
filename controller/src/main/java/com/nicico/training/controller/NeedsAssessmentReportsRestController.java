@@ -7,20 +7,15 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.client.minio.MinIoClient;
 import com.nicico.training.dto.NeedAssessmentGroupJobPromotionResponse;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.NeedsAssessmentWithGapDTO;
 import com.nicico.training.iservice.IExportToFileService;
 import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.model.NeedAssessmentGroupResult;
-import com.nicico.training.service.NeedsAssessmentReportsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -32,7 +27,10 @@ import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -54,10 +52,11 @@ public class NeedsAssessmentReportsRestController {
                                    @RequestParam Long objectId,
                                    @RequestParam String objectType,
                                    @RequestParam(required = false) Long personnelId,
+                                   @RequestParam(required = false ) Boolean callFromSynonymPersonnel,
                                    HttpServletResponse response) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
-            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = iNeedsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId);
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = iNeedsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId,callFromSynonymPersonnel);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();
