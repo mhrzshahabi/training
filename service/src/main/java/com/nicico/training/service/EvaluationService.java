@@ -860,9 +860,8 @@ public class EvaluationService implements IEvaluationService {
             evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
             evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
             evaluationAnswerFullData.setDescription(evaluation.getDescription());
-            evaluationAnswerFullData.setQuestionnaireTypeId(evaluation.getQuestionnaireTypeId());
 
-            if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) { // پرسشنامه
+            if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
                 Optional<QuestionnaireQuestion> optionalQuestionnaireQuestion = questionnaireQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getOrder).orElse(null));
                 evaluationAnswerFullData.setWeight(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getWeight).orElse(null));
@@ -875,7 +874,7 @@ public class EvaluationService implements IEvaluationService {
                     evaluationAnswerFullData.setDomainId(null);
 
                 }
-            } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) { // اهداف اصلی - اهداف جزیی
+            } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
                 Optional<DynamicQuestion> optionalDynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(optionalDynamicQuestion.map(DynamicQuestion::getOrder).orElse(null));
                 evaluationAnswerFullData.setWeight(optionalDynamicQuestion.map(DynamicQuestion::getWeight).orElse(null));
@@ -917,7 +916,6 @@ public class EvaluationService implements IEvaluationService {
 
         Map<String, Integer> indicesTotalWeight = new HashMap<>();
         Map<String, Double> indicesGrade = new HashMap<>();
-        List<Map<String, Object>> questionGrades = new ArrayList<>();
 
         List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
         if (editedGoalList != null && editedGoalList.size() != 0) {
@@ -947,10 +945,10 @@ public class EvaluationService implements IEvaluationService {
         for (ClassStudent classStudent : tclass.getClassStudents()) {
             List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
                     classId,
-                    156L,    // رفتاری
-                    230L, // ارزیابی دیگری از فراگیر
+                    156L,
+                    230L,
                     classStudent.getId(),
-                    188L,    // فراگیر
+                    188L,
                     true);
             studentGrade[index] = 0.0;
             supervisorGrade[index] = 0.0;
@@ -991,36 +989,27 @@ public class EvaluationService implements IEvaluationService {
                             else
                                 index1++;
                             res += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight();
-                            if (re.getQuestionSourceId() != null && re.getQuestionSourceId().equals(199L)) { // پرسشنامه
-                                String type = parameterValueDAO.findFirstById(re.getQuestionnaireTypeId()).getTitle();
-                                double grade = (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight();
-                                Map<String, Object> questionGrade = new HashMap<>();
-                                questionGrade.put("type", type);
-                                questionGrade.put("question", re.getQuestion());
-                                questionGrade.put("grade", grade);
-                                questionGrades.add(questionGrade);
-                            }
                         }
                     }
                 }
                 if (index1 != 0)
                     res = res / index1;
-                if (evaluation.getEvaluatorTypeId().equals(189L)) { // همکار
+                if (evaluation.getEvaluatorTypeId().equals(189L)) {
                     coWorkersGradeNum++;
                     coWorkersGradeMeanNum++;
                     coWorkersGradeMean += res;
                     coWorkersGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(190L)) { // سرپرست
+                } else if (evaluation.getEvaluatorTypeId().equals(190L)) {
                     supervisorGradeNum++;
                     supervisorGradeMeanNum++;
                     supervisorGradeMean += res;
                     supervisorGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(188L)) { // فراگیر
+                } else if (evaluation.getEvaluatorTypeId().equals(188L)) {
                     studentGradeNum++;
                     studentGradeMeanNum++;
                     studentGradeMean += res;
                     studentGrade[index] += res;
-                } else if (evaluation.getEvaluatorTypeId().equals(454L)) { // نماینده آموزش
+                } else if (evaluation.getEvaluatorTypeId().equals(454L)) {
                     trainingGradeNum++;
                     trainingGradeMeanNum++;
                     trainingGradeMean += res;
@@ -1088,7 +1077,6 @@ public class EvaluationService implements IEvaluationService {
         evaluationResult.setSupervisorGrade(supervisorGrade);
         evaluationResult.setTrainingGrade(trainingGrade);
         evaluationResult.setBehavioralGrades(behavioralGrades);
-        evaluationResult.setQuestionGrades(questionGrades);
 
         evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
         evaluationResult.setTrainingGradeMean(trainingGradeMean);
