@@ -444,7 +444,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 }
                 i++;
             }
-
+        }
             final Gson gson = new Gson();
             Type resultType = new TypeToken<HashMap<String, Object>>() {
             }.getType();
@@ -485,7 +485,6 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             JsonDataSource jsonDataSource = null;
             jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
             reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
-        }
     }
 
     public void printBehaviorChangeReport(HttpServletResponse response, String type, String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
