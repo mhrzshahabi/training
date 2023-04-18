@@ -8,6 +8,7 @@ import com.nicico.training.dto.DynamicQuestionDTO;
 import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IClassStudentService;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -16,6 +17,8 @@ import dto.evaluuation.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +46,13 @@ public class EvaluationService implements IEvaluationService {
     private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
     private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
+    private IClassStudentService classStudentService;
     private static final DecimalFormat df = new DecimalFormat("0.00");
+
+    @Autowired
+    public void setClassStudentService(@Lazy IClassStudentService classStudentService) {
+        this.classStudentService = classStudentService;
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -895,12 +904,14 @@ public class EvaluationService implements IEvaluationService {
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         EvaluationDTO.BehavioralResult evaluationResult = new EvaluationDTO.BehavioralResult();
 
-        Double[] studentGrade = new Double[tclass.getClassStudents().size()];
-        Double[] supervisorGrade = new Double[tclass.getClassStudents().size()];
-        Double[] trainingGrade = new Double[tclass.getClassStudents().size()];
-        Double[] coWorkersGrade = new Double[tclass.getClassStudents().size()];
-        Double[] behavioralGrades = new Double[tclass.getClassStudents().size()];
-        String[] classStudentsName = new String[tclass.getClassStudents().size()];
+        List<ClassStudent> presentClassStudents = tclass.getClassStudents()
+                .stream().filter(cs -> classStudentService.IsStudentAttendanceAllowable(cs.getId())).toList();
+        Double[] studentGrade = new Double[presentClassStudents.size()];
+        Double[] supervisorGrade = new Double[presentClassStudents.size()];
+        Double[] trainingGrade = new Double[presentClassStudents.size()];
+        Double[] coWorkersGrade = new Double[presentClassStudents.size()];
+        Double[] behavioralGrades = new Double[presentClassStudents.size()];
+        String[] classStudentsName = new String[presentClassStudents.size()];
 
         Double studentGradeMean = 0.0;
         Double supervisorGradeMean = 0.0;
@@ -942,12 +953,12 @@ public class EvaluationService implements IEvaluationService {
         }
 
         int index = 0;
-        for (ClassStudent classStudent : tclass.getClassStudents()) {
+        for (ClassStudent presentClassStudent : presentClassStudents) {
             List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
                     classId,
                     156L,
                     230L,
-                    classStudent.getId(),
+                    presentClassStudent.getId(),
                     188L,
                     true);
             studentGrade[index] = 0.0;
@@ -1024,7 +1035,7 @@ public class EvaluationService implements IEvaluationService {
                 trainingGrade[index] = trainingGrade[index] / trainingGradeNum;
             if (coWorkersGradeNum != 0)
                 coWorkersGrade[index] = coWorkersGrade[index] / coWorkersGradeNum;
-            classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
+            classStudentsName[index] = presentClassStudent.getStudent().getFirstName() + " " + presentClassStudent.getStudent().getLastName();
             index++;
         }
 
@@ -1067,7 +1078,7 @@ public class EvaluationService implements IEvaluationService {
         behavioralGrade = (coWorkersGradeMean * scoreEvaluationPartnersEB + trainingGradeMean * scoreEvaluationRTEB + supervisorGradeMean * z7 + studentGradeMean * z8) / 100;
         behavioralPass = behavioralGrade >= minScoreEB;
 
-        for (int i = 0; i < tclass.getClassStudents().size(); i++) {
+        for (int i = 0; i < presentClassStudents.size(); i++) {
             behavioralGrades[i] = (coWorkersGrade[i] * scoreEvaluationPartnersEB + studentGrade[i] * z8 + supervisorGrade[i] * z7 + trainingGrade[i] * scoreEvaluationRTEB) / 100;
         }
 
