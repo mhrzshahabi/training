@@ -429,6 +429,15 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 questionnaireQuestions.put("indicatorNo", indicatorNo);
                 questionnaireQuestions.put("indicatorEx", objects[0] != null ? objects[0].toString() : "-");
                 indicesList.add(questionnaireQuestions);
+
+
+                Map<String, Object> behavior = new HashMap<>();
+                Double data =  result.getIndicesGrade().get("e" + objects[0].toString().trim());
+                behavior.put("behaviorVal",data!= null ?data : 0.0);
+                behavior.put("behaviorCat", PersianCharachtersUnicode.bidiReorder("شاخص " + i));
+                behavioralChart.add(behavior);
+                i++;
+
             }
         }
         final Gson gson = new Gson();

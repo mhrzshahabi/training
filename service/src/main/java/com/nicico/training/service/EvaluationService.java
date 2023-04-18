@@ -994,6 +994,22 @@ public class EvaluationService implements IEvaluationService {
                                 indicesTotalWeight.replace("s" + dynamicQuestion.getSkillId(), indexOldVal + 1);
                             }
                         }
+                        try{
+                            if (re.getQuestionSourceId()!=null && re.getQuestionSourceId().equals(199L)){
+
+                                indicesGrade.putIfAbsent("e" + re.getQuestion().trim(), 0.0);
+                                indicesTotalWeight.putIfAbsent("e" + re.getQuestion().trim(), 0);
+                                double oldVal =  indicesGrade.get("e" + re.getQuestion().trim());
+                                indicesGrade.replace("e" + re.getQuestion().trim(), oldVal+ (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight());
+
+                                int indexOldVal = indicesTotalWeight.get("e" + re.getQuestion().trim());
+                                indicesTotalWeight.replace("e" + re.getQuestion().trim(), indexOldVal + 1);
+
+                            }
+                        }catch (Exception e){
+
+                        }
+
                         if (re.getAnswerId() != null) {
                             if (re.getWeight() != null)
                                 index1 += re.getWeight();
