@@ -1003,7 +1003,7 @@ public class EvaluationService implements IEvaluationService {
                                 indicesGrade.replace("e" + re.getQuestion().trim(), oldVal+ (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight());
 
                                 int indexOldVal = indicesTotalWeight.get("e" + re.getQuestion().trim());
-                                indicesTotalWeight.replace("e" + re.getQuestion().trim(), indexOldVal + 1);
+                                indicesTotalWeight.replace("e" + re.getQuestion().trim(), indexOldVal + re.getWeight());
 
                             }
                         }catch (Exception e){
