@@ -35,7 +35,7 @@ public class QuestionBankTestQuestionRestController {
     // ------------------------------
 
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "200") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -64,7 +64,7 @@ public class QuestionBankTestQuestionRestController {
     }
 
     @GetMapping(value = "{type}/{classId}/spec-list")
-    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> listForClass(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long classId, @PathVariable String type) throws IOException {
+    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> listForClass(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "200") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long classId, @PathVariable String type) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
