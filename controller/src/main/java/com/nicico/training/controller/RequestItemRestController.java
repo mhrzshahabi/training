@@ -181,6 +181,8 @@ public class RequestItemRestController {
                                                                      @RequestParam(value = "criteria", required = false) String criteria,
                                                                      @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
+        SearchDTO.CriteriaRq allCriteria=new SearchDTO.CriteriaRq();
+        List<SearchDTO.CriteriaRq> criteriaRqList =new ArrayList<>();
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
@@ -188,7 +190,7 @@ public class RequestItemRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-            searchRq.setCriteria(criteriaRq);
+            criteriaRqList.add(criteriaRq);
         }
 
         if (StringUtils.isNotEmpty(sortBy)) {
@@ -201,7 +203,10 @@ public class RequestItemRestController {
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(EOperator.notNull);
         criteriaRq.setFieldName("processInstanceId");
-        searchRq.setCriteria(criteriaRq);
+        criteriaRqList.add(criteriaRq);
+        allCriteria.setOperator(EOperator.and);
+        allCriteria.setCriteria(criteriaRqList);
+        searchRq.setCriteria(allCriteria);
 
         List<RequestItem> resultList = requestItemService.search(searchRq);
         List<RequestItemDTO.ReportInfo> result = requestItemBeanMapper.toRequestItemReportInfoDtoList(resultList);
