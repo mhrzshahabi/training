@@ -7,6 +7,7 @@ import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
+import dto.QRCodeDataDto;
 import dto.ScoringClassDto;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.transaction.annotation.Transactional;
@@ -250,4 +251,7 @@ public interface ITclassService {
     ActiveClassesDto getMyActiveClasses(String nationalCode, int page, int size, SearchDtoRequest search);
 
     byte[] getCertificationByQRCodeFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, ParseException;
+
+    QRCodeDataDto getCertificationDataByQRCodeFile(String nationalCode, Long classId);
 }
+

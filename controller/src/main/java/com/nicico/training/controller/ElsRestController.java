@@ -37,6 +37,7 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.repository.SynHrmViewFetchParentPostDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
+import dto.QRCodeDataDto;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.ElsExamCreateDTO;
 import dto.exam.ElsImportedExam;
@@ -3388,6 +3389,12 @@ public class ElsRestController {
     @GetMapping(value = "/classification-list/{subCategoryId}")
     public List<SubcategoryDTO.ClassificationList> classificationList(@PathVariable Long subCategoryId) {
         return subcategoryService.classificationList(subCategoryId);
+    }
+
+
+    @GetMapping("/student/certification/qr-code/data/{nationalCode}/{classId}")
+    public QRCodeDataDto getCertificationDataByQRCodeFile(HttpServletResponse response, @PathVariable String nationalCode, @PathVariable Long classId) throws JRException, IOException, ParseException {
+        return   tclassService.getCertificationDataByQRCodeFile(nationalCode, classId);
     }
 
 }

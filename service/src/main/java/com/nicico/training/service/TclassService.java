@@ -27,6 +27,7 @@ import com.nicico.training.repository.*;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import com.nicico.training.utility.persianDate.MyUtils;
+import dto.QRCodeDataDto;
 import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -3371,6 +3372,41 @@ public class TclassService implements ITclassService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params2, jsonDataSource);
             ByteArrayOutputStream byteArrayOutputStream = getByteArrayOutputStream(jasperPrint);
             return byteArrayOutputStream.toByteArray();
+        }
+    }
+
+    @Override
+    public QRCodeDataDto getCertificationDataByQRCodeFile(String nationalCode, Long classId)  {
+
+        List<?> data = tclassDAO.getCertificationConfirmation(nationalCode, classId);
+        QRCodeDataDto qrCodeDataDto=new QRCodeDataDto();
+        if (!data.isEmpty()) {
+            Object[] item = (Object[]) data.get(0);
+            String scoreStateId = item[0] != null ? item[0].toString() : "";
+            String score = item[1] != null ? item[1].toString() : "";
+            String scoreStatus =  "";
+            String firstName = item[2] != null ? item[2].toString() : "";
+            String lastName = item[3] != null ? item[3].toString() : "";
+
+            String course = item[4] != null ? item[4].toString() : "";
+
+
+            if (scoreStateId.equals("400") || scoreStateId.equals("401")) { // قبول با نمره یا قبول بدون نمره
+                scoreStatus="قبول";
+            } else {
+                scoreStatus="مردود";
+            }
+            Optional<Tclass> optionalTclass=tclassDAO.findById(classId);
+            qrCodeDataDto.setCourseCode(optionalTclass.isPresent() ? optionalTclass.get().getCode() : "");
+            qrCodeDataDto.setNationalCode(nationalCode);
+            qrCodeDataDto.setCourseTitle(course);
+            qrCodeDataDto.setLastName(lastName);
+            qrCodeDataDto.setName(firstName);
+            qrCodeDataDto.setScoreStatus(scoreStatus);
+            qrCodeDataDto.setScore(score);
+            return qrCodeDataDto;
+           } else {
+            return  null;
         }
     }
 
