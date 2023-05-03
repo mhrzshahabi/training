@@ -14,10 +14,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
-import com.nicico.training.iservice.IEvaluationService;
-import com.nicico.training.iservice.IParameterValueService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -38,6 +35,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -85,6 +83,9 @@ public class TclassService implements ITclassService {
 
 
     private final ModelMapper modelMapper;
+    @Lazy
+    @Autowired
+    private   IClassStudentService iClassStudentService;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
     private final TclassAuditDAO tclassAuditDAO;
@@ -796,6 +797,7 @@ public class TclassService implements ITclassService {
         Double minQus_ET = null;
         Double minScoreFECR = null;
         Set<ClassStudent> classStudents;
+        Set<ClassStudent> presentClassStudents;
         Long teacherId = null;
         Long classId = classId_l;
         Long trainingId = null;
@@ -810,9 +812,11 @@ public class TclassService implements ITclassService {
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
+        presentClassStudents=classStudents.stream().filter(cs -> iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).collect(Collectors.toSet());
         teacherId = tclass.getTeacherId();
         trainingId = tclass.getSupervisorId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ReactionEvaluationResult.class);
+        int  absentCount=classStudents.stream().filter(cs -> !iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).toList().size();
 
         Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
         if (reactionEvaluationResult.get("studentsGradeToTeacher") != null)
@@ -893,14 +897,15 @@ public class TclassService implements ITclassService {
         if (minScoreFECR != null)
             evaluationResult.setMinScoreFECR(minScoreFECR);
 
-        if (getNumberOfEmptyReactionEvaluationForms(classStudents) != null)
-            evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms(classStudents));
+        if (getNumberOfEmptyReactionEvaluationForms(presentClassStudents) != null)
+            evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms(presentClassStudents));
         if (getNumberOfFilledReactionEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms(classStudents));
         if (getNumberOfInCompletedReactionEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms(classStudents));
-        if (getPercenetOfFilledReactionEvaluationForms(classStudents) != null)
-            evaluationResult.setPercenetOfFilledReactionEvaluationForms(Double.parseDouble(numberFormat.format(getPercenetOfFilledReactionEvaluationForms(classStudents)).toString()));
+        if (getPercenetOfFilledReactionEvaluationForms(presentClassStudents) != null){
+            evaluationResult.setPercenetOfFilledReactionEvaluationForms(Double.parseDouble(numberFormat.format(getPercenetOfFilledReactionEvaluationForms(presentClassStudents)).toString()));
+        }
         if (getNumberOfExportedEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfExportedReactionEvaluationForms(getNumberOfExportedEvaluationForms(classStudents));
 
@@ -919,6 +924,8 @@ public class TclassService implements ITclassService {
             evaluationResult.setZ1(Double.parseDouble(FETGradeResult.get("z1").toString()));
         if (FETGradeResult.get("z2") != null)
             evaluationResult.setZ2(Double.parseDouble(FETGradeResult.get("z2").toString()));
+
+        evaluationResult.setNumberOfAbsentForm(absentCount);
         return evaluationResult;
     }
 

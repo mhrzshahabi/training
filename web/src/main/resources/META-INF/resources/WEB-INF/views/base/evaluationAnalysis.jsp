@@ -443,6 +443,7 @@
         filledFormsInfo += record.numberOfFilledReactionEvaluationForms + " - " +
             record.numberOfInCompletedReactionEvaluationForms+ "ناقص و " + numberOfCompletedReactionEvaluationForms + " کامل ";
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfAbsentForm").setValue(record.numberOfAbsentForm);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(record.numberOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);

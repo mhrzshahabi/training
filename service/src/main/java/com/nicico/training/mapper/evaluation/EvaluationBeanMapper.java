@@ -49,6 +49,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.PersianCharachtersUnicode.isEnglishWord;
 import static com.nicico.training.utility.persianDate.PersianDate.*;
 import static dto.exam.EQuestionType.*;
 
@@ -258,8 +259,8 @@ public abstract class EvaluationBeanMapper {
             String type = iParameterValueService.getInfo(evaluation.getEvaluationLevelId()).getCode();
             TotalResponse<ParameterValueDTO.Info> parameterValues = iParameterService.getByCode("ClassConfig");
             int deadLineDaysValue = Integer.parseInt(iParameterValueService.getInfoByCode("reactiveEvaluationDeadline").getValue());
-            boolean checkClassBasisDate=MyUtils.checkClassBasisDate(evaluation.getTclass().getEndDate(),parameterValues);
-            dto.setEvaluationExpired(MyUtils.isEvaluationExpired(evaluation.getTclass().getEndDate(), type,deadLineDaysValue) && checkClassBasisDate);
+            boolean checkClassBasisDate = MyUtils.checkClassBasisDate(evaluation.getTclass().getEndDate(), parameterValues);
+            dto.setEvaluationExpired(MyUtils.isEvaluationExpired(evaluation.getTclass().getEndDate(), type, deadLineDaysValue) && checkClassBasisDate);
 
             elsContactEvaluationDtos.add(dto);
 
@@ -613,7 +614,10 @@ public abstract class EvaluationBeanMapper {
                         ImportedQuestionOption option4 = new ImportedQuestionOption();
                         if (questionBank.getOption1() != null) {
                             option1.setTitle(questionBank.getOption1());
-                            option1.setLabel("الف");
+                            if (isEnglishWord(questionBank.getOption1()))
+                                option1.setLabel("a");
+                            else
+                                option1.setLabel("الف");
                             options.add(option1);
                             if (attachments != null && attachments.getOption1Files() != null)
                                 option1.setMapFiles(attachments.getOption1Files());
@@ -622,7 +626,10 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption2() != null) {
                             option2.setTitle(questionBank.getOption2());
-                            option2.setLabel("ب");
+                            if (isEnglishWord(questionBank.getOption2()))
+                                option2.setLabel("b");
+                            else
+                                option2.setLabel("ب");
                             options.add(option2);
                             if (attachments != null && attachments.getOption2Files() != null)
                                 option2.setMapFiles(attachments.getOption2Files());
@@ -630,7 +637,10 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption3() != null) {
                             option3.setTitle(questionBank.getOption3());
-                            option3.setLabel("ج");
+                            if (isEnglishWord(questionBank.getOption3()))
+                                option3.setLabel("c");
+                            else
+                                option3.setLabel("ج");
                             options.add(option3);
                             if (attachments != null && attachments.getOption3Files() != null)
                                 option3.setMapFiles(attachments.getOption3Files());
@@ -638,7 +648,10 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption4() != null) {
                             option4.setTitle(questionBank.getOption4());
-                            option4.setLabel("د");
+                            if (isEnglishWord(questionBank.getOption4()))
+                                option4.setLabel("d");
+                            else
+                                option4.setLabel("د");
                             options.add(option4);
                             if (attachments != null && attachments.getOption4Files() != null)
                                 option4.setMapFiles(attachments.getOption4Files());
@@ -769,7 +782,10 @@ public abstract class EvaluationBeanMapper {
                         ImportedQuestionOption option4 = new ImportedQuestionOption();
                         if (questionBank.getOption1() != null) {
                             option1.setTitle(questionBank.getOption1());
-                            option1.setLabel("الف");
+                            if (isEnglishWord(questionBank.getOption1()))
+                                option1.setLabel("a");
+                            else
+                                option1.setLabel("الف");
                             options.add(option1);
                             if (attachments != null && attachments.getOption1Files() != null)
                                 option1.setMapFiles(attachments.getOption1Files());
@@ -778,7 +794,11 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption2() != null) {
                             option2.setTitle(questionBank.getOption2());
-                            option2.setLabel("ب");
+                            if (isEnglishWord(questionBank.getOption2()))
+                                option2.setLabel("b");
+                            else
+                                option2.setLabel("ب");
+
                             options.add(option2);
                             if (attachments != null && attachments.getOption2Files() != null)
                                 option2.setMapFiles(attachments.getOption2Files());
@@ -786,7 +806,11 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption3() != null) {
                             option3.setTitle(questionBank.getOption3());
-                            option3.setLabel("ج");
+                            if (isEnglishWord(questionBank.getOption3()))
+                                option3.setLabel("c");
+                            else
+                                option3.setLabel("ج");
+
                             options.add(option3);
                             if (attachments != null && attachments.getOption3Files() != null)
                                 option3.setMapFiles(attachments.getOption3Files());
@@ -794,7 +818,11 @@ public abstract class EvaluationBeanMapper {
                         }
                         if (questionBank.getOption4() != null) {
                             option4.setTitle(questionBank.getOption4());
-                            option4.setLabel("د");
+                             if (isEnglishWord(questionBank.getOption4()))
+                                option4.setLabel("d");
+                            else
+                                option4.setLabel("د");
+
                             options.add(option4);
                             if (attachments != null && attachments.getOption4Files() != null)
                                 option4.setMapFiles(attachments.getOption4Files());
@@ -1933,9 +1961,9 @@ public abstract class EvaluationBeanMapper {
                 QuestionsDto questionsDto = new QuestionsDto();
                 questionsDto.setQuestion(question.getQuestion().getTitle());
                 questionsDto.setType(question.getQuestion().getType().getValue());
-                Optional<QuestionProtocol> q=iQuestionProtocolService.findOneByExamIdAndQuestionId(object.getExamItem().getId(),question.getQuestion().getId());
-                String score =(q.isPresent()) ? String.valueOf(q.get().getQuestionMark()==null ? "" : q.get().getQuestionMark()) : "";
-                String time =(q.isPresent()) ? String.valueOf(q.get().getTime()==null ? "" : q.get().getTime()/60) : "";
+                Optional<QuestionProtocol> q = iQuestionProtocolService.findOneByExamIdAndQuestionId(object.getExamItem().getId(), question.getQuestion().getId());
+                String score = (q.isPresent()) ? String.valueOf(q.get().getQuestionMark() == null ? "" : q.get().getQuestionMark()) : "";
+                String time = (q.isPresent()) ? String.valueOf(q.get().getTime() == null ? "" : q.get().getTime() / 60) : "";
                 questionsDto.setScore(score);
                 questionsDto.setTime(time);
                 questionsDto.setId(question.getQuestion().getId());
@@ -2249,7 +2277,10 @@ public abstract class EvaluationBeanMapper {
             ImportedQuestionOption option4 = new ImportedQuestionOption();
             if (groupQuestionBank.getOption1() != null) {
                 option1.setTitle(groupQuestionBank.getOption1());
-                option1.setLabel("الف");
+                if (isEnglishWord(groupQuestionBank.getOption1()))
+                    option1.setLabel("a");
+                else
+                    option1.setLabel("الف");
                 options.add(option1);
                 if (groupAttachments != null && groupAttachments.getOption1Files() != null)
                     option1.setMapFiles(groupAttachments.getOption1Files());
@@ -2258,7 +2289,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption2() != null) {
                 option2.setTitle(groupQuestionBank.getOption2());
-                option2.setLabel("ب");
+                if (isEnglishWord(groupQuestionBank.getOption2()))
+                    option2.setLabel("b");
+                else
+                    option2.setLabel("ب");
                 options.add(option2);
                 if (groupAttachments != null && groupAttachments.getOption2Files() != null)
                     option2.setMapFiles(groupAttachments.getOption2Files());
@@ -2266,7 +2300,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption3() != null) {
                 option3.setTitle(groupQuestionBank.getOption3());
-                option3.setLabel("ج");
+                if (isEnglishWord(groupQuestionBank.getOption3()))
+                    option3.setLabel("c");
+                else
+                    option3.setLabel("ج");
                 options.add(option3);
                 if (groupAttachments != null && groupAttachments.getOption3Files() != null)
                     option3.setMapFiles(groupAttachments.getOption3Files());
@@ -2274,7 +2311,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption4() != null) {
                 option4.setTitle(groupQuestionBank.getOption4());
-                option4.setLabel("د");
+                if (isEnglishWord(groupQuestionBank.getOption4()))
+                    option4.setLabel("d");
+                else
+                    option4.setLabel("د");
                 options.add(option4);
                 if (groupAttachments != null && groupAttachments.getOption4Files() != null)
                     option4.setMapFiles(groupAttachments.getOption4Files());
@@ -2377,7 +2417,10 @@ public abstract class EvaluationBeanMapper {
             ImportedQuestionOption option4 = new ImportedQuestionOption();
             if (groupQuestionBank.getOption1() != null) {
                 option1.setTitle(groupQuestionBank.getOption1());
-                option1.setLabel("الف");
+                if (isEnglishWord(groupQuestionBank.getOption1()))
+                    option1.setLabel("a");
+                else
+                    option1.setLabel("الف");
                 options.add(option1);
                 if (attachments != null && attachments.getOption1Files() != null)
                     option1.setMapFiles(attachments.getOption1Files());
@@ -2386,7 +2429,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption2() != null) {
                 option2.setTitle(groupQuestionBank.getOption2());
-                option2.setLabel("ب");
+                if (isEnglishWord(groupQuestionBank.getOption2()))
+                    option2.setLabel("b");
+                else
+                    option2.setLabel("ب");
                 options.add(option2);
                 if (attachments != null && attachments.getOption2Files() != null)
                     option2.setMapFiles(attachments.getOption2Files());
@@ -2394,7 +2440,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption3() != null) {
                 option3.setTitle(groupQuestionBank.getOption3());
-                option3.setLabel("ج");
+                if (isEnglishWord(groupQuestionBank.getOption3()))
+                    option3.setLabel("c");
+                else
+                    option3.setLabel("ج");
                 options.add(option3);
                 if (attachments != null && attachments.getOption3Files() != null)
                     option3.setMapFiles(attachments.getOption3Files());
@@ -2402,7 +2451,10 @@ public abstract class EvaluationBeanMapper {
             }
             if (groupQuestionBank.getOption4() != null) {
                 option4.setTitle(groupQuestionBank.getOption4());
-                option4.setLabel("د");
+                if (isEnglishWord(groupQuestionBank.getOption4()))
+                    option4.setLabel("d");
+                else
+                    option4.setLabel("د");
                 options.add(option4);
                 if (attachments != null && attachments.getOption4Files() != null)
                     option4.setMapFiles(attachments.getOption4Files());
@@ -2498,15 +2550,15 @@ public abstract class EvaluationBeanMapper {
         List<QuestionBank> questionBanks = questionBankService.findAllByIds(questionIds);
 
         for (QuestionBank questionBank : questionBanks) {
-            EQuestionType type=    convertQuestionType(questionBank.getQuestionTypeId());
+            EQuestionType type = convertQuestionType(questionBank.getQuestionTypeId());
             if (type.equals(MULTI_CHOICES)) {
-                ImportedQuestionProtocol   questionProtocol= getMultiChoice(questionBank,type);
+                ImportedQuestionProtocol questionProtocol = getMultiChoice(questionBank, type);
 
                 questionProtocols.add(questionProtocol);
             } else if (type.equals(DESCRIPTIVE)) {
-                ImportedQuestionProtocol   questionProtocol= getDESCRIPTIVE(questionBank,type);
+                ImportedQuestionProtocol questionProtocol = getDESCRIPTIVE(questionBank, type);
                 questionProtocols.add(questionProtocol);
-             } else if (type.equals(GROUPQUESTION)) {
+            } else if (type.equals(GROUPQUESTION)) {
                 ImportedQuestionProtocol questionProtocolParent = new ImportedQuestionProtocol();
                 ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
                 ImportedQuestion question = new ImportedQuestion();
@@ -2525,20 +2577,20 @@ public abstract class EvaluationBeanMapper {
                 questionProtocolParent.setQuestion(question);
                 questionProtocolParent.setIsChild(questionBank.getIsChild());
                 questionProtocolParent.setChildPriority(questionBank.getChildPriority());
- //
+                //
                 questionProtocols.add(questionProtocolParent);
 
                 if (attachments != null && attachments.getFiles() != null) {
                     question.setFiles(attachments.getFiles());
                 }
                 question.setType(type);
-                Set<QuestionBankDTO.FullInfo> childs= questionBankService.getChildrenQuestions(questionBank.getId());
-                childs.forEach(it->{
-                    EQuestionType eQuestionType=    convertQuestionType(it.getQuestionTypeId());
+                Set<QuestionBankDTO.FullInfo> childs = questionBankService.getChildrenQuestions(questionBank.getId());
+                childs.forEach(it -> {
+                    EQuestionType eQuestionType = convertQuestionType(it.getQuestionTypeId());
                     QuestionBank questionBank1 = questionBankService.getById(it.getId());
                     ImportedQuestion parent = new ImportedQuestion();
                     if (eQuestionType.equals(MULTI_CHOICES)) {
-                        ImportedQuestionProtocol   importedQuestionProtocol= getMultiChoice(questionBank1,eQuestionType);
+                        ImportedQuestionProtocol importedQuestionProtocol = getMultiChoice(questionBank1, eQuestionType);
                         importedQuestionProtocol.setIsChild(true);
                         importedQuestionProtocol.setHasParent(true);
                         importedQuestionProtocol.setChildPriority(importedQuestionProtocol.getChildPriority());
@@ -2546,7 +2598,7 @@ public abstract class EvaluationBeanMapper {
                         //
                         parent.setId(questionProtocolParent.getId());
                         parent.setQuestionOption(questionProtocolParent.getQuestion().getQuestionOption());
-                        if (questionProtocolParent.getQuestion().getFiles()!=null)
+                        if (questionProtocolParent.getQuestion().getFiles() != null)
                             parent.setFiles(questionProtocolParent.getQuestion().getFiles());
                         parent.setTitle(questionProtocolParent.getQuestion().getTitle());
                         parent.setType(questionProtocolParent.getQuestion().getType());
@@ -2558,7 +2610,7 @@ public abstract class EvaluationBeanMapper {
                         importedQuestionProtocol.setParent(parent);
                         questionProtocols.add(importedQuestionProtocol);
                     } else if (eQuestionType.equals(DESCRIPTIVE)) {
-                        ImportedQuestionProtocol   importedQuestionProtocol= getDESCRIPTIVE(questionBank1,eQuestionType);
+                        ImportedQuestionProtocol importedQuestionProtocol = getDESCRIPTIVE(questionBank1, eQuestionType);
                         importedQuestionProtocol.setIsChild(true);
                         importedQuestionProtocol.setHasParent(true);
                         importedQuestionProtocol.setChildPriority(importedQuestionProtocol.getChildPriority());
@@ -2566,7 +2618,7 @@ public abstract class EvaluationBeanMapper {
                         //
                         parent.setId(questionProtocolParent.getId());
                         parent.setQuestionOption(questionProtocolParent.getQuestion().getQuestionOption());
-                        if (questionProtocolParent.getQuestion().getFiles()!=null)
+                        if (questionProtocolParent.getQuestion().getFiles() != null)
                             parent.setFiles(questionProtocolParent.getQuestion().getFiles());
                         parent.setTitle(questionProtocolParent.getQuestion().getTitle());
                         parent.setType(questionProtocolParent.getQuestion().getType());
@@ -2630,28 +2682,40 @@ public abstract class EvaluationBeanMapper {
 
         if (questionBank.getOption1() != null) {
             option1.setTitle(questionBank.getOption1());
-            option1.setLabel("الف");
+            if (isEnglishWord(questionBank.getOption1()))
+                option1.setLabel("a");
+            else
+                option1.setLabel("الف");
             options.add(option1);
             if (attachments != null && attachments.getOption1Files() != null)
                 option1.setMapFiles(attachments.getOption1Files());
         }
         if (questionBank.getOption2() != null) {
             option2.setTitle(questionBank.getOption2());
-            option2.setLabel("ب");
+            if (isEnglishWord(questionBank.getOption2()))
+                option2.setLabel("b");
+            else
+                option2.setLabel("ب");
             options.add(option2);
             if (attachments != null && attachments.getOption2Files() != null)
                 option2.setMapFiles(attachments.getOption2Files());
         }
         if (questionBank.getOption3() != null) {
             option3.setTitle(questionBank.getOption3());
-            option3.setLabel("ج");
+            if (isEnglishWord(questionBank.getOption3()))
+                option3.setLabel("c");
+            else
+                option3.setLabel("ج");
             options.add(option3);
             if (attachments != null && attachments.getOption3Files() != null)
                 option3.setMapFiles(attachments.getOption3Files());
         }
         if (questionBank.getOption4() != null) {
             option4.setTitle(questionBank.getOption4());
-            option4.setLabel("د");
+            if (isEnglishWord(questionBank.getOption4()))
+                option4.setLabel("d");
+            else
+                option4.setLabel("د");
             options.add(option4);
             if (attachments != null && attachments.getOption4Files() != null)
                 option4.setMapFiles(attachments.getOption4Files());

@@ -1,5 +1,7 @@
 package com.nicico.training.utility;
 
+import java.util.regex.Pattern;
+
 public class PersianCharachtersUnicode {
     char c;
     private String InitialFom_Unicode;
@@ -518,5 +520,14 @@ public class PersianCharachtersUnicode {
 
         return textinverse;
     }
+    public static final Pattern VALID_NAME_PATTERN_REGEX = Pattern.compile("[a-zA-Z_0-9]+$");
+
+    public static boolean isEnglishWord(String string) {
+        if (string!=null)
+        return VALID_NAME_PATTERN_REGEX.matcher(string).find();
+        else return
+        false;
+    }
+
 }
 

@@ -52,6 +52,12 @@
                 canEdit: false
             },
             {
+                name: "numberOfAbsentForm",
+                title: "تعداد فراگیران غایب",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
+            {
                 name: "numberOfEmptyReactionEvaluationForms",
                 title:"<spring:message code='numberOfEmptyReactionEvaluationForms'/>",
                 baseStyle: "evaluation-code",
@@ -143,6 +149,8 @@
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfInCompletedReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfAbsentForm').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfAbsentForm').titleStyle = 'evaluation-code-title';
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'evaluation-code-title';
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');

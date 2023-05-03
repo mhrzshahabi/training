@@ -508,6 +508,7 @@ public class TclassDTO {
         Double FETGrade;
         Double FECRGrade;
         Integer numberOfFilledReactionEvaluationForms;
+        Integer numberOfAbsentForm;
         Integer numberOfInCompletedReactionEvaluationForms;
         Integer numberOfEmptyReactionEvaluationForms;
         Integer numberOfExportedReactionEvaluationForms;
