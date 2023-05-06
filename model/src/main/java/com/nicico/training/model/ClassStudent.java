@@ -134,4 +134,7 @@ public class ClassStudent extends Auditable {
     @Column(name = "practical_score")
     private Double practicalScore;
 
+    @Column(name = "els_status")
+    private Boolean elsStatus;
+
 }

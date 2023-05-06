@@ -10126,6 +10126,14 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1661057829000-4">
+        <addColumn tableName="tbl_class_student">
+            <column name="els_status" type="number(1, 0)"/>
+        </addColumn>
+        <addColumn tableName="tbl_class_student_aud">
+            <column name="els_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

@@ -12,6 +12,9 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +54,13 @@ public class ClassStudentService implements IClassStudentService {
     private final ClassSessionDAO classSessionDAO;
     private final IParameterValueService iParameterValueService;
     private final IRequestItemCoursesDetailService coursesDetailService;
+
+    @Lazy
+    @Autowired
+    private SendMessageService sendMessageService;
+
+    @Value("${nicico.elsSmsUrl}")
+    private String elsSmsUrl;
 
     @Transactional(readOnly = true)
     @Override
@@ -987,11 +997,63 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public Boolean checkStudentIsInCourse(String requesterNationalCode, String objectCode) {
-        return !classStudentDAO.checkStudentIsInCourse(requesterNationalCode,objectCode).isEmpty();
+        return !classStudentDAO.checkStudentIsInCourse(requesterNationalCode, objectCode).isEmpty();
     }
+
     @Override
     public Boolean checkStudentIsInClass(String requesterNationalCode, String objectCode) {
-        return !classStudentDAO.checkStudentIsInClass(requesterNationalCode,objectCode).isEmpty();
+        return !classStudentDAO.checkStudentIsInClass(requesterNationalCode, objectCode).isEmpty();
+    }
+
+    @Override
+    public BaseResponse sendEvaluationForPresentStudent(Long classId) {
+        BaseResponse response = new BaseResponse();
+        try {
+            List<ClassStudent> classStudentList = getClassStudents(classId);
+            Tclass tclass = tclassService.getTClass(classId);
+            if (!classStudentList.isEmpty()) {
+                classStudentList.forEach(classStudent -> {
+                    if ((Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 && IsStudentAttendanceAllowable(classStudent.getId())) && (classStudent.getElsStatus() == null || !classStudent.getElsStatus())) {
+                        classStudent.setElsStatus(true);
+                        Map<String, String> paramValMap = new HashMap<>();
+
+                        paramValMap.put("user_name", getPrefix(classStudent.getStudent().getGender()) + classStudent.getStudent().getLastName());
+                        paramValMap.put("evaluation_title", tclass.getTitleClass());
+                        paramValMap.put("url", elsSmsUrl);
+                        sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(getLiveCellNumber(classStudent.getStudent().getContactInfo())), null, classId, classStudent.getStudentId());
+                        classStudentDAO.save(classStudent);
+                    }
+
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("els exception : " + e.getCause().toString());
+        }
+        response.setStatus(200);
+        return response;
+    }
+
+    public static String getPrefix(String gender) {
+        if (gender == null)
+            return "جناب آقای/سرکار خانم ";
+        else {
+            switch (gender) {
+                case "مرد":
+                case "Male":
+                case "آقا": {
+                    return "جناب آقای ";
+
+                }
+                case "زن":
+                case "Female":
+                case "خانم": {
+                    return "سرکار خانم ";
+                }
+                default:
+                    return "جناب آقای/سرکار خانم ";
+            }
+        }
+
     }
 
     @Override
@@ -1018,30 +1080,30 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     private String getScoreStateAndFailureReason(String scoringMethod, Long scoresStateId, Long failureReasonId, List<Long> failureReasonIds) {
-        if (failureReasonId!=null ){
-        if (scoringMethod.equals("1") || scoringMethod.equals("4")) {
-            return "روش نمره دهی بصورت (ارزشی) یا (بدون نمره) می باشد";
-        }
-        if (scoresStateId == 403) { // مردود
-            if (failureReasonId == 407L) {
-                return "وضعیت نمره (مردود) و علت مردودی (غیبت در جلسه امتحان) می باشد";
+        if (failureReasonId != null) {
+            if (scoringMethod.equals("1") || scoringMethod.equals("4")) {
+                return "روش نمره دهی بصورت (ارزشی) یا (بدون نمره) می باشد";
             }
-            if (failureReasonId == 453L) {
-                return "وضعیت نمره (مردود) و علت مردودی (انصراف فراگیر) می باشد";
+            if (scoresStateId == 403) { // مردود
+                if (failureReasonId == 407L) {
+                    return "وضعیت نمره (مردود) و علت مردودی (غیبت در جلسه امتحان) می باشد";
+                }
+                if (failureReasonId == 453L) {
+                    return "وضعیت نمره (مردود) و علت مردودی (انصراف فراگیر) می باشد";
+                }
+                if (failureReasonIds.contains(failureReasonId))
+                    return """
+                            علت مردودی فراگیر، یکی از موارد زیر است:
+                            قبول بدون نمره
+                            حذف کلاس
+                            حذف به دلیل غیبت مجاز
+                            حذف به دلیل غیبت غیرمجاز
+                            حذف به دلیل درخواست امور
+                            انصراف فراگیر
+                            """;
             }
-            if (failureReasonIds.contains(failureReasonId))
-                return """
-                        علت مردودی فراگیر، یکی از موارد زیر است:
-                        قبول بدون نمره
-                        حذف کلاس
-                        حذف به دلیل غیبت مجاز
-                        حذف به دلیل غیبت غیرمجاز
-                        حذف به دلیل درخواست امور
-                        انصراف فراگیر
-                        """;
-        }
-        return null;
-        }else return null;
+            return null;
+        } else return null;
     }
 
     private List<Long> getFailureReasonIds() {
@@ -1055,6 +1117,20 @@ public class ClassStudentService implements IClassStudentService {
         failureReasonIds.add(449L); // حذف دانشجو از کلاس به دلیل غیبت مجاز
 
         return failureReasonIds;
+    }
+
+    String getLiveCellNumber(ContactInfo contactInfo) {
+        if (contactInfo == null)
+            return "";
+        if (contactInfo.getEMobileForSMS() == null)
+            return contactInfo.getMobile();
+        return switch (contactInfo.getEMobileForSMS()) {
+            case hrMobile -> contactInfo.getHrMobile();
+            case mdmsMobile -> contactInfo.getMdmsMobile();
+            case trainingSecondMobile -> contactInfo.getMobile2();
+            default -> contactInfo.getMobile();
+        };
+
     }
 
 }

@@ -3397,4 +3397,11 @@ public class ElsRestController {
         return   tclassService.getCertificationDataByQRCodeFile(nationalCode, classId);
     }
 
+
+
+    @GetMapping("/send-evaluation-for-present-student/{classId}")
+    public BaseResponse sendEvaluationForPresentStudent(@PathVariable Long classId)  {
+        return   classStudentService.sendEvaluationForPresentStudent(classId);
+    }
+
 }

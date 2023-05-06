@@ -763,6 +763,8 @@
 
     let ToolStripButton_FormIssuanceForAllPresentStudents_RE = isc.ToolStripButton.create({
         title: "صدور فرم ارزیابی واکنشی برای فراگیران حاضر",
+        width: "100%",
+        maxWidth: 250,
         baseStyle: "sendFile",
         click: function () {
             Student_Reaction_Form_Inssurance_All_RE("present");
@@ -772,18 +774,29 @@
     var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
         title: "صدور فرم ارزیابی واکنشی برای همه فراگیران",
         baseStyle: "sendFile",
+        width: "100%",
+        maxWidth: 250,
         click: function () {
             Student_Reaction_Form_Inssurance_All_RE("all");
         }
     });
 
     var ToolStripButton_OnlineFormIssuanceForAll_RE = isc.ToolStripButton.create({
-        title: "ارسال فرم ارزیابی به سیستم ارزشیابی آنلاین برای همه فراگیران",
-        width: "100%",
-        maxWidth: 500,
+        title: "ارسال به سیستم آنلاین برای همه فراگیران",
         baseStyle: 'MSG-btn-orange',
+        width: "100%",
+        maxWidth: 250,
         click: function () {
             showOnlineResults('eval');
+        }
+    });
+    var ToolStripButton_OnlineFormIssuanceForAll_RE_present = isc.ToolStripButton.create({
+        title: "ارسال به سیستم آنلاین برای فراگیران حاضر",
+        baseStyle: 'MSG-btn-orange',
+        width: "100%",
+        maxWidth: 250,
+        click: function () {
+            sendEvaluationForPresentStudent();
         }
     });
 
@@ -800,6 +813,8 @@
 
     var ToolStripButton_FormIssuanceDeleteForAll_RE = isc.ToolStripButton.create({
         title: "حذف فرم ارزیابی واکنشی برای همه فراگیران",
+        width: "100%",
+        maxWidth: 250,
         baseStyle: "sendFile",
         click: function () {
             let Dialog_remove = createDialog("ask", "آیا از حذف  همه ی فرم ها مطمئن هستید؟",
@@ -859,9 +874,10 @@
     });
     var ToolStripButton_FormIssuance‌InCompleteUsers = isc.ToolStripButton.create({
         title: "نمایش لیست کاربران کلاس بااطلاعات ناقص",
+        width: "100%",
+        maxWidth: 250,
         baseStyle: "sendFile",
         click: function () {
-            console.log("1")
             showOnlineInCompleteUsers();
         }
     });
@@ -1188,7 +1204,6 @@
                                             //     startRow: false,
                                             //     endRow: false,
                                             //     click: function () {
-                                            //         console.log('send')
                                             //         sendToEls('supervisor')
                                             //     }
                                             // },
@@ -1198,7 +1213,6 @@
                                             //     type: "button",
                                             //     startRow: false,
                                             //     click: function () {
-                                            //         console.log('show')
                                             //          showResults('supervisor')
                                             //     }
                                             // }
@@ -1223,6 +1237,7 @@
                                             <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                                             ToolStripButton_FormIssuance‌InCompleteUsers
                                             </sec:authorize>
+                                            ,ToolStripButton_OnlineFormIssuanceForAll_RE,ToolStripButton_OnlineFormIssuanceForAll_RE_present
                                         ]
                                     }),
                                     isc.LayoutSpacer.create({height: "22"})
@@ -1292,22 +1307,7 @@
                                     </sec:authorize>
                                 ]
                             }),
-                            isc.HLayout.create({
-                                layoutAlign: "center",
-                                defaultLayoutAlign: "center",
-                                align:"center",
-                                width: "19%",
-                                members: [
-                                    isc.VLayout.create({
-                                        membersMargin: 5,
-                                        members: [
-                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                                            ToolStripButton_OnlineFormIssuanceForAll_RE
-                                            </sec:authorize>
-                                        ]
-                                    }),
-                                ]
-                            }),
+
                             isc.ToolStrip.create({
                                 width: "30%",
                                 align: "left",
@@ -1330,7 +1330,6 @@
     });
 
     function NCodeAndMobileValidation(nationalCode, mobileNum, gender) {
-        console.log("4")
 
         let isValid = true;
         if (nationalCode===undefined || nationalCode===null) {
@@ -1868,8 +1867,21 @@
         }
 
     }
+    function sendEvaluationForPresentStudent() {
+        evalWait_RE = createDialog("wait");
+        isc.RPCManager.sendRequest(TrDSRequest(elsUrl + "/send-evaluation-for-present-student/"+ classRecord_RE.id , "GET", null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                evalWait_RE.close();
+                createDialog("info", " ارسال با موفقیت انجام شد", "<spring:message code="error"/>");
+
+            } else {
+                evalWait_RE.close();
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+
+        }));
+    }
     function showOnlineInCompleteUsers(){
-        console.log("2")
 
         if (ListGrid_student_RE.getData().localData.size() == 0){
             createDialog("info", "کلاس هیچ شرکت کننده ای ندارد");
@@ -1891,10 +1903,8 @@
                 let inValidStudents = [];
 
                 for (let i = 0; i < gridData.length; i++) {
-                    console.log("3")
 
                     let studentData = gridData[i].student;
-                    console.log(studentData.nationalCode)
 
                     // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
                     if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {

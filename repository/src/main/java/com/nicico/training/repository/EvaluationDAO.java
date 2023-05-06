@@ -76,7 +76,7 @@ FROM
 WHERE
         student.national_code = ?1\s
     AND eval.f_evaluator_type_id = ?2
-    AND class.student_online_eval_status = 1
+     AND (class.student_online_eval_status = 1  or cs.els_status = 1)
     AND cs.evaluation_status_reaction = 1
     AND eval.f_evaluation_level_id != 156
     AND eval.f_evaluation_level_id != 757
