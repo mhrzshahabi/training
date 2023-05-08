@@ -592,7 +592,6 @@
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
-            // filterOnKeypress: false,
             sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
             sortFieldDescendingText: "<spring:message code='sort.descending'/>",
             configureSortText: "<spring:message code='configureSortText'/>",
@@ -602,6 +601,31 @@
             groupByText: "<spring:message code='groupByText'/>",
             freezeFieldText: "<spring:message code='freezeFieldText'/>",
             fetchDataURL: companyUrl + "spec-list"
+        });
+        let RestDataSource_typeOfEnterToClass = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>"},
+                {name: "code", title: "<spring:message code="code"/>"}
+            ],
+            canAddFormulaFields: false,
+            filterOnKeypress: true,
+            sortField: 1,
+            sortDirection: "descending",
+            dataPageSize: 50,
+            autoFetchData: true,
+            showFilterEditor: true,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+            sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+            configureSortText: "<spring:message code='configureSortText'/>",
+            autoFitAllText: "<spring:message code='autoFitAllText'/>",
+            autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+            filterUsingText: "<spring:message code='filterUsingText'/>",
+            groupByText: "<spring:message code='groupByText'/>",
+            freezeFieldText: "<spring:message code='freezeFieldText'/>",
+            fetchDataURL:  parameterValueUrl + "/listByCode/typeOfEnterToClass"
         });
 
         let StudentsDS_student = isc.TrDS.create({
@@ -1155,6 +1179,34 @@
                     title: "<spring:message code="employment.status"/>",
                     filterOperator: "iContains",
                     autoFitWidth: true
+                },
+                {
+                    name: "typeOfEnterToClass",
+                    title: "نحوه ورود افراد به کلاس",
+                    textAlign: "center",
+                    canEdit: true,
+                    width: "*",
+                    editorType: "ComboBoxItem",
+                    changeOnKeypress: true,
+                    displayField: "title",
+                    valueField: "title",
+                    optionDataSource: RestDataSource_typeOfEnterToClass,
+                    autoFetchData: true,
+                    addUnknownValues: false,
+                    cachePickListResults: false,
+                    useClientFiltering: true,
+                    filterFields: ["title"],
+                    sortField: ["id"],
+                    textMatchStyle: "startsWith",
+                    generateExactMatchCriteria: true,
+                    // filterEditorType: "TextItem",
+                    pickListFields: [
+                        {
+                            name: "title",
+                            width: "70%",
+                            filterOperator: "iContains"
+                        }
+                    ]
                 },
                 {
                     name: "applicantCompanyName",
@@ -3184,16 +3236,25 @@
                 });
 
                 let appCompany = SelectedPersonnelsLG_student.getData().map(std => std.applicantCompanyName);
+                let applicantCompanyName = SelectedPersonnelsLG_student.getData().map(std => std.typeOfEnterToClass);
+
                 if (appCompany.contains(undefined)) {
                     createDialog("info", "لطفا ابتدا شرکت اعلام کننده همه فراگیران را مشخص کنید");
+                } else if(applicantCompanyName.contains(undefined)){
+                    createDialog("info", "لطفا ابتدا نحوه ورود به کلاس همه فراگیران را مشخص کنید");
                 } else {
                     Window_Warn_Students.show();
                 }
 
+
             } else    {
                 let appCompany = SelectedPersonnelsLG_student.getData().map(std => std.applicantCompanyName);
+                let applicantCompanyName = SelectedPersonnelsLG_student.getData().map(std => std.typeOfEnterToClass);
+
                 if (appCompany.contains(undefined)) {
                     createDialog("info", "لطفا ابتدا شرکت اعلام کننده همه فراگیران را مشخص کنید");
+                } else if(applicantCompanyName.contains(undefined)){
+                    createDialog("info", "لطفا ابتدا نحوه ورود به کلاس همه فراگیران را مشخص کنید");
                 } else {
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
