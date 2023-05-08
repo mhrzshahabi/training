@@ -368,12 +368,13 @@
     let Menu_class_Evaluation = isc.Menu.create({
         data:
             [
-                {
-                    title: "تاریخچه ارسال ارزیابی فراگیران به سیستم آنلاین",
-                    click: function () {
-                        showStudentEvalToOnlineStatus();
-                    }
-                },  {isSeparator: true},
+                //کامنت شده چون بعد از اضافه شدن صدور برای حاضرین این قسمت معنا ندارد و در هیستوری اس ام اس چک میشه
+                // {
+                //     title: "تاریخچه ارسال ارزیابی فراگیران به سیستم آنلاین",
+                //     click: function () {
+                //         showStudentEvalToOnlineStatus();
+                //     }
+                // },  {isSeparator: true},
                 {
                     title: "تاریخچه ارسال ارزیابی مدرس به سیستم آنلاین",
                     click: function () {

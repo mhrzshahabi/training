@@ -2670,23 +2670,12 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         if (testQuestionType === "PreTest") {
             return true;
         }
-        let criteria = {fieldName: "id", operator: "equals", value: classId};
         let resp = await
-            fetch(viewClassDetailUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(criteria),
+            fetch(classStudentUrl + "check-class-for-final-test/" + classId,
                 {headers: {"Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"}});
-        if (!resp.ok)
-            return false;
-        const resData = await resp.json();
-        if (!resp || !resData.response || !resData.response.data)
-            return false;
-        const record = resData.response.data[0]
-        if (record == null || record.length == 0)
-            return false;
-        if (!record.classStudentOnlineEvalStatus)
-            return false;
-        if (!record.classTeacherOnlineEvalStatus)
-            return false;
-        return true;
+
+        return  await resp.json()
+
         }
 
     function customSplit(str, maxLength){

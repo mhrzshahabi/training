@@ -89,4 +89,6 @@ public interface IClassStudentService {
     Boolean checkStudentIsInClass(String requesterNationalCode, String objectCode);
 
     BaseResponse sendEvaluationForPresentStudent(Long classId);
+
+    Boolean checkClassForFinalTest(Long classId);
 }

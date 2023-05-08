@@ -571,5 +571,9 @@ public class ClassStudentRestController {
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         }
     }
-
+    @Loggable
+    @GetMapping(value = "/check-class-for-final-test/{classId}")
+    public Boolean checkClassForFinalTest(@PathVariable Long classId) {
+        return iClassStudentService.checkClassForFinalTest(classId);
+    }
 }

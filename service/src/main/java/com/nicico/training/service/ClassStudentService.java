@@ -26,6 +26,7 @@ import response.PaginationDto;
 import response.tclass.dto.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -1013,7 +1014,7 @@ public class ClassStudentService implements IClassStudentService {
             Tclass tclass = tclassService.getTClass(classId);
             if (!classStudentList.isEmpty()) {
                 classStudentList.forEach(classStudent -> {
-                    if ((Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 && IsStudentAttendanceAllowable(classStudent.getId())) && (classStudent.getElsStatus() == null || !classStudent.getElsStatus())) {
+                    if ((Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 1 ) && (classStudent.getElsStatus() == null || !classStudent.getElsStatus())) {
                         classStudent.setElsStatus(true);
                         Map<String, String> paramValMap = new HashMap<>();
 
@@ -1131,6 +1132,23 @@ public class ClassStudentService implements IClassStudentService {
             default -> contactInfo.getMobile();
         };
 
+    }
+
+
+
+    @Override
+    public Boolean checkClassForFinalTest(Long classId) {
+        List<ClassStudent> classStudentList= classStudentDAO.findAllByTclassId(classId);
+        AtomicReference<Boolean> isFinalTestAvailable= new AtomicReference<>(true);
+        if (classStudentList.isEmpty())
+        return false;
+        for (ClassStudent classStudent : classStudentList) {
+            if ((classStudent.getEvaluationStatusReaction() == null || classStudent.getEvaluationStatusReaction() == 0) && IsStudentAttendanceAllowable(classStudent.getId())) {
+                isFinalTestAvailable.set(false);
+                break;
+            }
+        }
+        return isFinalTestAvailable.get();
     }
 
 }

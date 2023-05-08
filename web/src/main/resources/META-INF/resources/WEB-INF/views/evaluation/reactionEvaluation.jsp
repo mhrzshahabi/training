@@ -791,7 +791,7 @@
         }
     });
     var ToolStripButton_OnlineFormIssuanceForAll_RE_present = isc.ToolStripButton.create({
-        title: "ارسال به سیستم آنلاین برای فراگیران حاضر",
+        title: "ارسال ارزیابی به سیستم ارزیابی آنلاین",
         baseStyle: 'MSG-btn-orange',
         width: "100%",
         maxWidth: 250,
@@ -1237,7 +1237,7 @@
                                             <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                                             ToolStripButton_FormIssuance‌InCompleteUsers
                                             </sec:authorize>
-                                            ,ToolStripButton_OnlineFormIssuanceForAll_RE,ToolStripButton_OnlineFormIssuanceForAll_RE_present
+                                            ,ToolStripButton_OnlineFormIssuanceForAll_RE_present
                                         ]
                                     }),
                                     isc.LayoutSpacer.create({height: "22"})

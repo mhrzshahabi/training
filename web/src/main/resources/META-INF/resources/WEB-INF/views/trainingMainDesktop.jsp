@@ -2202,7 +2202,15 @@
                 },
                 </sec:authorize>
 
-                <%--{isSeparator: true},--%>
+                {isSeparator: true},
+                <sec:authorize access="hasAuthority('Menu_Run')">
+                {
+                    title: "<spring:message code="scientific.technical.certification.report"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/certification-level-report"/>");
+                    }
+                },
+                </sec:authorize>
                 <%--{--%>
                 <%--    title: "قرارداد آموزشی",--%>
                 <%--    click: function () {--%>
@@ -3844,6 +3852,7 @@
     const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
     const evalAnswerUrl = rootUrl + "/evaluationAnswer/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";
+    const classStudentUrl = rootUrl + "/class-student/";
     const classStudentAddHistoryUrl = rootUrl + "/class-student/add/history/";
     const classFinishUrl = rootUrl + "/tclass/finish/";
     const targetSocietyUrl = rootUrl + "/target-society/";
