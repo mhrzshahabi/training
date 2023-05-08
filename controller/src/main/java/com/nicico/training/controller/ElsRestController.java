@@ -180,6 +180,7 @@ public class ElsRestController {
     private final ForeignLangKnowledgeService foreignLangKnowledgeService;
     private final TclassBeanMapper tclassBeanMapper;
     private final IElsService elsService;
+    private final IQuestionBankService iQuestionBankService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -3402,6 +3403,24 @@ public class ElsRestController {
     @GetMapping("/send-evaluation-for-present-student/{classId}")
     public BaseResponse sendEvaluationForPresentStudent(@PathVariable Long classId)  {
         return   classStudentService.sendEvaluationForPresentStudent(classId);
+    }
+
+    @Loggable
+    @GetMapping(value = "/pre-view-info/{id}")
+    public ResponseEntity<QuestionBankDTO.PreViewInfo> getQuestionPreViewInfo(@PathVariable Long id) {
+        QuestionBankDTO.PreViewInfo preViewInfo = iQuestionBankService.getQuestionPreViewInfo(id);
+        List<QuestionBankDTO.PreViewInfo> sorted = preViewInfo.getGroupQuestions().stream().sorted((a1, a2) -> {
+            if (a1.getChildPriority() == null && a2.getChildPriority() == null)
+                return 0;
+            else if (a1.getChildPriority() == null)
+                return 1;
+            else if (a2.getChildPriority() == null)
+                return -1;
+            else
+                return a1.getChildPriority().compareTo(a2.getChildPriority());
+        }).collect(Collectors.toList());
+        preViewInfo.setGroupQuestions(sorted);
+        return new ResponseEntity<>(preViewInfo, HttpStatus.OK);
     }
 
 }
