@@ -1377,6 +1377,8 @@
     const genericStatisticalIndexReportUrl = rootUrl + "/generic_statistical_index_report";
     const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
     const behavioralEvaluationReportUrl = baseUrl + "/behavioral-evaluation";
+    const typeOfEnterToClassUrl = rootUrl + "/class-student/type-of-enter-to-class";
+
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -3039,7 +3041,31 @@
                             click: function () {
                                 createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");
                             }
-                        }
+                        },
+                        {
+                            title: "گزارش آماری نحوه ورود افراد به کلاس",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/typeOfEnterToClass"/>");
+                            }
+                        },
+                        <%--{--%>
+                        <%--    title: "گزارش آماری نفر ساعت حضور",--%>
+                        <%--    click: function () {--%>
+                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
+                        <%--    }--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--    title: "گزارش آماری تعداد دوره های تخصصی",--%>
+                        <%--    click: function () {--%>
+                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
+                        <%--    }--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--    title: "گزارش آماری هزینه های مالی سازمان",--%>
+                        <%--    click: function () {--%>
+                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
+                        <%--    }--%>
+                        <%--}--%>
                     ]
                 }
             ]

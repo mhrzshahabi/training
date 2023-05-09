@@ -137,4 +137,13 @@ public class ClassStudent extends Auditable {
     @Column(name = "els_status")
     private Boolean elsStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotAudited
+    @JoinColumn(name = "type_of_enter_to_class", insertable = false, updatable = false)
+    private ParameterValue typeOfEnterToClass;
+
+    @NotAudited
+    @Column(name = "type_of_enter_to_class")
+    private Long typeOfEnterToClassId;
+
 }

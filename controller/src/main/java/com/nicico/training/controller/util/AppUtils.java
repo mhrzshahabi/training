@@ -3,6 +3,9 @@ package com.nicico.training.controller.util;
 
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Component
 public class AppUtils {
@@ -102,5 +105,12 @@ public class AppUtils {
     public static String getTenantId() {
         return "Training";
     }
-
+    public static List<Object> convertList(List<Object> values) {
+        List<Object> objects=new ArrayList<>();
+        values.forEach(object->{
+            objects.add(object);
+            objects.add(object.toString().replace("ی","ي").replace("ک","ك"));
+        });
+        return objects;
+    }
 }

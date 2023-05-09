@@ -193,24 +193,7 @@
         ]
     });
 
-    /*var MSG_Window_MSG_Main = isc.Window.create({
-        placement: "center",
-        title: "ارسال پیام",
-        overflow: "auto",
-        width: 900,
-        height: 760,
-        isModal: false,
-        autoDraw: false,
-        autoSize: false,
-        items: [
-            MSG_main_layout
-        ],
-        closeClick: function () {
-            MSG_initMSG()
-            this.clear()
-            this.close();
-        },
-    });*/
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_student_RE = isc.TrLG.create({
         width: "100%",
@@ -1868,18 +1851,30 @@
 
     }
     function sendEvaluationForPresentStudent() {
-        evalWait_RE = createDialog("wait");
-        isc.RPCManager.sendRequest(TrDSRequest(elsUrl + "/send-evaluation-for-present-student/"+ classRecord_RE.id , "GET", null, function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                evalWait_RE.close();
-                createDialog("info", " ارسال با موفقیت انجام شد", "<spring:message code="error"/>");
-
-            } else {
-                evalWait_RE.close();
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+        let elsCount=0;
+        for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
+            let record = ListGrid_student_RE.getData().localData[j];
+            if (record.evaluationStatusReaction === 1) {
+                elsCount = elsCount+1;
             }
+        }
+        if (elsCount>0){
+            evalWait_RE = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(elsUrl + "/send-evaluation-for-present-student/"+ classRecord_RE.id , "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    evalWait_RE.close();
+                    createDialog("info", " ارسال با موفقیت انجام شد");
 
-        }));
+                } else {
+                    evalWait_RE.close();
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+
+            }));
+        }else {
+            createDialog("info", "فرم صادر شده ای وجود ندارد");
+        }
+
     }
     function showOnlineInCompleteUsers(){
 

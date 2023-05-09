@@ -1189,7 +1189,7 @@
                     editorType: "ComboBoxItem",
                     changeOnKeypress: true,
                     displayField: "title",
-                    valueField: "title",
+                    valueField: "id",
                     optionDataSource: RestDataSource_typeOfEnterToClass,
                     autoFetchData: true,
                     addUnknownValues: false,
@@ -3489,7 +3489,8 @@
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
                                                 "employmentStatus": person.employmentStatus,
-                                                "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
+                                                "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2,
+                                                "typeOfEnterToClass": person.typeOfEnterToClass
                                             });
                                         // }
                                     }

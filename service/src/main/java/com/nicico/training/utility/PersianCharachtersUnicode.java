@@ -522,9 +522,9 @@ public class PersianCharachtersUnicode {
     }
     public static final Pattern VALID_NAME_PATTERN_REGEX = Pattern.compile("[a-zA-Z_0-9]+$");
 
-    public static boolean isEnglishWord(String string) {
-        if (string!=null)
-        return VALID_NAME_PATTERN_REGEX.matcher(string).find();
+    public static boolean isEnglishWord(String text) {
+        if (text!=null)
+        return VALID_NAME_PATTERN_REGEX.matcher(text.trim().replace(" ","").replace(".","")).find();
         else return
         false;
     }

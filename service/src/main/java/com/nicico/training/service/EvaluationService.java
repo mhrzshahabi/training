@@ -566,6 +566,9 @@ public class EvaluationService implements IEvaluationService {
             if (byId.isPresent()) {
                 ClassStudent classStudent = byId.get();
                 classStudent.setEvaluationStatusReaction(version);
+                if (version.equals(0)){
+                    classStudent.setElsStatus(null);
+                }
             }
         }
         else if (evaluation.getQuestionnaireTypeId().equals(758L)) {

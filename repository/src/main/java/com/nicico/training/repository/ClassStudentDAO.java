@@ -1,6 +1,7 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.GenericStatisticalIndexReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -1284,4 +1285,38 @@ FROM
     tbl_class.c_code = :code
 """,nativeQuery = true)
     List<ClassStudent> checkStudentIsInClass(String nationalCode, String code);
-}
+
+
+
+
+    @Query(value = """
+            SELECT
+                tbl_class.c_start_date,
+                tbl_class.c_end_date,
+                tbl_parameter_value.c_title,
+                  view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,   \s
+                                     view_last_md_employee_hr.ccp_complex   AS mojtama,   \s
+                                     view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,   \s
+                                     view_last_md_employee_hr.ccp_assistant AS moavenat,   \s
+                                     view_last_md_employee_hr.c_omor_code       AS omoor_id,   \s
+                                     view_last_md_employee_hr.ccp_affairs   AS omoor  \s
+            FROM
+                     tbl_class_student
+                INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+                left JOIN tbl_parameter_value ON tbl_class_student.type_of_enter_to_class = tbl_parameter_value.
+                id
+                                     INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id
+                                                                                       LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
+                                                                                      \s
+                                                                                       WHERE
+                                                                                          tbl_class.C_START_DATE >= :fromDate             \s
+                                                                                       and tbl_class.C_START_DATE <= :toDate\s
+""", nativeQuery = true)
+    List<GenericStatisticalIndexReport> typeOfEnterToClassReport(String fromDate,
+                                                              String toDate,
+                                                              List<Object> complex,
+                                                              int complexNull,
+                                                              List<Object> assistant,
+                                                              int assistantNull,
+                                                              List<Object> affairs,
+                                                              int affairsNull);}

@@ -10136,7 +10136,7 @@ DECLARE
     </changeSet>
 
 
-    <changeSet  id="2799887766557-23" author="namdari">
+    <changeSet  id="2799887766557-24" author="namdari">
         <sql splitStatements="false" stripComments="false">
             <![CDATA[
             DECLARE
@@ -10190,8 +10190,8 @@ DECLARE
                     NULL,
                     0,
                     l_parameter_id,
-                    'xxxx',
-                    'xxxx',
+                    'کسر سنوات',
+                    'sanavat',
                     null);
             END;
             BEGIN
@@ -10216,15 +10216,45 @@ DECLARE
                     NULL,
                     0,
                     l_parameter_id,
-                    ' yyyy ',
-                    'yyyy',
+                    'تایید صلاحیت علمی و فنی',
+                    'VerificationOfCompetency',
+                    null);
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_value)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'سایر',
+                    'others',
                     null);
             END;
             END;
             ]]>
         </sql>
     </changeSet>
-
+    <changeSet author="namdari (generated)" id="1661057829000-5">
+        <addColumn tableName="tbl_class_student">
+            <column name="type_of_enter_to_class" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

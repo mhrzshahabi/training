@@ -12,6 +12,7 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -36,6 +37,7 @@ import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 @Service
 @RequiredArgsConstructor
 public class ClassStudentService implements IClassStudentService {
+    private final ModelMapper modelMapper;
 
     private final ClassStudentDAO classStudentDAO;
     private final AttendanceDAO attendanceDAO;
@@ -136,6 +138,8 @@ public class ClassStudentService implements IClassStudentService {
                 invalStudents.add(student.getFirstName() + " " + student.getLastName());
                 continue;
             }
+            if (c.getTypeOfEnterToClass() != null)
+                classStudent.setTypeOfEnterToClassId(c.getTypeOfEnterToClass());
             if (c.getPresenceTypeId() != null)
                 classStudent.setPresenceTypeId(c.getPresenceTypeId());
             classStudent.setTclass(tclass);
@@ -1149,6 +1153,15 @@ public class ClassStudentService implements IClassStudentService {
             }
         }
         return isFinalTestAvailable.get();
+    }
+
+    @Override
+    public List<GenericStatisticalIndexReportDTO> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull) {
+        List<GenericStatisticalIndexReport> result;
+        result =classStudentDAO.typeOfEnterToClassReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+        return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
+        }.getType());
+
     }
 
 }

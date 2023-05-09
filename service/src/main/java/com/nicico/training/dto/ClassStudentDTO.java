@@ -109,6 +109,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer registerTypeId;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Long typeOfEnterToClass;
     }
 
     @Getter

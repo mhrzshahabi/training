@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.controller.util.AppUtils.convertList;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -70,13 +72,6 @@ public class GenericStatisticalIndexReportRestController {
         return new ResponseEntity<>(dataISC, HttpStatus.OK);
     }
 
-    private List<Object> convertList(List<Object> values) {
-        List<Object> objects=new ArrayList<>();
-        values.forEach(object->{
-            objects.add(object);
-            objects.add(object.toString().replace("ی","ي").replace("ک","ك"));
-        });
-        return objects;
-    }
+
 
 }

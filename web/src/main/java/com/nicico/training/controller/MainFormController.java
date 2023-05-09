@@ -671,4 +671,9 @@ public class MainFormController {
         return "report/weeklyMeetingSchedule";
     }
 
+    @RequestMapping("/typeOfEnterToClass")
+    public String showTypeOfEnterToClassReportForm() {
+        return "report/typeOfEnterToClass";
+    }
+
 }
