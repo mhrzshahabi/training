@@ -1157,11 +1157,11 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public List<GenericStatisticalIndexReportDTO> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull) {
-        List<GenericStatisticalIndexReport> result;
-        result =classStudentDAO.typeOfEnterToClassReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-        return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
-        }.getType());
-
+//        List<GenericStatisticalIndexReport> result;
+//        result =classStudentDAO.typeOfEnterToClassReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+//        return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
+//        }.getType());
+        return null;
     }
 
 }
