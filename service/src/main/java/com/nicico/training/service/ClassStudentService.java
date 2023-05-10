@@ -12,7 +12,6 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;

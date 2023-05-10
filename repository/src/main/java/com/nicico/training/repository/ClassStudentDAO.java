@@ -1,7 +1,6 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.GenericStatisticalIndexReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -1319,4 +1318,6 @@ FROM
 //                                                              List<Object> assistant,
 //                                                              int assistantNull,
 //                                                              List<Object> affairs,
-//                                                              int affairsNull);}
+//                                                              int affairsNull);
+//
+                                            }
