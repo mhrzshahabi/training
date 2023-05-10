@@ -675,5 +675,18 @@ public class MainFormController {
     public String showTypeOfEnterToClassReportForm() {
         return "report/typeOfEnterToClass";
     }
+    @RequestMapping("/attendancePerson")
+    public String showAttendancePersonReportForm() {
+        return "report/attendancePerson";
+    }
+
+    @RequestMapping("/numberOfSpecializedCourses")
+    public String showNumberOfSpecializedCoursesReportForm() {
+        return "report/numberOfSpecializedCourses";
+    }
+    @RequestMapping("/financialExpensesOfTheOrganization")
+    public String showFinancialExpensesOfTheOrganizationReportForm() {
+        return "report/financialExpensesOfTheOrganization";
+    }
 
 }

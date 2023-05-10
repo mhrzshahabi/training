@@ -3048,24 +3048,24 @@
                                 createTab(this.title, "<spring:url value="web/typeOfEnterToClass"/>");
                             }
                         },
-                        <%--{--%>
-                        <%--    title: "گزارش آماری نفر ساعت حضور",--%>
-                        <%--    click: function () {--%>
-                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
-                        <%--    }--%>
-                        <%--},--%>
-                        <%--{--%>
-                        <%--    title: "گزارش آماری تعداد دوره های تخصصی",--%>
-                        <%--    click: function () {--%>
-                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
-                        <%--    }--%>
-                        <%--},--%>
-                        <%--{--%>
-                        <%--    title: "گزارش آماری هزینه های مالی سازمان",--%>
-                        <%--    click: function () {--%>
-                        <%--        &lt;%&ndash;createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");&ndash;%&gt;--%>
-                        <%--    }--%>
-                        <%--}--%>
+                        {
+                            title: "گزارش آماری نفر ساعت حضور",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/attendancePerson"/>");
+                            }
+                        },
+                        {
+                            title: "گزارش آماری تعداد دوره های تخصصی",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/numberOfSpecializedCourses"/>");
+                            }
+                        },
+                        {
+                            title: "گزارش آماری هزینه های مالی سازمان",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/financialExpensesOfTheOrganization"/>");
+                            }
+                        }
                     ]
                 }
             ]

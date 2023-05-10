@@ -5,38 +5,35 @@
 
 // <script>
 
-    let fromDateCheck_type_of_enter = true;
-    let toDateCheck_type_of_enter = true;
-    let dateCheck_Order_type_of_enter = true;
-    let reportCriteria_type_of_enter;
-    let data_values_type_of_enter = null;
+    let fromDateCheckـattendanceـperson = true;
+    let toDateCheckـattendanceـperson = true;
+    let dateCheck_Orderـattendanceـperson = true;
+    let reportCriteriaـattendanceـperson;
+    let data_valuesـattendanceـperson = null;
 
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
-    RestDataSource_type_of_enter= isc.TrDS.create({
+    RestDataSourceـattendanceـperson= isc.TrDS.create({
         fields: [
-            {name: "title", title: "نوع ورود به کلاس"},
             {name: "complex", title: "مجتمع"},
-            {name: "baseOnComplex", title: "تعداد فراگیر براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
-            {name: "baseOnAssistant", title: "تعداد فراگیر براساس معاونت"},
-            {name: "darsadAzComplex", title: "درصد از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnAffairs", title: "تعداد فراگیر براساس امور"},
-            {name: "darsadAzOmor", title: "درصد از معاونت"}
+            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
+            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
+            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
         ],
         fetchDataURL: typeOfEnterToClassUrl + "/iscList"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
-    ToolStripButton_Excel_type_of_enter= isc.ToolStripButtonExcel.create({
+    ToolStripButton_Excelـattendanceـperson= isc.ToolStripButtonExcel.create({
         click: function () {
-            if (ListGrid_type_of_enter.getOriginalData().localData === undefined)
+            if (ListGridـattendanceـperson.getOriginalData().localData === undefined)
                 createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
             else
-                ExportToFile.downloadExcelFromClient(ListGrid_type_of_enter, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
+                ExportToFile.downloadExcelFromClient(ListGridـattendanceـperson, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
         }
     });
-    ToolStrip_Actions_type_of_enter= isc.ToolStrip.create({
+    ToolStrip_Actionsـattendanceـperson= isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
@@ -46,14 +43,14 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Excel_type_of_enter
+                        ToolStripButton_Excelـattendanceـperson
                     ]
                 })
             ]
     });
 
-    organSegmentFilter_type_of_enter= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
-    DynamicForm_type_of_enter= isc.DynamicForm.create({
+    organSegmentFilterـattendanceـperson= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
+    DynamicFormـattendanceـperson= isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
@@ -64,7 +61,7 @@
         fields: [
             {
                 name: "fromDate",
-                ID: "fromDate_type_of_enter",
+                ID: "fromDateـattendanceـperson",
                 title: "از تاریخ",
                 hint: todayDate,
                 required: true,
@@ -77,41 +74,41 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('fromDate_type_of_enter', this, 'ymd', '/');
+                        displayDatePicker('fromDateـattendanceـperson', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value == null) {
                         form.clearFieldErrors("toDate","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("fromDate", true);
-                        dateCheck_Order_type_of_enter = true;
-                        fromDateCheck_type_of_enter = true;
+                        dateCheck_Orderـattendanceـperson = true;
+                        fromDateCheckـattendanceـperson = true;
                         return;
                     }
                     let dateCheck;
                     let endDate = form.getValue("toDate");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        fromDateCheck_type_of_enter = false;
-                        dateCheck_Order_type_of_enter = true;
+                        fromDateCheckـattendanceـperson = false;
+                        dateCheck_Orderـattendanceـperson = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        dateCheck_Order_type_of_enter = false;
-                        fromDateCheck_type_of_enter = true;
+                        dateCheck_Orderـattendanceـperson = false;
+                        fromDateCheckـattendanceـperson = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     }
                     else {
-                        fromDateCheck_type_of_enter = true;
-                        dateCheck_Order_type_of_enter = true;
+                        fromDateCheckـattendanceـperson = true;
+                        dateCheck_Orderـattendanceـperson = true;
                         form.clearFieldErrors("fromDate", true);
                     }
                 }
             },
             {
                 name: "toDate",
-                ID: "toDate_type_of_enter",
+                ID: "toDateـattendanceـperson",
                 title: "تا تاریخ",
                 hint: todayDate,
                 required: true,
@@ -124,63 +121,63 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('toDate_type_of_enter', this, 'ymd', '/', 'right');
+                        displayDatePicker('toDateـattendanceـperson', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value === null) {
                         form.clearFieldErrors("fromDate","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("toDate", true);
-                        dateCheck_Order_type_of_enter = true;
-                        toDateCheck_type_of_enter = true;
+                        dateCheck_Orderـattendanceـperson = true;
+                        toDateCheckـattendanceـperson = true;
                         return;
                     }
                     let dateCheck;
                     dateCheck = checkDate(value);
                     let fromDate = form.getValue("fromDate");
                     if (dateCheck === false) {
-                        toDateCheck_type_of_enter = false;
-                        dateCheck_Order_type_of_enter = true;
+                        toDateCheckـattendanceـperson = false;
+                        dateCheck_Orderـattendanceـperson = true;
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (fromDate !== undefined && value < fromDate) {
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        toDateCheck_type_of_enter = true;
-                        dateCheck_Order_type_of_enter = false;
+                        toDateCheckـattendanceـperson = true;
+                        dateCheck_Orderـattendanceـperson = false;
                     } else {
                         form.clearFieldErrors("toDate", true);
-                        toDateCheck_type_of_enter = true;
-                        dateCheck_Order_type_of_enter = true;
+                        toDateCheckـattendanceـperson = true;
+                        dateCheck_Orderـattendanceـperson = true;
                     }
                 }
             }
         ]
     });
 
-    IButton_Show_type_of_enter= isc.IButtonSave.create({
+    IButton_Showـattendanceـperson= isc.IButtonSave.create({
         top: 260,
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            if (!DynamicForm_type_of_enter.validate())
+            if (!DynamicFormـattendanceـperson.validate())
                 return;
-            ListGrid_type_of_enter.setData([]);
-            Reporting_type_of_enter();
+            ListGridـattendanceـperson.setData([]);
+            Reportingـattendanceـperson();
         }
     });
-    IButton_Clear_type_of_enter= isc.IButtonSave.create({
+    IButton_Clearـattendanceـperson= isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
         width: 300,
         click: function () {
-            DynamicForm_type_of_enter.clearValues();
-            DynamicForm_type_of_enter.clearErrors();
-            organSegmentFilter_type_of_enter.clearValues();
-            ListGrid_type_of_enter.setData([]);
+            DynamicFormـattendanceـperson.clearValues();
+            DynamicFormـattendanceـperson.clearErrors();
+            organSegmentFilterـattendanceـperson.clearValues();
+            ListGridـattendanceـperson.setData([]);
         }
     });
-    HLayOut_Confirm_type_of_enter= isc.TrHLayoutButtons.create({
+    HLayOut_Confirmـattendanceـperson= isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -189,65 +186,62 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Show_type_of_enter,
-            IButton_Clear_type_of_enter
+            IButton_Showـattendanceـperson,
+            IButton_Clearـattendanceـperson
         ]
     });
 
-    ListGrid_type_of_enter= isc.TrLG.create({
+    ListGridـattendanceـperson= isc.TrLG.create({
         filterOnKeypress: false,
         showFilterEditor: false,
-        dataSource: RestDataSource_type_of_enter,
+        dataSource: RestDataSourceـattendanceـperson,
         gridComponents: ["filterEditor", "header", "body"],
         fields: [
-            {name: "title", title: "نوع ورود به کلاس"},
             {name: "complex", title: "مجتمع"},
-            {name: "baseOnComplex", title: "تعداد فراگیر براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
-            {name: "baseOnAssistant", title: "تعداد فراگیر براساس معاونت"},
-            {name: "darsadAzComplex", title: "درصد از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnAffairs", title: "تعداد فراگیر براساس امور"},
-            {name: "darsadAzOmor", title: "درصد از معاونت"}
+            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
+            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
+            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
         ]
     });
 
-    VLayout_Body_type_of_enter= isc.VLayout.create({
+    VLayout_Bodyـattendanceـperson= isc.VLayout.create({
         border: "2px solid blue",
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actions_type_of_enter,
-            organSegmentFilter_type_of_enter,
-            DynamicForm_type_of_enter,
-            HLayOut_Confirm_type_of_enter,
-            ListGrid_type_of_enter
+            ToolStrip_Actionsـattendanceـperson,
+            organSegmentFilterـattendanceـperson,
+            DynamicFormـattendanceـperson,
+            HLayOut_Confirmـattendanceـperson,
+            ListGridـattendanceـperson
         ]
     });
 
     //---------------------------------------------------- Functions --------------------------------------------------------------//
-    function Reporting_type_of_enter() {
+    function Reportingـattendanceـperson() {
 
-        data_values_type_of_enter = null;
-        data_values_type_of_enter = DynamicForm_type_of_enter.getValuesAsAdvancedCriteria();
+        data_valuesـattendanceـperson = null;
+        data_valuesـattendanceـperson = DynamicFormـattendanceـperson.getValuesAsAdvancedCriteria();
 
-        if (organSegmentFilter_type_of_enter.getCriteria() !== undefined) {
-            reportCriteria_type_of_enter = organSegmentFilter_type_of_enter.getCriteria();
-            for (let i = 0; i < reportCriteria_type_of_enter.criteria.size(); i++) {
-                if (reportCriteria_type_of_enter.criteria[i].fieldName === "complexTitle") {
-                    reportCriteria_type_of_enter.criteria[i].fieldName = "complex";
-                    data_values_type_of_enter.criteria.add(reportCriteria_type_of_enter.criteria[i]);
-                } else if (reportCriteria_type_of_enter.criteria[i].fieldName === "assistant") {
-                    reportCriteria_type_of_enter.criteria[i].fieldName = "assistant";
-                    data_values_type_of_enter.criteria.add(reportCriteria_type_of_enter.criteria[i]);
-                } else if (reportCriteria_type_of_enter.criteria[i].fieldName === "affairs") {
-                    reportCriteria_type_of_enter.criteria[i].fieldName = "affairs";
-                    data_values_type_of_enter.criteria.add(reportCriteria_type_of_enter.criteria[i]);
+        if (organSegmentFilterـattendanceـperson.getCriteria() !== undefined) {
+            reportCriteriaـattendanceـperson = organSegmentFilterـattendanceـperson.getCriteria();
+            for (let i = 0; i < reportCriteriaـattendanceـperson.criteria.size(); i++) {
+                if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "complexTitle") {
+                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "complex";
+                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
+                } else if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "assistant") {
+                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "assistant";
+                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
+                } else if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "affairs") {
+                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "affairs";
+                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
                 }
             }
         }
 
-        ListGrid_type_of_enter.fetchData(data_values_type_of_enter);
+        ListGridـattendanceـperson.fetchData(data_valuesـattendanceـperson);
     }
 
     //</script>

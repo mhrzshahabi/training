@@ -17,6 +17,7 @@ import com.nicico.training.mapper.tclass.TclassStudentMapper;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.TypeOfEnterToClassReport;
 import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.utility.persianDate.CalendarTool;
 import lombok.RequiredArgsConstructor;
@@ -580,7 +581,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @GetMapping(value = "/type-of-enter-to-class/iscList")
-    public ResponseEntity<ISC<GenericStatisticalIndexReportDTO>> typeOfEnterToClassReport(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<TypeOfEnterToClassReport>> typeOfEnterToClassReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
 
@@ -611,14 +612,14 @@ public class ClassStudentRestController {
             affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
         }
 
-        List<GenericStatisticalIndexReportDTO> reportDTOList = iClassStudentService.getTypeOfEnterToClassReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+        List<TypeOfEnterToClassReport> reportDTOList = iClassStudentService.getTypeOfEnterToClassReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
 
-        ISC.Response<GenericStatisticalIndexReportDTO> response = new ISC.Response<>();
+        ISC.Response<TypeOfEnterToClassReport> response = new ISC.Response<>();
         response.setData(reportDTOList)
                 .setStartRow(0)
                 .setEndRow(reportDTOList.size())
                 .setTotalRows(reportDTOList.size());
-        ISC<GenericStatisticalIndexReportDTO> dataISC = new ISC<>(response);
+        ISC<TypeOfEnterToClassReport> dataISC = new ISC<>(response);
         return new ResponseEntity<>(dataISC, HttpStatus.OK);
     }
 

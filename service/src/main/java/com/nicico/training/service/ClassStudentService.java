@@ -1155,12 +1155,33 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public List<GenericStatisticalIndexReportDTO> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull) {
-//        List<GenericStatisticalIndexReport> result;
-//        result =classStudentDAO.typeOfEnterToClassReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-//        return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
-//        }.getType());
-        return null;
-    }
+    public List<TypeOfEnterToClassReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull) {
+        List<?> result;
+        result =classStudentDAO.typeOfEnterToClassReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+
+        List<TypeOfEnterToClassReport> data = null;
+
+        if (result != null) {
+            data = new ArrayList<>(result.size());
+
+            for (int i = 0; i < result.size(); i++) {
+                Object[] report = (Object[]) result.get(i);
+                data.add(new TypeOfEnterToClassReport(
+                        report[0]  != null ? Long.parseLong(report[0].toString())  : null,
+                        report[1]  != null ? report[1].toString()  : null,
+                        report[2]  != null ? report[2].toString()  : null,
+                        report[3]  != null ? Double.valueOf(report[3].toString()) : null,
+                        report[4]  != null ? report[4].toString()  : null,
+                        report[5]  != null ? Double.valueOf(report[5].toString()) : null,
+                        report[6]  != null ? Double.valueOf(report[6].toString()) : null,
+                        report[7]  != null ? report[7].toString()  : null,
+                        report[8]  != null ? Double.valueOf(report[8].toString()) : null,
+                        report[9]  != null ? Double.valueOf(report[9].toString()) : null
+                ));
+            }
+        }
+
+        return data;
+     }
 
 }

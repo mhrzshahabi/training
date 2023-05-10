@@ -1288,36 +1288,54 @@ FROM
 
 
 
-//    @Query(value = """
-//            SELECT
-//                tbl_class.c_start_date,
-//                tbl_class.c_end_date,
-//                tbl_parameter_value.c_title,
-//                  view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,   \s
-//                                     view_last_md_employee_hr.ccp_complex   AS mojtama,   \s
-//                                     view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,   \s
-//                                     view_last_md_employee_hr.ccp_assistant AS moavenat,   \s
-//                                     view_last_md_employee_hr.c_omor_code       AS omoor_id,   \s
-//                                     view_last_md_employee_hr.ccp_affairs   AS omoor  \s
-//            FROM
-//                     tbl_class_student
-//                INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
-//                left JOIN tbl_parameter_value ON tbl_class_student.type_of_enter_to_class = tbl_parameter_value.
-//                id
-//                                     INNER JOIN tbl_student std  ON tbl_class_student.student_id = std.id
-//                                                                                       LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE
-//                                                                                      \s
-//                                                                                       WHERE
-//                                                                                          tbl_class.C_START_DATE >= :fromDate             \s
-//                                                                                       and tbl_class.C_START_DATE <= :toDate\s
-//""", nativeQuery = true)
-//    List<GenericStatisticalIndexReport> typeOfEnterToClassReport(String fromDate,
-//                                                              String toDate,
-//                                                              List<Object> complex,
-//                                                              int complexNull,
-//                                                              List<Object> assistant,
-//                                                              int assistantNull,
-//                                                              List<Object> affairs,
-//                                                              int affairsNull);
+    @Query(value = """
+SELECT ROWNUM as id ,
+    res.* FROM (
+SELECT\s
+DISTINCT
+CASE WHEN tbl_parameter_value.c_title IS NOT NULL THEN tbl_parameter_value.c_title ELSE 'ثبت نشده' END  as title,
+    view_last_md_employee_hr.ccp_complex                                                   AS complex,
+    COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)   AS baseOnComplex,
+    view_last_md_employee_hr.ccp_assistant                                                 AS assistant,
+    COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant) AS baseOnAssistant ,\s
+   \s
+   ROUND( ( COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant)  /  COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadAzComplex,
+    view_last_md_employee_hr.ccp_affairs                                                   AS affairs,
+    COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_affairs)   AS baseOnAffairs ,
+   \s
+       ROUND( ( COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_affairs)  /  COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant)  ) *100 , 2 )as darsadAzOmor
+   \s
+   \s
+FROM
+         tbl_class_student
+    INNER JOIN tbl_student std ON tbl_class_student.student_id = std.id
+    LEFT JOIN view_last_md_employee_hr ON std.national_code = view_last_md_employee_hr.c_national_code
+    LEFT JOIN tbl_parameter_value ON tbl_class_student.type_of_enter_to_class = tbl_parameter_value.id
+    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+    WHERE view_last_md_employee_hr.ccp_affairs != 'ندارد'
+    and
+        tbl_class.c_start_date >= :fromDate
+    AND tbl_class.c_end_date <= :toDate
+    AND      \s
+                                                            (:complexNull = 1 OR view_last_md_employee_hr.ccp_complex  IN (:complex))      \s
+                                                        AND (:assistantNull = 1 OR view_last_md_employee_hr.ccp_assistant  IN (:assistant))      \s
+                                                           AND (:affairsNull = 1 OR view_last_md_employee_hr.ccp_affairs  IN (:affairs)) )res
+
+""", nativeQuery = true)
+    List<?> typeOfEnterToClassReport(String fromDate,
+                                                            String toDate,
+                                                            List<Object> complex,
+                                                            int complexNull,
+                                                            List<Object> assistant,
+                                                            int assistantNull,
+                                                            List<Object> affairs,
+                                                            int affairsNull);
 //
                                             }

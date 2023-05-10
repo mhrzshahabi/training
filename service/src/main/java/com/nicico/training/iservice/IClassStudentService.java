@@ -3,8 +3,8 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.GenericStatisticalIndexReportDTO;
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.TypeOfEnterToClassReport;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
 import request.exam.ExamResult;
@@ -93,5 +93,5 @@ public interface IClassStudentService {
 
     Boolean checkClassForFinalTest(Long classId);
 
-    List<GenericStatisticalIndexReportDTO> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<TypeOfEnterToClassReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
 }
