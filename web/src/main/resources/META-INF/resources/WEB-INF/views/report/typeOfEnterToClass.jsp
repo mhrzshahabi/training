@@ -19,10 +19,11 @@
             {name: "baseOnComplex", title: "تعداد فراگیر براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "baseOnAssistant", title: "تعداد فراگیر براساس معاونت"},
-            {name: "darsadAzComplex", title: "درصد از مجتمع"},
+            {name: "darsadMoavenatAzComplex", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
             {name: "baseOnAffairs", title: "تعداد فراگیر براساس امور"},
-            {name: "darsadAzOmor", title: "درصد از معاونت"}
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ],
         fetchDataURL: typeOfEnterToClassUrl + "/iscList"
     });
@@ -205,10 +206,11 @@
             {name: "baseOnComplex", title: "تعداد فراگیر براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "baseOnAssistant", title: "تعداد فراگیر براساس معاونت"},
-            {name: "darsadAzComplex", title: "درصد از مجتمع"},
+            {name: "darsadAzComplex", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
             {name: "baseOnAffairs", title: "تعداد فراگیر براساس امور"},
-            {name: "darsadAzOmor", title: "درصد از معاونت"}
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ]
     });
 

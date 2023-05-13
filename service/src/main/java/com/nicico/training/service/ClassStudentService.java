@@ -1176,7 +1176,8 @@ public class ClassStudentService implements IClassStudentService {
                         report[6]  != null ? Double.valueOf(report[6].toString()) : null,
                         report[7]  != null ? report[7].toString()  : null,
                         report[8]  != null ? Double.valueOf(report[8].toString()) : null,
-                        report[9]  != null ? Double.valueOf(report[9].toString()) : null
+                        report[9]  != null ? Double.valueOf(report[9].toString()) : null,
+                        report[10]  != null ? Double.valueOf(report[10].toString()) : null
                 ));
             }
         }

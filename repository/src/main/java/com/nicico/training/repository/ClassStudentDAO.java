@@ -1291,7 +1291,7 @@ FROM
     @Query(value = """
 SELECT ROWNUM as id ,
     res.* FROM (
-SELECT\s
+SELECT
 DISTINCT
 CASE WHEN tbl_parameter_value.c_title IS NOT NULL THEN tbl_parameter_value.c_title ELSE 'ثبت نشده' END  as title,
     view_last_md_employee_hr.ccp_complex                                                   AS complex,
@@ -1299,20 +1299,25 @@ CASE WHEN tbl_parameter_value.c_title IS NOT NULL THEN tbl_parameter_value.c_tit
     OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)   AS baseOnComplex,
     view_last_md_employee_hr.ccp_assistant                                                 AS assistant,
     COUNT(*)
-    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant) AS baseOnAssistant ,\s
-   \s
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant) AS baseOnAssistant ,
+  \s
    ROUND( ( COUNT(*)
     OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant)  /  COUNT(*)
-    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadAzComplex,
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadMoavenatAzMojtame,
     view_last_md_employee_hr.ccp_affairs                                                   AS affairs,
     COUNT(*)
     OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_affairs)   AS baseOnAffairs ,
-   \s
+  \s
        ROUND( ( COUNT(*)
     OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_affairs)  /  COUNT(*)
-    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant)  ) *100 , 2 )as darsadAzOmor
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_assistant)  ) *100 , 2 )as darsadOmorAzMoavenat ,\s
    \s
+        ROUND( ( COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_affairs)  /  COUNT(*)
+    OVER(PARTITION BY tbl_parameter_value.c_title, view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadOmorAzMojtame
    \s
+  \s
+  \s
 FROM
          tbl_class_student
     INNER JOIN tbl_student std ON tbl_class_student.student_id = std.id
@@ -1323,9 +1328,9 @@ FROM
     and
         tbl_class.c_start_date >= :fromDate
     AND tbl_class.c_end_date <= :toDate
-    AND      \s
-                                                            (:complexNull = 1 OR view_last_md_employee_hr.ccp_complex  IN (:complex))      \s
-                                                        AND (:assistantNull = 1 OR view_last_md_employee_hr.ccp_assistant  IN (:assistant))      \s
+    AND     \s
+                                                            (:complexNull = 1 OR view_last_md_employee_hr.ccp_complex  IN (:complex))     \s
+                                                        AND (:assistantNull = 1 OR view_last_md_employee_hr.ccp_assistant  IN (:assistant))     \s
                                                            AND (:affairsNull = 1 OR view_last_md_employee_hr.ccp_affairs  IN (:affairs)) )res
 
 """, nativeQuery = true)

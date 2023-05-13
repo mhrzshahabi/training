@@ -16,21 +16,23 @@ public class TypeOfEnterToClassReport {
     private Double baseOnComplex;
     private String assistant;
     private Double baseOnAssistant;
-    private Double darsadAzComplex;
+    private Double darsadMoavenatAzMojtame;
     private String affairs;
     private Double baseOnAffairs;
-    private Double darsadAzOmor;
+    private Double darsadOmorAzMoavenat;
+    private Double darsadOmorAzMojtame;
 
-    public TypeOfEnterToClassReport(Long id, String title, String complex, Double baseOnComplex, String assistant, Double baseOnAssistant, Double darsadAzComplex, String affairs, Double baseOnAffairs, Double darsadAzOmor) {
+    public TypeOfEnterToClassReport(Long id, String title, String complex, Double baseOnComplex, String assistant, Double baseOnAssistant, Double darsadMoavenatAzMojtame, String affairs, Double baseOnAffairs, Double darsadOmorAzMoavenat, Double darsadOmorAzMojtame) {
         this.id = id;
         this.title = title;
         this.complex = complex;
         this.baseOnComplex = baseOnComplex;
         this.assistant = assistant;
         this.baseOnAssistant = baseOnAssistant;
-        this.darsadAzComplex = darsadAzComplex;
+        this.darsadMoavenatAzMojtame = darsadMoavenatAzMojtame;
         this.affairs = affairs;
         this.baseOnAffairs = baseOnAffairs;
-        this.darsadAzOmor = darsadAzOmor;
+        this.darsadOmorAzMoavenat = darsadOmorAzMoavenat;
+        this.darsadOmorAzMojtame = darsadOmorAzMojtame;
     }
 }
