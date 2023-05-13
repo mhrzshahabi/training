@@ -587,6 +587,11 @@ public class ClassStudentService implements IClassStudentService {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
     }
 
+    @Transactional
+    public void setTypeOfEnterToClassId(Long typeOfEnterToClassId, Long id) {
+        classStudentDAO.setTypeOfEnterToClassId(typeOfEnterToClassId, id);
+    }
+
     public List<Long> findEvaluationStudentInClass(Long studentId, Long classId) {
         return classStudentDAO.findEvaluationStudentInClass(studentId, classId);
     }

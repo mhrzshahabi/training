@@ -950,7 +950,7 @@
                     canEdit: true,
                     </sec:authorize>
                     changed: function (form, item, value) {
-                        ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
+                        ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item,"/update-presence-type-id/");
                     }
                 },
                 {
@@ -965,7 +965,7 @@
                     canEdit: true,
                     </sec:authorize>
                     changed: function (form, item, value) {
-                        ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
+                        ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item,"/update-enter-type-id/");
                     }
                 },
                 {
@@ -1098,7 +1098,7 @@
                 return result;
             },//end getCellCSSText
             cellClick: function (record, rowNum, colNum) {
-                if (colNum === 6) {
+                if (colNum === 7) {
                     selectedRecord_addStudent_class = {
                         firstName: record.student.firstName,
                         lastName: record.student.lastName,
@@ -2866,7 +2866,7 @@
             }
         }
 
-        function ListGrid_Cell_Update_Student(record, newValue, item) {
+        function ListGrid_Cell_Update_Student(record, newValue, item,updateUrl) {
             // var updating = {};
             // if (item.name === "applicantCompanyName") {
             //     updating.applicantCompanyName = newValue;
@@ -2876,7 +2876,7 @@
             //     updating.presenceTypeId = newValue;
             // }
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/update-presence-type-id/" + record.id + "/" + newValue, "PUT", null, class_student_update_student_result));
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + updateUrl + record.id + "/" + newValue, "PUT", null, class_student_update_student_result));
         }
 
         function class_student_update_student_result(resp) {

@@ -66,6 +66,8 @@ public interface IClassStudentService {
     @Transactional
     void setPeresenceTypeId(Long presenceTypeId, Long id);
 
+    void setTypeOfEnterToClassId(Long typeOfEnterToClassId, Long id);
+
     List<Long> findEvaluationStudentInClass(Long studentId, Long classId);
 
     Optional<ClassStudent> findById(Long classStudentId);

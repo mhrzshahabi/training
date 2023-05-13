@@ -52,6 +52,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     @Query(value = "update TBL_CLASS_STUDENT set TBL_CLASS_STUDENT.PRESENCE_TYPE_ID =:presenceTypeId where id =:id", nativeQuery = true)
     void setPeresenceTypeId(Long presenceTypeId, Long id);
 
+
+    @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set TBL_CLASS_STUDENT.type_of_enter_to_class =:typeOfEnterToClassId where id =:id", nativeQuery = true)
+    void setTypeOfEnterToClassId(Long typeOfEnterToClassId, Long id);
+
     @Modifying
     @Query(value = "update TBL_CLASS_STUDENT set " +
             "evaluation_audience_id = :AudienceId " +
@@ -1351,6 +1356,7 @@ SELECT
 FROM
     (
         SELECT\s
+        DISTINCT
             view_last_md_employee_hr.ccp_complex                                                 AS complex,
             sum(tbl_class.c_student_cost)
             OVER(PARTITION BY  view_last_md_employee_hr.ccp_complex) AS baseoncomplex ,
