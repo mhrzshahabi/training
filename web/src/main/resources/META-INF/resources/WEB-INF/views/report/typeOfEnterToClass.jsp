@@ -206,7 +206,7 @@
             {name: "baseOnComplex", title: "تعداد فراگیر براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "baseOnAssistant", title: "تعداد فراگیر براساس معاونت"},
-            {name: "darsadAzComplex", title: "درصد معاونت از مجتمع"},
+            {name: "darsadMoavenatAzMojtame", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
             {name: "baseOnAffairs", title: "تعداد فراگیر براساس امور"},
             {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},

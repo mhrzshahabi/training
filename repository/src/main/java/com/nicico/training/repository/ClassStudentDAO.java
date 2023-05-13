@@ -1342,5 +1342,64 @@ FROM
                                                             int assistantNull,
                                                             List<Object> affairs,
                                                             int affairsNull);
+
+
+    @Query(value = """
+SELECT
+    ROWNUM AS id,
+    res.*
+FROM
+    (
+        SELECT\s
+            view_last_md_employee_hr.ccp_complex                                                 AS complex,
+            sum(tbl_class.c_student_cost)
+            OVER(PARTITION BY  view_last_md_employee_hr.ccp_complex) AS baseoncomplex ,
+                view_last_md_employee_hr.ccp_assistant                                                 AS assistant,
+       sum(tbl_class.c_student_cost)OVER(PARTITION BY  view_last_md_employee_hr.ccp_assistant) AS baseOnAssistant ,
+      \s
+          ROUND( ( sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_assistant)  /  sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadMoavenatAzMojtame,
+      \s
+      \s
+           view_last_md_employee_hr.ccp_affairs                                                   AS affairs,
+         sum(tbl_class.c_student_cost)OVER(PARTITION BY  view_last_md_employee_hr.ccp_affairs) AS baseOnAffairs    ,
+                 ROUND( ( sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_affairs)  /  sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_assistant)  ) *100 , 2 )as darsadOmorAzMoavenat     ,
+   \s
+    ROUND( ( sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_affairs)  /  sum(tbl_class.c_student_cost)
+    OVER(PARTITION BY  view_last_md_employee_hr.ccp_complex)  ) *100 , 2 )as darsadOmorAzMojtame \s
+   \s
+   \s
+        FROM
+                 tbl_class_student
+            INNER JOIN tbl_student std ON tbl_class_student.student_id = std.id
+            INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+                                         LEFT JOIN view_last_md_employee_hr ON std.national_code = view_last_md_employee_hr.c_national_code
+
+        WHERE
+            view_last_md_employee_hr.ccp_affairs != 'ندارد'
+
+            and tbl_class.c_student_cost is not null
+                and
+        tbl_class.c_start_date >= :fromDate
+    AND tbl_class.c_end_date <= :toDate
+    AND     \s
+                                                            (:complexNull = 1 OR view_last_md_employee_hr.ccp_complex  IN (:complex))     \s
+                                                        AND (:assistantNull = 1 OR view_last_md_employee_hr.ccp_assistant  IN (:assistant))     \s
+                                                           AND (:affairsNull = 1 OR view_last_md_employee_hr.ccp_affairs  IN (:affairs))\s
+    ) res
+
+""", nativeQuery = true)
+    List<?> financialExpensesOfTheOrganizationReport(String fromDate,
+                                     String toDate,
+                                     List<Object> complex,
+                                     int complexNull,
+                                     List<Object> assistant,
+                                     int assistantNull,
+                                     List<Object> affairs,
+                                     int affairsNull);
 //
                                             }

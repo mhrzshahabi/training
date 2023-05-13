@@ -21,6 +21,7 @@ public class ClassStudentDTO implements Serializable {
     private String valence;
     private String applicantCompanyName;
     private Long presenceTypeId;
+    private Long typeOfEnterToClassId;
     @ApiModelProperty(required = true)
     private Long studentId;
     @ApiModelProperty(required = true)
@@ -36,6 +37,7 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Long typeOfEnterToClassId;
         private Float preTestScore;
         private String warning;
         @Getter(AccessLevel.NONE)
@@ -123,6 +125,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer registerTypeId;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Long typeOfEnterToClassId;
         private Long id;
         private Boolean isNeedsAssessment;
         private Boolean isPassed;
@@ -139,6 +142,7 @@ public class ClassStudentDTO implements Serializable {
     public static class Update {
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Long typeOfEnterToClassId;
     }
 
     @Getter
@@ -219,6 +223,7 @@ public class ClassStudentDTO implements Serializable {
         }
 
         private Long presenceTypeId;
+        private Long typeOfEnterToClassId;
         private Long id;
         private Integer evaluationStatusReaction;
         private Integer evaluationStatusExecution;

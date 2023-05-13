@@ -3247,7 +3247,7 @@ public class TclassService implements ITclassService {
             params.put("date", DateUtil.todayDate());
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
-            params.put("qrCodeData", trainingUrl + "anonymous/els/student/certification/qr-code/" + nationalCode + "/" + classId);
+            params.put("qrCodeData", elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId);
             setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
@@ -3579,7 +3579,7 @@ public class TclassService implements ITclassService {
             params.put("date", DateUtil.todayDate());
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
-            params.put("qrCodeData", elsUrl + "/training/certification/qr-code/" + nationalCode + "/" + classId);
+            params.put("qrCodeData", elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId);
             setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +

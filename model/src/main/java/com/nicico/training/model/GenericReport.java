@@ -8,21 +8,21 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class TypeOfEnterToClassReport {
+public class GenericReport {
 
     private Long id;
     private String title;
     private String complex;
-    private Double baseOnComplex;
+    private String baseOnComplex;
     private String assistant;
-    private Double baseOnAssistant;
-    private Double darsadMoavenatAzMojtame;
+    private String baseOnAssistant;
+    private String darsadMoavenatAzMojtame;
     private String affairs;
-    private Double baseOnAffairs;
-    private Double darsadOmorAzMoavenat;
-    private Double darsadOmorAzMojtame;
+    private String baseOnAffairs;
+    private String darsadOmorAzMoavenat;
+    private String darsadOmorAzMojtame;
 
-    public TypeOfEnterToClassReport(Long id, String title, String complex, Double baseOnComplex, String assistant, Double baseOnAssistant, Double darsadMoavenatAzMojtame, String affairs, Double baseOnAffairs, Double darsadOmorAzMoavenat, Double darsadOmorAzMojtame) {
+    public GenericReport(Long id, String title, String complex, String baseOnComplex, String assistant, String baseOnAssistant, String darsadMoavenatAzMojtame, String affairs, String baseOnAffairs, String darsadOmorAzMoavenat, String darsadOmorAzMojtame) {
         this.id = id;
         this.title = title;
         this.complex = complex;

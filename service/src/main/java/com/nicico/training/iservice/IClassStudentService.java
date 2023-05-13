@@ -4,7 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.TypeOfEnterToClassReport;
+import com.nicico.training.model.GenericReport;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
 import request.exam.ExamResult;
@@ -93,5 +93,6 @@ public interface IClassStudentService {
 
     Boolean checkClassForFinalTest(Long classId);
 
-    List<TypeOfEnterToClassReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<GenericReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<GenericReport> getfinancialExpensesOfTheOrganizationReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
 }

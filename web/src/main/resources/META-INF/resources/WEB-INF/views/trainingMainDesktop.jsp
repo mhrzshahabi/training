@@ -1378,6 +1378,7 @@
     const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
     const behavioralEvaluationReportUrl = baseUrl + "/behavioral-evaluation";
     const typeOfEnterToClassUrl = rootUrl + "/class-student/type-of-enter-to-class";
+    const financialExpensesOfTheOrganizationUrl = rootUrl + "/class-student/financial-expenses-of-the-organization";
 
 
     // -------------------------------------------  Filters  -----------------------------------------------
@@ -2995,6 +2996,30 @@
                                     createTab(this.title, "<spring:url value="web/classFinalStatusReport/"/>");
                                 }
                             },
+                            {
+                                title: "گزارش آماری نحوه ورود افراد به کلاس",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/typeOfEnterToClass"/>");
+                                }
+                            },
+                            {
+                                title: "گزارش آماری نفر ساعت حضور",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/attendancePerson"/>");
+                                }
+                            },
+                            {
+                                title: "گزارش آماری تعداد دوره های تخصصی",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/numberOfSpecializedCourses"/>");
+                                }
+                            },
+                            {
+                                title: "گزارش آماری هزینه های مالی سازمان",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/financialExpensesOfTheOrganization"/>");
+                                }
+                            }
                         ]
                 },
                 </sec:authorize>
@@ -3040,30 +3065,6 @@
                             title: "گزارش شاخص های آماری",
                             click: function () {
                                 createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");
-                            }
-                        },
-                        {
-                            title: "گزارش آماری نحوه ورود افراد به کلاس",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/typeOfEnterToClass"/>");
-                            }
-                        },
-                        {
-                            title: "گزارش آماری نفر ساعت حضور",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/attendancePerson"/>");
-                            }
-                        },
-                        {
-                            title: "گزارش آماری تعداد دوره های تخصصی",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/numberOfSpecializedCourses"/>");
-                            }
-                        },
-                        {
-                            title: "گزارش آماری هزینه های مالی سازمان",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="web/financialExpensesOfTheOrganization"/>");
                             }
                         }
                     ]

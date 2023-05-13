@@ -667,6 +667,11 @@
                     title: "<spring:message code="class.presence.type"/>",
                     filterOperator: "equals",
                     autoFitWidth: true
+                },{
+                    name: "typeOfEnterToClassId",
+                    title: "نحوه ورود فرد به کلاس",
+                    filterOperator: "equals",
+                    autoFitWidth: true
                 },
                 {
                     name: "student.companyName",
@@ -937,6 +942,21 @@
                     name: "presenceTypeId",
                     type: "selectItem",
                     optionDataSource: StudentsDS_PresenceType,
+                    valueField: "id",
+                    displayField: "title",
+                    autoFitWidth: true,
+                    filterOnKeypress: true,
+                    <sec:authorize access="hasAuthority('TclassStudentsTab_U')">
+                    canEdit: true,
+                    </sec:authorize>
+                    changed: function (form, item, value) {
+                        ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
+                    }
+                },
+                {
+                    name: "typeOfEnterToClassId",
+                    type: "selectItem",
+                    optionDataSource: RestDataSource_typeOfEnterToClass,
                     valueField: "id",
                     displayField: "title",
                     autoFitWidth: true,

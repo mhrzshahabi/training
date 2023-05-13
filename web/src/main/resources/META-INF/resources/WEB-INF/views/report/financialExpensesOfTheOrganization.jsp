@@ -5,35 +5,38 @@
 
 // <script>
 
-    let fromDateCheckـfinancial_expenses_of_the_organization = true;
-    let toDateCheckـfinancial_expenses_of_the_organization = true;
-    let dateCheck_Orderـfinancial_expenses_of_the_organization = true;
-    let reportCriteriaـfinancial_expenses_of_the_organization;
-    let data_valuesـfinancial_expenses_of_the_organization = null;
+    let fromDateCheck_financial_expenses_of_the_organization = true;
+    let toDateCheck_financial_expenses_of_the_organization = true;
+    let dateCheck_Order_financial_expenses_of_the_organization = true;
+    let reportCriteria_financial_expenses_of_the_organization;
+    let data_values_financial_expenses_of_the_organization = null;
 
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
-    RestDataSourceـfinancial_expenses_of_the_organization= isc.TrDS.create({
+    RestDataSource_financial_expenses_of_the_organization= isc.TrDS.create({
         fields: [
             {name: "complex", title: "مجتمع"},
+            {name: "baseOnComplex", title: "کل هزینه براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
+            {name: "baseOnAssistant", title: "کل هزینه براساس معاونت"},
+            {name: "darsadMoavenatAzMojtame", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
-            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
-            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
+            {name: "baseOnAffairs", title: "کل هزینه براساس امور"},
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ],
-        fetchDataURL: typeOfEnterToClassUrl + "/iscList"
+        fetchDataURL: financialExpensesOfTheOrganizationUrl + "/iscList"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
-    ToolStripButton_Excelـfinancial_expenses_of_the_organization= isc.ToolStripButtonExcel.create({
+    ToolStripButton_Excel_financial_expenses_of_the_organization= isc.ToolStripButtonExcel.create({
         click: function () {
-            if (ListGridـfinancial_expenses_of_the_organization.getOriginalData().localData === undefined)
+            if (ListGrid_financial_expenses_of_the_organization.getOriginalData().localData === undefined)
                 createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
             else
-                ExportToFile.downloadExcelFromClient(ListGridـfinancial_expenses_of_the_organization, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
+                ExportToFile.downloadExcelFromClient(ListGrid_financial_expenses_of_the_organization, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
         }
     });
-    ToolStrip_Actionsـfinancial_expenses_of_the_organization= isc.ToolStrip.create({
+    ToolStrip_Actions_financial_expenses_of_the_organization= isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
@@ -43,14 +46,14 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Excelـfinancial_expenses_of_the_organization
+                        ToolStripButton_Excel_financial_expenses_of_the_organization
                     ]
                 })
             ]
     });
 
-    organSegmentFilterـfinancial_expenses_of_the_organization= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
-    DynamicFormـfinancial_expenses_of_the_organization= isc.DynamicForm.create({
+    organSegmentFilter_financial_expenses_of_the_organization= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
+    DynamicForm_financial_expenses_of_the_organization= isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
@@ -61,7 +64,7 @@
         fields: [
             {
                 name: "fromDate",
-                ID: "fromDateـfinancial_expenses_of_the_organization",
+                ID: "fromDate_financial_expenses_of_the_organization",
                 title: "از تاریخ",
                 hint: todayDate,
                 required: true,
@@ -74,41 +77,41 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('fromDateـfinancial_expenses_of_the_organization', this, 'ymd', '/');
+                        displayDatePicker('fromDate_financial_expenses_of_the_organization', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value == null) {
                         form.clearFieldErrors("toDate","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("fromDate", true);
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
-                        fromDateCheckـfinancial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
+                        fromDateCheck_financial_expenses_of_the_organization = true;
                         return;
                     }
                     let dateCheck;
                     let endDate = form.getValue("toDate");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        fromDateCheckـfinancial_expenses_of_the_organization = false;
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
+                        fromDateCheck_financial_expenses_of_the_organization = false;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = false;
-                        fromDateCheckـfinancial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = false;
+                        fromDateCheck_financial_expenses_of_the_organization = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     }
                     else {
-                        fromDateCheckـfinancial_expenses_of_the_organization = true;
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
+                        fromDateCheck_financial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
                         form.clearFieldErrors("fromDate", true);
                     }
                 }
             },
             {
                 name: "toDate",
-                ID: "toDateـfinancial_expenses_of_the_organization",
+                ID: "toDate_financial_expenses_of_the_organization",
                 title: "تا تاریخ",
                 hint: todayDate,
                 required: true,
@@ -121,63 +124,63 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('toDateـfinancial_expenses_of_the_organization', this, 'ymd', '/', 'right');
+                        displayDatePicker('toDate_financial_expenses_of_the_organization', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value === null) {
                         form.clearFieldErrors("fromDate","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("toDate", true);
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
-                        toDateCheckـfinancial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
+                        toDateCheck_financial_expenses_of_the_organization = true;
                         return;
                     }
                     let dateCheck;
                     dateCheck = checkDate(value);
                     let fromDate = form.getValue("fromDate");
                     if (dateCheck === false) {
-                        toDateCheckـfinancial_expenses_of_the_organization = false;
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
+                        toDateCheck_financial_expenses_of_the_organization = false;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (fromDate !== undefined && value < fromDate) {
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        toDateCheckـfinancial_expenses_of_the_organization = true;
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = false;
+                        toDateCheck_financial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = false;
                     } else {
                         form.clearFieldErrors("toDate", true);
-                        toDateCheckـfinancial_expenses_of_the_organization = true;
-                        dateCheck_Orderـfinancial_expenses_of_the_organization = true;
+                        toDateCheck_financial_expenses_of_the_organization = true;
+                        dateCheck_Order_financial_expenses_of_the_organization = true;
                     }
                 }
             }
         ]
     });
 
-    IButton_Showـfinancial_expenses_of_the_organization= isc.IButtonSave.create({
+    IButton_Show_financial_expenses_of_the_organization= isc.IButtonSave.create({
         top: 260,
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            if (!DynamicFormـfinancial_expenses_of_the_organization.validate())
+            if (!DynamicForm_financial_expenses_of_the_organization.validate())
                 return;
-            ListGridـfinancial_expenses_of_the_organization.setData([]);
-            Reportingـfinancial_expenses_of_the_organization();
+            ListGrid_financial_expenses_of_the_organization.setData([]);
+            Reporting_financial_expenses_of_the_organization();
         }
     });
-    IButton_Clearـfinancial_expenses_of_the_organization= isc.IButtonSave.create({
+    IButton_Clear_financial_expenses_of_the_organization= isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
         width: 300,
         click: function () {
-            DynamicFormـfinancial_expenses_of_the_organization.clearValues();
-            DynamicFormـfinancial_expenses_of_the_organization.clearErrors();
-            organSegmentFilterـfinancial_expenses_of_the_organization.clearValues();
-            ListGridـfinancial_expenses_of_the_organization.setData([]);
+            DynamicForm_financial_expenses_of_the_organization.clearValues();
+            DynamicForm_financial_expenses_of_the_organization.clearErrors();
+            organSegmentFilter_financial_expenses_of_the_organization.clearValues();
+            ListGrid_financial_expenses_of_the_organization.setData([]);
         }
     });
-    HLayOut_Confirmـfinancial_expenses_of_the_organization= isc.TrHLayoutButtons.create({
+    HLayOut_Confirm_financial_expenses_of_the_organization= isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -186,62 +189,65 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Showـfinancial_expenses_of_the_organization,
-            IButton_Clearـfinancial_expenses_of_the_organization
+            IButton_Show_financial_expenses_of_the_organization,
+            IButton_Clear_financial_expenses_of_the_organization
         ]
     });
 
-    ListGridـfinancial_expenses_of_the_organization= isc.TrLG.create({
+    ListGrid_financial_expenses_of_the_organization= isc.TrLG.create({
         filterOnKeypress: false,
         showFilterEditor: false,
-        dataSource: RestDataSourceـfinancial_expenses_of_the_organization,
+        dataSource: RestDataSource_financial_expenses_of_the_organization,
         gridComponents: ["filterEditor", "header", "body"],
         fields: [
             {name: "complex", title: "مجتمع"},
+            {name: "baseOnComplex", title: "کل هزینه براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
+            {name: "baseOnAssistant", title: "کل هزینه براساس معاونت"},
+            {name: "darsadMoavenatAzMojtame", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
-            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
-            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
+            {name: "baseOnAffairs", title: "کل هزینه براساس امور"},
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ]
     });
 
-    VLayout_Bodyـfinancial_expenses_of_the_organization= isc.VLayout.create({
+    VLayout_Body_financial_expenses_of_the_organization= isc.VLayout.create({
         border: "2px solid blue",
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actionsـfinancial_expenses_of_the_organization,
-            organSegmentFilterـfinancial_expenses_of_the_organization,
-            DynamicFormـfinancial_expenses_of_the_organization,
-            HLayOut_Confirmـfinancial_expenses_of_the_organization,
-            ListGridـfinancial_expenses_of_the_organization
+            ToolStrip_Actions_financial_expenses_of_the_organization,
+            organSegmentFilter_financial_expenses_of_the_organization,
+            DynamicForm_financial_expenses_of_the_organization,
+            HLayOut_Confirm_financial_expenses_of_the_organization,
+            ListGrid_financial_expenses_of_the_organization
         ]
     });
 
     //---------------------------------------------------- Functions --------------------------------------------------------------//
-    function Reportingـfinancial_expenses_of_the_organization() {
+    function Reporting_financial_expenses_of_the_organization() {
 
-        data_valuesـfinancial_expenses_of_the_organization = null;
-        data_valuesـfinancial_expenses_of_the_organization = DynamicFormـfinancial_expenses_of_the_organization.getValuesAsAdvancedCriteria();
+        data_values_financial_expenses_of_the_organization = null;
+        data_values_financial_expenses_of_the_organization = DynamicForm_financial_expenses_of_the_organization.getValuesAsAdvancedCriteria();
 
-        if (organSegmentFilterـfinancial_expenses_of_the_organization.getCriteria() !== undefined) {
-            reportCriteriaـfinancial_expenses_of_the_organization = organSegmentFilterـfinancial_expenses_of_the_organization.getCriteria();
-            for (let i = 0; i < reportCriteriaـfinancial_expenses_of_the_organization.criteria.size(); i++) {
-                if (reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName === "complexTitle") {
-                    reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName = "complex";
-                    data_valuesـfinancial_expenses_of_the_organization.criteria.add(reportCriteriaـfinancial_expenses_of_the_organization.criteria[i]);
-                } else if (reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName === "assistant") {
-                    reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName = "assistant";
-                    data_valuesـfinancial_expenses_of_the_organization.criteria.add(reportCriteriaـfinancial_expenses_of_the_organization.criteria[i]);
-                } else if (reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName === "affairs") {
-                    reportCriteriaـfinancial_expenses_of_the_organization.criteria[i].fieldName = "affairs";
-                    data_valuesـfinancial_expenses_of_the_organization.criteria.add(reportCriteriaـfinancial_expenses_of_the_organization.criteria[i]);
+        if (organSegmentFilter_financial_expenses_of_the_organization.getCriteria() !== undefined) {
+            reportCriteria_financial_expenses_of_the_organization = organSegmentFilter_financial_expenses_of_the_organization.getCriteria();
+            for (let i = 0; i < reportCriteria_financial_expenses_of_the_organization.criteria.size(); i++) {
+                if (reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName === "complexTitle") {
+                    reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName = "complex";
+                    data_values_financial_expenses_of_the_organization.criteria.add(reportCriteria_financial_expenses_of_the_organization.criteria[i]);
+                } else if (reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName === "assistant") {
+                    reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName = "assistant";
+                    data_values_financial_expenses_of_the_organization.criteria.add(reportCriteria_financial_expenses_of_the_organization.criteria[i]);
+                } else if (reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName === "affairs") {
+                    reportCriteria_financial_expenses_of_the_organization.criteria[i].fieldName = "affairs";
+                    data_values_financial_expenses_of_the_organization.criteria.add(reportCriteria_financial_expenses_of_the_organization.criteria[i]);
                 }
             }
         }
 
-        ListGridـfinancial_expenses_of_the_organization.fetchData(data_valuesـfinancial_expenses_of_the_organization);
+        ListGrid_financial_expenses_of_the_organization.fetchData(data_values_financial_expenses_of_the_organization);
     }
 
     //</script>

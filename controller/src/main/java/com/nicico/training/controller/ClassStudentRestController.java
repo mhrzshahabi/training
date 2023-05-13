@@ -17,7 +17,7 @@ import com.nicico.training.mapper.tclass.TclassStudentMapper;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ParameterValue;
-import com.nicico.training.model.TypeOfEnterToClassReport;
+import com.nicico.training.model.GenericReport;
 import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.utility.persianDate.CalendarTool;
 import lombok.RequiredArgsConstructor;
@@ -581,7 +581,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @GetMapping(value = "/type-of-enter-to-class/iscList")
-    public ResponseEntity<ISC<TypeOfEnterToClassReport>> typeOfEnterToClassReport(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<GenericReport>> typeOfEnterToClassReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
 
@@ -612,14 +612,57 @@ public class ClassStudentRestController {
             affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
         }
 
-        List<TypeOfEnterToClassReport> reportDTOList = iClassStudentService.getTypeOfEnterToClassReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+        List<GenericReport> reportDTOList = iClassStudentService.getTypeOfEnterToClassReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
 
-        ISC.Response<TypeOfEnterToClassReport> response = new ISC.Response<>();
+        ISC.Response<GenericReport> response = new ISC.Response<>();
         response.setData(reportDTOList)
                 .setStartRow(0)
                 .setEndRow(reportDTOList.size())
                 .setTotalRows(reportDTOList.size());
-        ISC<TypeOfEnterToClassReport> dataISC = new ISC<>(response);
+        ISC<GenericReport> dataISC = new ISC<>(response);
+        return new ResponseEntity<>(dataISC, HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping(value = "/financial-expenses-of-the-organization/iscList")
+    public ResponseEntity<ISC<GenericReport>> financialExpensesOfTheOrganizationReport(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
+
+        String fromDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("fromDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String toDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("toDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+
+        List<Object> complex = new ArrayList<>();
+        List<Object> assistant = new ArrayList<>();
+        List<Object> affairs = new ArrayList<>();
+
+        int complexNull = 1;
+        int assistantNull = 1;
+        int affairsNull = 1;
+
+        List<Object> complexList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("complex")).collect(Collectors.toList());
+        if (complexList.size() != 0) {
+            complexNull = 0;
+            complex = convertList(((SearchDTO.CriteriaRq) complexList.get(0)).getValue());
+        }
+        List<Object> assistantList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("assistant")).collect(Collectors.toList());
+        if (assistantList.size() != 0) {
+            assistantNull = 0;
+            assistant = convertList(((SearchDTO.CriteriaRq) assistantList.get(0)).getValue());
+        }
+        List<Object> affairsList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("affairs")).collect(Collectors.toList());
+        if (affairsList.size() != 0) {
+            affairsNull = 0;
+            affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
+        }
+
+        List<GenericReport> reportDTOList = iClassStudentService.getfinancialExpensesOfTheOrganizationReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+
+        ISC.Response<GenericReport> response = new ISC.Response<>();
+        response.setData(reportDTOList)
+                .setStartRow(0)
+                .setEndRow(reportDTOList.size())
+                .setTotalRows(reportDTOList.size());
+        ISC<GenericReport> dataISC = new ISC<>(response);
         return new ResponseEntity<>(dataISC, HttpStatus.OK);
     }
 
