@@ -76,7 +76,6 @@ public class ClassStudentRestController {
     private final IClassSessionService iClassSessionService;
     private final ClassStudentBeanMapper mapper;
     private final ElsClient client;
-    private final IContactInfoService contactInfoService;
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
@@ -670,7 +669,51 @@ public class ClassStudentRestController {
             affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
         }
 
-        List<GenericReport> reportDTOList = iClassStudentService.getfinancialExpensesOfTheOrganizationReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+        List<GenericReport> reportDTOList = iClassStudentService.getFinancialExpensesOfTheOrganizationReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+
+        ISC.Response<GenericReport> response = new ISC.Response<>();
+        response.setData(reportDTOList)
+                .setStartRow(0)
+                .setEndRow(reportDTOList.size())
+                .setTotalRows(reportDTOList.size());
+        ISC<GenericReport> dataISC = new ISC<>(response);
+        return new ResponseEntity<>(dataISC, HttpStatus.OK);
+    }
+
+ @Loggable
+    @GetMapping(value = "/numberOf-specialized-courses-report/iscList")
+    public ResponseEntity<ISC<GenericReport>> NumberOfSpecializedCoursesReport(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
+
+        String fromDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("fromDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String toDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("toDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+
+        List<Object> complex = new ArrayList<>();
+        List<Object> assistant = new ArrayList<>();
+        List<Object> affairs = new ArrayList<>();
+
+        int complexNull = 1;
+        int assistantNull = 1;
+        int affairsNull = 1;
+
+        List<Object> complexList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("complex")).collect(Collectors.toList());
+        if (complexList.size() != 0) {
+            complexNull = 0;
+            complex = convertList(((SearchDTO.CriteriaRq) complexList.get(0)).getValue());
+        }
+        List<Object> assistantList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("assistant")).collect(Collectors.toList());
+        if (assistantList.size() != 0) {
+            assistantNull = 0;
+            assistant = convertList(((SearchDTO.CriteriaRq) assistantList.get(0)).getValue());
+        }
+        List<Object> affairsList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("affairs")).collect(Collectors.toList());
+        if (affairsList.size() != 0) {
+            affairsNull = 0;
+            affairs = convertList(((SearchDTO.CriteriaRq) affairsList.get(0)).getValue());
+        }
+
+        List<GenericReport> reportDTOList = iClassStudentService.getNumberOfSpecializedCoursesReport( fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
 
         ISC.Response<GenericReport> response = new ISC.Response<>();
         response.setData(reportDTOList)

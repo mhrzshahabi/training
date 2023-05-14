@@ -33,7 +33,7 @@
             if (ListGrid_financial_expenses_of_the_organization.getOriginalData().localData === undefined)
                 createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
             else
-                ExportToFile.downloadExcelFromClient(ListGrid_financial_expenses_of_the_organization, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
+                ExportToFile.downloadExcelFromClient(ListGrid_financial_expenses_of_the_organization, null, '', "گزارش آماری هزینه های مالی سازمان");
         }
     });
     ToolStrip_Actions_financial_expenses_of_the_organization= isc.ToolStrip.create({

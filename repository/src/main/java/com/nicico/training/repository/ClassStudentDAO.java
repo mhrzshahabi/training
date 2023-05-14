@@ -1405,5 +1405,67 @@ FROM
                                      int assistantNull,
                                      List<Object> affairs,
                                      int affairsNull);
+
+
+
+    @Query(value = """
+ SELECT ROWNUM as id ,
+     res.* FROM (
+ SELECT
+ DISTINCT
+ 
+      tbl_category.c_title_fa as title,
+      view_complex.c_title  AS complex,
+        COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_complex.c_code)   AS baseOnComplex,
+      view_assistant.c_title AS assistant,
+         COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_assistant.c_code) AS baseOnAssistant ,
+    \s
+        ROUND( ( COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_assistant.c_code)  /  COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_complex.c_code)  ) *100 , 2 )as darsadMoavenatAzMojtame,
+    \s
+      view_affairs.c_title   AS affairs ,
+     COUNT(*)
+         OVER(PARTITION BY tbl_category.c_title_fa, view_affairs.c_code) AS baseOnAffairs   ,
+        \s
+          \s
+        ROUND( ( COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_affairs.c_code)  /  COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_assistant.c_code)  ) *100 , 2 )as darsadOmorAzMoavenat ,\s
+   \s
+         ROUND( ( COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_affairs.c_code)  /  COUNT(*)
+     OVER(PARTITION BY tbl_category.c_title_fa, view_complex.c_code)  ) *100 , 2 )as darsadOmorAzMojtame
+ 
+    \s
+ FROM
+          tbl_class
+     INNER JOIN  tbl_course ON tbl_class.f_course =  tbl_course.id
+     INNER JOIN  tbl_category ON  tbl_course.category_id =  tbl_category.id
+     left JOIN  view_complex ON tbl_class.complex_id =  view_complex.id
+     left JOIN  view_assistant ON tbl_class.assistant_id =  view_assistant.id
+     left JOIN  view_affairs ON tbl_class.affairs_id =  view_affairs.id
+         WHERE\s
+    \s
+         tbl_class.c_start_date >= :fromDate
+     AND tbl_class.c_end_date <= :toDate
+     AND    \s
+                                                             (:complexNull = 1 OR view_complex.c_title  IN (:complex))    \s
+                                                         AND (:assistantNull = 1 OR view_assistant.c_title  IN (:assistant))    \s
+                                                            AND (:affairsNull = 1 OR view_affairs.c_title  IN (:affairs))\s
+                                                           \s
+                                                            )res
+
+""", nativeQuery = true)
+    List<?> numberOfSpecializedCoursesReport(String fromDate,
+                                                     String toDate,
+                                                     List<Object> complex,
+                                                     int complexNull,
+                                                     List<Object> assistant,
+                                                     int assistantNull,
+                                                     List<Object> affairs,
+                                                     int affairsNull);
 //
                                             }

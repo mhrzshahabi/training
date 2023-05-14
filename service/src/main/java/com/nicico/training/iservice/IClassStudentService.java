@@ -96,5 +96,6 @@ public interface IClassStudentService {
     Boolean checkClassForFinalTest(Long classId);
 
     List<GenericReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
-    List<GenericReport> getfinancialExpensesOfTheOrganizationReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<GenericReport> getFinancialExpensesOfTheOrganizationReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<GenericReport> getNumberOfSpecializedCoursesReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
 }

@@ -1378,6 +1378,7 @@
     const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
     const behavioralEvaluationReportUrl = baseUrl + "/behavioral-evaluation";
     const typeOfEnterToClassUrl = rootUrl + "/class-student/type-of-enter-to-class";
+    const numberOfSpecializedCoursesReportUrl = rootUrl + "/class-student/numberOf-specialized-courses-report";
     const financialExpensesOfTheOrganizationUrl = rootUrl + "/class-student/financial-expenses-of-the-organization";
 
 
@@ -3009,7 +3010,7 @@
                                 }
                             },
                             {
-                                title: "گزارش آماری تعداد دوره های تخصصی",
+                                title: "گزارش آماری تعداد کلاس های تشکیل شده",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/numberOfSpecializedCourses"/>");
                                 }

@@ -684,6 +684,8 @@ public class MainFormController {
     public String showNumberOfSpecializedCoursesReportForm() {
         return "report/numberOfSpecializedCourses";
     }
+
+
     @RequestMapping("/financialExpensesOfTheOrganization")
     public String showFinancialExpensesOfTheOrganizationReportForm() {
         return "report/financialExpensesOfTheOrganization";
