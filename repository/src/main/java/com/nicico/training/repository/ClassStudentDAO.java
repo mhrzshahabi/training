@@ -1329,8 +1329,8 @@ FROM
     LEFT JOIN view_last_md_employee_hr ON std.national_code = view_last_md_employee_hr.c_national_code
     LEFT JOIN tbl_parameter_value ON tbl_class_student.type_of_enter_to_class = tbl_parameter_value.id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
-    WHERE view_last_md_employee_hr.ccp_affairs != 'ندارد'
-    and
+    WHERE 
+    
         tbl_class.c_start_date >= :fromDate
     AND tbl_class.c_end_date <= :toDate
     AND     \s
@@ -1386,9 +1386,7 @@ FROM
                                          LEFT JOIN view_last_md_employee_hr ON std.national_code = view_last_md_employee_hr.c_national_code
 
         WHERE
-            view_last_md_employee_hr.ccp_affairs != 'ندارد'
-
-            and tbl_class.c_student_cost is not null
+        tbl_class.c_student_cost is not null
                 and
         tbl_class.c_start_date >= :fromDate
     AND tbl_class.c_end_date <= :toDate
