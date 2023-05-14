@@ -36,6 +36,7 @@
             {name: "studentPostGradeTitle", title: "<spring:message code="post.grade"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentJobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classCode", title:"<spring:message code="class.code"/>", autoFitWidth: true},
+            {name: "classCreator", title:"ایجاد کننده کلاس", autoFitWidth: true},
             {name: "classStatus", title:"<spring:message code="class.status"/>", autoFitWidth: true,
                 valueMap: {"1": "برنامه ريزی", "2": "در حال اجرا", "3": "پایان یافته", "4": "لغو شده", "5": "اختتام"}
             },
@@ -311,6 +312,7 @@
             {name: "studentPostGradeTitle"},
             {name: "studentJobTitle"},
             {name: "classCode"},
+            {name: "classCreator"},
             {name: "classStatus"},
             {name: "courseCode"},
             {name: "courseTitleFa"},

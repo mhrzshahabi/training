@@ -24,6 +24,7 @@ public class ViewStatisticsUnitReportDTO {
         ///////////////////////Class
         private Long classId;
         private String classCode;
+        private String classCreator;
         private String classStatus;
         private String classStartDate;
         private String classEndDate;

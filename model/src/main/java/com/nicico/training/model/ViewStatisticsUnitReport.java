@@ -46,6 +46,9 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "class_code")
     private String classCode;
 
+    @Column(name = "class_creator")
+    private String classCreator;
+
     @Column(name = "class_status")
     private String classStatus;
 
