@@ -318,4 +318,19 @@ public class ElsService implements IElsService {
         return questionBankService.update(questionId, isActive);
     }
 
+    @Override
+    public Boolean updateQuestionsActivationState(List<Long> questionIds, Boolean isActive) {
+        try {
+            questionIds.forEach(questionId->{
+                questionBankService.update(questionId, isActive);
+            });
+        }catch (Exception e){
+
+        }
+        finally {
+            return true;
+        }
+
+     }
+
 }

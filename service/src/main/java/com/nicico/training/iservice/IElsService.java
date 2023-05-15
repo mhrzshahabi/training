@@ -4,7 +4,6 @@ import dto.exam.ElsImportedExam;
 import dto.exam.ExamNotSentToElsDTO;
 import dto.exam.ExamStudentDTO;
 import request.exam.ElsSendExamToTrainingResponse;
-import request.exam.ExamNotSentToElsResponse;
 import request.exam.ExamResult;
 import response.BaseResponse;
 
@@ -23,4 +22,6 @@ public interface IElsService {
     Map<String,String> updateScores(List<ExamStudentDTO.Score> list);
 
     Boolean updateQuestionActivationState(Long questionId, Boolean isActive);
+
+    Boolean updateQuestionsActivationState(List<Long> questionIds, Boolean isActive);
 }
