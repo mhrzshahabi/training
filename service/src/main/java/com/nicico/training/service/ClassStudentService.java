@@ -1249,4 +1249,34 @@ public class ClassStudentService implements IClassStudentService {
         return data;
     }
 
+    @Override
+    public List<GenericReport> getAttendancePersonReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull) {
+        List<?> result;
+        result =classStudentDAO.getAttendancePersonReport(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+
+        List<GenericReport> data = null;
+
+        if (result != null) {
+            data = new ArrayList<>(result.size());
+
+            for (int i = 0; i < result.size(); i++) {
+                Object[] report = (Object[]) result.get(i);
+                data.add(new GenericReport(
+                        report[0]  != null ? Long.parseLong(report[0].toString())  : null,null,
+                        report[1]  != null ? report[1].toString()  : null,
+                        report[2]  != null ? report[2].toString()  : null,
+                        report[3]  != null ? report[3].toString() : null,
+                        report[4]  != null ? report[4].toString()  : null,
+                        report[5]  != null ? report[5].toString() : null,
+                        report[6]  != null ? report[6].toString() : null,
+                        report[7]  != null ? report[7].toString()  : null,
+                        report[8]  != null ? report[8].toString() : null,
+                        report[9]  != null ? report[9].toString() : null
+                ));
+            }
+        }
+
+        return data;
+    }
+
 }

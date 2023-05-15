@@ -3148,7 +3148,7 @@ public class ElsRestController {
                 response.setUpdated(updated);
                 if (updated) {
                     response.setStatus(HttpStatus.OK.value());
-                    response.setMessage("کلاس مورد نظر با موفقیت به روز رسانی شد");
+                    response.setMessage("سوال مورد نظر با موفقیت به روز رسانی شد");
                 } else {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                     response.setMessage("خطا در به روز رسانی کلاس:");
@@ -3435,7 +3435,7 @@ public class ElsRestController {
                 response.setUpdated(updated);
                 if (updated) {
                     response.setStatus(HttpStatus.OK.value());
-                    response.setMessage("کلاس مورد نظر با موفقیت به روز رسانی شد");
+                    response.setMessage("سوال مورد نظر با موفقیت به روز رسانی شد");
                 } else {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                     response.setMessage("خطا در به روز رسانی کلاس:");

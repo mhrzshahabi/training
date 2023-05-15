@@ -98,4 +98,5 @@ public interface IClassStudentService {
     List<GenericReport> getTypeOfEnterToClassReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
     List<GenericReport> getFinancialExpensesOfTheOrganizationReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
     List<GenericReport> getNumberOfSpecializedCoursesReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
+    List<GenericReport> getAttendancePersonReport(String fromDate, String toDate, List<Object> complex, int complexNull, List<Object> assistant, int assistantNull, List<Object> affairs, int affairsNull);
 }

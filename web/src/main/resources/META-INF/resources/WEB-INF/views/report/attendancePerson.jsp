@@ -5,35 +5,38 @@
 
 // <script>
 
-    let fromDateCheckـattendanceـperson = true;
-    let toDateCheckـattendanceـperson = true;
-    let dateCheck_Orderـattendanceـperson = true;
-    let reportCriteriaـattendanceـperson;
-    let data_valuesـattendanceـperson = null;
+    let fromDateCheck_attendance_person = true;
+    let toDateCheck_attendance_person = true;
+    let dateCheck_Order_attendance_person = true;
+    let reportCriteria_attendance_person;
+    let data_values_attendance_person = null;
 
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
-    RestDataSourceـattendanceـperson= isc.TrDS.create({
+    RestDataSource_attendance_person= isc.TrDS.create({
         fields: [
             {name: "complex", title: "مجتمع"},
+            {name: "baseOnComplex", title: "ساعات حضور  براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
+            {name: "baseOnAssistant", title: "ساعات حضور براساس معاونت"},
+            {name: "darsadMoavenatAzMojtame", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
-            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
-            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
+            {name: "baseOnAffairs", title: "ساعات حضور براساس امور"},
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ],
-        fetchDataURL: typeOfEnterToClassUrl + "/iscList"
+        fetchDataURL: attendancePersonUrl + "/iscList"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
-    ToolStripButton_Excelـattendanceـperson= isc.ToolStripButtonExcel.create({
+    ToolStripButton_Excel_attendance_person= isc.ToolStripButtonExcel.create({
         click: function () {
-            if (ListGridـattendanceـperson.getOriginalData().localData === undefined)
+            if (ListGrid_attendance_person.getOriginalData().localData === undefined)
                 createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
             else
-                ExportToFile.downloadExcelFromClient(ListGridـattendanceـperson, null, '', "گزارش آماری نحوه ورود افراد به کلاس");
+                ExportToFile.downloadExcelFromClient(ListGrid_attendance_person, null, '', "گزارش ساعت حضور فراگیران در کلاس");
         }
     });
-    ToolStrip_Actionsـattendanceـperson= isc.ToolStrip.create({
+    ToolStrip_Actions_attendance_person= isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
@@ -43,14 +46,14 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Excelـattendanceـperson
+                        ToolStripButton_Excel_attendance_person
                     ]
                 })
             ]
     });
 
-    organSegmentFilterـattendanceـperson= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
-    DynamicFormـattendanceـperson= isc.DynamicForm.create({
+    organSegmentFilter_attendance_person= init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
+    DynamicForm_attendance_person= isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
@@ -61,7 +64,7 @@
         fields: [
             {
                 name: "fromDate",
-                ID: "fromDateـattendanceـperson",
+                ID: "fromDate_attendance_person",
                 title: "از تاریخ",
                 hint: todayDate,
                 required: true,
@@ -74,41 +77,41 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('fromDateـattendanceـperson', this, 'ymd', '/');
+                        displayDatePicker('fromDate_attendance_person', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value == null) {
                         form.clearFieldErrors("toDate","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("fromDate", true);
-                        dateCheck_Orderـattendanceـperson = true;
-                        fromDateCheckـattendanceـperson = true;
+                        dateCheck_Order_attendance_person = true;
+                        fromDateCheck_attendance_person = true;
                         return;
                     }
                     let dateCheck;
                     let endDate = form.getValue("toDate");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        fromDateCheckـattendanceـperson = false;
-                        dateCheck_Orderـattendanceـperson = true;
+                        fromDateCheck_attendance_person = false;
+                        dateCheck_Order_attendance_person = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        dateCheck_Orderـattendanceـperson = false;
-                        fromDateCheckـattendanceـperson = true;
+                        dateCheck_Order_attendance_person = false;
+                        fromDateCheck_attendance_person = true;
                         form.clearFieldErrors("fromDate", true);
                         form.addFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     }
                     else {
-                        fromDateCheckـattendanceـperson = true;
-                        dateCheck_Orderـattendanceـperson = true;
+                        fromDateCheck_attendance_person = true;
+                        dateCheck_Order_attendance_person = true;
                         form.clearFieldErrors("fromDate", true);
                     }
                 }
             },
             {
                 name: "toDate",
-                ID: "toDateـattendanceـperson",
+                ID: "toDate_attendance_person",
                 title: "تا تاریخ",
                 hint: todayDate,
                 required: true,
@@ -121,63 +124,63 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('toDateـattendanceـperson', this, 'ymd', '/', 'right');
+                        displayDatePicker('toDate_attendance_person', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value === undefined || value === null) {
                         form.clearFieldErrors("fromDate","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("toDate", true);
-                        dateCheck_Orderـattendanceـperson = true;
-                        toDateCheckـattendanceـperson = true;
+                        dateCheck_Order_attendance_person = true;
+                        toDateCheck_attendance_person = true;
                         return;
                     }
                     let dateCheck;
                     dateCheck = checkDate(value);
                     let fromDate = form.getValue("fromDate");
                     if (dateCheck === false) {
-                        toDateCheckـattendanceـperson = false;
-                        dateCheck_Orderـattendanceـperson = true;
+                        toDateCheck_attendance_person = false;
+                        dateCheck_Order_attendance_person = true;
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
                     } else if (fromDate !== undefined && value < fromDate) {
                         form.clearFieldErrors("toDate", true);
                         form.addFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        toDateCheckـattendanceـperson = true;
-                        dateCheck_Orderـattendanceـperson = false;
+                        toDateCheck_attendance_person = true;
+                        dateCheck_Order_attendance_person = false;
                     } else {
                         form.clearFieldErrors("toDate", true);
-                        toDateCheckـattendanceـperson = true;
-                        dateCheck_Orderـattendanceـperson = true;
+                        toDateCheck_attendance_person = true;
+                        dateCheck_Order_attendance_person = true;
                     }
                 }
             }
         ]
     });
 
-    IButton_Showـattendanceـperson= isc.IButtonSave.create({
+    IButton_Show_attendance_person= isc.IButtonSave.create({
         top: 260,
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            if (!DynamicFormـattendanceـperson.validate())
+            if (!DynamicForm_attendance_person.validate())
                 return;
-            ListGridـattendanceـperson.setData([]);
-            Reportingـattendanceـperson();
+            ListGrid_attendance_person.setData([]);
+            Reporting_attendance_person();
         }
     });
-    IButton_Clearـattendanceـperson= isc.IButtonSave.create({
+    IButton_Clear_attendance_person= isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
         width: 300,
         click: function () {
-            DynamicFormـattendanceـperson.clearValues();
-            DynamicFormـattendanceـperson.clearErrors();
-            organSegmentFilterـattendanceـperson.clearValues();
-            ListGridـattendanceـperson.setData([]);
+            DynamicForm_attendance_person.clearValues();
+            DynamicForm_attendance_person.clearErrors();
+            organSegmentFilter_attendance_person.clearValues();
+            ListGrid_attendance_person.setData([]);
         }
     });
-    HLayOut_Confirmـattendanceـperson= isc.TrHLayoutButtons.create({
+    HLayOut_Confirm_attendance_person= isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -186,62 +189,65 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Showـattendanceـperson,
-            IButton_Clearـattendanceـperson
+            IButton_Show_attendance_person,
+            IButton_Clear_attendance_person
         ]
     });
 
-    ListGridـattendanceـperson= isc.TrLG.create({
+    ListGrid_attendance_person= isc.TrLG.create({
         filterOnKeypress: false,
         showFilterEditor: false,
-        dataSource: RestDataSourceـattendanceـperson,
+        dataSource: RestDataSource_attendance_person,
         gridComponents: ["filterEditor", "header", "body"],
         fields: [
             {name: "complex", title: "مجتمع"},
+            {name: "baseOnComplex", title: "ساعات حضور  براساس مجتمع"},
             {name: "assistant", title: "معاونت"},
+            {name: "baseOnAssistant", title: "ساعات حضور براساس معاونت"},
+            {name: "darsadMoavenatAzMojtame", title: "درصد معاونت از مجتمع"},
             {name: "affairs", title: "امور"},
-            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
-            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
-            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
+            {name: "baseOnAffairs", title: "ساعات حضور براساس امور"},
+            {name: "darsadOmorAzMoavenat", title: "درصد امور از معاونت"},
+            {name: "darsadOmorAzMojtame", title: "درصد امور از مجتمع"}
         ]
     });
 
-    VLayout_Bodyـattendanceـperson= isc.VLayout.create({
+    VLayout_Body_attendance_person= isc.VLayout.create({
         border: "2px solid blue",
         width: "100%",
         height: "100%",
         members: [
-            ToolStrip_Actionsـattendanceـperson,
-            organSegmentFilterـattendanceـperson,
-            DynamicFormـattendanceـperson,
-            HLayOut_Confirmـattendanceـperson,
-            ListGridـattendanceـperson
+            ToolStrip_Actions_attendance_person,
+            organSegmentFilter_attendance_person,
+            DynamicForm_attendance_person,
+            HLayOut_Confirm_attendance_person,
+            ListGrid_attendance_person
         ]
     });
 
     //---------------------------------------------------- Functions --------------------------------------------------------------//
-    function Reportingـattendanceـperson() {
+    function Reporting_attendance_person() {
 
-        data_valuesـattendanceـperson = null;
-        data_valuesـattendanceـperson = DynamicFormـattendanceـperson.getValuesAsAdvancedCriteria();
+        data_values_attendance_person = null;
+        data_values_attendance_person = DynamicForm_attendance_person.getValuesAsAdvancedCriteria();
 
-        if (organSegmentFilterـattendanceـperson.getCriteria() !== undefined) {
-            reportCriteriaـattendanceـperson = organSegmentFilterـattendanceـperson.getCriteria();
-            for (let i = 0; i < reportCriteriaـattendanceـperson.criteria.size(); i++) {
-                if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "complexTitle") {
-                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "complex";
-                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
-                } else if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "assistant") {
-                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "assistant";
-                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
-                } else if (reportCriteriaـattendanceـperson.criteria[i].fieldName === "affairs") {
-                    reportCriteriaـattendanceـperson.criteria[i].fieldName = "affairs";
-                    data_valuesـattendanceـperson.criteria.add(reportCriteriaـattendanceـperson.criteria[i]);
+        if (organSegmentFilter_attendance_person.getCriteria() !== undefined) {
+            reportCriteria_attendance_person = organSegmentFilter_attendance_person.getCriteria();
+            for (let i = 0; i < reportCriteria_attendance_person.criteria.size(); i++) {
+                if (reportCriteria_attendance_person.criteria[i].fieldName === "complexTitle") {
+                    reportCriteria_attendance_person.criteria[i].fieldName = "complex";
+                    data_values_attendance_person.criteria.add(reportCriteria_attendance_person.criteria[i]);
+                } else if (reportCriteria_attendance_person.criteria[i].fieldName === "assistant") {
+                    reportCriteria_attendance_person.criteria[i].fieldName = "assistant";
+                    data_values_attendance_person.criteria.add(reportCriteria_attendance_person.criteria[i]);
+                } else if (reportCriteria_attendance_person.criteria[i].fieldName === "affairs") {
+                    reportCriteria_attendance_person.criteria[i].fieldName = "affairs";
+                    data_values_attendance_person.criteria.add(reportCriteria_attendance_person.criteria[i]);
                 }
             }
         }
 
-        ListGridـattendanceـperson.fetchData(data_valuesـattendanceـperson);
+        ListGrid_attendance_person.fetchData(data_values_attendance_person);
     }
 
     //</script>

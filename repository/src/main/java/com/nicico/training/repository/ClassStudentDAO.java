@@ -1467,5 +1467,82 @@ FROM
                                                      int assistantNull,
                                                      List<Object> affairs,
                                                      int affairsNull);
+
+
+
+    @Query(value = "SELECT\n" +
+            "    ROWNUM AS id,\n" +
+            "    res.*\n" +
+            "FROM\n" +
+            "    (\n" +
+            "     SELECT\n" +
+            "         DISTINCT \n" +
+            "         mojtama                                                AS complex,\n" +
+            "            sum(presence_hour)\n" +
+            "            OVER(PARTITION BY  mojtama_id) AS baseoncomplex ,\n" +
+            "                moavenat                                                AS assistant,\n" +
+            "       sum(presence_hour)OVER(PARTITION BY  moavenat_id) AS baseOnAssistant ,\n" +
+            "      \n" +
+            "          ROUND( ( sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  moavenat_id)  /  sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  mojtama_id)  ) *100 , 2 )as darsadMoavenatAzMojtame,\n" +
+            "      \n" +
+            "    \n" +
+            "          omoor                                                   AS affairs,\n" +
+            "         sum(presence_hour)OVER(PARTITION BY  omoor_id) AS baseOnAffairs    ,\n" +
+            "                 ROUND( ( sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  omoor_id)  /  sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  mojtama_id)  ) *100 , 2 )as darsadOmorAzMoavenat     ,\n" +
+            "    \n" +
+            "    ROUND( ( sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  omoor_id)  /  sum(presence_hour)\n" +
+            "    OVER(PARTITION BY  mojtama_id)  ) *100 , 2 )as darsadOmorAzMojtame  \n" +
+            "    \n" +
+            "    \n" +
+            "    \n" +
+            "         FROM (\n" +
+            "      SELECT                \n" +
+            "                                                                                \n" +
+            "                                                                                   \n" +
+            "                                                                            round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') - to_date(csession.c_session_start_hour, 'HH24:MI')) *                \n" +
+            "                                                                            24, 1)                \n" +
+            "                                                                                       \n" +
+            "                                                                                   \n" +
+            "                                                                                     AS presence_hour,                \n" +
+            "                                                                               \n" +
+            "                                                              \n" +
+            "                                                                view_last_md_employee_hr.c_mojtame_code       AS mojtama_id,                \n" +
+            "                                                                view_last_md_employee_hr.ccp_complex   AS mojtama,                \n" +
+            "                                                                view_last_md_employee_hr.c_moavenat_code    AS moavenat_id,                \n" +
+            "                                                                view_last_md_employee_hr.ccp_assistant AS moavenat,                \n" +
+            "                                                                view_last_md_employee_hr.c_omor_code       AS omoor_id,                \n" +
+            "                                                                view_last_md_employee_hr.ccp_affairs   AS omoor                \n" +
+            "                                                            FROM                \n" +
+            "                                                                     tbl_attendance att                \n" +
+            "                                                                inner JOIN tbl_student std ON att.f_student = std.id                \n" +
+            "                                                                inner JOIN tbl_session csession ON att.f_session = csession.id                \n" +
+            "                                                                inner JOIN tbl_class   class ON csession.f_class_id = class.id                \n" +
+            "                                                                LEFT JOIN view_last_md_employee_hr  ON std.NATIONAL_CODE = view_last_md_employee_hr.C_NATIONAL_CODE  \n" +
+            "                                                                 where 1=1                     \n" +
+            "                                                             and class.C_START_DATE >= :fromDate                \n" +
+            "                                                                                          and class.c_end_date <= :toDate   \n" +
+            "                                                                                          and att.c_state in (1,2)\n" +
+            "                                                                                \n" +
+            "                                                                                     AND    \n" +
+            "                                                             (:complexNull = 1 OR view_last_md_employee_hr.ccp_complex   IN (:complex))    \n" +
+            "                                                         AND (:assistantNull = 1 OR  view_last_md_employee_hr.ccp_assistant   IN (:assistant))    \n" +
+            "                                                            AND (:affairsNull = 1 OR view_last_md_employee_hr.ccp_affairs   IN (:affairs))\n" +
+            "--                  \n" +
+            "                                                                )\n" +
+            "  \n" +
+            "    ) res", nativeQuery = true)
+    List<?> getAttendancePersonReport(String fromDate,
+                                             String toDate,
+                                             List<Object> complex,
+                                             int complexNull,
+                                             List<Object> assistant,
+                                             int assistantNull,
+                                             List<Object> affairs,
+                                             int affairsNull);
 //
                                             }

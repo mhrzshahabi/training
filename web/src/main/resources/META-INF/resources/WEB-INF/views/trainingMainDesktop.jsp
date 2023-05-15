@@ -1378,6 +1378,7 @@
     const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
     const behavioralEvaluationReportUrl = baseUrl + "/behavioral-evaluation";
     const typeOfEnterToClassUrl = rootUrl + "/class-student/type-of-enter-to-class";
+    const attendancePersonUrl = rootUrl + "/class-student/attendance-person";
     const numberOfSpecializedCoursesReportUrl = rootUrl + "/class-student/numberOf-specialized-courses-report";
     const financialExpensesOfTheOrganizationUrl = rootUrl + "/class-student/financial-expenses-of-the-organization";
 
