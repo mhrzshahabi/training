@@ -262,7 +262,8 @@
                 autoFithWidth: true
             },
             {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
-            {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
+            {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+            {name: "elsStatus", title: "وضعیت ارسال ارزیابی به سیستم آنلاین",valueMap: {"true":"ارسال شده","false":"ارسال نشده"}, align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
         <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
         cellClick: function (record, rowNum, colNum) {
@@ -545,6 +546,12 @@
                                                 title: "وضعیت حضور در کلاس",
                                                 width: 100,
                                                 valueMap: {"true":"حاضر","false":"غایب"},
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "elsStatus",
+                                                width: 100,
+                                                title: "وضعیت ارسال ارزیابی به سیستم آنلاین",valueMap: {"true":"ارسال شده","false":"ارسال نشده"},
                                                 align: "center"
                                             }
                                         ];
@@ -1864,7 +1871,7 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     evalWait_RE.close();
                     createDialog("info", " ارسال با موفقیت انجام شد");
-
+                    ListGrid_student_RE.invalidateCache();
                 } else {
                     evalWait_RE.close();
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
