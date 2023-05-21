@@ -166,7 +166,7 @@ public class AgreementClassCostService implements IAgreementClassCostService {
         List<EducationalDecision> educationalDecisionFiltered = new ArrayList<>();
         TeacherExperienceInfo teacherExperienceInfo = teacherExperienceInfoService.getLastTeacherExperienceInfoByTeacherId(teacherId);
         if (teacherExperienceInfo != null) {
-            Double teachingExperienceYear = teacherExperienceInfo.getTeachingExperience().doubleValue() / 12;
+            Double teachingExperienceYear = teacherExperienceInfo.getTeachingExperience().doubleValue() ;
             List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "history", complex);
             if (educationalDecisionList.size() != 0) {
 

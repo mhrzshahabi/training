@@ -1984,7 +1984,7 @@
                                 let current = {
                                     teacherNationalCode: XL_row_object[i]["کد ملی مدرس"],
                                     salaryBase: XL_row_object[i]["پایه"],
-                                    teachingExperience: XL_row_object[i]["سابقه(ماه)"],
+                                    teachingExperience: XL_row_object[i]["سابقه(سال)"],
                                     teacherRankTitle: XL_row_object[i]["رتبه"]
                                 };
                                 records.add(current);
@@ -2033,7 +2033,7 @@
             fields: [
                 {name: "teacherNationalCode", title: "کد ملی مدرس", filterOperator: "iContains"},
                 {name: "salaryBase", title: "پایه", filterOperator: "iContains"},
-                {name: "teachingExperience", title: "سابقه (ماه)", filterOperator: "iContains"},
+                {name: "teachingExperience", title: "سابقه (سال)", filterOperator: "iContains"},
                 {name: "teacherRankTitle", title: "رتبه", filterOperator: "iContains"}
             ]
         });
