@@ -158,6 +158,8 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
             elsQuestionDto.setQuestionCode(questionBank.getCode());
             elsQuestionDto.setIsChild(questionBank.getIsChild());
+            elsQuestionDto.setClassificationId(questionBank.getClassificationId());
+            elsQuestionDto.setReference(questionBank.getReference());
             elsQuestionDto.setIsActive(questionBank.getEnabled() == null);
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
             if(questionBank.getDisplayTypeId()!=null){
@@ -353,6 +355,8 @@ public abstract class QuestionBankBeanMapper {
             List<ElsAttachmentDto> option4Files = new ArrayList<>();
 
             create.setQuestion(elsQuestionDto.getTitle());
+            create.setClassificationId(elsQuestionDto.getClassificationId());
+            create.setReference(elsQuestionDto.getReference());
             create.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
 //            create.setCategoryId(elsQuestionDto.getCategoryId());
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
@@ -454,6 +458,8 @@ public abstract class QuestionBankBeanMapper {
         List<ElsAttachmentDto> option4Files = new ArrayList<>();
 
         update.setQuestion(elsQuestionDto.getTitle());
+        update.setClassificationId(elsQuestionDto.getClassificationId());
+        update.setReference(elsQuestionDto.getReference());
         update.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
         update.setCategoryId(tClass.getCourse().getCategoryId());
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());

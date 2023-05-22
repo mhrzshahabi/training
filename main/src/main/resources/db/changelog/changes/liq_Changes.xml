@@ -10255,6 +10255,31 @@ DECLARE
             <column name="type_of_enter_to_class" type="NUMBER(19, 0)"/>
         </addColumn>
     </changeSet>
+
+
+    <changeSet id="1661057829000-6" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            create or replace PROCEDURE PRC_UPDATE_EXPERIENCE AS
+            BEGIN
+            UPDATE
+                tbl_teacher_experience_info
+            SET TEACHING_EXPERIENCE = TEACHING_EXPERIENCE+1  WHERE id in (
+                SELECT
+                    tbl_teacher_experience_info.id
+                FROM
+                    tbl_teacher_experience_info
+                        INNER JOIN tbl_teacher ON tbl_teacher_experience_info.teacher = tbl_teacher.id
+
+                WHERE
+                    tbl_teacher.b_enabled = 1
+            );
+            END PRC_UPDATE_EXPERIENCE;
+            /
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
