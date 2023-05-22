@@ -993,7 +993,13 @@
                     {name: "code", filterOperator: "iContains"},
                     {name: "course.titleFa"}
                 ],
-                fetchDataURL: classUrl + "info-tuple-list"
+                fetchDataURL: classUrl + "info-tuple-list",
+                implicitCriteria: {
+                    _constructor:"AdvancedCriteria",
+                    operator:"and",
+                    criteria:[{ fieldName: "classStatus", operator: "inSet", value: ["2","3","4","5"]}
+                    ]
+                },
             });
             let ListGrid_Select_Class = isc.TrLG.create({
                 height: "90%",
