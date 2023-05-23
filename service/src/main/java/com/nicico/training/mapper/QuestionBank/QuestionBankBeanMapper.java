@@ -159,6 +159,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setQuestionCode(questionBank.getCode());
             elsQuestionDto.setIsChild(questionBank.getIsChild());
             elsQuestionDto.setClassificationId(questionBank.getClassificationId());
+            elsQuestionDto.setClassification(parameterValueService.get(questionBank.getClassificationId()).getValue());
             elsQuestionDto.setReference(questionBank.getReference());
             elsQuestionDto.setIsActive(questionBank.getEnabled() == null);
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());

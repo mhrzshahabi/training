@@ -77,5 +77,7 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private String reference;
     @ApiModelProperty
     private Long classificationId;
+    @ApiModelProperty
+    private String classification;
 
 }
