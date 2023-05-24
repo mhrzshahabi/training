@@ -77,7 +77,7 @@ public class QuestionBankDTO {
         private String questionDesigner;
         private Set<GroupQuestionDto> groupQuestions;
         private Set<Long> groupQuestionIds;
-        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+//        private SubcategoryDTO.SubCategoryInfoTuple subCategory;
     }
 
     @Getter
