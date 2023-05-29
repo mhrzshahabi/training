@@ -162,8 +162,8 @@ WHERE
                 tbl_sub_category.id           AS sub_category_id,
                 tbl_sub_category.c_title_fa   AS sub_category_title,
                 answer_title.c_title          AS answer_title,
-                 CASE WHEN evaluatorparamvalue.c_code = '32'  THEN student.first_name  ELSE teacherinfo.c_first_name_fa END as first_name ,
-                 CASE WHEN evaluatorparamvalue.c_code = '32'  THEN student.last_name  ELSE teacherinfo.c_last_name_fa END as teacher_last ,
+                student.first_name            AS first_name,
+                student.last_name             AS last_name,
                 student.national_code         AS nationalcode,
                 complex.c_title               AS complextitle,
                 eval_question.c_question      AS questiontitle,
@@ -178,27 +178,27 @@ WHERE
             FROM
                 tbl_evaluation               eval
                 LEFT JOIN tbl_evaluation_answer        answer ON eval.id = answer.f_evaluation_id
-                LEFT JOIN tbl_class                    tclass ON tclass.id = eval.f_class_id
+                INNER JOIN tbl_class                    tclass ON tclass.id = eval.f_class_id
                 LEFT JOIN tbl_institute                organizer ON organizer.id = tclass.f_institute_organizer
                 LEFT JOIN tbl_teacher                  teacher ON teacher.id = tclass.f_teacher
                 LEFT JOIN tbl_personal_info            teacherinfo ON teacherinfo.id = teacher.f_personality
                 LEFT JOIN tbl_contact_info             teachercontact ON teachercontact.id = teacherinfo.f_contact_info
-                LEFT JOIN tbl_parameter_value          answer_title ON answer.f_answer_id = answer_title.id
-                LEFT JOIN tbl_class_student            class_student ON eval.f_evaluator_id = class_student.id
+                INNER JOIN tbl_parameter_value          answer_title ON answer.f_answer_id = answer_title.id
+                INNER JOIN tbl_class_student            class_student ON eval.f_evaluator_id = class_student.id
                 LEFT JOIN tbl_parameter_value          evaluatorparamvalue ON evaluatorparamvalue.id = eval.f_evaluator_type_id
-                LEFT JOIN tbl_student                  student ON class_student.student_id = student.id
-                LEFT JOIN tbl_contact_info             studentcontact ON studentcontact.id = student.f_contact_info
-                LEFT JOIN tbl_questionnaire            questionnaire ON eval.f_questionnaire_id = questionnaire.id
-                LEFT JOIN tbl_questionnaire_question   questionnaire_q ON answer.f_evaluation_question_id = questionnaire_q.id
-                LEFT JOIN tbl_evaluation_question      eval_question ON questionnaire_q.f_evaluation_question = eval_question.id
+                INNER JOIN tbl_student                  student ON class_student.student_id = student.id
+                INNER JOIN tbl_contact_info             studentcontact ON studentcontact.id = student.f_contact_info
+                INNER JOIN tbl_questionnaire            questionnaire ON eval.f_questionnaire_id = questionnaire.id
+                INNER JOIN tbl_questionnaire_question   questionnaire_q ON answer.f_evaluation_question_id = questionnaire_q.id
+                INNER JOIN tbl_evaluation_question      eval_question ON questionnaire_q.f_evaluation_question = eval_question.id
                 LEFT JOIN view_complex                 complex ON complex.id = tclass.complex_id
                 LEFT JOIN tbl_parameter_value ON eval_question.f_domain_id = tbl_parameter_value.id
-                LEFT JOIN tbl_course ON tclass.f_course = tbl_course.id
-                LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
-                LEFT JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+                INNER JOIN tbl_course ON tclass.f_course = tbl_course.id
+                INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+                INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
             WHERE
-               
-                 eval_question.id IN (:questionIds)
+                evaluatorparamvalue.c_code = '32'
+                AND eval_question.id IN (:questionIds)
                 AND ( :classIds IS NULL OR eval.f_class_id IN (:classIds) )
                 AND ( :startDate1 IS NULL OR tclass.c_start_date >= :startDate1 )
                 AND ( :startDate2 IS NULL OR tclass.c_start_date <= :startDate2 )
