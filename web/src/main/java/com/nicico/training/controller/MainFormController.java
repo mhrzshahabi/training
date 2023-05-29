@@ -691,4 +691,8 @@ public class MainFormController {
         return "report/financialExpensesOfTheOrganization";
     }
 
+    @RequestMapping("/paymentDoc")
+    public String showPaymentDocForm() {
+        return "finance/paymentDoc";    }
+
 }

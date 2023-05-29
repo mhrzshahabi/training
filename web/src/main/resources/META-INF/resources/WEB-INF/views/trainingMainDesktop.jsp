@@ -2457,6 +2457,12 @@
                         createTab(this.title, "<spring:url value="/web/educational/decision"/>");
                     }
                 },
+                {
+                    title: "سند پرداخت",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/paymentDoc"/>");
+                    }
+                },
                 </sec:authorize>
             ]
         })
