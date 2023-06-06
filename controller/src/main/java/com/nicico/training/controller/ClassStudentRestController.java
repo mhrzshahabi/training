@@ -159,7 +159,7 @@ public class ClassStudentRestController {
                     Map<String, Integer> mobiles = iClassStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
-                        if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
+                        if (p.getStudent().getContactInfo()!=null &&  p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
                             p.setIsSentMessage("");
                         } else {
                             p.setIsSentMessage("warning");
