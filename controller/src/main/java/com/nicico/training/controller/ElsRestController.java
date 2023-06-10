@@ -531,7 +531,7 @@ public class ElsRestController {
 //                }
 //            }
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
 
             return new ResponseEntity(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
