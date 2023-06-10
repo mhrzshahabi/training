@@ -1345,6 +1345,7 @@
     const helpFilesUrl = rootUrl + "/help-files";
     const fileLabelUrl = rootUrl + "/file-label";
     const agreementUrl = rootUrl + "/agreement";
+    const paymentUrl = rootUrl + "/payment-doc";
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";

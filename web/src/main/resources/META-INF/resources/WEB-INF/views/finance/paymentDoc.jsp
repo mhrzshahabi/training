@@ -8,13 +8,12 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    let AgreementClassCost_ListGridData = [];
-    let agreementClassCost_Data = [];
-    let reportCriteria_ULR = null;
-    let agreementMethod = "POST";
-    let maxFileSizeUpload = 31457280;
-    let isFileAttached = false;
-    let rialId = null;
+// /    let agreementClassCost_Data = [];
+//     let reportCriteria_ULR = null;
+    let paymentMethod = "POST";
+    // let maxFileSizeUpload = 31457280;
+    // let isFileAttached = false;
+    // let rialId = null;
 
 
 
@@ -22,15 +21,27 @@
     RestDataSource_Payment = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "agreementNumber", title: "شماره تفاهم نامه", filterOperator: "iContains"}
+            {name: "agreement.agreementNumber", title: "شماره تفاهم نامه", filterOperator: "iContains"},
+            {name: "agreement.agreementDate", title: "تاریخ عقد تفاهم نامه", filterOperator: "iContains"},
+            {name: "createdDate", title: "تاریخ ثبت سند"},
+            {name: "lastModifiedDate", title: "تاریخ ویرایش سند"},
+            {name: "createdBy", title: "کاربر ثبت کننده سند", filterOperator: "iContains"},
+            {name: "lastModifiedBy", title: "کاربر ویرایش کننده سند", filterOperator: "iContains"}
         ],
-        // fetchDataURL: agreementUrl + "/spec-list"
+        fetchDataURL: paymentUrl + "/spec-list"
     });
 
-    let RestDataSource_Payment_Department_Filter = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    let RestDataSource_Payment_Agrement_Filter = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, hidden: true},
+            {name: "agreementNumber", title: "شماره تفاهم نامه", filterOperator: "iContains"},
+            {name: "agreementDate", title: "تاریخ عقد تفاهم نامه", filterOperator: "iContains"},
+            {name: "fromDate", title: "<spring:message code='from.date'/>"},
+            {name: "toDate", title: "<spring:message code='to.date'/>"},
+            {name: "firstParty.titleFa", title: "طرف اول ", filterOperator: "iContains"},
+            {name: "secondPartyTeacher.fullNameFa", title: "طرف دوم", filterOperator: "iContains"}
+        ],
+        fetchDataURL: agreementUrl + "/spec-list"
     });
     //----------------------------------- layOut -----------------------------------------------------------------------
     ToolStripButton_Add_Payment = isc.ToolStripButtonCreate.create({
@@ -87,9 +98,23 @@
         showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
-            {
-                name: "agreementNumber",
-            }
+            {name: "agreement.agreementNumber"},
+            {name: "agreement.agreementDate"},
+            {name: "createdBy"},
+            {name: "createdDate",  canFilter: false, formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }},
+            {name: "lastModifiedBy"},
+            {name: "lastModifiedDate",  canFilter: false, formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }}
+
         ],
         recordClick: function () {
          },
@@ -216,7 +241,7 @@
 
     DynamicForm_Payment = isc.DynamicForm.create({
         width: "85%",
-        height: "70%",
+        height: "100%",
         align: "center",
         canSubmit: true,
         wrapItemTitles: false,
@@ -228,11 +253,11 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "complexId",
+                name: "agreementId",
                 editorType: "ComboBoxItem",
-                title: "<spring:message code="complex"/>:",
-                optionDataSource: RestDataSource_Payment_Department_Filter,
-                displayField: "title",
+                title: "تفاهم نامه :",
+                optionDataSource: RestDataSource_Payment_Agrement_Filter,
+                displayField: "agreementNumber",
                 autoFetchData: true,
                 valueField: "id",
                 textAlign: "center",
@@ -240,11 +265,16 @@
                 colSpan: 4,
                 textMatchStyle: "substring",
                 pickListFields: [
-                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                    {name: "agreementNumber",filterOperator: "iContains"},
+                    {name: "agreementDate", filterOperator: "iContains"},
+                    {name: "fromDate", filterOperator: "iContains"},
+                    {name: "toDate", filterOperator: "iContains"},
+                    {name: "firstParty.titleFa", filterOperator: "iContains"},
+                    {name: "secondPartyTeacher.fullNameFa",filterOperator: "iContains"}
                 ],
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
             }
         ]
@@ -254,51 +284,45 @@
         align: "center",
         click: function () {
 
-            <%--if (!DynamicForm_Payment.validate())--%>
-            <%--    return;--%>
-            <%--if (DynamicForm_Payment.getValue("secondParty") === "1" && DynamicForm_Payment.getValue("secondPartyTeacherId") == null) {--%>
-            <%--    createDialog("info", "مدرس را انتخاب کنید");--%>
-            <%--    return;--%>
-            <%--}--%>
-            <%--if (DynamicForm_Payment.getValue("secondParty") === "2" && DynamicForm_Payment.getValue("secondPartyInstituteId") == null) {--%>
-            <%--    createDialog("info", "موسسه آموزشی را انتخاب کنید");--%>
-            <%--    return;--%>
-            <%--}--%>
+            if (!DynamicForm_Payment.validate())
+                return;
 
-            <%--let data = DynamicForm_Payment.getValues();--%>
 
-            <%--if (agreementMethod === "POST") {--%>
+            let data = DynamicForm_Payment.getValues();
+            let paymentData = {};
+            paymentData.agreementId = data.agreementId
+            if (paymentMethod === "POST") {
 
-            <%--    wait.show();--%>
-            <%--    isc.RPCManager.sendRequest(TrDSRequest(agreementUrl, "POST", JSON.stringify(data), function (resp) {--%>
-            <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-            <%--            wait.close();--%>
-            <%--            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-            <%--            Window_Payment.close();--%>
-            <%--            Payment_Refresh();--%>
-            <%--        } else {--%>
-            <%--            wait.close();--%>
-            <%--            createDialog("info", "خطایی رخ داده است");--%>
-            <%--            Window_Payment.close();--%>
-            <%--        }--%>
-            <%--    }));--%>
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(paymentUrl, "POST", JSON.stringify(paymentData), function (resp) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        wait.close();
+                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        Window_Payment.close();
+                        Payment_Refresh();
+                    } else {
+                        wait.close();
+                        createDialog("info", "خطایی رخ داده است");
+                        Window_Payment.close();
+                    }
+                }));
 
-            <%--} else if (agreementMethod === "PUT") {--%>
+            } else if (paymentMethod === "PUT") {
 
-            <%--    wait.show();--%>
-            <%--    isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/" + data.id, "PUT", JSON.stringify(data), function (resp) {--%>
-            <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-            <%--            wait.close();--%>
-            <%--            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-            <%--            Window_Payment.close();--%>
-            <%--            Payment_Refresh();--%>
-            <%--        } else {--%>
-            <%--            wait.close();--%>
-            <%--            createDialog("info", "خطایی رخ داده است");--%>
-            <%--            Window_Payment.close();--%>
-            <%--        }--%>
-            <%--    }));--%>
-            <%--}--%>
+                <%--wait.show();--%>
+                <%--isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + data.id, "PUT", JSON.stringify(data), function (resp) {--%>
+                <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+                <%--        wait.close();--%>
+                <%--        createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
+                <%--        Window_Payment.close();--%>
+                <%--        Payment_Refresh();--%>
+                <%--    } else {--%>
+                <%--        wait.close();--%>
+                <%--        createDialog("info", "خطایی رخ داده است");--%>
+                <%--        Window_Payment.close();--%>
+                <%--    }--%>
+                <%--}));--%>
+            }
         }
     });
     IButton_Exit_Payment = isc.IButtonCancel.create({
@@ -321,9 +345,9 @@
         ]
     });
     Window_Payment = isc.Window.create({
-        title: "<spring:message code='agreement'/>",
+        title: "ایجاد سند پرداخت",
         width: "50%",
-        height: "70%",
+        height: "20%",
         autoSize: false,
         align: "center",
         items: [
@@ -344,49 +368,38 @@
 
     function Payment_Add() {
         //
-        agreementMethod = "POST";
+        paymentMethod = "POST";
         DynamicForm_Payment.clearValues();
         DynamicForm_Payment.clearErrors();
         // DynamicForm_Payment.getItem("secondPartyTeacherId").disabled = false;
         // DynamicForm_Payment.getItem("secondPartyInstituteId").disabled = true;
-        Window_Payment.setTitle("ایجاد تفاهم نامه/ قرارداد");
+        Window_Payment.setTitle("ایجاد سند پرداخت");
         Window_Payment.show();
     }
     function Payment_Edit() {
 
-        // let record = ListGrid_Payment.getSelectedRecord();
-        // if (record == null || record.id == null) {
-        //     isc.Dialog.create({
-        //         message: "تفاهم نامه ای برای ویرایش انتخاب نشده است.",
-        //         icon: "[SKIN]ask.png",
-        //         title: "توجه",
-        //         buttons: [
-        //             isc.IButtonSave.create({title: "تائید"})
-        //         ],
-        //         buttonClick: function (button, index) {
-        //             this.close();
-        //         }
-        //     });
-        // } else {
-        //
-        //     agreementMethod = "PUT";
-        //     DynamicForm_Payment.clearValues();
-        //     DynamicForm_Payment.clearErrors();
-        //     DynamicForm_Payment.editRecord(record);
-        //
-        //     if (record.secondPartyTeacherId !== undefined && record.secondPartyTeacherId !== null) {
-        //         DynamicForm_Payment.setValue("secondParty", "1");
-        //         DynamicForm_Payment.setValue("secondPartyTeacherId", record.secondPartyTeacherId);
-        //         // DynamicForm_Payment.getItem("secondParty").change(DynamicForm_Payment, DynamicForm_Payment.getItem("secondParty"), "1");
-        //     } else {
-        //         DynamicForm_Payment.setValue("secondParty", "2");
-        //         DynamicForm_Payment.setValue("secondPartyInstituteId", record.secondPartyInstituteId);
-        //         // DynamicForm_Payment.getItem("secondParty").change(DynamicForm_Payment, DynamicForm_Payment.getItem("secondParty"), "2");
-        //     }
-        //     // DynamicForm_Payment.getItem("currencyId").change(DynamicForm_Payment, DynamicForm_Payment.getItem("currencyId"), record.currencyId);
-        //     Window_Payment.setTitle("ویرایش تفاهم نامه/ قرارداد");
-        //     Window_Payment.show();
-        // }
+        let record = ListGrid_Payment.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "تفاهم نامه ای برای ویرایش انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+
+            paymentMethod = "PUT";
+            DynamicForm_Payment.clearValues();
+            DynamicForm_Payment.clearErrors();
+            DynamicForm_Payment.editRecord(record);
+            Window_Payment.setTitle("ویرایش سند پرداخت");
+            Window_Payment.show();
+        }
     }
     function Payment_Remove() {
 
@@ -413,7 +426,7 @@
         <%--            this.close();--%>
         <%--            if (index === 0) {--%>
         <%--                wait.show();--%>
-        <%--                isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
+        <%--                isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
         <%--                    wait.close();--%>
         <%--                    if (resp.httpResponseCode === 200) {--%>
         <%--                        createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");--%>
