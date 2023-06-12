@@ -648,4 +648,19 @@ public class PersonnelService implements IPersonnelService {
 
         }
     }
+
+    @Override
+    public boolean deletePersonnel(Long id) {
+        try {
+            Optional<Personnel>optionalPersonnel=personnelDAO.findById(id);
+            if (optionalPersonnel.isPresent()){
+                personnelDAO.deleteById(id);
+                return true;
+            }else
+                return false;
+        }catch ( Exception e){
+            return false;
+
+        }
+    }
 }

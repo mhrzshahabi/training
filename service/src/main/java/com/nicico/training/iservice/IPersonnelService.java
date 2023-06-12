@@ -74,4 +74,6 @@ public interface IPersonnelService {
     boolean isPresentByNationalCode(String nationalCode);
 
     boolean changeDeleted(Long id);
+
+    boolean deletePersonnel(Long id);
 }

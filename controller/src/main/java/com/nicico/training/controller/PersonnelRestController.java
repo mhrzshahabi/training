@@ -297,4 +297,10 @@ public class PersonnelRestController {
         return iPersonnelService.changeDeleted(id);
     }
 
+    @Loggable
+    @DeleteMapping(value = "/deleted")
+    public boolean deletePersonnel(@RequestParam Long id) {
+        return iPersonnelService.deletePersonnel(id);
+    }
+
 }
