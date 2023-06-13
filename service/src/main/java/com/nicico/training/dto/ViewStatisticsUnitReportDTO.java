@@ -91,5 +91,7 @@ public class ViewStatisticsUnitReportDTO {
         private String teachingMethodTitle;
         private String answeredReactionEvalPercent;
         private String answeredBehavioralEvalPercent;
+        private String classStudentScore;
+        private String status;
     }
 }
