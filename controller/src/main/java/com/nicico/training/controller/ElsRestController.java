@@ -505,7 +505,7 @@ public class ElsRestController {
         try {
 //            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
-            if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
+//            if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
                 /*ExamQuestionsDto response*/
                 examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
                 if (examQuestionsObject.getStatus() == 200) {
@@ -514,9 +514,9 @@ public class ElsRestController {
                 } else {
                     return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
                 }
-            } else {
-                return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
-            }
+//            } else {
+//                return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+//            }
 //            } else {
 //                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
 //                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
@@ -531,7 +531,7 @@ public class ElsRestController {
 //                }
 //            }
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
 
             return new ResponseEntity(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }

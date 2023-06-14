@@ -235,4 +235,10 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "ANSWERED_BEHAVIORAL_EVAL_PERCENT")
     private String answeredBehavioralEvalPercent;
 
+    @Column(name = "class_student_score")
+    private String classStudentScore;
+
+    @Column(name = "status")
+    private String status;
+
 }
