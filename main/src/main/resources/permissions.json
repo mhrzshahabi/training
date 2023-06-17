@@ -223,7 +223,14 @@
       "code": "Menu_Finance_Agreement",
       "title": "منوی مالی - تفاهم نامه"
     },
-
+    {
+      "code": "Menu_Finance_Agreement_Payment",
+      "title": "منوی مالی - سند پرداخت"
+    },
+    {
+      "code": "Menu_Finance_Agreement_Decision",
+      "title": "منوی مالی - ضرایب تصمیم گیری"
+    },
 
     {
       "code": "Menu_Report",

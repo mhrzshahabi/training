@@ -24,6 +24,7 @@
             {name: "agreement.agreementNumber", title: "شماره تفاهم نامه", filterOperator: "iContains"},
             {name: "agreement.agreementDate", title: "تاریخ عقد تفاهم نامه", filterOperator: "iContains"},
             {name: "createdDate", title: "تاریخ ثبت سند"},
+            {name: "paymentDocStatus", title: "آخرین وضعیت سند"},
             {name: "lastModifiedDate", title: "تاریخ ویرایش سند"},
             {name: "createdBy", title: "کاربر ثبت کننده سند", filterOperator: "iContains"},
             {name: "lastModifiedBy", title: "کاربر ویرایش کننده سند", filterOperator: "iContains"}
@@ -100,6 +101,7 @@
             {name: "id", hidden: true},
             {name: "agreement.agreementNumber"},
             {name: "agreement.agreementDate"},
+            {name: "paymentDocStatus"},
             {name: "createdBy"},
             {name: "createdDate",  canFilter: false, formatCellValue: function (value) {
                     if (value) {
@@ -117,14 +119,15 @@
 
         ],
         recordClick: function () {
-         },
+            selectionUpdated_Payment_class();
+        },
         filterEditorSubmit: function () {
             ListGrid_Payment.invalidateCache();
         },
 
     });
 
-    ListGrid_Class_Teaching_Cost = isc.ListGrid.create({
+    ListGrid_Class_Payment = isc.ListGrid.create({
         width: "100%",
         height: "100%",
         canEdit: true,
@@ -148,6 +151,33 @@
                 name: "code",
                 title: "کد کلاس",
                 canEdit: false
+            },
+            {
+                name: "duration",
+                title: "مدت دوره کلاس",
+                canEdit: false
+
+            },
+            {
+                name: "timeSpent",
+                title: "مقدار زمان برگزار شده کلاس",
+                required: true,
+                canEdit: true,
+                format: "0,",
+            },
+            {
+                name: "amount",
+                title: "مبلغ توافق تفاهم نامه",
+                required: true,
+                canEdit: true,
+                format: "0,",
+            },
+            {
+                name: "finalAmount",
+                title: "مبلغ کل",
+                canEdit: false,
+                required: true,
+                format: "0,",
             },
             {
                 name: "removeIcon",
@@ -175,7 +205,7 @@
                             startRow: true,
                             endRow: false,
                             click: function () {
-                                // ClassTeachingCost_SelectClass();
+                                selectClassForPayment();
                             }
                         })
                     ]
@@ -194,6 +224,7 @@
                         title: "ذخیره تغییرات",
                         align: "center",
                         click: function () {
+                            Payment_classes_Save()
                           }
                     })
                 ]
@@ -213,7 +244,8 @@
                     width: 16,
                     grid: this,
                     click: function () {
-                     }
+                        payment_classes_Remove(record);
+                    }
                 });
                 return removeImg;
             } else {
@@ -227,7 +259,7 @@
             {
                 name: "classTeachingCostTab",
                 title: "انتخاب کلاس ها",
-                pane: ListGrid_Class_Teaching_Cost
+                pane: ListGrid_Class_Payment
             }
         ]
     });
@@ -309,19 +341,19 @@
 
             } else if (paymentMethod === "PUT") {
 
-                <%--wait.show();--%>
-                <%--isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + data.id, "PUT", JSON.stringify(data), function (resp) {--%>
-                <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-                <%--        wait.close();--%>
-                <%--        createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-                <%--        Window_Payment.close();--%>
-                <%--        Payment_Refresh();--%>
-                <%--    } else {--%>
-                <%--        wait.close();--%>
-                <%--        createDialog("info", "خطایی رخ داده است");--%>
-                <%--        Window_Payment.close();--%>
-                <%--    }--%>
-                <%--}));--%>
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + data.id, "PUT", JSON.stringify(data), function (resp) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        wait.close();
+                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        Window_Payment.close();
+                        Payment_Refresh();
+                    } else {
+                        wait.close();
+                        createDialog("info", "خطایی رخ داده است");
+                        Window_Payment.close();
+                    }
+                }));
             }
         }
     });
@@ -391,7 +423,10 @@
                     this.close();
                 }
             });
-        } else {
+        } else  if (record.paymentDocStatus!== 'ثبت اولیه' ) {
+            createDialog("info", "سند فقط در وضعیت ثبت اولیه امکان ویرایش دارد");
+
+        } else   {
 
             paymentMethod = "PUT";
             DynamicForm_Payment.clearValues();
@@ -403,20 +438,235 @@
     }
     function Payment_Remove() {
 
-        <%--let record = ListGrid_Payment.getSelectedRecord();--%>
-        <%--if (record == null) {--%>
-        <%--    isc.Dialog.create({--%>
-        <%--        message: "تفاهم نامه ای برای حذف انتخاب نشده است.",--%>
-        <%--        icon: "[SKIN]ask.png",--%>
-        <%--        title: "توجه",--%>
-        <%--        buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],--%>
-        <%--        buttonClick: function (button, index) {--%>
-        <%--            this.close();--%>
+        let record = ListGrid_Payment.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "سندی برای حذف انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else  if (record.paymentDocStatus!== 'ثبت اولیه' ) {
+            createDialog("info", "سند فقط در وضعیت ثبت اولیه امکان ویرایش دارد");
+
+        }else {
+            let Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين سند حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + record.id, "DELETE", null, function (resp) {
+                            wait.close();
+                            if (resp.httpResponseCode === 200) {
+                                createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");
+                                Payment_Refresh();
+                            } else {
+                                createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function Payment_Refresh() {
+        ListGrid_Payment.clearFilterValues();
+        ListGrid_Payment.invalidateCache();
+        ListGrid_Class_Payment.setData([]);
+    }
+
+    function selectClassForPayment() {
+
+        let record = ListGrid_Payment.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "سندی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            let RestDataSource_Select_Class = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true},
+                    {name: "titleClass", filterOperator: "iContains"},
+                    {name: "code", filterOperator: "iContains"},
+                    {name: "course.titleFa"}
+                ],
+                fetchDataURL: classUrl + "info-tuple-list",
+                implicitCriteria: {
+                    _constructor:"AdvancedCriteria",
+                    operator:"and",
+                    criteria:[{ fieldName: "classStatus", operator: "inSet", value: ["2","3","4","5"]}
+                    ]
+                },
+            });
+            let ListGrid_Select_Class = isc.TrLG.create({
+                height: "90%",
+                autoFetchData: true,
+                showFilterEditor: true,
+                filterOnKeypress: false,
+                selectionType: "simple",
+                selectionAppearance: "checkbox",
+                dataSource: RestDataSource_Select_Class,
+                gridComponents: ["filterEditor", "header", "body"],
+                initialSort: [
+                    {property: "id", direction: "descending"}
+                ],
+                fields: [
+                    {name: "id", hidden: true},
+                    {name: "titleClass", title: "عنوان کلاس"},
+                    {name: "code", title: "کد کلاس"}
+                ]
+            });
+
+            let IButton_Select_Class_Save = isc.IButtonSave.create({
+                title: "<spring:message code='save'/>",
+                align: "center",
+                click: function () {
+                    let records = ListGrid_Select_Class.getSelectedRecords();
+                    let selectedClasses = [];
+                    records.forEach(item => {
+                        let object = {
+                            classId: item.id,
+                            titleClass: item.titleClass,
+                            code: item.code
+                        };
+                        selectedClasses.add(object);
+                    });
+
+                    let addedClasses = ListGrid_Class_Payment.getData();
+                    let addedClassesId = ListGrid_Class_Payment.getData().map(item => item.classId);
+                    selectedClasses.forEach(item => {
+                        if (addedClassesId.contains(item.classId))
+                            selectedClasses.splice(selectedClasses.indexOf(item), 1);
+                    });
+
+                    ListGrid_Class_Payment.setData(selectedClasses.concat(addedClasses));
+                    Window_Select_Class.close();
+                }
+            });
+            let IButton_Select_Class_Exit = isc.IButtonCancel.create({
+                title: "<spring:message code='close'/>",
+                align: "center",
+                click: function () {
+                    Window_Select_Class.close();
+                }
+            });
+            let HLayOut_Select_Class_SaveOrExit = isc.HLayout.create({
+                layoutMargin: 5,
+                showEdges: false,
+                edgeImage: "",
+                width: "100%",
+                height: "10%",
+                alignLayout: "center",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    IButton_Select_Class_Save,
+                    IButton_Select_Class_Exit
+                ]
+            });
+            let Window_Select_Class = isc.Window.create({
+                title: "انتخاب کلاس",
+                autoSize: false,
+                width: "40%",
+                height: "45%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    ListGrid_Select_Class,
+                    HLayOut_Select_Class_SaveOrExit
+                ]
+            });
+
+            Window_Select_Class.show();
+        }
+    }
+    function selectionUpdated_Payment_class() {
+
+        // let agreement = ListGrid_Agreement.getSelectedRecord();
+        // let tab = TabSet_Agreement.getSelectedTab();
+        //
+        // if (agreement == null && tab.pane != null) {
+        //     tab.pane.setData([]);
+        //     return;
+        // }
+        //
+        // switch (tab.name) {
+        //     case "classTeachingCostTab": {
+        //         wait.show();
+        //         isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/list-by-agreementId/" + agreement.id, "GET", null, function (resp) {
+        //             wait.close();
+        //             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        //                 let classCostList = JSON.parse(resp.httpResponseText);
+        //                 ListGrid_Class_Teaching_Cost.setData(classCostList);
+        //             } else {
+        //                 createDialog("info", "خطایی رخ داده است");
+        //             }
+        //         }));
+        //         break;
+        //     }
+        // }
+    }
+
+    function Payment_classes_Save(agreementId) {
+
+        <%--let isValid = true;--%>
+        <%--ListGrid_Class_Teaching_Cost.endEditing();--%>
+        <%--for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {--%>
+        <%--    if (!ListGrid_Class_Teaching_Cost.validateRow(i))--%>
+        <%--        return;--%>
+        <%--}--%>
+        <%--let costList = ListGrid_Class_Teaching_Cost.getData();--%>
+        <%--costList.forEach(item => {--%>
+        <%--    if (item.basisCalculateId === undefined)--%>
+        <%--        isValid = false;--%>
+        <%--});--%>
+
+        <%--if (isValid) {--%>
+        <%--    wait.show();--%>
+        <%--    isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/create-or-update/" + agreementId, "POST", JSON.stringify(costList), function (resp) {--%>
+        <%--        wait.close();--%>
+        <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+        <%--            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
+        <%--            selectionUpdated_Payment_class();--%>
+        <%--        } else {--%>
+        <%--            createDialog("info", "خطایی رخ داده است");--%>
         <%--        }--%>
-        <%--    });--%>
+        <%--    }));--%>
+        <%--} else {--%>
+        <%--    createDialog("info", "مبنای محاسبه برای بعضی از رکوردها مشخض نشده است");--%>
+        <%--}--%>
+
+
+
+    }
+    function payment_classes_Remove(record) {
+
+        <%--if (record.id == null) {--%>
+        <%--    ListGrid_Class_Teaching_Cost.selectSingleRecord(record);--%>
+        <%--    ListGrid_Class_Teaching_Cost.removeData(record);--%>
         <%--} else {--%>
         <%--    let Dialog_Delete = isc.Dialog.create({--%>
-        <%--        message: "آيا مي خواهيد اين تفاهم نامه حذف گردد؟",--%>
+        <%--        message: "آيا مي خواهيد اين رکورد حذف گردد؟",--%>
         <%--        icon: "[SKIN]ask.png",--%>
         <%--        title: "توجه",--%>
         <%--        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({--%>
@@ -426,11 +676,11 @@
         <%--            this.close();--%>
         <%--            if (index === 0) {--%>
         <%--                wait.show();--%>
-        <%--                isc.RPCManager.sendRequest(TrDSRequest(paymentUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
+        <%--                isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
         <%--                    wait.close();--%>
         <%--                    if (resp.httpResponseCode === 200) {--%>
         <%--                        createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");--%>
-        <%--                        Payment_Refresh();--%>
+        <%--                        selectionUpdated_Payment_class();--%>
         <%--                    } else {--%>
         <%--                        createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")--%>
         <%--                    }--%>
@@ -440,11 +690,7 @@
         <%--    });--%>
         <%--}--%>
     }
-    function Payment_Refresh() {
-        ListGrid_Payment.clearFilterValues();
-        ListGrid_Payment.invalidateCache();
-        ListGrid_Class_Teaching_Cost.setData([]);
-    }
+
 
 
 

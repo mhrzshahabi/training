@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PaymentDTO;
 import com.nicico.training.iservice.IPaymentDocService;
 import lombok.RequiredArgsConstructor;
@@ -27,24 +28,24 @@ public class PaymentDocRestController {
         return new ResponseEntity<>(paymentDocService.create(create), HttpStatus.CREATED);
     }
 
-//    @Loggable
-//    @PutMapping("/{id}")
-//    public ResponseEntity update(@RequestBody AgreementDTO.Update update, @PathVariable Long id) {
-//        try {
-//            agreementService.update(update, id);
-//            return new ResponseEntity<>(null, HttpStatus.OK);
-//        } catch (TrainingException ex) {
-//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-//        }
-//    }
-//
-//    @Loggable
-//    @DeleteMapping(value = "/{id}")
-//    public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        agreementService.delete(id);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
+    @Loggable
+    @PutMapping("/{id}")
+    public ResponseEntity update(@RequestBody PaymentDTO.Update update, @PathVariable Long id) {
+        try {
+            paymentDocService.update(update, id);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        paymentDocService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 //
     @Loggable

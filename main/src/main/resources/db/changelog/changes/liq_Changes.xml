@@ -10358,6 +10358,10 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet author="namdari" id="1686743808-001">
+        <modifyDataType tableName="tbl_payment_doc" columnName="payment_doc_status" newDataType="NUMBER(10,0)"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

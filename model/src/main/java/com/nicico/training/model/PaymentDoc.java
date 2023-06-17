@@ -31,11 +31,8 @@ public class PaymentDoc extends Auditable {
     private Long agreementId;
 
 
-    @Column(name = "payment_doc_status", insertable = false, updatable = false)
-    private PaymentDocStatus paymentDocStatus;
-
     @Column(name = "payment_doc_status")
-    private Integer paymentDocStatusId;
+    private PaymentDocStatus paymentDocStatus;
 
 
 

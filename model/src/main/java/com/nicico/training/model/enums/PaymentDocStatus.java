@@ -15,10 +15,19 @@ public enum PaymentDocStatus {
     inProgress(2, "در انتظار بررسی واحد مالی"),
     paid(3, "پرداخت شده");
 
-    private final Integer id;
+    private final Integer key;
     private final String titleFa;
 
     public String getLiteral() {
         return name();
+    }
+
+    public static PaymentDocStatus fromString(String text) {
+        for (PaymentDocStatus b : PaymentDocStatus.values()) {
+            if (b.getTitleFa().equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
     }
 }

@@ -2452,18 +2452,24 @@
                         createTab(this.title, "<spring:url value="/web/agreement"/>");
                     }
                 },
-                {
+                    <sec:authorize access="hasAuthority('Menu_Finance_Agreement_Decision')">
+                    {
                     title: "<spring:message code="educational.decision"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/educational/decision"/>");
                     }
                 },
-                {
+                </sec:authorize>
+                    <sec:authorize access="hasAuthority('Menu_Finance_Agreement_Payment')">
+
+                    {
                     title: "سند پرداخت",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/paymentDoc"/>");
                     }
                 },
+                </sec:authorize>
+
                 </sec:authorize>
             ]
         })
