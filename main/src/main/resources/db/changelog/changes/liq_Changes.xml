@@ -10358,6 +10358,45 @@ DECLARE
         </sql>
     </changeSet>
 
+
+    <changeSet id="1661057829000-7" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            UPDATE
+                tbl_parameter_value
+            set c_title = 'انتصاب سمت' , c_code = 'position-appointment' WHERE
+                    c_code = 'VerificationOfCompetency'
+            /
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="1661057829000-8" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            UPDATE
+                tbl_parameter_value
+            set c_title = 'sps' , c_code = 'sps' WHERE
+                    c_code = 'others'
+                    /
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="1661057829000-9" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            UPDATE
+                tbl_parameter_value
+            set c_title = 'متفرقه ی آزاد'  WHERE
+                    c_code = 'free'
+                    /
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 

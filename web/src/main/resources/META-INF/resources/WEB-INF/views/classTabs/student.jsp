@@ -2314,7 +2314,7 @@
                                     isc.ToolStripButtonAdd.create({
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
-                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
+                                            groupFilterForAddStudent("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
                                                 ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                         }
                                     })
@@ -2345,7 +2345,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title: 'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
+                                        groupFilterForAddStudent("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
                                             ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                     }
                                 })
@@ -3419,8 +3419,8 @@
             if (generalGetResp(resp)) {
                 if (resp.httpResponseCode === 200) {
                     //------------------------------------*/
-                    let len = GroupSelectedPersonnelsLG_student.data.length;
-                    let list = GroupSelectedPersonnelsLG_student.data;
+                    let len = GroupSelectedPersonnelsLG_studentForAddStudent.data.length;
+                    let list = GroupSelectedPersonnelsLG_studentForAddStudent.data;
                     let data = JSON.parse(resp.data);
                     let allRowsOK = true;
                     var students = [];
@@ -3499,6 +3499,10 @@
                                     list[i].hasWarning = "check";
                                     list[i].description = "";
                                     if (!checkIfAlreadyExist(person)) {
+                                        let typeOfEnterToClass = ""
+                                        if (list[i].typeOfEnterToClass!== undefined && list[i].typeOfEnterToClass!== null && list[i].typeOfEnterToClass!== "" ){
+                                            typeOfEnterToClass = list[i].typeOfEnterToClass;
+                                        }
 
 
                                             students.add({
@@ -3510,7 +3514,7 @@
                                                 "presenceTypeId": studentDefaultPresenceId,
                                                 "employmentStatus": person.employmentStatus,
                                                 "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2,
-                                                "typeOfEnterToClass": person.typeOfEnterToClass
+                                                "typeOfEnterToClass": typeOfEnterToClass
                                             });
                                         // }
                                     }
@@ -3529,12 +3533,12 @@
                         wait.close();
                         addValidStudents(classId, courseId, equalCourseIds, students);
                         // SelectedPersonnelsLG_student.data.clearAll();
-                        ClassStudentWin_student_GroupInsert.close();
+                        ClassStudentWin_student_GroupInsertForAddStudent.close();
 
                     } else {
 
-                        GroupSelectedPersonnelsLG_student.invalidateCache();
-                        GroupSelectedPersonnelsLG_student.fetchData();
+                        GroupSelectedPersonnelsLG_studentForAddStudent.invalidateCache();
+                        GroupSelectedPersonnelsLG_studentForAddStudent.fetchData();
                         wait.close();
                         if (insert) {
                             createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
