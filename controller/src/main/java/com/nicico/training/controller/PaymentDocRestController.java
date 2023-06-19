@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -37,6 +38,13 @@ public class PaymentDocRestController {
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+    @Loggable
+    @PutMapping("change-payment-status/{id}")
+    public ResponseEntity<BaseResponse> changePaymentStatus(@PathVariable Long id) {
+        BaseResponse baseResponse = paymentDocService.changePaymentStatus( id);
+            return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+
     }
 
     @Loggable

@@ -13,9 +13,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
+
+import static com.nicico.training.model.enums.PaymentDocStatus.registration;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class PaymentDocService implements IPaymentDocService {
             if (agreementId!=null){
                 PaymentDoc paymentDoc =new PaymentDoc();
                 paymentDoc.setAgreementId(agreementId);
-                paymentDoc.setPaymentDocStatus(PaymentDocStatus.registration);
+                paymentDoc.setPaymentDocStatus(registration);
                 PaymentDoc savedPayment= paymentDocDAO.save(paymentDoc);
                 return paymentDocMapper.toDtoInfo(savedPayment);
             }else {
@@ -65,18 +68,7 @@ public class PaymentDocService implements IPaymentDocService {
         return paymentDocDAO.saveAndFlush(updating);
     }
 
-//    @Transactional
-//    @Override
-//    public Agreement upload(AgreementDTO.Upload upload) {
-//
-//        Optional<Agreement> agreementOptional = agreementDAO.findById(upload.getId());
-//        Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-//        agreement.setFileName(upload.getFileName());
-//        agreement.setGroup_id(upload.getGroup_id());
-//        agreement.setKey(upload.getKey());
-//        return agreementDAO.saveAndFlush(agreement);
-//    }
-//
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PaymentDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException {
@@ -88,6 +80,52 @@ public class PaymentDocService implements IPaymentDocService {
     @Override
     public void delete(Long id) {
         paymentDocDAO.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public BaseResponse changePaymentStatus(Long id) {
+        BaseResponse baseResponse = new BaseResponse();
+        Optional<PaymentDoc> paymentDocOptional = paymentDocDAO.findById(id);
+        if (paymentDocOptional.isEmpty()){
+            baseResponse.setStatus(404);
+            baseResponse.setMessage("سند یافت نشد");
+            return baseResponse;
+        }else {
+            PaymentDoc paymentDoc =  paymentDocOptional.get();
+            if (paymentDoc.getPaymentDocClassList().isEmpty()){
+                baseResponse.setStatus(406);
+                baseResponse.setMessage("سند کلاسی برای اضافه شدن به سند پرداخت ندارد");
+                return baseResponse;
+            }
+            boolean notCompleteClassAdded = paymentDoc.getPaymentDocClassList().stream().anyMatch(o -> o.getFinalAmount()==null || o.getFinalAmount()==0);
+
+            if (notCompleteClassAdded){
+                baseResponse.setStatus(406);
+                baseResponse.setMessage("در بعضی از کلاس های سند پرداخت مبلغ کل محاسبه نشده است");
+                return baseResponse;
+            }
+            if (paymentDoc.getPaymentDocStatus().equals(registration)){
+                try {
+                    baseResponse.setStatus(200);
+                    paymentDoc.setPaymentDocStatus(PaymentDocStatus.paid);
+                    return baseResponse;
+                }catch (Exception e){
+                    baseResponse.setStatus(500);
+                    baseResponse.setMessage("تغییر وضعیت انجام نشد");
+                    return baseResponse;
+                }
+
+            }else {
+                baseResponse.setStatus(406);
+                baseResponse.setMessage("وضعیت سند پرداخت پرداخت شده است و قابل تغییر نمی باشد");
+                return baseResponse;
+
+            }
+
+        }
+
+
     }
 
 }

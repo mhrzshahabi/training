@@ -1431,12 +1431,4 @@
 
 
 
-    <changeSet author="namdari (generated)" id="1633842708000-29">
-        <addForeignKeyConstraint baseColumnNames="f_payment_doc" baseTableName="tbl_payment_doc_class" constraintName="FKtbl_payment_doc_class_payment" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_payment_doc" validate="true"/>
-    </changeSet>
-
-    <changeSet author="namdari (generated)" id="1633842708000-30">
-        <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_payment_doc_class" constraintName="FKtbl_payment_doc_class_class" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
-    </changeSet>
-
 </databaseChangeLog>

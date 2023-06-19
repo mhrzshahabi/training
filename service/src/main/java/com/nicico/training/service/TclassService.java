@@ -2496,7 +2496,7 @@ public class TclassService implements ITclassService {
     @Transactional
     public Tclass getClassByCode(String classCode) {
 
-        return tclassDAO.findByCode(classCode);
+        return tclassDAO.findFirstByCode(classCode);
     }
 
     @Override
@@ -2530,7 +2530,7 @@ public class TclassService implements ITclassService {
     @Override
     @Transactional
     public TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode) {
-        Tclass tclass = tclassDAO.findByCode(classCode);
+        Tclass tclass = tclassDAO.findFirstByCode(classCode);
         return modelMapper.map(tclass, TclassDTO.TClassScoreEval.class);
     }
 

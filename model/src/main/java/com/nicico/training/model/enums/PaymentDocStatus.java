@@ -12,8 +12,7 @@ import lombok.ToString;
 public enum PaymentDocStatus {
 
     registration(1, "ثبت اولیه"),
-    inProgress(2, "در انتظار بررسی واحد مالی"),
-    paid(3, "پرداخت شده");
+    paid(2, "پرداخت شده");
 
     private final Integer key;
     private final String titleFa;
@@ -23,9 +22,9 @@ public enum PaymentDocStatus {
     }
 
     public static PaymentDocStatus fromString(String text) {
-        for (PaymentDocStatus b : PaymentDocStatus.values()) {
-            if (b.getTitleFa().equalsIgnoreCase(text)) {
-                return b;
+        for (PaymentDocStatus paymentDocStatus : PaymentDocStatus.values()) {
+            if (paymentDocStatus.getTitleFa().equalsIgnoreCase(text)) {
+                return paymentDocStatus;
             }
         }
         return null;

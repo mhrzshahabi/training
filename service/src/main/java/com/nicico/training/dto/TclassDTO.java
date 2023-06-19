@@ -939,6 +939,7 @@ public class TclassDTO {
         private Long id;
         private String code;
         private String titleClass;
+        private Long hDuration;
     }
 
     @Getter

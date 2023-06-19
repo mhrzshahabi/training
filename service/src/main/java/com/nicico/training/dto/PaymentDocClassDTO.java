@@ -7,31 +7,35 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class PaymentDTO implements Serializable {
+public class PaymentDocClassDTO implements Serializable {
 
-    private Long agreementId;
-    private AgreementDTO.Info agreement;
-    private String paymentDocStatus;
-    private Date lastModifiedDate;;
-    private Date createdDate;;
-    private String createdBy;;
-    private String lastModifiedBy;;
-    private Set<String> classCodes;
+    private String titleClass
+            ;
+    private String code;
+
+    private String classDuration;
+
+    private String timeSpent;
+
+    private Long teachingCostPerHour;
+
+    private String finalAmount;
+
+    private Long paymentDocId;
+
 
 
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("PaymentDTO - Info")
-    public static class Info extends PaymentDTO {
+    @ApiModel("PaymentDocClassDTO - Info")
+    public static class Info extends PaymentDocClassDTO {
         private Long id;
 
     }
@@ -39,15 +43,15 @@ public class PaymentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Payment - Create")
-    public static class Create extends PaymentDTO {
+    @ApiModel("PaymentDocClassDTO - Create")
+    public static class Create extends PaymentDocClassDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Payment - Update")
-    public static class Update extends PaymentDTO {
+    @ApiModel("PaymentDocClassDTO - Update")
+    public static class Update extends PaymentDocClassDTO {
         private Long id;
     }
 
@@ -56,9 +60,9 @@ public class PaymentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("PaymentSpecRs")
+    @ApiModel("PaymentDocClassDTOSpecRs")
     public static class CourseSpecRs {
-        private PaymentDTO.SpecRs response;
+        private PaymentDocClassDTO.SpecRs response;
     }
 
     @Getter

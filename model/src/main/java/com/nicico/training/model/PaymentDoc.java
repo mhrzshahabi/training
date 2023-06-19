@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,8 +18,8 @@ import java.util.Set;
 public class PaymentDoc extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
-    @SequenceGenerator(name = "course_seq", sequenceName = "seq_course_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_doc_seq")
+    @SequenceGenerator(name = "payment_doc_seq", sequenceName = "seq_payment_doc_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
@@ -34,14 +34,8 @@ public class PaymentDoc extends Auditable {
     @Column(name = "payment_doc_status")
     private PaymentDocStatus paymentDocStatus;
 
-
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_payment_doc_class",
-            joinColumns = {@JoinColumn(name = "f_payment_doc", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")})
-    private Set<Tclass> classList;
-
+    @OneToMany(mappedBy = "paymentDoc", fetch = FetchType.LAZY)
+    private List<PaymentDocClass> paymentDocClassList;
 
 
 

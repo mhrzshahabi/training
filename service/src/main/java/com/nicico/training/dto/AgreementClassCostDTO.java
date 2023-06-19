@@ -29,6 +29,7 @@ public class AgreementClassCostDTO implements Serializable {
         private Long id;
         private String titleClass;
         private String code;
+        private Long classDuration;
     }
 
     @Getter

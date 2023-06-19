@@ -408,4 +408,9 @@
     <changeSet id="1633842708000-13" author="namdari">
         <createSequence sequenceName="seq_group_of_personnel_id"/>
     </changeSet>
+
+    <changeSet id="1687087103-01" author="namdari">
+        <createSequence sequenceName="seq_payment_doc_id"/>
+        <createSequence sequenceName="seq_payment_doc_class_id"/>
+    </changeSet>
 </databaseChangeLog>

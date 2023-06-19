@@ -20,7 +20,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     List<Tclass> findByCourseIdAndTermId(Long courseId, Long termId);
 
-    Tclass findByCode (String code);
+    Tclass findFirstByCode (String code);
 
     @Query(value = """
 SELECT
