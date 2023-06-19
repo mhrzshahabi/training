@@ -86,6 +86,28 @@ public class AgreementClassCostRestController {
         });
         return new ResponseEntity<>(result.getList(), HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping(value = "/list-by-agreementId-for-payment/{agreementId}")
+    public ResponseEntity<ISC<AgreementClassCostDTO.Info>> agreementClassCostListByAgreementIdForPayment(HttpServletRequest iscRq, @PathVariable Long agreementId) throws IOException {
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setCriteria(createCriteria(EOperator.equals, "agreementId", agreementId));
+
+        SearchDTO.SearchRs<AgreementClassCostDTO.Info> result = agreementClassCostService.search(searchRq);
+        result.getList().forEach(item -> {
+            TclassDTO.TClassForAgreement classForAgreement = classService.getTClassDataForAgreement(item.getClassId());
+            item.setCode(classForAgreement.getCode());
+            item.setTitleClass(classForAgreement.getTitleClass());
+            item.setClassDuration(classForAgreement.getHDuration());
+        });
+        ISC.Response<AgreementClassCostDTO.Info> response = new ISC.Response<>();
+        response.setStartRow(0);
+        response.setEndRow(result.getList().size());
+        response.setTotalRows(result.getList().size());
+        response.setData(result.getList());
+        ISC<AgreementClassCostDTO.Info> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/spec-list")

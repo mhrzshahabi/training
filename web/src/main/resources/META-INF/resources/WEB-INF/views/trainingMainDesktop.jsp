@@ -1865,6 +1865,8 @@
     const helpFilesUrl = rootUrl + "/help-files";
     const fileLabelUrl = rootUrl + "/file-label";
     const agreementUrl = rootUrl + "/agreement";
+    const paymentUrl = rootUrl + "/payment-doc";
+    const paymentDocClassUrl = rootUrl + "/payment-doc-class";
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
@@ -2971,12 +2973,24 @@
                         createTab(this.title, "<spring:url value="/web/agreement"/>");
                     }
                 },
-                {
+                    <sec:authorize access="hasAuthority('Menu_Finance_Agreement_Decision')">
+                    {
                     title: "<spring:message code="educational.decision"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/educational/decision"/>");
                     }
                 },
+                </sec:authorize>
+                    <sec:authorize access="hasAuthority('Menu_Finance_Agreement_Payment')">
+
+                    {
+                    title: "سند پرداخت",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/paymentDoc"/>");
+                    }
+                },
+                </sec:authorize>
+
                 </sec:authorize>
             ]
         })

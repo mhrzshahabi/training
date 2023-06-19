@@ -245,7 +245,13 @@
                 align: "center",
                 showTitle: false,
                 canFilter: false
+            },{
+                name: "paymentDoc",
+                align: "center",
+                showTitle: false,
+                canFilter: false
             }
+
         ],
         recordClick: function () {
             selectionUpdated_Teaching_Cost();
@@ -276,7 +282,17 @@
                         downloadSignedFile(record)
                     }
                 });
-            } else return null;
+            }else if (fieldName === "paymentDoc") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "ایجاد سند پرداخت",
+                    width: "145",
+                    margin: 3,
+                    click: function () {
+                        createPaymentDoc(record)
+                    }
+                });
+            }  else return null;
         }
     });
 
@@ -1390,6 +1406,21 @@
             downloadForm.show();
             downloadForm.submitForm();
         }
+    }
+    function createPaymentDoc(record) {
+        let paymentData = {};
+        paymentData.agreementId = record.id
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(paymentUrl, "POST", JSON.stringify(paymentData), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+            } else {
+                wait.close();
+                createDialog("info", "خطایی رخ داده است");
+                Window_Payment.close();
+            }
+        }));
     }
     function Agreement_Upload_Changed() {
         if (document.getElementById('file_JspAgreement').files.length !== 0)

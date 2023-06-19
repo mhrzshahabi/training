@@ -4070,4 +4070,65 @@
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1633842708000-27">
+        <createTable tableName="tbl_payment_doc">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_payment_docPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="agreement_id" type="NUMBER(19, 0)"/>
+            <column name="payment_doc_status" type="NUMBER(10, 0)"/>
+
+
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633842708000-28">
+        <createTable tableName="tbl_payment_doc_class">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_payment_doc_classPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="class_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="class_duration" type="VARCHAR2(255 CHAR)"/>
+            <column name="time_spent" type="VARCHAR2(255 CHAR)"/>
+            <column name="teaching_cost_per_hour" type="NUMBER(19, 0)"/>
+            <column name="final_amount" type="NUMBER(19, 0)"/>
+            <column name="f_payment_doc" type="NUMBER(10, 0)"/>
+
+
+
+        </createTable>
+    </changeSet>
+
+
+
 </databaseChangeLog>

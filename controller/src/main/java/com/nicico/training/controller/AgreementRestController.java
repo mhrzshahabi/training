@@ -60,8 +60,8 @@ public class AgreementRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(HttpServletRequest iscRq,
-                                                                @RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                                @RequestParam(value = "_endRow", required = false) Integer endRow) throws IOException {
+                                                                @RequestParam(value = "_startRow", required = false,defaultValue = "0") Integer startRow,
+                                                                @RequestParam(value = "_endRow", required = false , defaultValue = "1") Integer endRow) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         searchRq.setStartIndex(startRow);
