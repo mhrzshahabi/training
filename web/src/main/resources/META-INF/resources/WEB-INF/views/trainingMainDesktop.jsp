@@ -2973,6 +2973,7 @@
                         createTab(this.title, "<spring:url value="/web/agreement"/>");
                     }
                 },
+                </sec:authorize>
                     <sec:authorize access="hasAuthority('Menu_Finance_Agreement_Decision')">
                     {
                     title: "<spring:message code="educational.decision"/>",
@@ -2989,7 +2990,6 @@
                         createTab(this.title, "<spring:url value="/web/paymentDoc"/>");
                     }
                 },
-                </sec:authorize>
 
                 </sec:authorize>
             ]
