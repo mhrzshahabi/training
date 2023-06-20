@@ -22,14 +22,13 @@ import java.awt.*;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.nicico.training.utility.MakeExcelOutputUtil.isNumericWithDot;
+import static com.nicico.training.utility.SpecListUtil.SetValueWithCheckData;
 
 @Service
 @RequiredArgsConstructor
@@ -98,7 +97,7 @@ public class ExportToFileService implements IExportToFileService {
 
             row.setHeight((short) 1350);
             cellOfRow = row.createCell(0);
-            cellOfRow.setCellValue(titr);
+            SetValueWithCheckData(titr,cellOfRow);
             rCellStyle.setWrapText(true);
             cellOfRow.setCellStyle(rCellStyle);
 
@@ -107,7 +106,7 @@ public class ExportToFileService implements IExportToFileService {
 
             for (int i = 0; i < columns.length; i++) {
                 XSSFCell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
+                SetValueWithCheckData(headers[i],cell);
                 cell.setCellStyle(headerCellStyle);
 
             }
@@ -128,23 +127,9 @@ public class ExportToFileService implements IExportToFileService {
                         tmpCell="\u200F" + tmpCell;
                     }*/
 
-                    //zaza
-                    if (isNumericWithDot(tmpCell)){
-                        Number number = NumberFormat.getInstance().parse(tmpCell);
-                        if (number instanceof  Integer){
-                            cell.setCellValue(number.intValue());
 
-                        }else if (number instanceof Long){
-                            cell.setCellValue(number.longValue());
-                        }else if (number instanceof Double){
-                            cell.setCellValue(number.doubleValue());
-                        }else if (number instanceof Float){
-                            cell.setCellValue(number.floatValue());
-                        }
+                        SetValueWithCheckData(tmpCell,cell);
 
-                    }else {
-                        cell.setCellValue(tmpCell);
-                    }
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
@@ -358,7 +343,7 @@ public class ExportToFileService implements IExportToFileService {
 
             for (Object obj : objectArr) {
                 Cell cell = row.createCell(cellid++);
-                cell.setCellValue((String) obj);
+                SetValueWithCheckData((String) obj,cell);
             }
         }
 

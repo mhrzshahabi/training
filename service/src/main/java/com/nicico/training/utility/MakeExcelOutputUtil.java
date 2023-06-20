@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static com.nicico.training.utility.SpecListUtil.SetValueWithCheckData;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
@@ -111,10 +112,10 @@ public class MakeExcelOutputUtil {
                 Cell cell = row.createCell(0);
                 cell.setCellStyle(xssftopRowTitleCellStyle);
                 cell.setCellType(CellType.STRING);
-                cell.setCellValue(key);
+                 SetValueWithCheckData(key,cell);
                 cell = row.createCell(1);
                 cell.setCellType(CellType.STRING);
-                cell.setCellValue(extraMap.get(key));
+                 SetValueWithCheckData(extraMap.get(key),cell);
                 cell.setCellStyle(cellStyle);
             }
         }
@@ -329,8 +330,8 @@ public class MakeExcelOutputUtil {
                 Cell cell = topRow.createCell(i);
                 cell.setCellType(CellType.STRING);
 
-                if (i == 0) cell.setCellValue(topRowTitle);
-                else cell.setCellValue("");
+                if (i == 0)  SetValueWithCheckData(topRowTitle,cell);
+                else  SetValueWithCheckData("",cell);
 
                 cell.setCellStyle(xssftopRowTitleCellStyle);
             }
@@ -349,14 +350,14 @@ public class MakeExcelOutputUtil {
         if (insertRowNum) {
 
             Cell cell = headerRow.createCell(i++);
-            cell.setCellValue("ردیف");
+             SetValueWithCheckData("ردیف",cell);
             cell.setCellStyle(xssfHeaderCellStyle);
         }
         for (String header : headers)
             if (!header.equalsIgnoreCase("")) {
 
                 Cell cell = headerRow.createCell(i++);
-                cell.setCellValue(header);
+                 SetValueWithCheckData(header,cell);
                 cell.setCellStyle(xssfHeaderCellStyle);
             }
 
@@ -373,7 +374,8 @@ public class MakeExcelOutputUtil {
             if (insertRowNum) {
 
                 Cell cell = row.createCell(i++);
-                cell.setCellValue(radif++);
+                String roww= String.valueOf(radif++);
+                 SetValueWithCheckData(roww,cell);
                 cell.setCellStyle(xssfNumberCellStyle);
             }
 
@@ -384,47 +386,47 @@ public class MakeExcelOutputUtil {
 
                 Object obj = getFieldValue(fieldNames, item, entityClass);
                 if (obj != null) {
-
+//zaza
                     String objType = obj.getClass().getTypeName();
                     if (objType.equalsIgnoreCase(Long.class.getName())) {
 
                         cell.setCellType(CellType.NUMERIC);
-                        cell.setCellValue(Long.parseLong(obj.toString()));
+                         SetValueWithCheckData(Long.parseLong(obj.toString())+"",cell);
                         cell.setCellStyle(xssfNumberCellStyle);
                     }
                     if (objType.equalsIgnoreCase(Double.class.getName())) {
 
                         cell.setCellType(CellType.NUMERIC);
-                        cell.setCellValue(((Double) obj));
+                         SetValueWithCheckData(((Double) obj)+"",cell);
                         cell.setCellStyle(xssfNumberCommaCellStyle);
                         isThereSumField = true;
                     } else if (objType.equalsIgnoreCase(Boolean.class.getName())) {
 
                         cell.setCellType(CellType.BOOLEAN);
-                        cell.setCellValue(obj.toString().equalsIgnoreCase("true") ? CaptionFactory.getLabel("yes") : CaptionFactory.getLabel("no"));
+                         SetValueWithCheckData(obj.toString().equalsIgnoreCase("true") ? CaptionFactory.getLabel("yes") : CaptionFactory.getLabel("no"),cell);
                         cell.setCellStyle(xssfStringCellStyle);
                     } else if (objType.equalsIgnoreCase(Date.class.getName())) {
                         PersianDate persianDate = PersianDate.of((Date) obj);
                         cell.setCellType(CellType.STRING);
                         cell.setCellStyle(xssfStringCellStyle);
                         if (persianDate == null) {
-                            cell.setCellValue(obj.toString());
+                             SetValueWithCheckData(obj.toString(),cell);
                         } else {
-                            cell.setCellValue(persianDate.toString().replaceAll("-", "/"));
+                             SetValueWithCheckData(persianDate.toString().replaceAll("-", "/"),cell);
                         }
                     } else if (objType.equalsIgnoreCase(Timestamp.class.getName())) {
                         String persianDate = PersianDate.of((Timestamp) obj);
                         cell.setCellType(CellType.STRING);
                         cell.setCellStyle(xssfStringCellStyle);
                         if (persianDate == null) {
-                            cell.setCellValue("");
+                             SetValueWithCheckData("",cell);
                         } else {
-                            cell.setCellValue(persianDate);
+                             SetValueWithCheckData(persianDate,cell);
                         }
                     } else {
 
                         cell.setCellType(CellType.STRING);
-                        cell.setCellValue(obj.toString());
+                         SetValueWithCheckData(obj.toString(),cell);
                         cell.setCellStyle(xssfStringCellStyle);
                     }
                 } else {

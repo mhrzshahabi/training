@@ -1221,7 +1221,7 @@
                                         members: [
                                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                             ToolStripButton_FormIssuanceForAllPresentStudents_RE,
-                                            ToolStripButton_FormIssuanceForAll_RE,
+                                            // ToolStripButton_FormIssuanceForAll_RE,
                                             ToolStripButton_FormIssuanceDeleteForAll_RE,
                                             </sec:authorize>
                                             <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">

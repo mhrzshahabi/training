@@ -15,6 +15,8 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.SpecListUtil.SetValueWithCheckData;
+
 @Service
 @RequiredArgsConstructor
 public class ControlReportService {
@@ -202,14 +204,14 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("روزهاي تشكيل كلاس:");
+                 SetValueWithCheckData("روزهاي تشكيل كلاس:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("days"));
+                 SetValueWithCheckData(masterHeader.get(m).get("days"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
@@ -226,27 +228,27 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("استاد:");
+                 SetValueWithCheckData("استاد:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("teacher"));
+                 SetValueWithCheckData(masterHeader.get(m).get("teacher"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("مدت زمان:");
+                 SetValueWithCheckData("مدت زمان:",cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -257,7 +259,7 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("تاريخ برگزاری:");
+                 SetValueWithCheckData("تاريخ برگزاری:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomRight);
 
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
@@ -275,14 +277,14 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle4 = workbook.createCellStyle();
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("startDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("startDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleBottom2);
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("لغایت");
+                 SetValueWithCheckData("لغایت",cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
 
@@ -290,7 +292,7 @@ public class ControlReportService {
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("endDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("endDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomLeft);
@@ -317,7 +319,7 @@ public class ControlReportService {
                     sheet.addMergedRegion(CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()));
                     cellOfRow = row.createCell(6 + i * 5);
 
-                    cellOfRow.setCellValue(dates[i]);
+                    SetValueWithCheckData(dates[i],cellOfRow);
                     rCellStyle6.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle6.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle6.setBorderBottom(BorderStyle.MEDIUM);
@@ -344,7 +346,7 @@ public class ControlReportService {
                 sheet.addMergedRegion(CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()));
                 cellOfRow = rowOld.createCell(6);
 
-                cellOfRow.setCellValue("جلسات");
+                 SetValueWithCheckData("جلسات",cellOfRow);
 
                 rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -372,7 +374,7 @@ public class ControlReportService {
                 for (int i = 0; i < dates.length; i++) {
                     for (int j = 0; j <= 4; j++) {
                         cellOfRow = row.createCell(factor + j);
-                        cellOfRow.setCellValue("فاقد جلسه");
+                         SetValueWithCheckData("فاقد جلسه",cellOfRow);
                         rCellStyle7.setBorderBottom(BorderStyle.MEDIUM);
                         rCellStyle7.setBorderTop(BorderStyle.MEDIUM);
                         rCellStyle7.setBorderLeft(BorderStyle.MEDIUM);
@@ -387,7 +389,7 @@ public class ControlReportService {
                         cellOfRow.setCellStyle(rCellStyle7);
 
                         if (z < sessionList.get(m).size() && sessionList.get(m).get(z).getSessionDate().equals(dates[i])) {
-                            cellOfRow.setCellValue(sessionList.get(m).get(z).getSessionStartHour() + "-" + sessionList.get(m).get(z).getSessionEndHour());
+                             SetValueWithCheckData(sessionList.get(m).get(z).getSessionStartHour() + "-" + sessionList.get(m).get(z).getSessionEndHour(),cellOfRow);
                             z++;
                         }
                     }
@@ -398,7 +400,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);
@@ -431,7 +433,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(1);
-                    cellOfRow.setCellValue(students.get(m).get(i).getFirstName() + " " + students.get(m).get(i).getLastName());
+                     SetValueWithCheckData(students.get(m).get(i).getFirstName() + " " + students.get(m).get(i).getLastName(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -441,7 +443,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(2);
-                    cellOfRow.setCellValue(students.get(m).get(i).getPersonnelNo());
+                     SetValueWithCheckData(students.get(m).get(i).getPersonnelNo(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -452,7 +454,7 @@ public class ControlReportService {
 
 
                     cellOfRow = row.createCell(3);
-                    cellOfRow.setCellValue(students.get(m).get(i).getCcpAffairs());
+                     SetValueWithCheckData(students.get(m).get(i).getCcpAffairs(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -462,7 +464,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(4);
-                    cellOfRow.setCellValue(students.get(m).get(i).getEducationMajorTitle());
+                     SetValueWithCheckData(students.get(m).get(i).getEducationMajorTitle(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -472,7 +474,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(5);
-                    cellOfRow.setCellValue(students.get(m).get(i).getJobTitle());
+                     SetValueWithCheckData(students.get(m).get(i).getJobTitle(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -497,7 +499,7 @@ public class ControlReportService {
 
                         for (Integer key : statesPerStudentKeysList) {
                             if (key == j) {
-                                cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
+                                 SetValueWithCheckData(statesPerStudentValuesList.get(k),cellOfRow);
                                 k++;
                                 break;
                             }
@@ -524,7 +526,7 @@ public class ControlReportService {
             XSSFRow row = sheet.createRow(cnt);
             Cell cellOfRow = row.createCell(1);
             row.setHeight((short) 575);
-            cellOfRow.setCellValue("نام و امضای مسئول واحد ");
+             SetValueWithCheckData("نام و امضای مسئول واحد ",cellOfRow);
             cellOfRow.setCellStyle(rCellStyle);
             rCellStyle.setAlignment(HorizontalAlignment.RIGHT);
             rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -601,7 +603,7 @@ public class ControlReportService {
                 XSSFRow row = sheet.createRow(cnt);
                 Cell cellOfRow = row.createCell(4);
                 row.setHeight((short) 575);
-                cellOfRow.setCellValue("شركت ملي صنايع مس ايران");
+                 SetValueWithCheckData("شركت ملي صنايع مس ايران",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyle);
                 rCellStyle.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -611,7 +613,7 @@ public class ControlReportService {
                 row = sheet.createRow(cnt + 1);
                 cellOfRow = row.createCell(4);
                 row.setHeight((short) 575);
-                cellOfRow.setCellValue("امور آموزش و تجهيز نيروي انساني");
+                 SetValueWithCheckData("امور آموزش و تجهيز نيروي انساني",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyle);
                 rCellStyle.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -632,7 +634,7 @@ public class ControlReportService {
                 rCellStyleCornerRight.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyleCornerRight.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                cellOfRow.setCellValue("نام دوره:");
+                 SetValueWithCheckData("نام دوره:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleCornerRight);
 
                 rCellStyleCornerRight.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -671,7 +673,7 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle3 =  workbook.createCellStyle();
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("titleClass"));
+                 SetValueWithCheckData(masterHeader.get(m).get("titleClass"),cellOfRow);
                 rCellStyle3.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
@@ -713,14 +715,14 @@ public class ControlReportService {
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyleLeft.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                cellOfRow.setCellValue("کد دوره:");
+                 SetValueWithCheckData("کد دوره:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("code"));
+                 SetValueWithCheckData(masterHeader.get(m).get("code"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
@@ -743,14 +745,14 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("روزهاي تشكيل كلاس:");
+                 SetValueWithCheckData("روزهاي تشكيل كلاس:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("days"));
+                 SetValueWithCheckData(masterHeader.get(m).get("days"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
@@ -767,27 +769,27 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("استاد:");
+                 SetValueWithCheckData("استاد:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("teacher"));
+                 SetValueWithCheckData(masterHeader.get(m).get("teacher"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("مدت زمان:");
+                 SetValueWithCheckData("مدت زمان:",cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                 SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -798,7 +800,7 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("تاريخ برگزاری:");
+                 SetValueWithCheckData("تاريخ برگزاری:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomRight);
 
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
@@ -816,14 +818,14 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle4 = workbook.createCellStyle();
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("startDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("startDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleBottom2);
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("لغایت");
+                 SetValueWithCheckData("لغایت",cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
 
@@ -831,7 +833,7 @@ public class ControlReportService {
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("endDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("endDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomLeft);
@@ -865,7 +867,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);
@@ -897,7 +899,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(1);
-                    cellOfRow.setCellValue(students.get(m).get(i).getFirstName() + " " + students.get(m).get(i).getLastName());
+                     SetValueWithCheckData(students.get(m).get(i).getFirstName() + " " + students.get(m).get(i).getLastName(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -907,7 +909,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(2);
-                    cellOfRow.setCellValue(students.get(m).get(i).getPersonnelNo());
+                     SetValueWithCheckData(students.get(m).get(i).getPersonnelNo(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -918,7 +920,7 @@ public class ControlReportService {
 
 
                     cellOfRow = row.createCell(3);
-                    cellOfRow.setCellValue(students.get(m).get(i).getScoreA());
+                     SetValueWithCheckData(students.get(m).get(i).getScoreA(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -928,7 +930,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(4);
-                    cellOfRow.setCellValue(students.get(m).get(i).getScoreB());
+                     SetValueWithCheckData(students.get(m).get(i).getScoreB(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -947,7 +949,7 @@ public class ControlReportService {
             XSSFRow row = sheet.createRow(cnt);
             Cell cellOfRow = row.createCell(1);
             row.setHeight((short) 575);
-            cellOfRow.setCellValue("نام و امضای مسئول واحد ");
+             SetValueWithCheckData("نام و امضای مسئول واحد ",cellOfRow);
             cellOfRow.setCellStyle(rCellStyle);
             rCellStyle.setAlignment(HorizontalAlignment.RIGHT);
             rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -1025,7 +1027,7 @@ public class ControlReportService {
                 XSSFRow row = sheet.createRow(cnt);
                 Cell cellOfRow = row.createCell(4);
                 row.setHeight((short) 575);
-                cellOfRow.setCellValue("شركت ملي صنايع مس ايران");
+                 SetValueWithCheckData("شركت ملي صنايع مس ايران",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyle);
                 rCellStyle.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -1035,7 +1037,7 @@ public class ControlReportService {
                 row = sheet.createRow(cnt + 1);
                 cellOfRow = row.createCell(4);
                 row.setHeight((short) 575);
-                cellOfRow.setCellValue("امور آموزش و تجهيز نيروي انساني");
+                 SetValueWithCheckData("امور آموزش و تجهيز نيروي انساني",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyle);
                 rCellStyle.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -1056,7 +1058,7 @@ public class ControlReportService {
                 rCellStyleCornerRight.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyleCornerRight.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                cellOfRow.setCellValue("نام دوره:");
+                 SetValueWithCheckData("نام دوره:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleCornerRight);
 
                 rCellStyleCornerRight.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -1095,7 +1097,7 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle3 =  workbook.createCellStyle();
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("titleClass"));
+                 SetValueWithCheckData(masterHeader.get(m).get("titleClass"),cellOfRow);
                 rCellStyle3.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
@@ -1137,14 +1139,14 @@ public class ControlReportService {
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
                 rCellStyleLeft.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                cellOfRow.setCellValue("کد دوره:");
+                 SetValueWithCheckData("کد دوره:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("code"));
+                 SetValueWithCheckData(masterHeader.get(m).get("code"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
@@ -1167,14 +1169,14 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("روزهاي تشكيل كلاس:");
+                 SetValueWithCheckData("روزهاي تشكيل كلاس:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("days"));
+                 SetValueWithCheckData(masterHeader.get(m).get("days"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
@@ -1191,27 +1193,27 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("استاد:");
+                 SetValueWithCheckData("استاد:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleRight);
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
                 rCellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("teacher"));
+                 SetValueWithCheckData(masterHeader.get(m).get("teacher"),cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.RIGHT);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 rCellStyle3.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("مدت زمان:");
+                 SetValueWithCheckData("مدت زمان:",cellOfRow);
                 rCellStyle3.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                 SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -1222,7 +1224,7 @@ public class ControlReportService {
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
 
-                cellOfRow.setCellValue("تاريخ برگزاری:");
+                 SetValueWithCheckData("تاريخ برگزاری:",cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomRight);
 
                 rCellStyle2.setAlignment(HorizontalAlignment.LEFT);
@@ -1240,14 +1242,14 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle4 = workbook.createCellStyle();
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(2);
-                cellOfRow.setCellValue(masterHeader.get(m).get("startDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("startDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleBottom2);
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(3);
-                cellOfRow.setCellValue("لغایت");
+                 SetValueWithCheckData("لغایت",cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
 
@@ -1255,7 +1257,7 @@ public class ControlReportService {
 
                 rCellStyle4.setFont(rFont2);
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("endDate"));
+                 SetValueWithCheckData(masterHeader.get(m).get("endDate"),cellOfRow);
                 rCellStyle4.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle4.setVerticalAlignment(VerticalAlignment.CENTER);
                 cellOfRow.setCellStyle(rCellStyleCornerBottomLeft);
@@ -1289,7 +1291,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);
@@ -1614,7 +1616,7 @@ public class ControlReportService {
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                 SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -1692,7 +1694,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);
@@ -1745,7 +1747,7 @@ public class ControlReportService {
 
 
                     cellOfRow = row.createCell(3);
-                    cellOfRow.setCellValue(students.get(m).get(i).getScoreA());
+                     SetValueWithCheckData(students.get(m).get(i).getScoreA(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -1755,7 +1757,7 @@ public class ControlReportService {
                     cellOfRow.setCellStyle(rCellStyle8);
 
                     cellOfRow = row.createCell(4);
-                    cellOfRow.setCellValue(students.get(m).get(i).getScoreB());
+                     SetValueWithCheckData(students.get(m).get(i).getScoreB(),cellOfRow);
                     rCellStyle8.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle8.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -1984,7 +1986,7 @@ public class ControlReportService {
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                 SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -2055,7 +2057,7 @@ public class ControlReportService {
                     sheet.addMergedRegion(CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()));
                     cellOfRow = row.createCell(6 + i * 5);
 
-                    cellOfRow.setCellValue(dates[i]);
+                     SetValueWithCheckData(dates[i],cellOfRow);
                     rCellStyle6.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle6.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle6.setBorderBottom(BorderStyle.MEDIUM);
@@ -2135,7 +2137,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);
@@ -2229,7 +2231,7 @@ public class ControlReportService {
                         cellOfRow = row.createCell(6 + j);
 
                         if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
-                            cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
+                             SetValueWithCheckData(statesPerStudentValuesList.get(k),cellOfRow);
                             k++;
                         }
 
@@ -2460,7 +2462,7 @@ public class ControlReportService {
                 cellOfRow.setCellStyle(rCellStyle3);
 
                 cellOfRow = row.createCell(4);
-                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
+                 SetValueWithCheckData(masterHeader.get(m).get("hduration"),cellOfRow);
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -2538,7 +2540,7 @@ public class ControlReportService {
                     cellOfRow = row.createCell(i);
                     row.setHeight((short) 815);
 
-                    cellOfRow.setCellValue(headersTable[i]);
+                     SetValueWithCheckData(headersTable[i],cellOfRow);
                     rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
                     rCellStyle5.setBorderBottom(BorderStyle.MEDIUM);

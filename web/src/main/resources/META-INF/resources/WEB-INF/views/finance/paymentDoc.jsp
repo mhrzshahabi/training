@@ -301,7 +301,7 @@
                         if (canRemove){
                             payment_classes_Remove(record);
                         }else {
-                            createDialog("info", "سند پرداخت شده ویرایش نخواهد شد");
+                            createDialog("info", "سند پرداخت شده حذف نخواهد شد");
                         }
                     }
                 });
@@ -521,7 +521,7 @@
                 }
             });
         } else  if (record.paymentDocStatus!== 'ثبت اولیه' ) {
-            createDialog("info", "سند فقط در وضعیت ثبت اولیه امکان ویرایش دارد");
+            createDialog("info", "سند فقط در وضعیت ثبت اولیه امکان حذف دارد");
 
         }else {
             let Dialog_Delete = isc.Dialog.create({

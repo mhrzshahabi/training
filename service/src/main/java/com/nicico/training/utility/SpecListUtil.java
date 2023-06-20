@@ -7,17 +7,24 @@ import com.nicico.training.dto.SearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.nicico.training.utility.MakeExcelOutputUtil.isNumericWithDot;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -136,6 +143,30 @@ public class SpecListUtil {
         } catch (NoSuchFieldException e) {
 
             return getField(fieldName, entityClass.getSuperclass());
+        }
+    }
+    public static void SetValueWithCheckData(String tmpCell, Cell cell)  {
+        if (isNumericWithDot(tmpCell)){
+            Number number = null;
+            try {
+                number = NumberFormat.getInstance().parse(tmpCell);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (number instanceof  Integer){
+                cell.setCellValue(number.intValue());
+
+            }else if (number instanceof Long){
+                cell.setCellValue(number.longValue());
+            }else if (number instanceof Double){
+                cell.setCellValue(number.doubleValue());
+            }else if (number instanceof Float){
+                cell.setCellValue(number.floatValue());
+            }
+            cell.setCellType(CellType.NUMERIC);
+
+        }else {
+            cell.setCellValue(tmpCell);
         }
     }
 }

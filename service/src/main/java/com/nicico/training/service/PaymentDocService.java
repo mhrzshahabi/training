@@ -3,9 +3,11 @@ package com.nicico.training.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PaymentDTO;
+import com.nicico.training.iservice.IPaymentDocClassService;
 import com.nicico.training.iservice.IPaymentDocService;
 import com.nicico.training.mapper.paymentDocMapper.PaymentDocMapper;
 import com.nicico.training.model.PaymentDoc;
+import com.nicico.training.model.PaymentDocClass;
 import com.nicico.training.model.enums.PaymentDocStatus;
 import com.nicico.training.repository.PaymentDocDAO;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.nicico.training.model.enums.PaymentDocStatus.registration;
@@ -27,6 +31,7 @@ public class PaymentDocService implements IPaymentDocService {
     private final ModelMapper modelMapper;
     private final PaymentDocDAO paymentDocDAO;
     private final PaymentDocMapper paymentDocMapper;
+    private final IPaymentDocClassService iPaymentDocClassService;
 
 
     @Override
@@ -65,6 +70,10 @@ public class PaymentDocService implements IPaymentDocService {
         modelMapper.map(paymentDoc, updating);
         modelMapper.map(update, updating);
         updating.setPaymentDocStatus(PaymentDocStatus.fromString(update.getPaymentDocStatus()));
+        if (!Objects.equals(paymentDoc.getAgreementId(), update.getAgreementId())){
+            List<PaymentDocClass> paymentDocClassList = updating.getPaymentDocClassList();
+            paymentDocClassList.forEach(paymentDocClass -> iPaymentDocClassService.delete(paymentDocClass.getId()));
+        }
         return paymentDocDAO.saveAndFlush(updating);
     }
 

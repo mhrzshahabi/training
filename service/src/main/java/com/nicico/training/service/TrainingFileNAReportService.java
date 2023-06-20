@@ -41,6 +41,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.utility.SpecListUtil.SetValueWithCheckData;
 
 @Service
 @RequiredArgsConstructor
@@ -356,7 +357,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                         }
 
 
-                        excelCellOfRow.setCellValue(row.getHeaders().get(j).get(k).getTitle());
+                        SetValueWithCheckData(row.getHeaders().get(j).get(k).getTitle(),excelCellOfRow);
                         if (row.getHeaders().get(j).get(k).isBold()) {
                             excelCellOfRow.setCellStyle(headerBoldCellStyle);
                         } else {
@@ -397,7 +398,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 for (int j = 0; j < cntOfRows; j++) {
                     excelCellOfRow = excelRow.createCell(j);
 
-                    excelCellOfRow.setCellValue(row.getTitlesOfGrid().get(j));
+                    SetValueWithCheckData(row.getTitlesOfGrid().get(j),excelCellOfRow);
                     excelCellOfRow.setCellStyle(bodyBoldCellStyle);
                 }
                 currentRow++;
@@ -412,7 +413,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                     for (int k = 0; k < cntOfCells; k++) {
                         excelCellOfRow = excelRow.createCell(k);
 
-                        excelCellOfRow.setCellValue(row.getDataOfGrid().get(j).get(k));
+                        SetValueWithCheckData(row.getDataOfGrid().get(j).get(k),excelCellOfRow);
                         if (row.getDataOfGrid().get(j).get(5) == null && row.getDataOfGrid().get(j).get(10) == null)
                             excelCellOfRow.setCellStyle(bodyEqualsCellStyle);
                         else excelCellOfRow.setCellStyle(bodyCellStyle);
@@ -448,7 +449,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
                     excelCellOfRow.setCellStyle(tmpCellStyle);
 
-                    excelCellOfRow.setCellValue(row.getTitlesOfSummaryGrid().get(j));
+                    SetValueWithCheckData(row.getTitlesOfSummaryGrid().get(j),excelCellOfRow);
                 }
                 currentRow++;
 
@@ -482,7 +483,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
                         excelCellOfRow.setCellStyle(tmpCellStyle);
 
-                        excelCellOfRow.setCellValue(row.getDataOfSummaryGrid().get(j).get(k));
+                        SetValueWithCheckData(row.getDataOfSummaryGrid().get(j).get(k),excelCellOfRow);
                     }
                     currentRow++;
                 }
