@@ -1414,7 +1414,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(paymentUrl, "POST", JSON.stringify(paymentData), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                createDialog("info", "سند پرداخت ایجاد شد برای ویرایش آن به فرم سند پرداخت مراجعه شود");
             } else {
                 wait.close();
                 createDialog("info", "خطایی رخ داده است");
