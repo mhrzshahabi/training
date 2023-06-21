@@ -9,11 +9,14 @@ import response.tclass.ElsStudentAttendanceListResponse;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface IStudentService {
 
     StudentDTO.Info get(Long id);
+
+    Optional<Student> getOptional(Long id);
 
     StudentDTO.ClassStudentInfo getLastStudentByNationalCode(String nationalCode);
 
@@ -61,4 +64,9 @@ public interface IStudentService {
 
     StudentDTO.Info update(Long id, StudentDTO.UpdateForSyncData request);
 
+    List<Student> getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(Long postId, String personnelNo, Long depId, String fName, String lName);
+
+    List<Student> getTestStudentList();
+
+    StudentDTO.Info save(Student student);
 }

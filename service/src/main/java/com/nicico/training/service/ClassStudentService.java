@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,7 @@ public class ClassStudentService implements IClassStudentService {
     private final AttendanceDAO attendanceDAO;
     private final ClassStudentHistoryService classStudentHistoryService;
     private final ITclassService tclassService;
-    private final StudentService studentService;
+    private final IStudentService studentService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
@@ -1277,6 +1278,52 @@ public class ClassStudentService implements IClassStudentService {
         }
 
         return data;
+    }
+
+    @Scheduled(cron = "0 30 19 1/1 * ?")
+    public void updateStudentData() {
+        try {
+            List<Long> studentListIds = classStudentDAO.UnCompleteStudentIds();
+            studentListIds.forEach(id->{
+                Optional<Student> optionalStudent =   studentService.getOptional(id);
+                if (optionalStudent.isPresent()){
+                    Student student = optionalStudent.get();
+                    SynonymPersonnel synonymPersonnel= synonymPersonnelService.getByNationalCode(student.getNationalCode());
+                    if (synonymPersonnel!=null && (synonymPersonnel.getDepartmentCode()!=null || synonymPersonnel.getPostCode()!=null )){
+                        student.setId(student.getId());
+                        student.setDepartmentCode(synonymPersonnel.getDepartmentCode());
+                        student.setPostCode(synonymPersonnel.getPostCode());
+                        student.setPostTitle(synonymPersonnel.getPostTitle());
+                        student.setPersonnelNo(synonymPersonnel.getPersonnelNo());
+                        student.setPersonnelNo2(synonymPersonnel.getPersonnelNo2());
+                        student.setCompanyName(synonymPersonnel.getCompanyName());
+                        student.setPostGradeCode(synonymPersonnel.getPostGradeCode());
+                        student.setPostGradeTitle(synonymPersonnel.getPostGradeTitle());
+                        student.setCcpAffairs(synonymPersonnel.getCcpAffairs());
+                        student.setCcpArea(synonymPersonnel.getCcpArea());
+                        student.setCcpAssistant(synonymPersonnel.getCcpAssistant());
+                        student.setCcpTitle(synonymPersonnel.getCcpTitle());
+                        student.setCcpCode(synonymPersonnel.getCcpCode());
+                        student.setCcpUnit(synonymPersonnel.getCcpUnit());
+                        student.setCcpSection(synonymPersonnel.getCcpSection());
+                        student.setDepartmentTitle(synonymPersonnel.getDepartmentTitle());
+                        student.setJobTitle(synonymPersonnel.getJobTitle());
+                        student.setComplexTitle(synonymPersonnel.getComplexTitle());
+                        student.setPostId(synonymPersonnel.getPostId());
+                        student.setDepartmentId(synonymPersonnel.getDepartmentId());
+                        try {
+                            studentService.save(student);
+                        }catch (Exception e){
+                            System.out.println(e.toString());
+                        }
+                    }
+                }
+
+            });
+
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
     }
 
 }

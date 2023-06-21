@@ -20,7 +20,7 @@ public interface ISynonymPersonnelService {
 
     SynonymPersonnel getByNationalCode(String nationalCode);
 
-    SynonymPersonnel getById(Long nationalCode);
+    SynonymPersonnel getById(Long id);
 
     SynonymPersonnel getByPersonnelNo2(String personnelNo2);
 

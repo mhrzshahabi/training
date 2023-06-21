@@ -50,6 +50,11 @@ public class StudentService implements IStudentService {
     }
 
     @Override
+    public Optional<Student> getOptional(Long id) {
+        return studentDAO.findById(id);
+    }
+
+    @Override
     public StudentDTO.ClassStudentInfo getLastStudentByNationalCode(String nationalCode) {
         Optional<Student> optionalStudent=studentDAO.findFirstByNationalCodeOrderByIdDesc(nationalCode);
         if (optionalStudent.isPresent()){
@@ -74,6 +79,7 @@ public class StudentService implements IStudentService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<Student> getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(Long postId, String personnelNo, Long depId, String fName, String lName) {
         List<Student> list = studentDAO.findByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(postId, personnelNo, depId, fName, lName);
         return list;
@@ -245,7 +251,8 @@ public class StudentService implements IStudentService {
 
     // ------------------------------
 
-    private StudentDTO.Info save(Student student) {
+    @Override
+    public StudentDTO.Info save(Student student) {
         final Student saved = studentDAO.saveAndFlush(student);
         return modelMapper.map(saved, StudentDTO.Info.class);
     }
@@ -290,6 +297,7 @@ public class StudentService implements IStudentService {
         return roleList;
     }
 
+    @Override
     public List<Student> getTestStudentList() {
         return studentDAO.getTestStudentList();
     }
