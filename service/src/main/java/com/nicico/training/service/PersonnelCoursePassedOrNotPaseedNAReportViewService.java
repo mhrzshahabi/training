@@ -5,13 +5,11 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.ViewAttendanceReportDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IPersonnelCoursePassedOrNotPaseedNAReportViewService;
 import com.nicico.training.model.PersonnelCoursePassedOrNotPaseedNAReportView;
 import com.nicico.training.repository.PersonnelCoursePassedOrNotPaseedNAReportViewDAO;
 import lombok.RequiredArgsConstructor;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,8 @@ public class PersonnelCoursePassedOrNotPaseedNAReportViewService implements IPer
     }
 
     @Override
-    public List<PersonnelCoursePassedOrNotPaseedNAReportView> getPassedOrUnPassed(List<Long> catIds, String isPassed) {
+    public List<PersonnelCoursePassedOrNotPaseedNAReportView> getPassedOrUnPassed(List<Long> catIds, String isPassed
+            , List<String> complexList , List<String> assistantList ,  List<String> affairList) {
         long passedOrNot;
         if (isPassed.equals("unPassed"))
             passedOrNot = 399L;
@@ -70,6 +69,36 @@ public class PersonnelCoursePassedOrNotPaseedNAReportViewService implements IPer
             listOfCriteria2.add(courseCriteria);
 
         }
+
+        if (complexList!=null){
+            SearchDTO.CriteriaRq complexCriteria = null;
+            complexCriteria = new SearchDTO.CriteriaRq();
+            complexCriteria.setOperator(EOperator.inSet);
+            complexCriteria.setFieldName("personnelComplexTitle");
+            complexCriteria.setValue(complexList);
+
+            listOfCriteria3.add(complexCriteria);
+        }
+        if (assistantList!=null){
+            SearchDTO.CriteriaRq assistantCriteria = null;
+            assistantCriteria = new SearchDTO.CriteriaRq();
+            assistantCriteria.setOperator(EOperator.inSet);
+            assistantCriteria.setFieldName("personnelCcpAssistant");
+            assistantCriteria.setValue(assistantList);
+
+            listOfCriteria3.add(assistantCriteria);
+        }
+        if (affairList!=null){
+            SearchDTO.CriteriaRq affairCriteria = null;
+            affairCriteria = new SearchDTO.CriteriaRq();
+            affairCriteria.setOperator(EOperator.inSet);
+            affairCriteria.setFieldName("personnelCcpAffairs");
+            affairCriteria.setValue(affairList);
+
+            listOfCriteria3.add(affairCriteria);
+
+        }
+
         courseCriteria = new SearchDTO.CriteriaRq();
         courseCriteria.setCriteria(listOfCriteria2);
         courseCriteria.setOperator(EOperator.or);

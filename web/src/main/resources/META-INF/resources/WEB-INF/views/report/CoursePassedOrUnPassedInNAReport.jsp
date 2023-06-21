@@ -86,6 +86,8 @@
         title: "درخواست گزارش اکسل",
         width: 300,
         click: function () {
+             let  data_values_GSIR = null;
+            data_values_GSIR = organSegmentFilterCoursePassed.getValuesAsAdvancedCriteria();
             if(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("courseCategory").getValue()===undefined || DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("courseCategory").getValue()===null) {
                 createDialog("info","گروه کاری را مشخص کنید");
                 return;
@@ -103,10 +105,13 @@
                     [
                         {name: "courseCategory", type: "hidden"},
                         {name: "passedOrUnPassed", type: "hidden"},
+                        {name: "criteria", type: "hidden"},
                     ]
             });
+
             downloadForm.setValue("courseCategory", JSON.stringify(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("courseCategory").getValue()));
             downloadForm.setValue("passedOrUnPassed", JSON.stringify(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("passedOrUnPassed").getValue()));
+            downloadForm.setValue("criteria", JSON.stringify(data_values_GSIR));
             downloadForm.show();
             downloadForm.submitForm();
         }
@@ -124,12 +129,18 @@
 
 
     //----------------------------------- layOut -----------------------------------------------------------------------
+
+    let organSegmentFilterCoursePassed = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle", "assistant", "affairs", "section", "unit");
+
+
+    //----------------------------------- layOut -----------------------------------------------------------------------
     var VLayOut_CriteriaForm_REFR_Passed_UnPassed = isc.VLayout.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         alignLayout: "center",
         members: [
+            organSegmentFilterCoursePassed,
             DynamicForm_CriteriaForm_REFR_Passed_UnPassed
         ]
     });

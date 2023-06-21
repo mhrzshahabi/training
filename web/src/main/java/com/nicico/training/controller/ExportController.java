@@ -89,7 +89,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData(titr,cell2);
+            SetValueWithCheckData(titr, cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -97,7 +97,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -108,7 +108,7 @@ public class ExportController {
             for (HashMap<String, String> map : allData) {
                 Row row = sheet.createRow(++rowNum);
                 for (int i = 0; i < columns.length; i++) {
-                    SetValueWithCheckData(map.get(columns[i]),row.createCell(i));
+                    SetValueWithCheckData(map.get(columns[i]), row.createCell(i));
                 }
             }
 
@@ -426,7 +426,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData("گزارش ارزیابی واکنشی",cell2);
+            SetValueWithCheckData("گزارش ارزیابی واکنشی", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -434,7 +434,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -449,119 +449,119 @@ public class ExportController {
 
                     switch (columns[i]) {
                         case "class_code": {
-                             SetValueWithCheckData(map.getClass_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_code(), row.createCell(i));
                             break;
                         }
                         case "complex": {
-                             SetValueWithCheckData(map.getComplex(),row.createCell(i));
+                            SetValueWithCheckData(map.getComplex(), row.createCell(i));
                             break;
                         }
                         case "teacher_national_code": {
-                             SetValueWithCheckData(map.getTeacher_national_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_national_code(), row.createCell(i));
                             break;
                         }
                         case "teacher": {
-                             SetValueWithCheckData(map.getTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher(), row.createCell(i));
                             break;
                         }
                         case "is_personnel": {
-                             SetValueWithCheckData(map.getIs_personnel(),row.createCell(i));
+                            SetValueWithCheckData(map.getIs_personnel(), row.createCell(i));
                             break;
                         }
                         case "class_start_date": {
-                             SetValueWithCheckData(map.getClass_start_date(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_start_date(), row.createCell(i));
                             break;
                         }
                         case "class_end_date": {
-                             SetValueWithCheckData(map.getClass_end_date(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_end_date(), row.createCell(i));
                             break;
                         }
                         case "course_code": {
-                             SetValueWithCheckData(map.getCourse_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_code(), row.createCell(i));
                             break;
                         }
                         case "course_titlefa": {
-                             SetValueWithCheckData(map.getCourse_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_titlefa(), row.createCell(i));
                             break;
                         }
                         case "category_titlefa": {
-                             SetValueWithCheckData(map.getCategory_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCategory_titlefa(), row.createCell(i));
                             break;
                         }
                         case "sub_category_titlefa": {
-                             SetValueWithCheckData(map.getSub_category_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getSub_category_titlefa(), row.createCell(i));
                             break;
                         }
                         case "student": {
-                             SetValueWithCheckData(map.getStudent(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent(), row.createCell(i));
                             break;
                         }
                         case "class_status": {
-                             SetValueWithCheckData(map.getClass_status(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_status(), row.createCell(i));
                             break;
                         }
                         case "student_evaluation": {
-                             SetValueWithCheckData(map.getStudentEvaluation(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudentEvaluation(), row.createCell(i));
                             break;
                         }
                         case "student_per_number": {
-                             SetValueWithCheckData(map.getStudent_per_number(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_per_number(), row.createCell(i));
                             break;
                         }
                         case "student_post_title": {
-                             SetValueWithCheckData(map.getStudent_post_title(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_post_title(), row.createCell(i));
                             break;
                         }
                         case "student_post_code": {
-                             SetValueWithCheckData(map.getStudent_post_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_post_code(), row.createCell(i));
                             break;
                         }
                         case "student_hoze": {
-                             SetValueWithCheckData(map.getStudent_hoze(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_hoze(), row.createCell(i));
                             break;
                         }
                         case "student_omor": {
-                             SetValueWithCheckData(map.getStudent_omor(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_omor(), row.createCell(i));
                             break;
                         }
                         case "total_std": {
-                             SetValueWithCheckData(map.getTotal_std(),row.createCell(i));
+                            SetValueWithCheckData(map.getTotal_std(), row.createCell(i));
                             break;
                         }
                         case "training_grade_to_teacher": {
-                             SetValueWithCheckData(map.getTraining_grade_to_teacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTraining_grade_to_teacher(), row.createCell(i));
                             break;
                         }
                         case "teacher_grade_to_class": {
-                             SetValueWithCheckData(map.getTeacher_grade_to_class(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_grade_to_class(), row.createCell(i));
                             break;
                         }
                         case "reactione_evaluation_grade": {
-                             SetValueWithCheckData(map.getReactione_evaluation_grade(),row.createCell(i));
+                            SetValueWithCheckData(map.getReactione_evaluation_grade(), row.createCell(i));
                             break;
                         }
                         case "final_teacher": {
-                             SetValueWithCheckData(map.getFinal_teacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getFinal_teacher(), row.createCell(i));
                             break;
                         }
                         case "tedadJavabDade": {
-                             SetValueWithCheckData(map.getJavab_dade(),row.createCell(i));
+                            SetValueWithCheckData(map.getJavab_dade(), row.createCell(i));
                             break;
                         }
                         case "percent_reaction": {
-                             SetValueWithCheckData(map.getPercent_reaction(),row.createCell(i));
+                            SetValueWithCheckData(map.getPercent_reaction(), row.createCell(i));
                             break;
                         }
                         case "class_teacher": {
-                             SetValueWithCheckData(map.getClassTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getClassTeacher(), row.createCell(i));
                             break;
                         }
                         case "facilities_equipment": {
-                             SetValueWithCheckData(map.getFacilitiesEquipment(),row.createCell(i));
+                            SetValueWithCheckData(map.getFacilitiesEquipment(), row.createCell(i));
                             break;
                         }
                         case "class_content": {
-                             SetValueWithCheckData(map.getClassContent(),row.createCell(i));
+                            SetValueWithCheckData(map.getClassContent(), row.createCell(i));
                             break;
                         }
                     }
@@ -703,8 +703,41 @@ public class ExportController {
 
     @PostMapping(value = {"/excel/un-passed"})
     public void getExcelDataForUnPassedReport(final HttpServletResponse response, @RequestParam(value = "passedOrUnPassed") String passedOrUnPassed
-            , @RequestParam(value = "courseCategory") String courseCategory
+            , @RequestParam(value = "courseCategory") String courseCategory, @RequestParam(value = "criteria") String criteria
     ) {
+
+        SearchDTO.CriteriaRq criteriaRq;
+
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        try {
+            criteriaRq.setOperator(EOperator.valueOf("and"))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<String> complexList = null;
+        List<String> assistantList = null;
+        List<String> affairList = null;
+
+        if (!criteria.contains("null")) {
+            for (int f = 0; f < criteriaRq.getCriteria().get(0).getCriteria().size(); f++) {
+                if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("complexTitle")) {
+                    complexList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+                }
+                if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("assistant")) {
+                    assistantList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+                }
+                if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("affairs")) {
+                    affairList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+                }
+
+            }
+        }
+
+
 
         String isPassed = passedOrUnPassed.replace("\"", "");
         String catgories = courseCategory.replace("\"", "").replace("[", "").replace("]", "");
@@ -714,7 +747,8 @@ public class ExportController {
             catIds.add(Long.valueOf(discagem[i]));
         }
 
-        List<PersonnelCoursePassedOrNotPaseedNAReportView> data = personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed(catIds, isPassed);
+        List<PersonnelCoursePassedOrNotPaseedNAReportView> data = personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed(catIds, isPassed,
+                complexList, assistantList, affairList);
 
 
         String fileFullPath = "export.xlsx";
@@ -835,9 +869,9 @@ public class ExportController {
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
             if (isPassed.equals("unPassed"))
-                 SetValueWithCheckData("گزارش دوره های نگذرانده پرسنل",cell2);
+                SetValueWithCheckData("گزارش دوره های نگذرانده پرسنل", cell2);
             else
-                 SetValueWithCheckData("گزارش دوره های گذرانده پرسنل",cell2);
+                SetValueWithCheckData("گزارش دوره های گذرانده پرسنل", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -845,7 +879,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -861,76 +895,76 @@ public class ExportController {
                     switch (columns[i]) {
 
                         case "course_code": {
-                             SetValueWithCheckData(map.getCourseCode(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourseCode(), row.createCell(i));
                             break;
                         }
                         case "course_title_fa": {
-                             SetValueWithCheckData(map.getCourseTitleFa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourseTitleFa(), row.createCell(i));
                             break;
                         }
                         case "personnel_personnel_no": {
-                             SetValueWithCheckData(map.getPersonnelPersonnelNo(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelPersonnelNo(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_affairs": {
-                             SetValueWithCheckData(map.getPersonnelCcpAffairs(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpAffairs(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_area": {
-                             SetValueWithCheckData(map.getPersonnelCcpArea(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpArea(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_assistant": {
-                             SetValueWithCheckData(map.getPersonnelCcpAssistant(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpAssistant(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_section": {
-                             SetValueWithCheckData(map.getPersonnelCcpSection(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpSection(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_title": {
-                             SetValueWithCheckData(map.getPersonnelCcpTitle(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpTitle(), row.createCell(i));
                             break;
                         }
                         case "personnel_cpp_unit": {
-                             SetValueWithCheckData(map.getPersonnelCcpUnit(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCcpUnit(), row.createCell(i));
                             break;
                         }
                         case "personnel_company_name": {
-                             SetValueWithCheckData(map.getPersonnelCompanyName(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelCompanyName(), row.createCell(i));
                             break;
                         }
                         case "personnel_complex_title": {
-                             SetValueWithCheckData(map.getPersonnelComplexTitle(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelComplexTitle(), row.createCell(i));
                             break;
                         }
                         case "personnel_education_level_title": {
-                             SetValueWithCheckData(map.getPersonnelEducationLevelTitle(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelEducationLevelTitle(), row.createCell(i));
                             break;
                         }
 
                         case "personnel_first_name": {
-                             SetValueWithCheckData(map.getPersonnelFirstName(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelFirstName(), row.createCell(i));
                             break;
                         }
                         case "personnel_last_name": {
-                             SetValueWithCheckData(map.getPersonnelLastName(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelLastName(), row.createCell(i));
                             break;
                         }
                         case "personnel_national_code": {
-                             SetValueWithCheckData(map.getPersonnelNationalCode(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelNationalCode(), row.createCell(i));
                             break;
                         }
                         case "personnel_emp_no": {
-                             SetValueWithCheckData(map.getPersonnelPersonnelNo2(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelPersonnelNo2(), row.createCell(i));
                             break;
                         }
                         case "personnel_post_code": {
-                             SetValueWithCheckData(map.getPersonnelPostCode(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelPostCode(), row.createCell(i));
                             break;
                         }
                         case "personnel_post_title": {
-                             SetValueWithCheckData(map.getPersonnelPostTitle(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnelPostTitle(), row.createCell(i));
                             break;
                         }
                     }
@@ -1213,7 +1247,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData("گزارش ارزیابی واکنشی",cell2);
+            SetValueWithCheckData("گزارش ارزیابی واکنشی", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -1221,7 +1255,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -1236,93 +1270,93 @@ public class ExportController {
 
                     switch (columns[i]) {
                         case "class_code": {
-                             SetValueWithCheckData(map.getClass_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_code(), row.createCell(i));
                             break;
                         }
                         case "complex": {
-                             SetValueWithCheckData(map.getComplex(),row.createCell(i));
+                            SetValueWithCheckData(map.getComplex(), row.createCell(i));
                             break;
                         }
                         case "teacher_national_code": {
-                             SetValueWithCheckData(map.getTeacher_national_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_national_code(), row.createCell(i));
                             break;
                         }
                         case "teacher": {
-                             SetValueWithCheckData(map.getTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher(), row.createCell(i));
                             break;
                         }
                         case "is_personnel": {
-                             SetValueWithCheckData(map.getIs_personnel(),row.createCell(i));
+                            SetValueWithCheckData(map.getIs_personnel(), row.createCell(i));
                             break;
                         }
                         case "class_start_date": {
-                             SetValueWithCheckData(map.getClass_start_date(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_start_date(), row.createCell(i));
                             break;
                         }
                         case "class_end_date": {
-                             SetValueWithCheckData(map.getClass_end_date(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_end_date(), row.createCell(i));
                             break;
                         }
                         case "course_code": {
-                             SetValueWithCheckData(map.getCourse_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_code(), row.createCell(i));
                             break;
                         }
                         case "course_titlefa": {
-                             SetValueWithCheckData(map.getCourse_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_titlefa(), row.createCell(i));
                             break;
                         }
                         case "category_titlefa": {
-                             SetValueWithCheckData(map.getCategory_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCategory_titlefa(), row.createCell(i));
                             break;
                         }
                         case "sub_category_titlefa": {
-                             SetValueWithCheckData(map.getSub_category_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getSub_category_titlefa(), row.createCell(i));
                             break;
                         }
 
                         case "class_status": {
-                             SetValueWithCheckData(map.getClass_status(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_status(), row.createCell(i));
                             break;
                         }
 
                         case "total_std": {
-                             SetValueWithCheckData(map.getTotal_std(),row.createCell(i));
+                            SetValueWithCheckData(map.getTotal_std(), row.createCell(i));
                             break;
                         }
                         case "training_grade_to_teacher": {
-                             SetValueWithCheckData(map.getTraining_grade_to_teacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTraining_grade_to_teacher(), row.createCell(i));
                             break;
                         }
                         case "teacher_grade_to_class": {
-                             SetValueWithCheckData(map.getTeacher_grade_to_class(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_grade_to_class(), row.createCell(i));
                             break;
                         }
                         case "reactione_evaluation_grade": {
-                             SetValueWithCheckData(map.getReactione_evaluation_grade(),row.createCell(i));
+                            SetValueWithCheckData(map.getReactione_evaluation_grade(), row.createCell(i));
                             break;
                         }
                         case "final_teacher": {
-                             SetValueWithCheckData(map.getFinal_teacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getFinal_teacher(), row.createCell(i));
                             break;
                         }
                         case "tedadJavabDade": {
-                             SetValueWithCheckData(map.getJavab_dade(),row.createCell(i));
+                            SetValueWithCheckData(map.getJavab_dade(), row.createCell(i));
                             break;
                         }
                         case "percent_reaction": {
-                             SetValueWithCheckData(map.getPercent_reaction(),row.createCell(i));
+                            SetValueWithCheckData(map.getPercent_reaction(), row.createCell(i));
                             break;
                         }
                         case "class_teacher": {
-                             SetValueWithCheckData(map.getClassTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getClassTeacher(), row.createCell(i));
                             break;
                         }
                         case "facilities_equipment": {
-                             SetValueWithCheckData(map.getFacilitiesEquipment(),row.createCell(i));
+                            SetValueWithCheckData(map.getFacilitiesEquipment(), row.createCell(i));
                             break;
                         }
                         case "class_content": {
-                             SetValueWithCheckData(map.getClassContent(),row.createCell(i));
+                            SetValueWithCheckData(map.getClassContent(), row.createCell(i));
                             break;
                         }
                     }
@@ -1698,7 +1732,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData("گزارش ارزیابی یادگیری",cell2);
+            SetValueWithCheckData("گزارش ارزیابی یادگیری", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -1706,7 +1740,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -1721,108 +1755,108 @@ public class ExportController {
 
                     switch (columns[i]) {
                         case "class_code": {
-                             SetValueWithCheckData(map.getClass_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_code(), row.createCell(i));
                             break;
                         }
                         case "complex": {
-                             SetValueWithCheckData(map.getComplex(),row.createCell(i));
+                            SetValueWithCheckData(map.getComplex(), row.createCell(i));
                             break;
                         }
                         case "teacher_national_code": {
-                             SetValueWithCheckData(map.getTeacher_national_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_national_code(), row.createCell(i));
                             break;
                         }
                         case "teacher": {
-                             SetValueWithCheckData(map.getTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher(), row.createCell(i));
                             break;
                         }
                         case "is_personnel": {
-                             SetValueWithCheckData(map.getIs_personnel(),row.createCell(i));
+                            SetValueWithCheckData(map.getIs_personnel(), row.createCell(i));
                             break;
                         }
                         case "class_start_date": {
-                             SetValueWithCheckData(map.getStartDate(),row.createCell(i));
+                            SetValueWithCheckData(map.getStartDate(), row.createCell(i));
                             break;
                         }
                         case "class_end_date": {
-                             SetValueWithCheckData(map.getEndDate(),row.createCell(i));
+                            SetValueWithCheckData(map.getEndDate(), row.createCell(i));
                             break;
                         }
                         case "course_code": {
-                             SetValueWithCheckData(map.getCourse_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_code(), row.createCell(i));
                             break;
                         }
                         case "course_titlefa": {
-                             SetValueWithCheckData(map.getCourse_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_titlefa(), row.createCell(i));
                             break;
                         }
                         case "category_titlefa": {
-                             SetValueWithCheckData(map.getCategory_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCategory_titlefa(), row.createCell(i));
                             break;
                         }
                         case "sub_category_titlefa": {
-                             SetValueWithCheckData(map.getSub_category_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getSub_category_titlefa(), row.createCell(i));
                             break;
                         }
 
                         case "class_status": {
-                             SetValueWithCheckData(map.getClass_status(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_status(), row.createCell(i));
                             break;
                         }
 
                         case "total_std": {
-                             SetValueWithCheckData(map.getTotal_std(),row.createCell(i));
+                            SetValueWithCheckData(map.getTotal_std(), row.createCell(i));
                             break;
                         }
                         case "miangin_pretest": {
                             String pish = "0";
                             if (map.getMiangin_pretest() != null)
                                 pish = map.getMiangin_pretest();
-                             SetValueWithCheckData(pish,row.createCell(i));
+                            SetValueWithCheckData(pish, row.createCell(i));
                             break;
                         }
                         case "miangin_asli": {
-                             SetValueWithCheckData(map.getMiangin_asli(),row.createCell(i));
+                            SetValueWithCheckData(map.getMiangin_asli(), row.createCell(i));
                             break;
                         }
                         case "nerkh": {
-                             SetValueWithCheckData(map.getNerkh(),row.createCell(i));
+                            SetValueWithCheckData(map.getNerkh(), row.createCell(i));
                             break;
                         }
                         case "darsad_javab_dade_asli": {
-                             SetValueWithCheckData(map.getDarsad_javab_dade_asli(),row.createCell(i));
+                            SetValueWithCheckData(map.getDarsad_javab_dade_asli(), row.createCell(i));
                             break;
                         }
                         case "darsad_javab_dade_pre": {
-                             SetValueWithCheckData(map.getDarsad_javab_dade_pre(),row.createCell(i));
+                            SetValueWithCheckData(map.getDarsad_javab_dade_pre(), row.createCell(i));
                             break;
                         }
                         case "darsad_ghabol": {
-                             SetValueWithCheckData(map.getDarsad_ghabol(),row.createCell(i));
+                            SetValueWithCheckData(map.getDarsad_ghabol(), row.createCell(i));
                             break;
                         }
                         case "darsad_noghabol": {
-                             SetValueWithCheckData(map.getDarsad_noghabol(),row.createCell(i));
+                            SetValueWithCheckData(map.getDarsad_noghabol(), row.createCell(i));
                             break;
                         }
                         case "learning": {
-                             SetValueWithCheckData(map.getLearning(),row.createCell(i));
+                            SetValueWithCheckData(map.getLearning(), row.createCell(i));
                             break;
                         }
                         case "max_nahaii": {
-                             SetValueWithCheckData(map.getMax_nahaii(),row.createCell(i));
+                            SetValueWithCheckData(map.getMax_nahaii(), row.createCell(i));
                             break;
                         }
                         case "min_pre": {
-                             SetValueWithCheckData(map.getMin_pre(),row.createCell(i));
+                            SetValueWithCheckData(map.getMin_pre(), row.createCell(i));
                             break;
                         }
                         case "pishraft": {
-                             SetValueWithCheckData(map.getPishraft(),row.createCell(i));
+                            SetValueWithCheckData(map.getPishraft(), row.createCell(i));
                             break;
                         }
                         case "percent_reaction": {
-                             SetValueWithCheckData(map.getPercent_reaction(),row.createCell(i));
+                            SetValueWithCheckData(map.getPercent_reaction(), row.createCell(i));
                             break;
                         }
                     }
@@ -2221,7 +2255,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData("گزارش ارزیابی یادگیری",cell2);
+            SetValueWithCheckData("گزارش ارزیابی یادگیری", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -2229,7 +2263,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -2244,108 +2278,108 @@ public class ExportController {
 
                     switch (columns[i]) {
                         case "class_code": {
-                             SetValueWithCheckData(map.getClass_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_code(), row.createCell(i));
                             break;
                         }
                         case "complex": {
-                             SetValueWithCheckData(map.getComplex(),row.createCell(i));
+                            SetValueWithCheckData(map.getComplex(), row.createCell(i));
                             break;
                         }
                         case "teacher_national_code": {
-                             SetValueWithCheckData(map.getTeacher_national_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher_national_code(), row.createCell(i));
                             break;
                         }
                         case "teacher": {
-                             SetValueWithCheckData(map.getTeacher(),row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher(), row.createCell(i));
                             break;
                         }
                         case "is_personnel": {
-                             SetValueWithCheckData(map.getIs_personnel(),row.createCell(i));
+                            SetValueWithCheckData(map.getIs_personnel(), row.createCell(i));
                             break;
                         }
                         case "class_start_date": {
-                             SetValueWithCheckData(map.getStartDate(),row.createCell(i));
+                            SetValueWithCheckData(map.getStartDate(), row.createCell(i));
                             break;
                         }
                         case "class_end_date": {
-                             SetValueWithCheckData(map.getEndDate(),row.createCell(i));
+                            SetValueWithCheckData(map.getEndDate(), row.createCell(i));
                             break;
                         }
                         case "course_code": {
-                             SetValueWithCheckData(map.getCourse_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_code(), row.createCell(i));
                             break;
                         }
                         case "course_titlefa": {
-                             SetValueWithCheckData(map.getCourse_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCourse_titlefa(), row.createCell(i));
                             break;
                         }
                         case "category_titlefa": {
-                             SetValueWithCheckData(map.getCategory_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getCategory_titlefa(), row.createCell(i));
                             break;
                         }
                         case "sub_category_titlefa": {
-                             SetValueWithCheckData(map.getSub_category_titlefa(),row.createCell(i));
+                            SetValueWithCheckData(map.getSub_category_titlefa(), row.createCell(i));
                             break;
                         }
 
                         case "class_status": {
-                             SetValueWithCheckData(map.getClass_status(),row.createCell(i));
+                            SetValueWithCheckData(map.getClass_status(), row.createCell(i));
                             break;
                         }
 
                         case "total_std": {
-                             SetValueWithCheckData(map.getTotal_std(),row.createCell(i));
+                            SetValueWithCheckData(map.getTotal_std(), row.createCell(i));
                             break;
                         }
                         case "student": {
-                             SetValueWithCheckData(map.getStudent(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent(), row.createCell(i));
                             break;
                         }
                         case "student_national_code": {
-                             SetValueWithCheckData(map.getStudent_per_number(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_per_number(), row.createCell(i));
                             break;
                         }
                         case "emp_no": {
-                             SetValueWithCheckData(map.getEmp_no(),row.createCell(i));
+                            SetValueWithCheckData(map.getEmp_no(), row.createCell(i));
                             break;
                         }
                         case "personnel_no": {
-                             SetValueWithCheckData(map.getPersonnel_no(),row.createCell(i));
+                            SetValueWithCheckData(map.getPersonnel_no(), row.createCell(i));
                             break;
                         }
                         case "student_hoze": {
-                             SetValueWithCheckData(map.getStudent_hoze(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_hoze(), row.createCell(i));
                             break;
                         }
                         case "student_omor": {
-                             SetValueWithCheckData(map.getStudent_omor(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_omor(), row.createCell(i));
                             break;
                         }
                         case "student_post_code": {
-                             SetValueWithCheckData(map.getStudent_post_code(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_post_code(), row.createCell(i));
                             break;
                         }
                         case "student_post_title": {
-                             SetValueWithCheckData(map.getStudent_post_title(),row.createCell(i));
+                            SetValueWithCheckData(map.getStudent_post_title(), row.createCell(i));
                             break;
                         }
                         case "nore_pish": {
                             String pish = "0";
                             if (map.getNore_pish() != null)
                                 pish = map.getNore_pish();
-                             SetValueWithCheckData(pish,row.createCell(i));
+                            SetValueWithCheckData(pish, row.createCell(i));
                             break;
                         }
                         case "nore_nahaii": {
-                             SetValueWithCheckData(map.getNore_nahaii(),row.createCell(i));
+                            SetValueWithCheckData(map.getNore_nahaii(), row.createCell(i));
                             break;
                         }
                         case "learning": {
-                             SetValueWithCheckData(map.getLearning(),row.createCell(i));
+                            SetValueWithCheckData(map.getLearning(), row.createCell(i));
                             break;
                         }
                         case "percent_reaction": {
-                             SetValueWithCheckData(map.getPercent_reaction(),row.createCell(i));
+                            SetValueWithCheckData(map.getPercent_reaction(), row.createCell(i));
                             break;
                         }
                     }
@@ -2617,7 +2651,7 @@ public class ExportController {
 
                 Row headerRow2 = sheet.createRow(0);
                 Cell cell2 = headerRow2.createCell(0);
-                 SetValueWithCheckData("گزارش ارزیابی رفتاری",cell2);
+                SetValueWithCheckData("گزارش ارزیابی رفتاری", cell2);
 
                 sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -2625,7 +2659,7 @@ public class ExportController {
 
                 for (int i = 0; i < columns.length; i++) {
                     Cell cell = headerRow.createCell(i);
-                     SetValueWithCheckData(headers[i],cell);
+                    SetValueWithCheckData(headers[i], cell);
                     cell.setCellStyle(headerCellStyle);
                 }
 
@@ -2638,38 +2672,38 @@ public class ExportController {
 
                     for (int i = 0; i < columns.length; i++) {
                         switch (columns[i]) {
-                            case "student_per_number" ->  SetValueWithCheckData(map.getEvaluatedPersonnelNo(),row.createCell(i));
-                            case "evaluator_per_number" ->  SetValueWithCheckData(map.getEvaluatorPersonnelNo(),row.createCell(i));
-                            case "student" ->  SetValueWithCheckData(map.getEvaluatedName(),row.createCell(i));
-                            case "student_national_code" ->  SetValueWithCheckData(map.getEvaluatedNationalCode(),row.createCell(i));
-                            case "evaluator_name" ->  SetValueWithCheckData(map.getEvaluatorName(),row.createCell(i));
-                            case "evaluator_national_code" ->  SetValueWithCheckData(map.getEvaluatorNationalCode(),row.createCell(i));
-                            case "evaluator_type" ->  SetValueWithCheckData(map.getEvaluatorType(),row.createCell(i));
-                            case "student_post_code" ->  SetValueWithCheckData(map.getEvaluatedPostCode(),row.createCell(i));
-                            case "evaluator_post_code" ->  SetValueWithCheckData(map.getEvaluatorPostCode(),row.createCell(i));
-                            case "student_post_title" ->  SetValueWithCheckData(map.getEvaluatedPostTitle(),row.createCell(i));
-                            case "evaluator_post_title" ->  SetValueWithCheckData(map.getEvaluatorPostTitle(),row.createCell(i));
-                            case "student_hoze" ->  SetValueWithCheckData(map.getEvaluatedArea(),row.createCell(i));
-                            case "evaluator_hoze" ->  SetValueWithCheckData(map.getEvaluatorArea(),row.createCell(i));
-                            case "student_omor" ->  SetValueWithCheckData(map.getEvaluatedAffairs(),row.createCell(i));
-                            case "evaluator_omor" ->  SetValueWithCheckData(map.getEvaluatorAffairs(),row.createCell(i));
-                            case "class_code" ->  SetValueWithCheckData(map.getClassCode(),row.createCell(i));
-                            case "complex" ->  SetValueWithCheckData(map.getComplexTitle(),row.createCell(i));
-                            case "class_supervisor" ->  SetValueWithCheckData(map.getClassSupervisor(),row.createCell(i));
-                            case "class_start_date" ->  SetValueWithCheckData(map.getClassStartDate(),row.createCell(i));
-                            case "class_end_date" ->  SetValueWithCheckData(map.getClassEndDate(),row.createCell(i));
-                            case "class_status" ->  SetValueWithCheckData(map.getClassStatus(),row.createCell(i));
-                            case "teacher" ->  SetValueWithCheckData(map.getTeacherName(),row.createCell(i));
-                            case "teacher_national_code" ->  SetValueWithCheckData(map.getTeacherNationalCode(),row.createCell(i));
-                            case "is_personnel" ->  SetValueWithCheckData(map.getTeacherType(),row.createCell(i));
-                            case "course_code" ->  SetValueWithCheckData(map.getCourseCode(),row.createCell(i));
-                            case "course_titlefa" ->  SetValueWithCheckData(map.getCourseTitle(),row.createCell(i));
-                            case "category_titlefa" ->  SetValueWithCheckData(map.getCourseCategoryTitle(),row.createCell(i));
-                            case "sub_category_titlefa" ->  SetValueWithCheckData(map.getCourseSubCategoryTitle(),row.createCell(i));
-                            case "total_std" ->  SetValueWithCheckData(map.getStudentsCount().toString(),row.createCell(i));
-                            case "std_score" ->  SetValueWithCheckData(map.getEvaluationScore() != null ? map.getEvaluationScore().toString() : "0",row.createCell(i));
-                            case "std_avg_score" ->  SetValueWithCheckData(map.getEvaluationAverage() != null ? map.getEvaluationAverage().toString() : "0",row.createCell(i));
-                            case "acc_score_limit" ->  SetValueWithCheckData(map.getAcceptanceScoreLimit().toString(),row.createCell(i));
+                            case "student_per_number" -> SetValueWithCheckData(map.getEvaluatedPersonnelNo(), row.createCell(i));
+                            case "evaluator_per_number" -> SetValueWithCheckData(map.getEvaluatorPersonnelNo(), row.createCell(i));
+                            case "student" -> SetValueWithCheckData(map.getEvaluatedName(), row.createCell(i));
+                            case "student_national_code" -> SetValueWithCheckData(map.getEvaluatedNationalCode(), row.createCell(i));
+                            case "evaluator_name" -> SetValueWithCheckData(map.getEvaluatorName(), row.createCell(i));
+                            case "evaluator_national_code" -> SetValueWithCheckData(map.getEvaluatorNationalCode(), row.createCell(i));
+                            case "evaluator_type" -> SetValueWithCheckData(map.getEvaluatorType(), row.createCell(i));
+                            case "student_post_code" -> SetValueWithCheckData(map.getEvaluatedPostCode(), row.createCell(i));
+                            case "evaluator_post_code" -> SetValueWithCheckData(map.getEvaluatorPostCode(), row.createCell(i));
+                            case "student_post_title" -> SetValueWithCheckData(map.getEvaluatedPostTitle(), row.createCell(i));
+                            case "evaluator_post_title" -> SetValueWithCheckData(map.getEvaluatorPostTitle(), row.createCell(i));
+                            case "student_hoze" -> SetValueWithCheckData(map.getEvaluatedArea(), row.createCell(i));
+                            case "evaluator_hoze" -> SetValueWithCheckData(map.getEvaluatorArea(), row.createCell(i));
+                            case "student_omor" -> SetValueWithCheckData(map.getEvaluatedAffairs(), row.createCell(i));
+                            case "evaluator_omor" -> SetValueWithCheckData(map.getEvaluatorAffairs(), row.createCell(i));
+                            case "class_code" -> SetValueWithCheckData(map.getClassCode(), row.createCell(i));
+                            case "complex" -> SetValueWithCheckData(map.getComplexTitle(), row.createCell(i));
+                            case "class_supervisor" -> SetValueWithCheckData(map.getClassSupervisor(), row.createCell(i));
+                            case "class_start_date" -> SetValueWithCheckData(map.getClassStartDate(), row.createCell(i));
+                            case "class_end_date" -> SetValueWithCheckData(map.getClassEndDate(), row.createCell(i));
+                            case "class_status" -> SetValueWithCheckData(map.getClassStatus(), row.createCell(i));
+                            case "teacher" -> SetValueWithCheckData(map.getTeacherName(), row.createCell(i));
+                            case "teacher_national_code" -> SetValueWithCheckData(map.getTeacherNationalCode(), row.createCell(i));
+                            case "is_personnel" -> SetValueWithCheckData(map.getTeacherType(), row.createCell(i));
+                            case "course_code" -> SetValueWithCheckData(map.getCourseCode(), row.createCell(i));
+                            case "course_titlefa" -> SetValueWithCheckData(map.getCourseTitle(), row.createCell(i));
+                            case "category_titlefa" -> SetValueWithCheckData(map.getCourseCategoryTitle(), row.createCell(i));
+                            case "sub_category_titlefa" -> SetValueWithCheckData(map.getCourseSubCategoryTitle(), row.createCell(i));
+                            case "total_std" -> SetValueWithCheckData(map.getStudentsCount().toString(), row.createCell(i));
+                            case "std_score" -> SetValueWithCheckData(map.getEvaluationScore() != null ? map.getEvaluationScore().toString() : "0", row.createCell(i));
+                            case "std_avg_score" -> SetValueWithCheckData(map.getEvaluationAverage() != null ? map.getEvaluationAverage().toString() : "0", row.createCell(i));
+                            case "acc_score_limit" -> SetValueWithCheckData(map.getAcceptanceScoreLimit().toString(), row.createCell(i));
                         }
                     }
                 }
@@ -2955,7 +2989,7 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-             SetValueWithCheckData("گزارش گروهی پرونده آموزشی",cell2);
+            SetValueWithCheckData("گزارش گروهی پرونده آموزشی", cell2);
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -2963,7 +2997,7 @@ public class ExportController {
 
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
-                 SetValueWithCheckData(headers[i],cell);
+                SetValueWithCheckData(headers[i], cell);
                 cell.setCellStyle(headerCellStyle);
             }
 
@@ -2978,98 +3012,98 @@ public class ExportController {
 
                     switch (columns[i]) {
                         case "firstName": {
-                             SetValueWithCheckData(map.getFirstName() != null ? map.getFirstName() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getFirstName() != null ? map.getFirstName() : null, row.createCell(i));
                             break;
                         }
                         case "lastName": {
-                             SetValueWithCheckData(map.getLastName() != null ? map.getLastName() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getLastName() != null ? map.getLastName() : null, row.createCell(i));
                             break;
                         }
                         case "nationalCode": {
-                             SetValueWithCheckData(map.getNationalCode() != null ? map.getNationalCode() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getNationalCode() != null ? map.getNationalCode() : null, row.createCell(i));
                             break;
                         }
                         case "empNo": {
-                             SetValueWithCheckData(map.getEmpNo() != null ? map.getEmpNo() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getEmpNo() != null ? map.getEmpNo() : null, row.createCell(i));
                             break;
                         }
                         case "postTitle": {
-                             SetValueWithCheckData(map.getPostTitle() != null ? map.getPostTitle() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getPostTitle() != null ? map.getPostTitle() : null, row.createCell(i));
                             break;
                         }
                         case "postCode": {
-                             SetValueWithCheckData(map.getPostCode() != null ? map.getPostCode() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getPostCode() != null ? map.getPostCode() : null, row.createCell(i));
                             break;
                         }
                         case "jobTitle": {
-                             SetValueWithCheckData(map.getJobTitle() != null ? map.getJobTitle() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getJobTitle() != null ? map.getJobTitle() : null, row.createCell(i));
                             break;
                         }
                         case "postGradeTitle": {
-                             SetValueWithCheckData(map.getPostGradeTitle() != null ? map.getPostGradeTitle() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getPostGradeTitle() != null ? map.getPostGradeTitle() : null, row.createCell(i));
                             break;
                         }
                         case "complex": {
-                             SetValueWithCheckData(map.getComplex() != null ? map.getComplex() : null,row.createCell(i));
+                            SetValueWithCheckData(map.getComplex() != null ? map.getComplex() : null, row.createCell(i));
                             break;
                         }
                         case "assistant": {
-                             SetValueWithCheckData(map.getAssistant() != null ? map.getAssistant() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getAssistant() != null ? map.getAssistant() : " ", row.createCell(i));
                             break;
                         }
                         case "affairs": {
-                             SetValueWithCheckData(map.getAffairs() != null ? map.getAffairs() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getAffairs() != null ? map.getAffairs() : " ", row.createCell(i));
                             break;
                         }
 
                         case "termTitleFa": {
-                             SetValueWithCheckData(map.getTermTitleFa() != null ? map.getTermTitleFa() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getTermTitleFa() != null ? map.getTermTitleFa() : " ", row.createCell(i));
                             break;
                         }
 
                         case "scoresState": {
-                             SetValueWithCheckData(map.getScoresState() != null ? map.getScoresState() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getScoresState() != null ? map.getScoresState() : " ", row.createCell(i));
                             break;
                         }
                         case "score": {
-                             SetValueWithCheckData(map.getScore() != null ? map.getScore().toString() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getScore() != null ? map.getScore().toString() : " ", row.createCell(i));
                             break;
                         }
                         case "classStatus": {
-                             SetValueWithCheckData(map.getClassStatus() != null ? map.getClassStatus() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getClassStatus() != null ? map.getClassStatus() : " ", row.createCell(i));
                             break;
                         }
                         case "classCode": {
-                             SetValueWithCheckData(map.getClassCode() != null ? map.getClassCode() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getClassCode() != null ? map.getClassCode() : " ", row.createCell(i));
                             break;
                         }
                         case "startDate": {
-                             SetValueWithCheckData(map.getStartDate() != null ? map.getStartDate() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getStartDate() != null ? map.getStartDate() : " ", row.createCell(i));
                             break;
                         }
                         case "endDate": {
-                             SetValueWithCheckData(map.getEndDate() != null ? map.getEndDate() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getEndDate() != null ? map.getEndDate() : " ", row.createCell(i));
                             break;
                         }
                         case "courseCode": {
-                             SetValueWithCheckData(map.getCourseCode() != null ? map.getCourseCode() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getCourseCode() != null ? map.getCourseCode() : " ", row.createCell(i));
                             break;
                         }
                         case "courseTitle": {
-                             SetValueWithCheckData(map.getCourseTitle() != null ? map.getCourseTitle() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getCourseTitle() != null ? map.getCourseTitle() : " ", row.createCell(i));
                             break;
                         }
                         case "teacher": {
-                             SetValueWithCheckData(map.getTeacher() != null ? map.getTeacher() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getTeacher() != null ? map.getTeacher() : " ", row.createCell(i));
                             break;
                         }
                         case "personType": {
-                             SetValueWithCheckData(map.getPersonType() != null ? map.getPersonType() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getPersonType() != null ? map.getPersonType() : " ", row.createCell(i));
 
                             break;
                         }
                         case "duration": {
-                             SetValueWithCheckData(map.getDuration() != null ? map.getDuration().toString() : " ",row.createCell(i));
+                            SetValueWithCheckData(map.getDuration() != null ? map.getDuration().toString() : " ", row.createCell(i));
                             break;
                         }
 
