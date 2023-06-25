@@ -341,5 +341,8 @@ public class Tclass extends Auditable {
     @NotAudited
     private Set<Message> messageSet;
 
+    @Column(name = "exam_type")
+    private String examType;
+
 
 }

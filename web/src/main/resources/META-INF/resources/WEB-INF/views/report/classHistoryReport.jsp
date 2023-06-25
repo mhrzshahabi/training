@@ -28,6 +28,7 @@
              {name: "titleClass"},
              {name: "createdBy", autoFitWidth: true},
              {name: "modifiedBy", autoFitWidth: true},
+             {name: "examType", autoFitWidth: true},
              {name: "modifiedDate", autoFitWidth: true},
 
              {name: "startDate", autoFitWidth: true},
@@ -216,6 +217,13 @@
             {
                 name: "modifiedBy",
                 title: "ویرایش کننده",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
+            },
+            {
+                name: "examType",
+                title: " نوع آزمون",
                 align: "center",
                 autoFitWidth: true,
                 filterOperator: "equals",

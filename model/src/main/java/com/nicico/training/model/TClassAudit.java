@@ -217,4 +217,7 @@ public class TClassAudit implements Serializable {
 
     @Column(name = "d_last_modified_date")
     private String modifiedDate;
+
+    @Column(name = "exam_type")
+    private String examType;
 }

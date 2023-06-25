@@ -113,6 +113,7 @@
             {name: "topology"},
             {name: "targetPopulationTypeId"},
             {name: "holdingClassTypeId"},
+            {name: "examType"},
             {name: "teachingMethodId"},
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
@@ -205,6 +206,15 @@
             {name: "code", title: "<spring:message code="code"/>"}
         ],
         fetchDataURL: parameterValueUrl + "/listByCode/HoldingClassType"
+    });
+
+    var RestDataSource_Exam_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/typeOfExamInClass"
     });
     var RestDataSource_class_complex_List = isc.TrDS.create({
         fields: [
@@ -680,6 +690,7 @@
             {name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145",hidden: true},
             {name: "targetPopulationTypeId", hidden: true},
             {name: "holdingClassTypeId", hidden: true},
+            {name: "examType", hidden: true},
             {name: "teachingMethodId", hidden: true},
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
@@ -1738,7 +1749,26 @@
                     sortField: 0,
                     showFilterEditor: false
                 },
-            }
+            },
+            {
+                name: "examType",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="exam.type"/>:",
+                pickListWidth: 200,
+                autoFetchData: true,
+                textAlign: "center",
+                required: true,
+                valueMap: {
+                    "آزمون کتبی": "آزمون کتبی",
+                    "آزمون آنلاین": "آزمون آنلاین"
+                },
+                textMatchStyle: "substring",
+
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+            },
         ],
         itemChanged: function () {
             if (DynamicForm_Class_JspClass.getItem("teachingMethodId") !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId") !== undefined
@@ -3360,6 +3390,7 @@
 
                         DynamicForm_Class_JspClass.setValue("targetPopulationTypeId",  record.targetPopulationTypeId);
                         DynamicForm_Class_JspClass.setValue("holdingClassTypeId",record.holdingClassTypeId);
+                        DynamicForm_Class_JspClass.setValue("examType",record.examType);
                         DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
                         DynamicForm_Class_JspClass.setValue("teacherId", record.teacherId);
                         DynamicForm_Class_JspClass.setValue("supervisorId", record.supervisorId);

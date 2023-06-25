@@ -77,6 +77,7 @@ public class TclassDTO {
     private String courseCode;
     private Long targetPopulationTypeId;
     private Long holdingClassTypeId;
+    private String examType;
     private Long teachingMethodId;
     private Boolean classToOnlineStatus;
     private Long complexId;

@@ -10401,6 +10401,18 @@ DECLARE
         <modifyDataType tableName="tbl_payment_doc" columnName="payment_doc_status" newDataType="NUMBER(10,0)"/>
     </changeSet>
 
+
+    <changeSet id="2799887766557-26" author="namdari">
+        <addColumn tableName="tbl_class">
+            <column name="exam_type" type="VARCHAR2(255 CHAR)" ></column>
+
+        </addColumn>
+        <addColumn tableName="TBL_CLASS_AUD">
+            <column name="exam_type" type="VARCHAR2(255 CHAR)" ></column>
+
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

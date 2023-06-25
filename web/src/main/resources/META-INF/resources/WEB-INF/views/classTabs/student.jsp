@@ -3302,7 +3302,8 @@
 
                     </sec:authorize>
 
-                    if (classRecord.endDate < todayDate) {
+                    if (classRecord.endDate < todayDate && (classRecord.examType === undefined ||
+                        classRecord.examType === null  ||  classRecord.examType === 'آزمون آنلاین') ) {
                         btnAdd_student_class.setVisibility(false);
                         btnRemove_student_class.setVisibility(false);
                     }
