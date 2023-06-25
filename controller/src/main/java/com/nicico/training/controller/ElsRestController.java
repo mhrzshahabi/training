@@ -114,7 +114,6 @@ public class ElsRestController {
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final PersonBeanMapper personBeanMapper;
     private final EvaluationAnswerService answerService;
-    private final IOperationalRoleService operationalRoleService;
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
@@ -194,7 +193,7 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
 
         try {
-            List<ClassStudent> classStudents = classStudentService.getClassStudents(evaluation.getClassId());
+            List<ClassStudent> classStudents = classStudentService.getUnSendEvaluationClassStudents(evaluation.getClassId());
             List<EvalTargetUser> students = classStudents.stream()
                     .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
             TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());

@@ -291,6 +291,11 @@ public class ClassStudentService implements IClassStudentService {
         return classStudentDAO.findAllByTclassId(classId);
     }
 
+    @Override
+    public List<ClassStudent> getUnSendEvaluationClassStudents(long classId) {
+        return classStudentDAO.getUnSendEvaluationClassStudents(classId);
+    }
+
     public List<String> getClassStudentsNationalCode(long classId) {
         return classStudentDAO.findClassStudentsNationalCodeByTclassId(classId);
     }

@@ -42,6 +42,7 @@ public interface IClassStudentService {
 
     List<ClassStudent> getClassStudents(long classId);
 
+    List<ClassStudent> getUnSendEvaluationClassStudents(long classId);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchEvaluationAnalysistLearning(SearchDTO.SearchRq request, Long classId);

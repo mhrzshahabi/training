@@ -1562,5 +1562,16 @@ WHERE
         AND EXTRACT(YEAR FROM to_date(tbl_class.c_start_date, 'YYYY/MM/DD', 'nls_calendar=persian')) = to_char(sysdate, 'YYYY')
 """, nativeQuery = true)
     List<Long> UnCompleteStudentIds();
+
+
+    @Query(value = """
+SELECT
+    *
+FROM
+    tbl_class_student
+WHERE
+    tbl_class_student.evaluation_status_reaction  in (1)
+""", nativeQuery = true)
+    List<ClassStudent> getUnSendEvaluationClassStudents(long classId);
 //
                                             }
