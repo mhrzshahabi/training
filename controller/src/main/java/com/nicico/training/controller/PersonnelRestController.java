@@ -303,4 +303,10 @@ public class PersonnelRestController {
         return iPersonnelService.deletePersonnel(id);
     }
 
+    @Loggable
+    @PutMapping(value = "/synonym/update-by-nationalcode")
+    public boolean updatePersonnel(@RequestParam String nationalCode) {
+        return iPersonnelService.updatePersonnel(nationalCode);
+    }
+
 }

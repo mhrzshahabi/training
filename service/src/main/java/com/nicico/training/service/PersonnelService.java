@@ -14,6 +14,7 @@ import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -23,10 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonnelService implements IPersonnelService {
@@ -662,5 +665,49 @@ public class PersonnelService implements IPersonnelService {
             return false;
 
         }
+    }
+
+    @Override
+    public boolean updatePersonnel(String nationalCode) {
+        Optional<Personnel> optionalPersonnel = personnelDAO.findFirstByNationalCodeAndActiveAndDeleted(nationalCode, 1, 0);
+        if (optionalPersonnel.isPresent()) {
+            Personnel personnel = optionalPersonnel.get();
+            SynonymPersonnel synonymPersonnel = synonymPersonnelDAO.findSynonymPersonnelDataByNationalCode(nationalCode);
+
+            if (synonymPersonnel == null) {
+                return false;
+            }
+
+            personnel.setPostCode(synonymPersonnel.getPostCode());
+            personnel.setFirstName(synonymPersonnel.getFirstName());
+            personnel.setLastName(synonymPersonnel.getLastName());
+            personnel.setNationalCode(synonymPersonnel.getNationalCode());
+            personnel.setBirthCertificateNo(synonymPersonnel.getBirthCertificateNo());
+            personnel.setPersonnelNo(synonymPersonnel.getPersonnelNo());
+            personnel.setPersonnelNo2(synonymPersonnel.getPersonnelNo2());
+            personnel.setCompanyName(synonymPersonnel.getCompanyName());
+            personnel.setPostTitle(synonymPersonnel.getPostTitle());
+            personnel.setPostGradeCode(synonymPersonnel.getPostGradeCode());
+            personnel.setPostGradeTitle(synonymPersonnel.getPostGradeTitle());
+            personnel.setCcpAffairs(synonymPersonnel.getCcpAffairs());
+            personnel.setCcpArea(synonymPersonnel.getCcpArea());
+            personnel.setCcpAssistant(synonymPersonnel.getCcpAssistant());
+            personnel.setCcpTitle(synonymPersonnel.getCcpTitle());
+            personnel.setCcpCode(synonymPersonnel.getCcpCode());
+            personnel.setCcpUnit(synonymPersonnel.getCcpUnit());
+            personnel.setCcpSection(synonymPersonnel.getCcpSection());
+            personnel.setDepartmentCode(synonymPersonnel.getDepartmentCode());
+            personnel.setDepartmentTitle(synonymPersonnel.getDepartmentTitle());
+            personnel.setJobTitle(synonymPersonnel.getJobTitle());
+            personnel.setComplexTitle(synonymPersonnel.getComplexTitle());
+            personnel.setPostId(synonymPersonnel.getPostId());
+            personnel.setDepartmentId(synonymPersonnel.getDepartmentId());
+
+            personnelDAO.save(personnel);
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -8,6 +8,7 @@ import com.nicico.training.dto.ImportedPersonnelAndPostRequest;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.model.Personnel;
+
 import java.util.Set;
 
 import java.util.List;
@@ -76,4 +77,6 @@ public interface IPersonnelService {
     boolean changeDeleted(Long id);
 
     boolean deletePersonnel(Long id);
+
+    boolean updatePersonnel(String nationalCode);
 }
