@@ -300,7 +300,7 @@ public class RequestItemService implements IRequestItemService {
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
         if (optionalRequestItem.isPresent()) {
 
-            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode("HEAD_OF_PLANNING");
             if (planningChiefResponse.getStatus() == 200) {
                 map.put("assignTo", planningChiefResponse.getMessage());
                 map.put("userId", SecurityUtil.getUserId());
@@ -352,7 +352,7 @@ public class RequestItemService implements IRequestItemService {
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findFirstByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
-        BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+        BaseResponse planningChiefResponse = getPlanningChiefNationalCode("HEAD_OF_PLANNING");
         if (planningChiefResponse.getStatus() == 200) {
             Map<String, Object> map = reviewTaskRequest.getVariables();
             map.put("assignTo", planningChiefResponse.getMessage());
@@ -378,7 +378,7 @@ public class RequestItemService implements IRequestItemService {
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
-        BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+        BaseResponse planningChiefResponse = getPlanningChiefNationalCode("HEAD_OF_PLANNING");
         if (planningChiefResponse.getStatus() == 200) {
             Map<String, Object> map = reviewTaskRequest.getVariables();
             map.put("assignTo", planningChiefResponse.getMessage());
@@ -488,7 +488,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (optionalRequestItem.isPresent()) {
 
-            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode("HEAD_OF_PLANNING");
             if (planningChiefResponse.getStatus() == 200) {
 
                 RequestItem requestItem = optionalRequestItem.get();
@@ -951,7 +951,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (optionalRequestItem.isPresent()) {
 
-            BaseResponse planningChiefResponse = getPlanningChiefNationalCode();
+            BaseResponse planningChiefResponse = getPlanningChiefNationalCode("HEAD_OF_PLANNING");
             if (planningChiefResponse.getStatus() == 200) {
                 RequestItem requestItem = optionalRequestItem.get();
                 Map<String, Object> map = reviewTaskRequest.getVariables();
@@ -1095,10 +1095,10 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public BaseResponse getPlanningChiefNationalCode() {
+    public BaseResponse getPlanningChiefNationalCode(String role) {
 
         BaseResponse response = new BaseResponse();
-        List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByComplexIdAndObjectType("HEAD_OF_PLANNING");
+        List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByComplexIdAndObjectType(role);
         Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList()));
         if (userIds.size() != 1)
             response.setStatus(HttpStatus.FORBIDDEN.value());

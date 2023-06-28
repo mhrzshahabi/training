@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.enums.AgreementStatus;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,8 @@ public class AgreementDTO implements Serializable {
     private Long maxPaymentHours;
     private Long complexId;
     private String complexTitle;
+    private String returnDetail;
+    private AgreementStatus agreementStatus;
 
     @Getter
     @Setter

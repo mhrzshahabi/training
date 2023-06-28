@@ -40,6 +40,7 @@
             {name: "finalCost", title: "مبلغ نهایی", hidden: true},
             {name: "currency.title", title: "واحد", filterOperator: "iContains"},
             {name: "subject", title: "موضوع تفاهم نامه", filterOperator: "iContains"},
+            {name: "agreementStatus.titleFa", title: "وضعیت"},
             {name: "teacherEvaluation", title: "اعمال نمره ارزشیابی مدرس برای پرداخت", valueMap: {"true" : "بله", "false" : "خیر"}},
             {name: "maxPaymentHours", title: "حداکثر ساعت پرداختی", hidden: true}
         ],
@@ -124,6 +125,15 @@
             Agreement_Remove();
         }
     });
+    ToolStripButton_flow_Agreement = isc.IButton.create({
+        layoutAlign: "center",
+        title: "ارسال به گردش کار",
+        width: "190",
+        margin: 3,
+        click: function () {
+            Agreement_Send_To_Bpms();
+        }
+    });
     ToolStripButton_Print_Word_Agreement = isc.IButton.create({
         layoutAlign: "center",
         title: "چاپ فرمت تفاهم نامه برای امضا",
@@ -154,6 +164,9 @@
                 ToolStripButton_Remove_Agreement,
                 </sec:authorize>
                 ToolStripButton_Print_Word_Agreement,
+                <sec:authorize access="hasAuthority('Agreement_Flow')">
+                ToolStripButton_flow_Agreement,
+                </sec:authorize>
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -215,6 +228,11 @@
                 hidden: true
             },
             {
+                name: "returnDetail",
+                canFilter: false,
+                hidden: true
+            },
+            {
                 name: "currency.title",
                 canFilter: false,
                 sortNormalizer: function (record) {
@@ -233,6 +251,10 @@
                 name: "maxPaymentHours",
                 canFilter: false,
                 hidden: true
+            },
+            {
+                name: "agreementStatus.titleFa",
+                canFilter: false
             },
             {
                 name: "upload",
@@ -431,7 +453,19 @@
                         align: "center",
                         click: function () {
                             let record = ListGrid_Agreement.getSelectedRecord();
-                            ClassTeachingCost_Save(record.id);
+                          if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+                                isc.Dialog.create({
+                                    message: "تفاهم نامه برای ذخیره تغییرات باید در حالت ثبت اولیه باشد .",
+                                    icon: "[SKIN]ask.png",
+                                    title: "توجه",
+                                    buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                    }
+                                });
+                            } else {
+                              ClassTeachingCost_Save(record.id);
+                          }
                         }
                     })
                 ]
@@ -901,7 +935,17 @@
                     this.close();
                 }
             });
-        } else {
+        } else  if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+            isc.Dialog.create({
+                message: "تفاهم نامه برای حذف شدن باید در حالت ثبت اولیه باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }else {
 
             agreementMethod = "PUT";
             DynamicForm_Agreement.clearValues();
@@ -935,7 +979,17 @@
                     this.close();
                 }
             });
-        } else {
+        } else  if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+            isc.Dialog.create({
+                message: "تفاهم نامه برای حذف شدن باید در حالت ثبت اولیه باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }else {
             let Dialog_Delete = isc.Dialog.create({
                 message: "آيا مي خواهيد اين تفاهم نامه حذف گردد؟",
                 icon: "[SKIN]ask.png",
@@ -954,6 +1008,66 @@
                                 Agreement_Refresh();
                             } else {
                                 createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function Agreement_Send_To_Bpms() {
+
+        let record = ListGrid_Agreement.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "تفاهم نامه ای برای ارسال به گردش کار انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else  if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+            isc.Dialog.create({
+                message: "تفاهم نامه برای ارسال به گردش کار باید در حالت ثبت اولیه باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }else {
+            let Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين تفاهم نامه به گردش کار ارسال گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let method = "POST";
+                        let param={}
+                        param.data={
+                            "processDefinitionKey": "تفاهم نامه",
+                            "title":  " تفاهم نامه با شماره :  "+record.agreementNumber,
+                            "id": record.id ,
+                            "objectId": record.id ,
+                            "workFlowStatusCode": method !== "POST" ? 4 : 0,
+                        }
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/start-processes/agreement", method, JSON.stringify(param), (resp)=>{
+                            wait.close()
+                            if (resp.httpResponseCode === 200) {
+                                Agreement_Refresh();
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
+                            } else if (resp.httpResponseCode === 404 || resp.httpResponseCode === 405 || resp.httpResponseCode === 406 || resp.httpResponseCode === 403) {
+                                simpleDialog("<spring:message code="message"/>", JSON.parse(resp.httpResponseText).message, 3000, "stop");
+                            } else {
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
                             }
                         }));
                     }
@@ -1001,7 +1115,17 @@
                     this.close();
                 }
             });
-        } else {
+        } else  if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+            isc.Dialog.create({
+                message: "تفاهم نامه برای انتخاب کلاس باید در حالت ثبت اولیه باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }else {
             let RestDataSource_Select_Class = isc.TrDS.create({
                 fields: [
                     {name: "id", primaryKey: true},
@@ -1114,6 +1238,16 @@
                 buttons: [
                     isc.IButtonSave.create({title: "تائید"})
                 ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else  if (record.agreementStatus.titleFa !== 'ثبت اولیه') {
+            isc.Dialog.create({
+                message: "تفاهم نامه برای حذف شدن باید در حالت ثبت اولیه باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1408,19 +1542,32 @@
         }
     }
     function createPaymentDoc(record) {
-        let paymentData = {};
-        paymentData.agreementId = record.id
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(paymentUrl, "POST", JSON.stringify(paymentData), function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                wait.close();
-                createDialog("info", "سند پرداخت ایجاد شد برای ویرایش آن به فرم سند پرداخت مراجعه شود");
-            } else {
-                wait.close();
-                createDialog("info", "خطایی رخ داده است");
-                Window_Payment.close();
-            }
-        }));
+        if (record.agreementStatus.titleFa !== 'تایید شده') {
+            isc.Dialog.create({
+                message: "برای ایجاد سند پرداخت تفاهم نامه باید در حالت تایید شده باشد .",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            let paymentData = {};
+            paymentData.agreementId = record.id
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(paymentUrl, "POST", JSON.stringify(paymentData), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    createDialog("info", "سند پرداخت ایجاد شد برای ویرایش آن به فرم سند پرداخت مراجعه شود");
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                    Window_Payment.close();
+                }
+            }));
+        }
+
     }
     function Agreement_Upload_Changed() {
         if (document.getElementById('file_JspAgreement').files.length !== 0)

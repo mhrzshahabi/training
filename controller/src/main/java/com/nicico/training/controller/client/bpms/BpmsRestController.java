@@ -16,15 +16,13 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.iservice.IAgreementService;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.mapper.bpms.BPMSBeanMapper;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
 import com.nicico.training.service.CompetenceService;
-import dto.bpms.BPMSUserTasksContentDto;
-import dto.bpms.BPMSUserTasksDto;
-import dto.bpms.BpmsCancelTaskDto;
-import dto.bpms.BpmsStartParamsDto;
+import dto.bpms.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -48,9 +46,10 @@ public class BpmsRestController {
     private final BpmsClientService client;
     private final BPMSBeanMapper bpmsBeanMapper;
     private final CompetenceService competenceService;
+    private final IAgreementService agreementService;
     private final CompetenceBeanMapper competenceBeanMapper;
     private final INeedsAssessmentTempService needsAssessmentTempService;
-
+    private final IBpmsService bPMSService;
 
     @Loggable
     @PostMapping({"/processes/definition-search"})
@@ -63,7 +62,8 @@ public class BpmsRestController {
     @PostMapping({"/tasks/review"})
     public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
         return service.reviewCompetenceTask(reviewTaskRequestDto);
-    }   //confirm task
+    }
+    //confirm task
     @Loggable
     @PostMapping({"needAssessment/tasks/review"})
     public ResponseEntity<BaseResponse> reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
@@ -230,6 +230,45 @@ public class BpmsRestController {
         BaseResponse res= service.checkHasHead(type);
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
 
+    }
+
+    @Loggable
+    @PostMapping({"/start-processes/agreement"})
+    public ResponseEntity<BaseResponse> startAgreementProcess(@RequestBody AgreementParamsDto params, HttpServletResponse response) {
+        ProcessInstance processInstance;
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            processInstance  = bPMSService.startProcessWithData(bPMSService.startProcessDto(params.getData(), "Training"));
+        }catch (TrainingException trainingException){
+            if (trainingException.getHttpStatusCode().equals(403)) {
+                baseResponse.setStatus(403);
+                baseResponse.setMessage("مسئول مالی تعریف نشده است یا بیش از یک مسئول تعریف شده است");
+            } else
+                baseResponse.setStatus(406);
+            return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+
+        }
+        baseResponse  = agreementService.startAgreementProcess(params, response,processInstance);
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+    }
+    //cancel task
+    @Loggable
+    @PostMapping({"/processes/agreement/cancel-process"})
+    public void cancelAgreementProcessInstance( @RequestBody BpmsCancelTaskDto value) {
+        service.cancelAgreementProcessInstance(value.getReviewTaskRequest(), value);
+    }
+
+    @Loggable
+    @PostMapping({"/agreement/processes/reAssign-process"})
+    public BaseResponse reAssignAgreementProcessInstance( @RequestBody BpmsCancelTaskDto value) {
+        return service.reAssignAgreementProcessInstance(value.getReviewTaskRequest(), value);
+    }
+
+    //confirm task
+    @Loggable
+    @PostMapping({"/agreement/tasks/review"})
+    public BaseResponse reviewAgreementTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
+        return service.reviewAgreementTask(reviewTaskRequestDto);
     }
 
 }

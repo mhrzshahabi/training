@@ -102,7 +102,7 @@ public interface IRequestItemService {
 
     List<BPMSReqItemProcessHistoryDto> getProcessInstanceHistoryById(String processInstanceId);
 
-    BaseResponse getPlanningChiefNationalCode();
+    BaseResponse getPlanningChiefNationalCode(String role);
 
     BaseResponse getRunChiefNationalCode();
 

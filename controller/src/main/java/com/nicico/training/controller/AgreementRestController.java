@@ -76,4 +76,10 @@ public class AgreementRestController {
         ISC<AgreementDTO.Info> infoISC = new ISC<>(response);
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping({"/processes/details/{processInstanceId}"})
+    ResponseEntity<Object> getAgreementDetailByProcessInstanceId(@PathVariable String processInstanceId) {
+        return new ResponseEntity<>(agreementService.getAgreementDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
+    }
 }

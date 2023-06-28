@@ -11,10 +11,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.iservice.IBpmsService;
-import com.nicico.training.iservice.INeedsAssessmentTempService;
-import com.nicico.training.iservice.IParameterService;
-import com.nicico.training.iservice.IRequestItemService;
+import com.nicico.training.iservice.*;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
@@ -28,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.nicico.training.model.enums.AgreementStatus.*;
+
 @Service
 @RequiredArgsConstructor
 public class BpmsService implements IBpmsService {
@@ -37,6 +36,7 @@ public class BpmsService implements IBpmsService {
     private final CompetenceService competenceService;
     private final IRequestItemService requestItemService;
     private final INeedsAssessmentTempService iNeedsAssessmentTempService;
+    private final IAgreementService iAgreementService;
     private final IParameterService parameterService;
 
 
@@ -77,7 +77,7 @@ public class BpmsService implements IBpmsService {
         BaseResponse planningChiefResponse = new BaseResponse();
         String userToAssignTo = params.getData().get("HeadNationalCode") != null ? params.getData().get("HeadNationalCode").toString() : null;
         if (userToAssignTo == null) {
-            planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
+            planningChiefResponse = requestItemService.getPlanningChiefNationalCode("HEAD_OF_PLANNING");
         }
         if (userToAssignTo != null || planningChiefResponse.getStatus() == 200) {
             Map<String, Object> map = new HashMap<>();
@@ -160,7 +160,7 @@ public class BpmsService implements IBpmsService {
     public BaseResponse reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
 
         BaseResponse response = new BaseResponse();
-        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode();
+        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode("HEAD_OF_PLANNING");
         String userToAssignTo = data.getHeadNationalCode() != null ? data.getHeadNationalCode() : null;
 
 
@@ -181,6 +181,59 @@ public class BpmsService implements IBpmsService {
             response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
         }
         return response;
+    }
+    @Override
+    public BaseResponse reAssignAgreementProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
+
+        BaseResponse response = new BaseResponse();
+        BaseResponse planningChiefResponse = requestItemService.getPlanningChiefNationalCode("FINANCIAL_RESPONSIBLE");
+        String userToAssignTo = data.getHeadNationalCode() != null ? data.getHeadNationalCode() : null;
+
+
+        if (userToAssignTo!=null || planningChiefResponse.getStatus() == 200 ) {
+            BaseResponse  baseResponse= iAgreementService.updateAgreement(waiting,reviewTaskRequest.getProcessInstanceId(),null );
+            if (baseResponse.getStatus()==200){
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                if (userToAssignTo == null)
+                    map.put("assignTo", planningChiefResponse.getMessage());
+                else
+                    map.put("assignTo", userToAssignTo);
+
+                map.put("approved", true);
+                client.reviewTask(reviewTaskRequest);
+                response.setStatus(planningChiefResponse.getStatus());
+                response.setMessage("عملیات با موفقیت انجام شد.");
+            }else {
+                response.setStatus(406);
+                response.setMessage("عملیات انجام نشد");
+            }
+
+        } else {
+            response.setStatus(planningChiefResponse.getStatus());
+            response.setMessage("رئیس برنامه ریزی تعریف نشده است یا بیش از یک رئیس تعریف شده است");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewAgreementTask(ReviewTaskRequest reviewTaskRequestDto) {
+        BaseResponse res = new BaseResponse();
+        BaseResponse response =   iAgreementService.updateAgreement(accepted,reviewTaskRequestDto.getProcessInstanceId(),null );
+        if (response.getStatus() == 200) {
+            try {
+                client.reviewTask(reviewTaskRequestDto);
+                res.setStatus(200);
+                res.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                res.setStatus(404);
+                res.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            res.setStatus(406);
+            res.setMessage("تغییر وضعیت شایستگی انجام نشد");
+        }
+        return res;
     }
 
     @Override
@@ -204,6 +257,19 @@ public class BpmsService implements IBpmsService {
         return response;
     }
 
+    @Override
+    public void cancelAgreementProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
+        try {
+          BaseResponse response =   iAgreementService.updateAgreement(returning,reviewTaskRequest.getProcessInstanceId(),reviewTaskRequest.getVariables().get("returnReason").toString() );
+        if (response.getStatus()==200){
+            client.reviewTask(reviewTaskRequest);
+        }
+        }catch (Exception e){
+
+        }
+
+    }
+
     private boolean checkConfig() {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("needAssessmentConfig");
         ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("chooseUser")).findFirst().orElse(null);
@@ -215,5 +281,32 @@ public class BpmsService implements IBpmsService {
             };
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
 
+    }
+
+    @Override
+    public StartProcessWithDataDTO startProcessDto(Map<String, Object> params, String tenantId) {
+        BaseResponse planningChiefResponse = new BaseResponse();
+        String userToAssignTo = params.get("HeadNationalCode") != null ? params.get("HeadNationalCode").toString() : null;
+        if (userToAssignTo == null) {
+            planningChiefResponse = requestItemService.getPlanningChiefNationalCode("FINANCIAL_RESPONSIBLE");
+        }
+        if (userToAssignTo != null || planningChiefResponse.getStatus() == 200) {
+            Map<String, Object> map = new HashMap<>();
+            if (userToAssignTo == null)
+                map.put("assignTo", planningChiefResponse.getMessage());
+            else
+                map.put("assignTo", userToAssignTo);
+
+            map.put("userId", SecurityUtil.getUserId());
+            map.put("assignFrom", SecurityUtil.getNationalCode());
+            map.put("tenantId", tenantId);
+            map.put("title", params.get("title").toString());
+            map.put("createBy", SecurityUtil.getFullName());
+            StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
+            startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.get("processDefinitionKey").toString(), tenantId, 0, 20).getMessage());
+            startProcessDto.setVariables(map);
+            return startProcessDto;
+        } else
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
     }
 }

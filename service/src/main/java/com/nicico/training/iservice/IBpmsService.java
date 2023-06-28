@@ -7,6 +7,8 @@ import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsStartParamsDto;
 import response.BaseResponse;
 
+import java.util.Map;
+
 public interface IBpmsService {
 
     BaseResponse getDefinitionKey(String definitionKey, String TenantId,int page,int size);
@@ -17,6 +19,8 @@ public interface IBpmsService {
 
     StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params,String tenantId,String process);
 
+    StartProcessWithDataDTO startProcessDto(Map<String, Object> params, String tenantId);
+
     BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto);
 
     BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto);
@@ -26,4 +30,9 @@ public interface IBpmsService {
     BaseResponse reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
 
     BaseResponse checkHasHead(String type);
+
+    void cancelAgreementProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto value);
+    BaseResponse reAssignAgreementProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data);
+
+    BaseResponse reviewAgreementTask(ReviewTaskRequest reviewTaskRequestDto);
 }

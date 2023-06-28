@@ -42,6 +42,12 @@
             {name: "firstParty.titleFa", title: "طرف اول ", filterOperator: "iContains"},
             {name: "secondPartyTeacher.fullNameFa", title: "طرف دوم", filterOperator: "iContains"}
         ],
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "agreementStatus.titleFa", operator: "equals", value: ['تایید شده']}
+            ]
+        },
         fetchDataURL: agreementUrl + "/spec-list"
     });
     //----------------------------------- layOut -----------------------------------------------------------------------
@@ -360,6 +366,7 @@
                     {name: "fromDate", filterOperator: "iContains"},
                     {name: "toDate", filterOperator: "iContains"},
                     {name: "firstParty.titleFa", filterOperator: "iContains"},
+                    {name: "agreementStatus.titleFa", filterOperator: "iContains"},
                     {name: "secondPartyTeacher.fullNameFa",filterOperator: "iContains"}
                 ],
                 pickListProperties: {

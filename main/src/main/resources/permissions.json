@@ -856,6 +856,7 @@
     {"code": "Agreement_R", "title": "مشاهده تفاهم نامه"},
     {"code": "Agreement_U", "title": "ویرایش تفاهم نامه"},
     {"code": "Agreement_D", "title": "حذف تفاهم نامه"},
+    {"code": "Agreement_Flow", "title": "ارسال به گردش کار تفاهم نامه"},
 
     {"code": "remove.uncertainty.needAssessment.changes",
       "title": "حذف تغییرات نیازسنجی بلاتکلیف"

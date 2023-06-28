@@ -1,5 +1,6 @@
 package com.nicico.training.model;
 
+import com.nicico.training.model.enums.AgreementStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -85,4 +86,14 @@ public class Agreement extends Auditable {
 
     @Column(name = "complex_title")
     private String complexTitle;
+
+    @Column(name = "agreement_status")
+    private AgreementStatus agreementStatus;
+
+    @Column(name = "process_instance_id")
+    private String processInstanceId;
+
+
+    @Column(name = "return_detail")
+    private String returnDetail;
 }

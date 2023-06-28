@@ -114,6 +114,18 @@
             {name: "competenceReqId", hidden: true}
         ]
     });
+    let RestDataSource_Processes_Detail_agreement_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "processInstanceId", hidden: true},
+            {name: "agreementNumber", title: "شماره تفاهم نامه", type: "staticText"},
+            {name: "agreementDate", title: "تاریخ عقد تفاهم نامه", type: "staticText"},
+            {name: "fromDate", title: "<spring:message code='from.date'/>", type: "staticText"},
+            {name: "toDate", title: "<spring:message code='to.date'/>", type: "staticText"},
+            {name: "subject", title: "موضوع تفاهم نامه", type: "staticText"},
+
+        ]
+    });
     let RestDataSource_Request_Item_Experts_Opinion = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -505,6 +517,20 @@
                                             approve: false,
                                             processInstanceId: record.processInstanceId
                                         };
+                                    }else if (record.title.includes("تفاهم نامه")) {
+                                        baseUrl = bpmsUrl;
+                                        url="/processes/agreement/cancel-process/";
+                                        let var_data = {
+                                            "returnReason": reasonForm.getField("returnReason").getValue(),
+                                            "assignTo": record.assignFrom
+                                        };
+                                        reviewTaskRequest  = {
+                                            variables: var_data,
+                                            taskId: record.taskId,
+                                            userName: userUserName,
+                                            approve: false,
+                                            processInstanceId: record.processInstanceId
+                                        };
                                     }
 
                                     data = {
@@ -571,7 +597,7 @@
 
                     if (record.title.includes("نیازسنجی")) {
                         showWindowDiffNeedsAssessment(ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId, ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType, "", false);
-                    } else if (record.title.includes("شایستگی") || record.title.includes("صلاحیت علمی و فنی")) {
+                    } else if (record.title.includes("شایستگی") || record.title.includes("صلاحیت علمی و فنی") || record.title.includes("تفاهم نامه")) {
                         showProcessDetail(record.name, record.processInstanceId);
                     }
                 }
@@ -658,6 +684,10 @@
 
                 DynamicForm_Completion_UserPortfolio.getItem("objectType").title = "توضیحات";
                 DynamicForm_Completion_UserPortfolio.setValue("objectType", "درخواست با شماره " + record.requestNo);
+            }else if (record.title.includes("تفاهم نامه")) {
+
+                DynamicForm_Completion_UserPortfolio.getItem("objectType").title = "نوع فرایند";
+                DynamicForm_Completion_UserPortfolio.setValue("objectType", "بررسی تفاهم نامه" );
             }
             Window_Completion_UserPortfolio.show();
         }
@@ -3105,6 +3135,17 @@
                 processInstanceId: record.processInstanceId,
                 variables: ass_data
             };
+        }else if (record.title.includes("تفاهم نامه")) {
+            let ass_data = {};
+            baseUrl = bpmsUrl;
+            url = "/agreement/tasks/review";
+            reviewTaskRequest = {
+                taskId: record.taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: record.processInstanceId,
+                variables: ass_data
+            };
         }
 
         wait.show();
@@ -3913,6 +3954,14 @@ function reAssignTask(record) {
                 };
 
                 doReAssignFunction(map_data,record,baseUrl,url,null)
+            }else if (record.title.includes("تفاهم نامه")) {
+                baseUrl = bpmsUrl;
+                url = "/agreement/processes/reAssign-process/";
+                map_data = {
+                    "returnReason": null,
+                };
+
+                doReAssignFunction(map_data,record,baseUrl,url,null)
             }
 
 
@@ -4095,7 +4144,19 @@ function reAssignTask(record) {
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
             }));
-        } else {
+        } else  if (bPMSProcessName.contains('تفاهم نامه')){
+
+            isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let detail = JSON.parse(resp.httpResponseText);
+                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_agreement_UserPortfolio);
+                    DynamicForm_Processes_Detail.setValues(detail);
+                    Window_Processes_Detail.show();
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }else {
 
             isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {

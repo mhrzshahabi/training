@@ -10413,6 +10413,36 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet id="2799887766557-27" author="namdari">
+        <addColumn tableName="tbl_agreement">
+            <column name="agreement_status" type="NUMBER(10, 0)" ></column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="2799887766557-28" author="namdari">
+        <sql>
+            <![CDATA[
+            UPDATE tbl_agreement
+            set agreement_status = 0
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="2799887766557-29" author="namdari">
+        <addColumn tableName="tbl_agreement">
+            <column name="process_instance_id" type="VARCHAR2(255 CHAR)" ></column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="2799887766557-30" author="namdari">
+        <addColumn tableName="tbl_agreement">
+            <column name="return_detail" type="VARCHAR2(255 CHAR)" ></column>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 
