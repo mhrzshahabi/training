@@ -66,6 +66,7 @@
             },
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
+            {name: "classStudentAffairs", type: "text", title: "امور"}
         ],
     });
 
@@ -344,6 +345,10 @@
                         record.name = fields[i].name;
                         sendFields.push(record)
                     }
+                    if (ListGrid_Attendance_AttendanceJSP.data.isEmpty()) {
+                        createDialog("info", "هیچ رکوردی برای نمایش وجود ندارد", "پیغام")
+                        return
+                    }
                     let allRows = ListGrid_Attendance_AttendanceJSP.data.allRows.toArray();
                     let keys = Object.keys(ListGrid_Attendance_AttendanceJSP.data.allRows[0]);
                     let sessionKeys = keys.filter(k => k.startsWith("se"));
@@ -378,6 +383,12 @@
                         params.institute ="ثبت نشده"
 
                     params.startDate = classGridRecordInAttendanceJsp.startDate;
+
+                    if (ListGrid_Attendance_AttendanceJSP.getData().isEmpty()) {
+                        createDialog("info", "هیچ رکوردی برای نمایش وجود ندارد", "پیغام")
+                        return
+                    }
+
                     let localData = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
                     let data = [];
                     if(DynamicForm_Attendance.getValue("filterType") == "1") {
@@ -394,6 +405,7 @@
                             obj.nationalCode = localData[i].nationalCode;
                             obj.personalNum = localData[i].personalNum;
                             obj.personalNum2 =localData[i].personalNum2;
+                            obj.affairs = localData[i].classStudentAffairs;
                             for (let j = 0; j < sessionKeys.length; j++) {
                                 obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
                             }
@@ -827,6 +839,7 @@
                                     },
                                     {name: "nationalCode", title: "کد ملی",width:"10%"},
                                     {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
+                                    {name: "classStudentAffairs", title: "امور", width: "20%"},
                                 ];
                                 auditSession.getField("auditFilterType").setValueMap(null)
                                 sessionTimes=[];
