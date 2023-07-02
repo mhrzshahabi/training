@@ -70,61 +70,73 @@ public class SendMessageService implements ISendMessageService {
 
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients,Long messageId,Long classId,Long objectId) {
-        List<String> numbers=new ArrayList<>();
+        List<String> numbers= new ArrayList<>();
+
+        var ref = new Object() {
+            String number = "";
+        };
         recipients.forEach(a->{
+            List<String> z= new ArrayList<>();
+
             if (a!=null){
                 if (a.length()==11 && a.charAt(0)=='0'){
-                    numbers.add(a);
+                    ref.number = a;
+                    numbers.add( ref.number);
+
                 }else  if (a.length()==10 && a.charAt(0)!='0'){
-                    numbers.add("0"+a);
+                    ref.number = "0"+a;
+                    numbers.add( ref.number);
+
+                }
+                z.add( ref.number);
+                JSONObject json = new JSONObject();
+                json.put("to",z );
+                json.put("pid", pid);
+                json.put("params", new JSONObject(paramValMap));
+
+                try {
+                    SmsResponse res=   smsFeignClient.sendSms(json);
+                    if (messageId!=null){
+                        Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
+                        if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
+                            MessageContact message=optionalMessage.get();
+                            message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+                            message.setObjectMobile(z.get(0));
+                            messageContactDAO.save(message);
+                        }
+                    }else {
+                        if (objectId!=null){
+                            Message message =new Message();
+                            message.setContextText("null");
+                            message.setContextHtml("null");
+                            message.setPId(pid);
+                            message.setUserTypeId(702L);
+                            message.setCountSend(0);
+                            message.setInterval(0);
+                            message.setTclassId(classId);
+                            Message  saved=   messageService.save(message);
+                            MessageContact messageContact =new MessageContact();
+                            messageContact.setStatusId(588L);
+                            messageContact.setObjectMobile(z.get(0));
+                            messageContact.setObjectType("ClassStudent");
+                            messageContact.setObjectId(objectId);
+                            messageContact.setMessageId(saved.getId());
+
+                            messageContact.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+                            messageContactDAO.save(messageContact);
+                        }
+
+
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("zaza");
                 }
             }
         });
-        JSONObject json = new JSONObject();
-        json.put("to", numbers);
-        json.put("pid", pid);
-        json.put("params", new JSONObject(paramValMap));
-
-        try {
-            SmsResponse res=   smsFeignClient.sendSms(json);
-            if (messageId!=null){
-                Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
-                if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
-                    MessageContact message=optionalMessage.get();
-                    message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-                    messageContactDAO.save(message);
-                }
-            }else {
-                if (objectId!=null){
-                    Message message =new Message();
-                    message.setContextText("null");
-                    message.setContextHtml("null");
-                    message.setPId(pid);
-                    message.setUserTypeId(702L);
-                    message.setCountSend(0);
-                    message.setInterval(0);
-                    message.setTclassId(classId);
-                    Message  saved=   messageService.save(message);
-                    MessageContact messageContact =new MessageContact();
-                    messageContact.setStatusId(588L);
-                    messageContact.setObjectMobile(res.getReceivers().get(0).getNumber());
-                    messageContact.setObjectType("ClassStudent");
-                    messageContact.setObjectId(objectId);
-                    messageContact.setMessageId(saved.getId());
-
-                    messageContact.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-                    messageContactDAO.save(messageContact);
-                }
-
-
-            }
-            List<String> result = new ArrayList<>(recipients.size());
-            recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
-
+        List<String> result = new ArrayList<>(recipients.size());
+        recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
+        return result;
 //        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
 
     }
@@ -172,7 +184,7 @@ public class SendMessageService implements ISendMessageService {
             try {
 //job
 
-                 List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId,id);
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers,null,classId,id);
                 Long returnMessageId = null;
 
                 MessageContactLog log = new MessageContactLog();
@@ -467,24 +479,24 @@ public class SendMessageService implements ISendMessageService {
             case "behavioral": {
                 SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = evaluationService.search(searchRq);
 
-        if(searchRs.getList().size()>0){
-            EvaluationDTO.Info evaluationDTO = modelMapper.map(searchRs.getList().get(0), EvaluationDTO.Info.class);
-            tclassDTO=  tclassService.get(evaluationDTO.getClassId());
-            courseName = tclassDTO.getCourse().getTitleFa();
-            courseStartDate = tclassDTO.getStartDate();
-            courseEndDate = tclassDTO.getEndDate();
-            Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluationDTO.getEvaluatedId());
-if (classStudent.isPresent()){
-    fullNameTo=classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName();
-    genderTo=classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
- }else {
-    genderTo="جناب آقای/سرکار خانم";
-    fullNameTo="ثبت نشده";
-}
+                if(searchRs.getList().size()>0){
+                    EvaluationDTO.Info evaluationDTO = modelMapper.map(searchRs.getList().get(0), EvaluationDTO.Info.class);
+                    tclassDTO=  tclassService.get(evaluationDTO.getClassId());
+                    courseName = tclassDTO.getCourse().getTitleFa();
+                    courseStartDate = tclassDTO.getStartDate();
+                    courseEndDate = tclassDTO.getEndDate();
+                    Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluationDTO.getEvaluatedId());
+                    if (classStudent.isPresent()){
+                        fullNameTo=classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName();
+                        genderTo=classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                    }else {
+                        genderTo="جناب آقای/سرکار خانم";
+                        fullNameTo="ثبت نشده";
+                    }
 
 
 
-        }
+                }
 
                 searchRs.getList().forEach(p -> {
                             EvaluationDTO.Info info = modelMapper.map(p, EvaluationDTO.Info.class);
@@ -493,10 +505,10 @@ if (classStudent.isPresent()){
                                 if (classStudent.isPresent() && classStudent.get().getStudent() !=null){
                                     mobiles.add(classStudent.get().getStudent().getContactInfo().getMobile());
                                     nationalCode.add(classStudent.get().getStudent().getNationalCode());
-                            fullName.add(classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName());
-                            prefixFullName.add(classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                                    fullName.add(classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName());
+                                    prefixFullName.add(classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                                 }
-                             }else {
+                            }else {
                                 Optional<ViewActivePersonnel> classStudent = iViewActivePersonnelService.findById(info.getEvaluatorId());
                                 if (classStudent.isPresent() ){
                                     mobiles.add(classStudent.get().getMobile());
@@ -548,7 +560,7 @@ if (classStudent.isPresent()){
                     messageContact.setObjectType("Teacher");
                     tmpLink = link;
                     break;
-                    case "behavioral":
+                case "behavioral":
                     messageContact.setObjectType("behavioral");
                     tmpLink = link;
                     break;
@@ -606,7 +618,7 @@ if (classStudent.isPresent()){
                     parameters.add(new MessageParameterDTO.Create("unit", unit));
                     parameters.add(new MessageParameterDTO.Create("uurl", tmpLink));
                     break;
-                    case "behavioral":
+                case "behavioral":
                     parameters.add(new MessageParameterDTO.Create("Kodmeli",nationalCode.get(i) ));
                     parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
                     parameters.add(new MessageParameterDTO.Create("GensiatM", fullName.get(i)));
@@ -722,7 +734,7 @@ if (classStudent.isPresent()){
             }
         }
 
-      return   convertData;
+        return   convertData;
 
     }
 }
