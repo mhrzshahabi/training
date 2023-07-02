@@ -10443,6 +10443,46 @@ DECLARE
     </changeSet>
 
 
+    <changeSet id="2799887766557-31" author="namdari">
+        <sql>
+            <![CDATA[
+
+            update tbl_personnel set  deleted = 0 WHERE
+                tbl_personnel.active = 1
+                                                    AND tbl_personnel.deleted = 1
+
+                                                    and tbl_personnel.id  in (
+
+                    SELECT
+
+                        tbl_personnel.id
+                    FROM
+                        tbl_personnel
+                            INNER JOIN tbl_department ON tbl_personnel.f_department_id = tbl_department.id
+                    WHERE
+                        tbl_department.c_mojtame_title = 'حوزه مدیر مجتمع مس آذربایجان'
+
+
+                )
+
+                                                    and tbl_personnel.national_code not in (
+                                                                                            '1502196360',
+                                                                                            '1502177633',
+                                                                                            '1490044401',
+                                                                                            '1533461351',
+                                                                                            '5670036719',
+                                                                                            '1500428231',
+                                                                                            '137-068851-2',
+                                                                                            '1500428949',
+                                                                                            '5059682528',
+                                                                                            '1502125579'
+
+                    )
+
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
