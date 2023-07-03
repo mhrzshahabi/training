@@ -96,15 +96,15 @@ public class SendMessageService implements ISendMessageService {
 
                 try {
                     SmsResponse res=   smsFeignClient.sendSms(json);
-                    if (messageId!=null){
-                        Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
-                        if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
-                            MessageContact message=optionalMessage.get();
-                            message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-                            message.setObjectMobile(z.get(0));
-                            messageContactDAO.save(message);
-                        }
-                    }else {
+//                    if (messageId!=null){
+//                        Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
+//                        if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
+//                            MessageContact message=optionalMessage.get();
+//                            message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
+//                            message.setObjectMobile(z.get(0));
+//                            messageContactDAO.save(message);
+//                        }
+//                    }else {
                         if (objectId!=null){
                             Message message =new Message();
                             message.setContextText("null");
@@ -124,7 +124,7 @@ public class SendMessageService implements ISendMessageService {
 
                             messageContact.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
                             messageContactDAO.save(messageContact);
-                        }
+//                        }
 
 
                     }
@@ -329,7 +329,8 @@ public class SendMessageService implements ISendMessageService {
         List<Long> ids = new ArrayList<>();
         String type = "";
         String link = "";
-        List<String> mobiles = new ArrayList<>();
+        List<Map<String,String>> mobiles = new ArrayList<>();
+        List<String> mobs = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
         List<String> nationalCode = new ArrayList<>();
@@ -457,7 +458,10 @@ public class SendMessageService implements ISendMessageService {
                 SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
                 searchRs.getList().forEach(p -> {
-                            mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
+                    Map<String,String> m = new HashMap<>();
+                    m.put(p.getStudent().getContactInfo().getSmSMobileNumber(),p.getId().toString());
+                            mobiles.add(m);
+                            mobs.add(p.getStudent().getContactInfo().getSmSMobileNumber());
                             fullName.add(p.getFullName());
                             prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                         }
@@ -469,8 +473,11 @@ public class SendMessageService implements ISendMessageService {
                 SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
                 searchRs.getList().forEach(p -> {
-                            mobiles.add(p.getPersonality().getContactInfo().getMobile());
-                            fullName.add(p.getFullName());
+                    Map<String,String> m = new HashMap<>();
+                    m.put(p.getPersonality().getContactInfo().getMobile(),p.getId().toString());
+                    mobiles.add(m);
+                    mobs.add(p.getPersonality().getContactInfo().getMobile());
+                             fullName.add(p.getFullName());
                             prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : (p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                         }
                 );
@@ -503,7 +510,10 @@ public class SendMessageService implements ISendMessageService {
                             if (info.getEvaluatorTypeId() == 188L) {
                                 Optional<ClassStudent> classStudent = classStudentDAO.findById(info.getEvaluatorId());
                                 if (classStudent.isPresent() && classStudent.get().getStudent() !=null){
-                                    mobiles.add(classStudent.get().getStudent().getContactInfo().getMobile());
+                                    Map<String,String> m = new HashMap<>();
+                                    m.put(classStudent.get().getStudent().getContactInfo().getMobile(),classStudent.get().getId().toString());
+                                    mobiles.add(m);
+                                    mobs.add(classStudent.get().getStudent().getContactInfo().getMobile());
                                     nationalCode.add(classStudent.get().getStudent().getNationalCode());
                                     fullName.add(classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName());
                                     prefixFullName.add(classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
@@ -511,7 +521,10 @@ public class SendMessageService implements ISendMessageService {
                             }else {
                                 Optional<ViewActivePersonnel> classStudent = iViewActivePersonnelService.findById(info.getEvaluatorId());
                                 if (classStudent.isPresent() ){
-                                    mobiles.add(classStudent.get().getMobile());
+                                     Map<String,String> m = new HashMap<>();
+                                    m.put(classStudent.get().getMobile(),classStudent.get().getId().toString());
+                                    mobiles.add(m);
+                                    mobs.add(classStudent.get().getMobile());
                                     nationalCode.add(classStudent.get().getNationalCode());
                                     fullName.add(classStudent.get().getFirstName()+" "+classStudent.get().getLastName());
                                     prefixFullName.add(classStudent.get().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
@@ -542,7 +555,6 @@ public class SendMessageService implements ISendMessageService {
         oMessageModel.setPId(parameterValue.getValue());
         oMessageModel.setContextText(textMessage);
         oMessageModel.setContextHtml(" ");
-
         for (int i = 0; i < mobiles.size(); i++) {
             MessageContactDTO.Create messageContact = new MessageContactDTO.Create();
             messageContact.setObjectId(ids.get(i));
@@ -566,7 +578,7 @@ public class SendMessageService implements ISendMessageService {
                     break;
             }
 
-            messageContact.setObjectMobile(mobiles.get(i));
+            messageContact.setObjectMobile(mobs.get(i));
 
             List<MessageParameterDTO.Create> parameters = new ArrayList<>();
 
@@ -642,11 +654,11 @@ public class SendMessageService implements ISendMessageService {
         for (int i = 0; i < mobiles.size(); i++) {
 
             List<String> numbers = new ArrayList<>();
-            numbers.add(mobiles.get(i));
+            numbers.add(mobs.get(i));
 
             MessageContact messageContact = messageContactDAO.findById(result.getMessageContactList().get(i).getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers,messageContact.getId(),result.getTclassId(),null);
+            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers,messageContact.getId(),result.getTclassId(), Long.valueOf(mobiles.get(i).get(mobs.get(i))));
             Long returnMessageId = null;
 
             MessageContactLog log = new MessageContactLog();
