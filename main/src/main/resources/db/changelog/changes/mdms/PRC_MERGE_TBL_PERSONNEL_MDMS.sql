@@ -135,7 +135,7 @@ MERGE INTO TBL_PERSONNEL T
                          ) e
                              inner join  tbl_md_people_MDMS po on po.c_id = e.c_people_id
                    ) emp
-                       LEFT JOIN   vw_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                       LEFT JOIN   vw_department mdms_dep ON emp.c_dep_id = mdms_dep.c_id
                        LEFT JOIN tbl_department dep ON (mdms_dep.c_code = dep.c_code)
                        LEFT JOIN   tbl_md_geo_work_MDMS mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                        LEFT JOIN TBL_GEO_WORK geo
@@ -509,7 +509,7 @@ MERGE INTO TBL_PERSONNEL T
                           where inx = 1) e
                              inner join   tbl_md_people_MDMS po on po.c_id = e.c_people_id
                    ) emp
-                       LEFT JOIN   vw_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                       LEFT JOIN   vw_department mdms_dep ON emp.c_dep_id = mdms_dep.c_id
                        LEFT JOIN TBL_DEPARTMENT dep on mdms_dep.c_code = dep.C_CODE
                        LEFT JOIN   tbl_md_geo_work_MDMS mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                        LEFT JOIN TBL_GEO_WORK geo
