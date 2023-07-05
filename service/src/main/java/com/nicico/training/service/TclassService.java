@@ -3018,7 +3018,7 @@ public class TclassService implements ITclassService {
 
         queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
         queryString.append("   ORDER BY id desc ");
-        queryString.append("     OFFSET  ").append(page);
+        queryString.append("     OFFSET  ").append(page*size);
         queryString.append("     ROWS FETCH NEXT  ").append(size);
         queryString.append("    ROWS ONLY )");
         queryString.append(" WHERE 1=1 ");
@@ -3427,7 +3427,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveCourses(page, size, searchQuery);
+            String query = getActiveCourses(page*size, size, searchQuery);
             List<ActiveCourses> activeCourses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
@@ -3471,7 +3471,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClasses(courseId, page, size, searchQuery);
+            String query = getActiveClasses(courseId, page*size, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
@@ -3517,7 +3517,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClassesWithUserNationalCode(nationalCode, page, size, searchQuery);
+            String query = getActiveClassesWithUserNationalCode(nationalCode, page*size, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;

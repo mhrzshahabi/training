@@ -1290,6 +1290,7 @@ public class ClassStudentService implements IClassStudentService {
         try {
             List<Long> studentListIds = classStudentDAO.UnCompleteStudentIds();
             studentListIds.forEach(id->{
+                try {
                 Optional<Student> optionalStudent =   studentService.getOptional(id);
                 if (optionalStudent.isPresent()){
                     Student student = optionalStudent.get();
@@ -1324,7 +1325,9 @@ public class ClassStudentService implements IClassStudentService {
                     }
                 }
 
-            });
+                } catch (Exception e){
+                    System.out.println(e.toString());
+                } });
 
         }catch (Exception e){
             System.out.println(e.toString());

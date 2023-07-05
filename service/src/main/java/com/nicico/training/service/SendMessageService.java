@@ -76,7 +76,7 @@ public class SendMessageService implements ISendMessageService {
             String number = "";
         };
         recipients.forEach(a->{
-            List<String> z= new ArrayList<>();
+            List<String> number= new ArrayList<>();
 
             if (a!=null){
                 if (a.length()==11 && a.charAt(0)=='0'){
@@ -88,23 +88,14 @@ public class SendMessageService implements ISendMessageService {
                     numbers.add( ref.number);
 
                 }
-                z.add( ref.number);
+                number.add( ref.number);
                 JSONObject json = new JSONObject();
-                json.put("to",z );
+                json.put("to",number );
                 json.put("pid", pid);
                 json.put("params", new JSONObject(paramValMap));
 
                 try {
                     SmsResponse res=   smsFeignClient.sendSms(json);
-//                    if (messageId!=null){
-//                        Optional<MessageContact> optionalMessage=  messageContactDAO.findFirstById(messageId);
-//                        if (optionalMessage.isPresent() &&res.getReceivers().size()>0){
-//                            MessageContact message=optionalMessage.get();
-//                            message.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
-//                            message.setObjectMobile(z.get(0));
-//                            messageContactDAO.save(message);
-//                        }
-//                    }else {
                         if (objectId!=null){
                             Message message =new Message();
                             message.setContextText("null");
@@ -117,16 +108,13 @@ public class SendMessageService implements ISendMessageService {
                             Message  saved=   messageService.save(message);
                             MessageContact messageContact =new MessageContact();
                             messageContact.setStatusId(588L);
-                            messageContact.setObjectMobile(z.get(0));
+                            messageContact.setObjectMobile(number.get(0));
                             messageContact.setObjectType("ClassStudent");
                             messageContact.setObjectId(objectId);
                             messageContact.setMessageId(saved.getId());
 
                             messageContact.setTrackingNumber(res.getReceivers().get(0).getTrackingNumber());
                             messageContactDAO.save(messageContact);
-//                        }
-
-
                     }
 
                 } catch (Exception e) {
@@ -137,8 +125,6 @@ public class SendMessageService implements ISendMessageService {
         List<String> result = new ArrayList<>(recipients.size());
         recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
         return result;
-//        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
-
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
