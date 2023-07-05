@@ -66,7 +66,8 @@
             },
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
-            {name: "classStudentAffairs", type: "text", title: "امور"}
+            {name: "classStudentAffairs", type: "text", title: "امور"},
+            {name: "classStudentCompany", type: "text", title: "شرکت"}
         ],
     });
 
@@ -839,7 +840,8 @@
                                     },
                                     {name: "nationalCode", title: "کد ملی",width:"10%"},
                                     {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
-                                    {name: "classStudentAffairs", title: "امور", width: "20%"},
+                                    {name: "classStudentAffairs", title: "امور", width: "10%"},
+                                    {name: "classStudentCompany", title: "شرکت", width: "5%"},
                                 ];
                                 auditSession.getField("auditFilterType").setValueMap(null)
                                 sessionTimes=[];
