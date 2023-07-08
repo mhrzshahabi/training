@@ -1554,12 +1554,20 @@ FROM
          tbl_class_student
     INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
+        INNER JOIN view_synonym_personnel ON tbl_student.national_code = view_synonym_personnel.national_code
+    
 WHERE
         tbl_class.c_start_date > '1400/01/01'
          and tbl_student.national_code is not null
     AND ( tbl_student.department_code IS NULL
           OR tbl_student.post_code IS NULL )
         AND EXTRACT(YEAR FROM to_date(tbl_class.c_start_date, 'YYYY/MM/DD', 'nls_calendar=persian')) = to_char(sysdate, 'YYYY')
+           and
+           
+            (view_synonym_personnel.department_code is not null OR
+            view_synonym_personnel.post_code is NOT null
+            )
+           
 """, nativeQuery = true)
     List<Long> UnCompleteStudentIds();
 
