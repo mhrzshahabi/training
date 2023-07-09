@@ -9,9 +9,7 @@
  * http://smartclient.com/license
  */
 
-var isc = window.isc ? window.isc : {
-    ToolStripButtonRefresh: undefined
-};
+var isc = window.isc ? window.isc : {};
 if (window.isc && !window.isc.module_Core) {
     isc.module_Core = 1;
     isc._moduleStart = isc._Core_start = (isc.timestamp ? isc.timestamp() : new Date().getTime());
