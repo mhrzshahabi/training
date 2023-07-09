@@ -413,4 +413,9 @@
         <createSequence sequenceName="seq_payment_doc_id"/>
         <createSequence sequenceName="seq_payment_doc_class_id"/>
     </changeSet>
+
+    <changeSet id="1688729276812" author="Montazeri">
+        <createSequence sequenceName="seq_class_fee_id"/>
+        <createSequence sequenceName="seq_fee_item_id"/>
+    </changeSet>
 </databaseChangeLog>

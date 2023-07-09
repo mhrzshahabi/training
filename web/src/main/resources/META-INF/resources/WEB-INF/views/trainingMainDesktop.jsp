@@ -1868,6 +1868,8 @@
     const paymentUrl = rootUrl + "/payment-doc";
     const paymentDocClassUrl = rootUrl + "/payment-doc-class";
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
+    const classFeesUrl = rootUrl + "/class-fees";
+    const feeItemsUrl = rootUrl + "/fee-items";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const trainingRequestManagementUrl = rootUrl + "/training-request-management";
@@ -2991,6 +2993,14 @@
                     }
                 },
 
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('Menu_Finance_Class_Fee_Registration')">
+                {
+                    title: "ثبت هزینه های کلاس",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/class-fee-registration"/>");
+                    }
+                }
                 </sec:authorize>
             ]
         })
