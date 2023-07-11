@@ -67,4 +67,10 @@ public class ViewAttendanceReport implements Serializable {
 
     @Column(name = "institute_name")
     private String instituteName;
+
+    @Column(name = "c_session_start_hour")
+    private String sessionStartHour;
+
+    @Column(name = "c_session_end_hour")
+    private String sessionEndHour;
 }

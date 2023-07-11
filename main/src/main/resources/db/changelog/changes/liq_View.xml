@@ -24173,5 +24173,98 @@ pb as (
         </createView>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1688888311669">
+        <createView viewName="VIEW_ATTENDANCE_REPORT" replaceIfExists="true">
+        <![CDATA[
+            SELECT atten.personalnum,
+                   atten.personalnum2,
+                   atten.nationalcode,
+                   atten.name,
+                   atten.ccparea,
+                   atten.ccpaffairs,
+                   atten.peopletype,
+                   atten.classcode,
+                   atten.classname,
+                   atten.c_session_date,
+                   atten.c_state,
+                   atten.planner_complex,
+                   atten.planner_name,
+                   atten.institute_name,
+                   atten.c_session_start_hour,
+                   atten.c_session_end_hour,
+                   CASE
+                       WHEN atten.time >= 360 THEN
+                               floor((atten.time + 120) / 60)
+                               || (
+                                   CASE
+                                       WHEN mod(atten.time + 120, 60) <> 0 THEN
+                                               ':'
+                                               || mod(atten.time + 120, 60)
+                                       END
+                                   )
+                       ELSE
+                               floor(atten.time / 60)
+                               || (
+                                   CASE
+                                       WHEN mod(atten.time, 60) <> 0 THEN
+                                               ':'
+                                               || mod(atten.time, 60)
+                                       END
+                                   )
+                       END time
+            FROM
+                (
+                SELECT DISTINCT
+                std.personnel_no AS personalnum, std.emp_no AS personalnum2, std.national_code AS nationalcode, std.first_name
+                || ' '
+                || std.last_name AS name, dep.c_hoze_title AS ccparea, dep.c_omor_title AS ccpaffairs, personnel.personeltype AS peopletype, class.c_code AS classcode, class.c_title_class AS classname, csession.c_session_date, csession.c_session_start_hour, csession.c_session_end_hour, att.c_state AS c_state, plnner_dep.c_hoze_title AS planner_complex, concat(concat(personnelplanner.first_name, ' '), personnelplanner.last_name) AS planner_name, organizer_ins.c_title_fa AS institute_name, SUM ((to_number(substr(csession.c_session_end_hour, 1, 2)) * 60 + to_number(substr(csession.c_session_end_hour, 4, 2))
+                ) -(to_number(substr(csession.c_session_start_hour, 1, 2)) * 60 + to_number(substr(csession.c_session_start_hour, 4, 2
+                )))) AS time
+                FROM
+                tbl_attendance att
+                INNER JOIN tbl_student std ON att.f_student = std.id
+                INNER JOIN (
+                SELECT
+                *
+                FROM
+                (
+                SELECT
+                ROW_NUMBER() OVER(
+                PARTITION BY un.national_code
+                ORDER BY
+                un.date_ DESC
+                ) rw, un.*
+                FROM
+                (
+                SELECT
+                CAST ("P_TYPE" AS VARCHAR2(50)) personeltype, "PERSONNEL_NO", national_code, first_name, last_name, f_department_id, nvl(employment_date, TO_DATE('1900-01-01', 'yyyy-mm-dd')) AS date_
+                FROM
+                tbl_personnel
+                WHERE
+                tbl_personnel.deleted = 0
+                UNION ALL
+                SELECT
+                CAST ('personnel_registered' AS VARCHAR2(50)) personeltype, "PERSONNEL_NO", national_code, first_name, last_name, f_department_id, nvl(d_last_modified_date, TO_DATE('1900-01-01', 'yyyy-mm-dd')) AS date_
+                FROM
+                tbl_personnel_registered
+                ) un
+                )
+                WHERE
+                rw = 1
+                ) personnel ON std.national_code = personnel.national_code
+                LEFT JOIN tbl_department dep ON dep.id = personnel.f_department_id
+                INNER JOIN tbl_session csession ON att.f_session = csession.id
+                INNER JOIN tbl_class class ON csession.f_class_id = class.id
+                LEFT JOIN tbl_personnel personnelplanner ON personnelplanner.id = class.f_planner
+                LEFT JOIN tbl_department plnner_dep ON plnner_dep.id = personnelplanner.f_department_id
+                LEFT JOIN tbl_institute organizer_ins ON class.f_institute_organizer = organizer_ins.id
+                GROUP BY
+                std.personnel_no, std.emp_no, std.national_code, std.first_name
+                || ' '
+                || std.last_name, dep.c_hoze_title, dep.c_omor_title, personnel.personeltype, class.c_code, class.c_title_class, csession.c_session_date, csession.c_session_start_hour, csession.c_session_end_hour, att.c_state, plnner_dep.c_hoze_title, personnelplanner.first_name, personnelplanner.last_name, organizer_ins.c_title_fa
+                ) atten
+            ]]>
+    </createView>
+    </changeSet>
 
 </databaseChangeLog>
