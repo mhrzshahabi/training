@@ -22,6 +22,8 @@
             {name: "peopleType"},
             {name: "classCode"},
             {name: "className"},
+            {name: "sessionStartHour"},
+            {name: "sessionEndHour"},
             {name: "date"},
             {name: "time"},
         ]
@@ -251,6 +253,14 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }
+            },
+            {
+                name: "sessionStartHour",
+                title: "ساعت شروع"
+            },
+            {
+                name: "sessionEndHour",
+                title: "ساعت پایان"
             },
             {
                 name: "time",
