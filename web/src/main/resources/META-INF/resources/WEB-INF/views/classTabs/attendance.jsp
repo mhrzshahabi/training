@@ -228,6 +228,10 @@
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                if (attendanceGrid.getFieldTitle(j)!== undefined &&
+                                    attendanceGrid.getFieldTitle(j)!== null &&
+                                    attendanceGrid.getFieldTitle(j)!== 'شرکت' &&
+                                    attendanceGrid.getFieldTitle(j)!== 'امور' )
                                 attendanceGrid.setEditValue(i, j, "0");
                             }
                         }
@@ -244,6 +248,10 @@
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                if (attendanceGrid.getFieldTitle(j)!== undefined &&
+                                    attendanceGrid.getFieldTitle(j)!== null &&
+                                    attendanceGrid.getFieldTitle(j)!== 'شرکت' &&
+                                    attendanceGrid.getFieldTitle(j)!== 'امور' )
                                 attendanceGrid.setEditValue(i, j, "1");
                             }
                         }
@@ -260,6 +268,10 @@
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                if (attendanceGrid.getFieldTitle(j)!== undefined &&
+                                    attendanceGrid.getFieldTitle(j)!== null &&
+                                    attendanceGrid.getFieldTitle(j)!== 'شرکت' &&
+                                    attendanceGrid.getFieldTitle(j)!== 'امور' )
                                 attendanceGrid.setEditValue(i, j, "2");
                             }
                         }
@@ -278,6 +290,10 @@
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                if (attendanceGrid.getFieldTitle(j)!== undefined &&
+                                    attendanceGrid.getFieldTitle(j)!== null &&
+                                    attendanceGrid.getFieldTitle(j)!== 'شرکت' &&
+                                    attendanceGrid.getFieldTitle(j)!== 'امور' )
                                 attendanceGrid.setEditValue(i, j, "3");
                             }
                         }
@@ -294,6 +310,10 @@
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                if (attendanceGrid.getFieldTitle(j)!== undefined &&
+                                    attendanceGrid.getFieldTitle(j)!== null &&
+                                    attendanceGrid.getFieldTitle(j)!== 'شرکت' &&
+                                    attendanceGrid.getFieldTitle(j)!== 'امور' )
                                 attendanceGrid.setEditValue(i, j, "4");
                             }
                         }
@@ -1391,6 +1411,46 @@
     }
 
 
+
+    let DynamicForm_Warn_Students_attendance = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        padding: 6,
+        titleAlign: "right",
+        fields: [
+            {
+                name: "Warn_Students_attendance",
+                width: "100%",
+                colSpan: 2,
+                title: "<spring:message code="title"/>",
+                showTitle: false,
+                editorType: 'textArea',
+                canEdit: false
+            }
+        ]
+    });
+    let Window_Warn_Students_attendance = isc.Window.create({
+        width: "60%",
+        height: "30%",
+        autoSize: false,
+        numCols: 2,
+        title: "<spring:message code='student.plural'/>",
+        items: [
+            DynamicForm_Warn_Students_attendance,
+            isc.MyHLayoutButtons.create({
+                members: [
+                    isc.IButtonSave.create({
+                        title: "تایید",
+                        click: function () {
+                            Window_Warn_Students_attendance.close();
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+
+
     var ListGrid_Attendance_AttendanceJSP = isc.TrLG.create({
         ID: "attendanceGrid",
         dynamicTitle: true,
@@ -1473,20 +1533,19 @@
                                 let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 if(classRecord.classStatus === "1") {
                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
-                                        <%--if (resp.httpResponseCode === 200) {--%>
-                                        <%--    // ListGrid_Class_JspClass.invalidateCache();--%>
-                                        <%--    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
-                                        <%--} else {--%>
-                                        <%--    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
-                                        <%--}--%>
                                     }));
                                 } else {
-                                    createDialog("info", "<spring:message code="msg.operation.successful"/>", "<spring:message code="create"/>")
-                                    <%--simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
+                                    if (JSON.parse(resp.httpResponseText).message==="با موفقیت ایجاد شد"){
+                                        createDialog("info", JSON.parse(resp.httpResponseText).message, "<spring:message code="create"/>")
+                                    }else {
+                                        DynamicForm_Warn_Students_attendance.getItem("Warn_Students_attendance").show();
+                                        DynamicForm_Warn_Students_attendance.setValue("Warn_Students_attendance", JSON.parse(resp.httpResponseText).message);
+                                        Window_Warn_Students_attendance.show();
+                                    }
+
                                 }
                             } else {
                                 createDialog("info", "<spring:message code="msg.operation.error"/>", "<spring:message code="message"/>")
-                                <%--simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
                             }
                         }
                     });

@@ -854,8 +854,8 @@ public class ElsRestController {
                                 }
                             }
 
-                            boolean status = attendanceService.saveOrUpdateList(attendances);
-                            if (status) {
+                            AttendanceDTO.AttendanceDtoWithUnSavedData data = attendanceService.saveOrUpdateList(attendances);
+                            if (data.getStatus()) {
                                 response.setStatus(HttpStatus.CREATED.value());
                                 response.setMessage("ثبت با موفقیت انجام شد");
                             } else {

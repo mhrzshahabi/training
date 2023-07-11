@@ -5,7 +5,6 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.Student;
 import org.springframework.transaction.annotation.Transactional;
-import response.BaseResponse;
 
 import java.text.ParseException;
 import java.util.List;
@@ -71,7 +70,7 @@ public interface IAttendanceService {
     AttendanceDTO.permissionDto studentUnknownSessionsInClass(Long classId);
     List<Student> studentAbsentSessionsInClass(Long classId);
 
-    boolean saveOrUpdateList(List<Attendance> attendances);
+    AttendanceDTO.AttendanceDtoWithUnSavedData saveOrUpdateList(List<Attendance> attendances);
 
     Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId);
 

@@ -74,4 +74,32 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
             "INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session AND tbl_session.f_class_id = tbl_class_student.class_id " +
             "WHERE tbl_attendance.f_session =:sessionId And tbl_class_student.PRESENCE_TYPE_ID = 103", nativeQuery = true)
     List<Attendance> findPresenceAttendance(Long sessionId);
+
+    @Query(value = """
+SELECT
+
+            tbl_class.c_code
+ 
+FROM
+         tbl_attendance
+    INNER JOIN tbl_student ON tbl_attendance.f_student = tbl_student.id
+    INNER JOIN tbl_session ON tbl_attendance.f_session = tbl_session.id
+    INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id
+WHERE
+    tbl_attendance.c_state IN ( 1, 2 )
+    AND tbl_student.national_code = :nationalCode
+    and\s
+    tbl_session.c_session_date = :date
+    and
+      ( ( tbl_session.c_session_start_hour = :startTime
+                    AND tbl_session.c_session_end_hour = :endTime )
+                  OR ( tbl_session.c_session_start_hour < :endTime
+                       AND tbl_session.c_session_end_hour > :endTime )
+                  OR ( tbl_session.c_session_start_hour < :startTime
+                       AND tbl_session.c_session_end_hour > :startTime ) )
+                        AND
+                           tbl_attendance.f_session != :sessionId
+                      \s
+""", nativeQuery = true)
+    List<String> timeInterferenceClasses(String nationalCode,String date,String startTime ,String endTime,String sessionId);
 }

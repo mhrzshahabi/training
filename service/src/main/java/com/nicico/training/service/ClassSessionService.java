@@ -456,25 +456,25 @@ public class ClassSessionService implements IClassSessionService {
 
     @Override
     public ElsSessionDetailsResponse getSessionDetails(Long sessionId) {
-        ElsSessionDetailsResponse response=new ElsSessionDetailsResponse();
-        List<String> studentsNationalCodes=new ArrayList<>();
-       ClassSession classSession= classSessionDAO.getClassSessionById(sessionId);
-      Long tclassId=classSession.getClassId();
-    Optional< Tclass> tclass=tclassDAO.findById(tclassId);
-          List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclassId);
-          if (classStudents != null) {
-              classStudents.forEach(student -> {
-                  studentsNationalCodes.add(student.getStudent().getNationalCode());
+        ElsSessionDetailsResponse response = new ElsSessionDetailsResponse();
+        List<String> studentsNationalCodes = new ArrayList<>();
+        ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
+        Long tclassId = classSession.getClassId();
+        Optional<Tclass> tclass = tclassDAO.findById(tclassId);
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclassId);
+        if (classStudents != null) {
+            classStudents.forEach(student -> {
+                studentsNationalCodes.add(student.getStudent().getNationalCode());
 
-              });
-              response.setStudentsNationalCodes(studentsNationalCodes);
-          }
-          if(tclass.isPresent()){
-          Optional<Teacher> teacher = teacherDAO.findById(tclass.get().getTeacherId());
-          if (teacher.isPresent()) {
-              response.setInstructorNationalCode(teacher.get().getTeacherCode());
-          }
-      }
+            });
+            response.setStudentsNationalCodes(studentsNationalCodes);
+        }
+        if (tclass.isPresent()) {
+            Optional<Teacher> teacher = teacherDAO.findById(tclass.get().getTeacherId());
+            if (teacher.isPresent()) {
+                response.setInstructorNationalCode(teacher.get().getTeacherCode());
+            }
+        }
         return response;
     }
 
@@ -916,7 +916,7 @@ public class ClassSessionService implements IClassSessionService {
     @Override
     public EventListDto getStudentEvent(String nationalCode, String startDate, String endDate) {
         List<Object> list = classSessionDAO.getStudentEvent(nationalCode, startDate, endDate);
-        int zone=parameterValueService.getZone("gmtTime");
+        int zone = parameterValueService.getZone("gmtTime");
         EventListDto eventListDto = new EventListDto();
         List<EventDto> eventDtoList;
         eventDtoList = new ArrayList<>(list.size());
@@ -925,10 +925,10 @@ public class ClassSessionService implements IClassSessionService {
                 Object[] arr = (Object[]) o;
                 EventDto event = new EventDto();
                 event.setDate(arr[3].toString());
-                Date start = getEpochDate(arr[3].toString(), convertToTimeZone(arr[5].toString(),zone));
-                Date end = getEpochDate(arr[3].toString(), convertToTimeZone(arr[4].toString(),zone));
-                event.setStartTime(start.getTime()*1000);
-                event.setEndTime(end.getTime()*1000);
+                Date start = getEpochDate(arr[3].toString(), convertToTimeZone(arr[5].toString(), zone));
+                Date end = getEpochDate(arr[3].toString(), convertToTimeZone(arr[4].toString(), zone));
+                event.setStartTime(start.getTime() * 1000);
+                event.setEndTime(end.getTime() * 1000);
                 event.setTitle(arr[6] == null ? null : arr[6].toString());
                 event.setLocation(arr[7] == null ? null : arr[7].toString());
                 eventDtoList.add(event);
@@ -940,7 +940,7 @@ public class ClassSessionService implements IClassSessionService {
 
     @Override
     public EventListDto getTeacherEvent(String nationalCode, String startDate, String endDate) {
-        int zone=parameterValueService.getZone("gmtTime");
+        int zone = parameterValueService.getZone("gmtTime");
 
         List<Object> list = classSessionDAO.getTeacherEvent(nationalCode, startDate, endDate);
         EventListDto eventListDto = new EventListDto();
@@ -952,10 +952,10 @@ public class ClassSessionService implements IClassSessionService {
                 Object[] arr = (Object[]) o;
                 EventDto event = new EventDto();
                 event.setDate(arr[0].toString());
-                Date start = getEpochDate(arr[0].toString(),convertToTimeZone( arr[1].toString(),zone));
-                Date end = getEpochDate(arr[0].toString(), convertToTimeZone(arr[2].toString(),zone));
-                event.setStartTime(start.getTime()*1000);
-                event.setEndTime(end.getTime()*1000);
+                Date start = getEpochDate(arr[0].toString(), convertToTimeZone(arr[1].toString(), zone));
+                Date end = getEpochDate(arr[0].toString(), convertToTimeZone(arr[2].toString(), zone));
+                event.setStartTime(start.getTime() * 1000);
+                event.setEndTime(end.getTime() * 1000);
                 event.setTitle(arr[4] == null ? null : arr[4].toString());
                 event.setLocation(arr[3] == null ? null : arr[3].toString());
                 event.setSessionId(arr[6] == null ? null : arr[6].toString());

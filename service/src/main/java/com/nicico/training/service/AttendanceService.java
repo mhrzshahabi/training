@@ -378,7 +378,8 @@ public class AttendanceService implements IAttendanceService {
                 if (a.getState().equals("0")) {
                     data.setHasPermission(anyNonEmpty);
                     data.setDate(s.getSessionDate());
-                    return data;                }
+                    return data;
+                }
             }
         }
         data.setHasPermission(anyNonEmpty);
@@ -403,26 +404,49 @@ public class AttendanceService implements IAttendanceService {
     }
 
     @Override
-    public boolean saveOrUpdateList(List<Attendance> attendances) {
+    public AttendanceDTO.AttendanceDtoWithUnSavedData saveOrUpdateList(List<Attendance> attendances) {
+        AttendanceDTO.AttendanceDtoWithUnSavedData returnData = new AttendanceDTO.AttendanceDtoWithUnSavedData();
         List<Attendance> updateAttendanceList = new ArrayList<>();
         List<Attendance> newAttendanceList = new ArrayList<>();
+        List<String> unSaved = new ArrayList<>();
         attendances.forEach(attendance -> {
-            Optional<Attendance> optional = getAttendanceBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-            if (optional.isPresent()) {
-                Attendance oldAttendance = optional.get();
-                oldAttendance.setState(attendance.getState());
-                oldAttendance.setDescription(attendance.getDescription());
+            Student student = studentService.getStudent(attendance.getStudentId());
+            ClassSession session = classSessionService.getClassSession(attendance.getSessionId());
+            Set<String> timeInterferenceClasses = new HashSet<>();
+            if (attendance.getState().equals("1") || attendance.getState().equals("2") ){
+                timeInterferenceClasses = new HashSet<>(attendanceDAO.timeInterferenceClasses(student.getNationalCode() != null ? student.getNationalCode() : "-",
+                        session.getSessionDate(),
+                        session.getSessionStartHour(),
+                        session.getSessionEndHour(), attendance.getSessionId().toString()));
+            }
+
+            if (timeInterferenceClasses.isEmpty()) {
+                Optional<Attendance> optional = getAttendanceBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+
+                if (optional.isPresent()) {
+                    Attendance oldAttendance = optional.get();
+                    oldAttendance.setState(attendance.getState());
+                    oldAttendance.setDescription(attendance.getDescription());
 //                attendanceDAO.save(oldAttendance);
-                updateAttendanceList.add(oldAttendance);
-            } else {
-                Student student = studentService.getStudent(attendance.getStudentId());
-                ClassSession session = classSessionService.getClassSession(attendance.getSessionId());
-                attendance.setStudent(student);
-                attendance.setSession(session);
+                    updateAttendanceList.add(oldAttendance);
+                } else {
+                    attendance.setStudent(student);
+                    attendance.setSession(session);
 //                attendanceDAO.save(attendance);
-                newAttendanceList.add(attendance);
+                    newAttendanceList.add(attendance);
+
+                }
+            } else {
+                StringBuilder classes = new StringBuilder(" ");
+
+                for (String s : timeInterferenceClasses)
+                {
+                    classes.append(s).append(" , ");
+                }
+                unSaved.add(student.getNationalCode()+"->" + " ( "+classes+ " ) ");
 
             }
+
         });
         try {
             if (updateAttendanceList.size() > 0) {
@@ -432,11 +456,13 @@ public class AttendanceService implements IAttendanceService {
             if (newAttendanceList.size() > 0) {
                 attendanceDAO.saveAll(newAttendanceList);
             }
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
+            returnData.setStatus(true);
+            returnData.setDate(unSaved);
+            return returnData;
+        } catch (Exception e) {
+            returnData.setStatus(false);
+            returnData.setDate(null);
+            return returnData;
         }
 
     }
@@ -450,14 +476,14 @@ public class AttendanceService implements IAttendanceService {
     public boolean FinalApprovalClass(Long classId) {
         try {
             List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
-            for (ClassSessionDTO.Info sessionDTO:sessions){
-                ClassSession classSession=classSessionDAO.getClassSessionById(sessionDTO.getId());
+            for (ClassSessionDTO.Info sessionDTO : sessions) {
+                ClassSession classSession = classSessionDAO.getClassSessionById(sessionDTO.getId());
                 classSession.setTeacherAttendancePermission(false);
                 classSessionDAO.save(classSession);
             }
             return true;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
 

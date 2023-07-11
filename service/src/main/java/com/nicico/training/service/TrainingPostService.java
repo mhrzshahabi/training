@@ -322,6 +322,8 @@ public class TrainingPostService implements ITrainingPostService {
                     trainingPost.setAffairs(post.getAffairs());
                     trainingPost.setSection(post.getSection());
                     trainingPost.setUnit(post.getUnit());
+                    trainingPost.setJob(post.getJob());
+                    trainingPost.setPostGrade(post.getPostGrade());
                     trainingPost.setCostCenterCode(post.getCostCenterCode());
                     trainingPost.setCostCenterTitleFa(post.getCostCenterTitleFa());
                     trainingPost.setTitleFa(post.getTitleFa());

@@ -106,6 +106,15 @@ public class AttendanceDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("AttendanceDtoWithUnSavedData")
+    public static class AttendanceDtoWithUnSavedData {
+        private List<String> date;
+        private Boolean status;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AttendanceSpecRs")
     public static class AttendanceSpecRs {

@@ -16,7 +16,6 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.Student;
-import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +27,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.AttendanceListSaveRequest;
-import response.BaseResponse;
 import response.attendance.AttendanceListSaveResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class AttendanceRestController {
 
     private final IAttendanceService attendanceService;
     private final IClassSessionService iClassSessionService;
-    private final ITclassService iTclassService ;
+    private final ITclassService iTclassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final AttendanceBeanMapper mapper;
@@ -101,23 +101,31 @@ public class AttendanceRestController {
     @Loggable
     @PostMapping(value = "/save-attendance")
     public ResponseEntity<AttendanceListSaveResponse> createAndSave(@RequestBody AttendanceListSaveRequest request) {
-      //  attendanceService.convertToModelAndSave(req, classId, date);
-        List<Attendance> attendances =mapper.ToAttendanceList(request);
-     boolean status=  attendanceService.saveOrUpdateList(attendances);
-     if (status)
-     {
-         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
-         response.setStatus(HttpStatus.CREATED.value());
-         response.setMessage("با موفقیت ایجاد شد");
-         return new ResponseEntity<>(response, HttpStatus.CREATED);
-     }
-     else
-     {
-         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
-         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-         response.setMessage("عملیات انجام نشد");
-         return new ResponseEntity<>(response, HttpStatus.CREATED);
-     }
+        //  attendanceService.convertToModelAndSave(req, classId, date);
+        List<Attendance> attendances = mapper.ToAttendanceList(request);
+        AttendanceDTO.AttendanceDtoWithUnSavedData data = attendanceService.saveOrUpdateList(attendances);
+        if (data.getStatus()) {
+            AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+            response.setStatus(HttpStatus.CREATED.value());
+            if (data.getDate().isEmpty())
+                response.setMessage("با موفقیت ایجاد شد");
+            else{
+                StringBuilder listString = new StringBuilder(" برای لیست افراد زیر  به دلیل تداخل زمانی جلسه امکان ثبت حاظر وجود ندارد : ");
+
+                for (String s : data.getDate())
+                {
+                    listString.append(s).append(System.lineSeparator());
+                }
+                response.setMessage(listString.toString());
+
+            }
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } else {
+            AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("عملیات انجام نشد");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
 
     }
 
@@ -162,7 +170,7 @@ public class AttendanceRestController {
         if (classId == null || classId == 0) {
             return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
         }
-        List<ClassStudentDTO.AttendanceInfo> students = iTclassService .getStudents(classId);
+        List<ClassStudentDTO.AttendanceInfo> students = iTclassService.getStudents(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(students)
                 .setStartRow(0)
@@ -286,26 +294,27 @@ public class AttendanceRestController {
     public ResponseEntity<AttendanceDTO.permissionDto> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
         return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
     }
+
     @Loggable
     @GetMapping(value = "/studentAbsentSessionsInClass")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<List<EvalTargetUser>> studentAbsentSessionsInClass(@RequestParam("classId") Long classId) {
 
-        List<Student> students=    attendanceService.studentAbsentSessionsInClass(classId);
+        List<Student> students = attendanceService.studentAbsentSessionsInClass(classId);
         if (students.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        else
-        {
-          List<EvalTargetUser> targetUsers=mapper.toTargetUsers(students);
+        else {
+            List<EvalTargetUser> targetUsers = mapper.toTargetUsers(students);
             return new ResponseEntity<>(targetUsers, HttpStatus.OK);
         }
 
     }
+
     @Loggable
     @GetMapping(value = "/finalApprovalClass")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<Boolean> setFinalApprovalClass(@RequestParam("classId") Long classId) {
-       Boolean isDelete= attendanceService.FinalApprovalClass(classId);
-        return new ResponseEntity<>(isDelete,HttpStatus.OK);
+        Boolean isDelete = attendanceService.FinalApprovalClass(classId);
+        return new ResponseEntity<>(isDelete, HttpStatus.OK);
     }
 }
