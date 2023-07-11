@@ -1439,5 +1439,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class"
                                  validate="true"/>
     </changeSet>
+    <changeSet author="Montazeri" id="1689050878832">
+        <addForeignKeyConstraint baseColumnNames="f_class_fee_id" baseTableName="tbl_fee_item"
+                                 constraintName="FK_class_fee_id_in_tbl_fee_item" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class_fee"
+                                 validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

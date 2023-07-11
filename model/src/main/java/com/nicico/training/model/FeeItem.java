@@ -30,9 +30,19 @@ public class FeeItem extends Auditable {
     @Column(name = "f_class_id")
     private Long classId;
 
+    @Column(name = "c_class_title")
+    private String classTitle;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_class_id", insertable = false, updatable = false)
     private Tclass tclass;
+
+    @Column(name = "f_class_fee_id")
+    private Long classFeeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_class_fee_id", insertable = false, updatable = false)
+    private ClassFee classFee;
 
 
 }

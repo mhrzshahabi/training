@@ -12,7 +12,7 @@ public interface IFeeItemService {
 
     FeeItemDTO.Info create(FeeItemDTO.Create request);
 
-    FeeItem update(FeeItemDTO.Create update);
+    FeeItemDTO.Info update(FeeItemDTO.Create update, Long id);
 
     SearchDTO.SearchRs<FeeItemDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 
@@ -20,5 +20,8 @@ public interface IFeeItemService {
 
     List<FeeItemDTO.Info> getAllByClassId(Long classId);
 
+    List<FeeItemDTO.Info> getAllByClassFeeId(Long classFeeId);
+
+    void deleteAllByParentId(Long id);
 
 }

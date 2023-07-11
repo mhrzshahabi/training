@@ -31,6 +31,7 @@ public class FeeItemDTO implements Serializable {
         private Double cost;
         private Long classId;
         private String classTitle;
+        private Long classFeeId;
     }
 
     @Getter
@@ -41,6 +42,8 @@ public class FeeItemDTO implements Serializable {
         private String title;
         private Double cost;
         private Long classId;
+        private Long classFeeId;
+
     }
 
     @Getter

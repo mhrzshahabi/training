@@ -11118,6 +11118,18 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet id="1688966390101" author="Montazeri">
+        <addColumn tableName="tbl_fee_item">
+            <column name="c_class_title" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1688994085730" author="Montazeri">
+        <addColumn tableName="tbl_fee_item">
+            <column name="f_class_fee_id" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
