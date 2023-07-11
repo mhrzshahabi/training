@@ -21,6 +21,8 @@ public class ViewTrainingOverTimeReportDTO {
     String ccpAffairs;
     String classCode;
     String className;
+    String sessionStartHour;
+    String sessionEndHour;
     String date;
     String time;
     String peopleType;
