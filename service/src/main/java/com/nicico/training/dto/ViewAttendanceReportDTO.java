@@ -24,6 +24,8 @@ public class ViewAttendanceReportDTO {
     String className;
     String date;
     Integer attendanceStatus;
+    String sessionStartHour;
+    String sessionEndHour;
     String time;
     String plannerComplex;
     String plannerName;

@@ -12,7 +12,7 @@ public interface IClassFeeService {
 
     ClassFeeDTO.Info create(ClassFeeDTO.Create request);
 
-    ClassFee update(ClassFeeDTO.Create update);
+    ClassFee update(ClassFeeDTO.Create update, Long id);
 
     SearchDTO.SearchRs<ClassFeeDTO.Info> search(SearchDTO.SearchRq request) throws IllegalAccessException, NoSuchFieldException;
 

@@ -24,6 +24,8 @@
             {name: "className"},
             {name: "attendanceStatus"},
             {name: "date"},
+            {name: "sessionStartHour"},
+            {name: "sessionEndHour"},
             {name: "fixTime"},
         ]
     });
@@ -206,6 +208,14 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }
+            },
+            {
+                name: "sessionStartHour",
+                title: "ساعت شروع"
+            },
+            {
+                name: "sessionEndHour",
+                title: "ساعت پایان"
             },
             {
                 name: "time",

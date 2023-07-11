@@ -75,4 +75,10 @@ public class ViewTrainingOverTimeReport implements Serializable {
 
     @Column(name = "cpp_complex_title")
     private String complexTitle;
+
+    @Column(name = "c_session_start_hour")
+    private String sessionStartHour;
+
+    @Column(name = "c_session_end_hour")
+    private String sessionEndHour;
 }

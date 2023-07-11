@@ -12,4 +12,6 @@ public interface FeeItemDAO extends JpaRepository<FeeItem, Long>, JpaSpecificati
 
     List<FeeItem> findAllByClassId(Long classId);
 
+    List<FeeItem> findAllByClassFeeId(Long classFeeId);
+
 }
