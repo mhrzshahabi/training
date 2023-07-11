@@ -716,17 +716,17 @@
             return;
         }
 
+        let anyFeeItemHasClass = false
+
         for (let i = 0; i < ListGrid_Fee_Item.getData().size(); i++) {
-            if (ListGrid_Fee_Item.getData().get(i).classFeeId === record.id) {
-                DynamicForm_ClassFee.getField("classId").hide()
-            } else {
-                DynamicForm_ClassFee.getField("classId").show()
-            }
+            if (ListGrid_Fee_Item.getData().get(i).classId != null)
+                anyFeeItemHasClass = true
+        }
 
-            if (ListGrid_Fee_Item.getData().get(i).classId != null) {
-                DynamicForm_ClassFee.getField("classId").hide()
-            }
-
+        if (anyFeeItemHasClass) {
+            DynamicForm_ClassFee.getField("classId").hide()
+        } else {
+            DynamicForm_ClassFee.getField("classId").show()
         }
 
         if (record.classFeeStatus !== 1) {

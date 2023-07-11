@@ -22,6 +22,6 @@ public interface IFeeItemService {
 
     List<FeeItemDTO.Info> getAllByClassFeeId(Long classFeeId);
 
-    void deleteAllByParentId(Long id);
+    void deleteAllByClassFeeId(Long classFeeId);
 
 }
