@@ -30,10 +30,10 @@ public class FeeItemRestController {
     }
 
     @Loggable
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody FeeItemDTO.Create update) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody FeeItemDTO.Create update) {
         try {
-            feeItemService.update(update);
+            feeItemService.update(update, id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -49,9 +49,7 @@ public class FeeItemRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<ISC<FeeItemDTO.Info>> list(HttpServletRequest iscRq,
-                                                     @RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                     @RequestParam(value = "_endRow", required = false) Integer endRow) throws IOException, NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<ISC<FeeItemDTO.Info>> list(HttpServletRequest iscRq, @RequestParam(value = "_startRow", required = false) Integer startRow, @RequestParam(value = "_endRow", required = false) Integer endRow) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         searchRq.setStartIndex(startRow);
@@ -68,9 +66,9 @@ public class FeeItemRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{class-id}")
-    public ResponseEntity<List<FeeItemDTO.Info>> getFeeItemByClassId(@PathVariable("class-id") Long classId) {
-        List<FeeItemDTO.Info> feeItemsByClassId = feeItemService.getAllByClassId(classId);
+    @GetMapping(value = "/{class-fee-id}")
+    public ResponseEntity<List<FeeItemDTO.Info>> getFeeItemByClassId(@PathVariable("class-fee-id") Long classFeeId) {
+        List<FeeItemDTO.Info> feeItemsByClassId = feeItemService.getAllByClassFeeId(classFeeId);
         return new ResponseEntity<>(feeItemsByClassId, HttpStatus.OK);
     }
 

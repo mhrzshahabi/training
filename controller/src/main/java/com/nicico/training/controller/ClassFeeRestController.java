@@ -29,10 +29,10 @@ public class ClassFeeRestController {
     }
 
     @Loggable
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody ClassFeeDTO.Create update) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ClassFeeDTO.Create update) {
         try {
-            classFeeService.update(update);
+            classFeeService.update(update, id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);

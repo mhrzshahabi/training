@@ -26,11 +26,12 @@ public class ClassFeeService implements IClassFeeService {
     private final ComplexDAO complexDAO;
     private final TclassDAO tclassDAO;
     private final ClassFeeMapper mapper;
+    private final FeeItemService feeItemService;
 
     @Override
     public ClassFee get(Long id) {
         return classFeeDAO.findById(id)
-                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
     }
 
     @Override
@@ -51,9 +52,14 @@ public class ClassFeeService implements IClassFeeService {
     }
 
     @Override
-    public ClassFee update(ClassFeeDTO.Create update) {
-        ClassFee classFee = get(update.getClassId());
+    public ClassFee update(ClassFeeDTO.Create update, Long id) {
+        ClassFee classFee = get(id);
         ClassFee updated = mapper.update(update, classFee);
+        if (update.getClassId() != null) {
+            tclassDAO.findById(update.getClassId()).ifPresent(tclass -> updated.setClassTitle(tclass.getTitleClass()));
+        } else {
+            updated.setClassTitle(null);
+        }
         return classFeeDAO.save(updated);
     }
 
@@ -86,6 +92,7 @@ public class ClassFeeService implements IClassFeeService {
     @Override
     public void delete(Long id) {
         try {
+            feeItemService.deleteAllByParentId(id);
             classFeeDAO.deleteById(id);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);

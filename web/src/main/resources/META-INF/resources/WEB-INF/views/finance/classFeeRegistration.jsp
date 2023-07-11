@@ -89,37 +89,38 @@
     //----------------------------------- layOut -----------------------------------------------------------------------
     let ToolStripButton_Add_ClassFee = isc.ToolStripButtonCreate.create({
         click: function () {
-            RegisterFee();
+            registerFee();
         }
     });
 
     let ToolStripButton_Edit_ClassFee = isc.ToolStripButtonEdit.create({
         click: function () {
-            EditClassFee();
+            showEditClassFeeWindow();
         }
     });
 
     let ToolStripButton_Remove_ClassFee = isc.ToolStripButtonRemove.create({
         click: function () {
-            RemoveFee();
+            removeClassFee();
         }
     });
 
     let ToolStripButton_Refresh_ClassFees = isc.ToolStripButtonRefresh.create({
         click: function () {
-            RefreshData();
+            refreshClassFeeListGrid();
         }
     });
 
     let ToolStripButton_Refresh_Fee_Items = isc.ToolStripButtonRefresh.create({
         click: function () {
-            let selectedRecord = ListGrid_Register_Class_Fee.getSelectedRecord();
+            let selectedClassFeeRecord = ListGrid_Class_Fee.getSelectedRecord();
 
-            if (selectedRecord == null) {
-                return;
+            if (selectedClassFeeRecord != null) {
+                refreshListGridFeeItems(selectedClassFeeRecord.classFeeId)
+            } else {
+                ListGrid_Fee_Item.fetchData()
+                ListGrid_Fee_Item.invalidateCache()
             }
-
-            refreshListGridFeeItems(selectedRecord.classId)
         }
     });
 
@@ -143,7 +144,7 @@
             ]
     });
 
-    let ListGrid_Register_Class_Fee = isc.TrLG.create({
+    let ListGrid_Class_Fee = isc.TrLG.create({
         height: "55%",
         autoFetchData: true,
         showFilterEditor: true,
@@ -170,10 +171,10 @@
             },
         ],
         recordClick: function () {
-            selectionUpdatedClassFee();
+            classFeeSelected();
         },
         filterEditorSubmit: function () {
-            ListGrid_Register_Class_Fee.invalidateCache();
+            ListGrid_Class_Fee.invalidateCache();
         },
 
     });
@@ -197,7 +198,7 @@
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
-                    deleteFeeItemFromClassFee()
+                    removeFeeItemFromClassFee()
                 }.bind(this)
             }),
             isc.ToolStrip.create({
@@ -239,33 +240,7 @@
             Add_Fee_item,
             "header",
             "body"
-        ],
-        createRecordComponent: function (record, colNum) {
-            let fieldName = this.getFieldName(colNum);
-            if (fieldName === "removeIcon") {
-                let removeImg = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/remove.png",
-                    prompt: "حذف",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                        let canRemove = ListGrid_Register_Class_Fee.getSelectedRecord().paymentDocStatus === 'ثبت اولیه';
-                        if (canRemove) {
-                            payment_classes_Remove(record);
-                        } else {
-                            createDialog("info", "هزینه کلاس شده حذف نخواهد شد");
-                        }
-                    }
-                });
-                return removeImg;
-            } else {
-                return null;
-            }
-        }
+        ]
     });
 
     let TabSet_ClassFee_Reg = isc.TabSet.create({
@@ -445,7 +420,6 @@
                 pickListProperties: {
                     showFilterEditor: true
                 },
-                // pickListWidth: 800,
                 icons: [
                     {
                         name: "clear",
@@ -457,25 +431,12 @@
                         click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
-
                         }
                     }
                 ],
                 endRow: true,
                 startRow: false,
 
-                changed: function (form, item, value) {
-                    //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
-                },
-                change: function (form, item, value) {
-                    // if (item.getSelectedRecord().course.etheoType.id == 1) { // Theory
-                    //     form.getItem("practicalScore").setValue(0);
-                    //     form.getItem("practicalScore").setDisabled(true);
-                    // } else {
-                    //     form.getItem("practicalScore").setDisabled(false);
-                    // }
-
-                }
             },
         ]
     });
@@ -484,42 +445,7 @@
         title: "<spring:message code='save'/>",
         align: "center",
         click: function () {
-            if (!DynamicForm_ClassFee.validate())
-                return;
-
-            let data = DynamicForm_ClassFee.getValues();
-
-            if (method === "POST") {
-                wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(classFeesUrl, "POST", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        wait.close();
-                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        Window_Add_Class_Fee.close();
-                        RefreshData()
-                    } else {
-                        wait.close();
-                        createDialog("info", "خطایی رخ داده است");
-                        Window_Add_Class_Fee.close();
-                    }
-                }));
-
-            } else if (method === "PUT") {
-                wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(classFeesUrl, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        wait.close();
-                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        Window_Add_Class_Fee.close();
-                        RefreshData();
-                    } else {
-                        wait.close();
-                        createDialog("info", "خطایی رخ داده است");
-                        Window_Add_Class_Fee.close();
-                    }
-                }));
-            }
-
+            saveOrEditClassFee();
         }
     });
 
@@ -708,7 +634,7 @@
                 layoutMargin: 5,
                 membersMargin: 5,
                 click: function () {
-                    saveFeeItemAndClassFee()
+                    saveOrEditFeeItem()
                 }
             }),
             isc.IButtonCancel.create({
@@ -756,25 +682,26 @@
     let VLayout_Body_ClassFee_Reg = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_ClassFee,
-            ListGrid_Register_Class_Fee,
+            ListGrid_Class_Fee,
             HLayout_Tab_ClassFeeReg
         ]
     });
 
     //------------------------------------------------- Functions ------------------------------------------------------
 
-    function RegisterFee() {
+    function registerFee() {
         method = "POST";
+        DynamicForm_ClassFee.getField("classId").show()
         DynamicForm_ClassFee.clearValues();
         DynamicForm_ClassFee.clearErrors();
         Window_Add_Class_Fee.setTitle("ثبت هزینه کلاس");
         Window_Add_Class_Fee.show();
     }
 
-    function EditClassFee() {
-        let record = ListGrid_Register_Class_Fee.getSelectedRecord();
+    function showEditClassFeeWindow() {
+        let record = ListGrid_Class_Fee.getSelectedRecord();
 
-        if (record == null || record.id == null) {
+        if (record == null) {
             isc.Dialog.create({
                 message: "موردی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
@@ -787,6 +714,19 @@
                 }
             });
             return;
+        }
+
+        for (let i = 0; i < ListGrid_Fee_Item.getData().size(); i++) {
+            if (ListGrid_Fee_Item.getData().get(i).classFeeId === record.id) {
+                DynamicForm_ClassFee.getField("classId").hide()
+            } else {
+                DynamicForm_ClassFee.getField("classId").show()
+            }
+
+            if (ListGrid_Fee_Item.getData().get(i).classId != null) {
+                DynamicForm_ClassFee.getField("classId").hide()
+            }
+
         }
 
         if (record.classFeeStatus !== 1) {
@@ -804,15 +744,6 @@
             return;
         }
 
-        if (record.classId != null) {
-            for (let i = 0; i < ListGrid_Fee_Item.getData().size(); i++) {
-                if (ListGrid_Fee_Item.getData().get(i).classId === record.classId) {
-                    createDialog("info", "امکان ویرایش وجود ندارد");
-                    return;
-                }
-            }
-        }
-
         method = "PUT";
         DynamicForm_ClassFee.clearValues();
         DynamicForm_ClassFee.clearErrors();
@@ -821,8 +752,51 @@
         Window_Add_Class_Fee.show();
     }
 
-    function RemoveFee() {
-        let record = ListGrid_Register_Class_Fee.getSelectedRecord();
+    function saveOrEditClassFee() {
+        if (!DynamicForm_ClassFee.validate())
+            return;
+
+        let data = DynamicForm_ClassFee.getValues();
+
+        if (method === "POST") {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(classFeesUrl, "POST", JSON.stringify(data), function (resp) {
+                wait.close();
+
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>"
+                    )
+                    ;
+                    Window_Add_Class_Fee.close();
+                    refreshClassFeeListGrid()
+                } else {
+                    createDialog("info", "خطایی رخ داده است");
+                    Window_Add_Class_Fee.close();
+                }
+            }));
+
+        } else if (method === "PUT") {
+            wait.show();
+
+            let id = ListGrid_Class_Fee.getSelectedRecord().id;
+
+            isc.RPCManager.sendRequest(TrDSRequest(classFeesUrl + "/" + id, "PUT", JSON.stringify(data), function (resp) {
+                wait.close();
+                Window_Add_Class_Fee.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    refreshClassFeeListGrid();
+                } else {
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        }
+
+        ListGrid_Fee_Item.invalidateCache()
+    }
+
+    function removeClassFee() {
+        let record = ListGrid_Class_Fee.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
                 message: "موردی برای حذف انتخاب نشده است.",
@@ -847,7 +821,7 @@
             });
 
         } else {
-            let Dialog_Delete = isc.Dialog.create({
+            isc.Dialog.create({
                 message: "آيا مي خواهيد اين هزینه حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
@@ -862,118 +836,188 @@
                             wait.close();
                             if (resp.httpResponseCode === 200) {
                                 createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");
-                                RefreshData();
+                                refreshClassFeeListGrid();
                             } else {
                                 createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")
                             }
                         }));
+                        ListGrid_Fee_Item.setData([])
                     }
                 }
             });
         }
     }
 
-    function RefreshData() {
-        ListGrid_Register_Class_Fee.clearFilterValues();
-        ListGrid_Register_Class_Fee.invalidateCache();
-        ListGrid_Fee_Item.setData([]);
-        ListGrid_Fee_Item.invalidateCache();
+    function refreshClassFeeListGrid() {
+        ListGrid_Class_Fee.clearFilterValues();
+        ListGrid_Class_Fee.invalidateCache();
+        ListGrid_Fee_Item.fetchData();
     }
 
-    function selectionUpdatedClassFee() {
+    function refreshListGridFeeItems(classFeeId) {
+        if (classFeeId == null) {
+            ListGrid_Fee_Item.invalidateCache()
+        } else {
+            wait.show();
+
+            isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl + "/" + classFeeId, "GET", null, function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let classCostList = JSON.parse(resp.httpResponseText);
+
+                    ListGrid_Fee_Item.setData(classCostList);
+                    ListGrid_Fee_Item.invalidateCache()
+                } else {
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        }
+    }
+
+    function classFeeSelected() {
         ListGrid_Fee_Item.setData([]);
 
-        let classFee = ListGrid_Register_Class_Fee.getSelectedRecord();
+        let classFee = ListGrid_Class_Fee.getSelectedRecord();
 
-        if (classFee.classId === undefined || classFee.classId == null) {
-            return;
+        if (classFee != null) {
+            refreshListGridFeeItems(classFee.id)
         }
-
-        refreshListGridFeeItems(classFee.classId)
 
     }
 
     function showAddFeeItemToClassFeeWindow() {
-        let record = ListGrid_Register_Class_Fee.getSelectedRecord();
-        if (record == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        if (ListGrid_Class_Fee.getSelectedRecord() == null) {
+            createDialog("info", "موردی انتخاب نشده است")
             return
         }
-        if (record.classId != null) {
+
+        method = "POST"
+
+        let classFeeRecord = ListGrid_Class_Fee.getSelectedRecord();
+
+        if (classFeeRecord.classId !== undefined) {
             DynamicForm_Add_Fee_item.getField("classId").hide()
             DynamicForm_Add_Fee_item.getField("classId").setRequired(false)
         } else {
-            DynamicForm_Add_Fee_item.getItem("classId").setValue(record.classId)
             DynamicForm_Add_Fee_item.getField("classId").show()
             DynamicForm_Add_Fee_item.getField("classId").setRequired(true)
         }
+
+        DynamicForm_Add_Fee_item.clearValues();
         Window_Add_Fee_Item.show()
     }
 
-    function saveFeeItemAndClassFee() {
+    function saveOrEditFeeItem() {
         if (!DynamicForm_Add_Fee_item.validate()) {
             return
         }
 
         let data = DynamicForm_Add_Fee_item.getValues();
 
+        let selectedClassFee = ListGrid_Class_Fee.getSelectedRecord();
 
-        let selectedClassFee = ListGrid_Register_Class_Fee.getSelectedRecord();
 
-        if (selectedClassFee.classId != null) {
+        if (selectedClassFee != null && selectedClassFee.classId != null) {
             data.classId = selectedClassFee.classId
-
         }
 
-        isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl, "POST", JSON.stringify(data), function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                createDialog("info", "آیتم با موفقیت ایجاد شد");
-                refreshListGridFeeItems(data.classId)
-            } else {
-                createDialog("info", "عملیات ناموفق.")
-                refreshListGridFeeItems(data.classId)
+        data.classFeeId = selectedClassFee.id;
+
+        if (method === "POST") {
+            isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl, "POST", JSON.stringify(data), function (resp) {
+                wait.close()
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "آیتم با موفقیت ایجاد شد");
+                    refreshListGridFeeItems(data.classFeeId)
+                } else {
+                    createDialog("info", "عملیات ناموفق.")
+                }
+                DynamicForm_Add_Fee_item.clearValues();
+                Window_Add_Fee_Item.close();
+            }));
+
+        } else if (method === "PUT") {
+            
+            let id = ListGrid_Fee_Item.getSelectedRecord().id;
+
+            if (id == null) {
+                return;
             }
-            Window_Add_Fee_Item.close();
-        }));
+
+            isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl + "/" + id, "PUT", JSON.stringify(data), function (resp) {
+                wait.close()
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "آیتم با موفقیت وبرایش شد");
+                } else {
+                    createDialog("info", "عملیات ناموفق.")
+                }
+                refreshListGridFeeItems(data.classFeeId)
+                DynamicForm_Add_Fee_item.clearValues();
+                Window_Add_Fee_Item.close();
+
+            }));
+        }
+
     }
 
     function editFeeItem() {
         let selectedFeeItem = ListGrid_Fee_Item.getSelectedRecord();
+
         if (selectedFeeItem == null) {
-            createDialog("info", "آیتمی انتخاب نشده است.");
+            createDialog("info", "آیتمی انتخاب نشده است");
             return;
-        }
+        } else {
+            if (selectedFeeItem.classId == null) {
+                DynamicForm_Add_Fee_item.getField("classId").show()
+            } else {
+                for (let i = 0; i < ListGrid_Class_Fee.getData().size(); i++) {
+                    if (ListGrid_Class_Fee.getData().get(i).classId === selectedFeeItem.classId) {
+                        if (ListGrid_Class_Fee.getData().get(i).classFeeStatus !== 1) {
+                            isc.Dialog.create({
+                                message: "رکورد باید در وضعیت ثبت اولیه باشد.",
+                                icon: "[SKIN]ask.png",
+                                title: "توجه",
+                                buttons: [
+                                    isc.IButtonSave.create({title: "تائید"})
+                                ],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
+                            });
+                            return;
+                        }
 
-        // if (selectedRecord.classFeeStatus !== 1) {
-        //     isc.Dialog.create({
-        //         message: "رکورد باید در وضعیت ثبت اولیه باشد.",
-        //         icon: "[SKIN]ask.png",
-        //         title: "توجه",
-        //         buttons: [
-        //             isc.IButtonSave.create({title: "تائید"})
-        //         ],
-        //         buttonClick: function (button, index) {
-        //             this.close();
-        //         }
-        //     });
-        //     return;
-        // }
-
-        if (selectedFeeItem.classId != null) {
-            for (let i = 0; i < ListGrid_Register_Class_Fee.getData().size(); i++) {
-                if (ListGrid_Register_Class_Fee.getData().get(i).classId === selectedFeeItem.classId) {
-                    createDialog("info", "امکان ویرایش وجود ندارد");
-                    return;
+                        DynamicForm_Add_Fee_item.getField("classId").hide()
+                    }
                 }
             }
         }
 
+        method = "PUT"
+
         DynamicForm_Add_Fee_item.editRecord(selectedFeeItem);
-        Window_Add_Fee_Item.title = "ویرایش آیتم هزینه به کلاس";
+        Window_Add_Fee_Item.title = "ویرایش آیتم هزینه کلاس";
         Window_Add_Fee_Item.show();
     }
 
-    function deleteFeeItemFromClassFee() {
+    function removeFeeItemFromClassFee() {
+        let selectedFeeItem = ListGrid_Fee_Item.getSelectedRecord();
+
+        if (selectedFeeItem == null || selectedFeeItem.id == null) {
+            isc.Dialog.create({
+                message: "آیتمی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+            return;
+        }
+
         isc.Dialog.create({
             message: "آيا مي خواهيد اين آیتم حذف گردد؟",
             icon: "[SKIN]ask.png",
@@ -986,39 +1030,20 @@
                 if (index === 0) {
                     wait.show();
                     let id = ListGrid_Fee_Item.getSelectedRecord().id;
+
                     isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl + "/" + id, "DELETE", null, function (resp) {
+                        wait.close()
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             createDialog("info", "آیتم مورد نظر با موفقیت حذف گردید");
-                            ListGrid_Fee_Item.invalidateCache();
+                            classFeeSelected()
                         } else {
                             createDialog("info", "عملیات حذف ناموفق بود")
                         }
                     }));
-                    wait.close()
                 }
             }
         });
 
-    }
-
-    function refreshListGridFeeItems(classFeeId) {
-        if (classFeeId == null) {
-            wait.close();
-            return;
-        }
-
-        wait.show();
-
-        isc.RPCManager.sendRequest(TrDSRequest(feeItemsUrl + "/" + classFeeId, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                let classCostList = JSON.parse(resp.httpResponseText);
-                ListGrid_Fee_Item.setData(classCostList);
-                ListGrid_Fee_Item.invalidateCache()
-            } else {
-                createDialog("info", "خطایی رخ داده است");
-            }
-        }));
     }
 
     // </script>
