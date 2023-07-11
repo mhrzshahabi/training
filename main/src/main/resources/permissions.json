@@ -231,7 +231,10 @@
       "code": "Menu_Finance_Agreement_Decision",
       "title": "منوی مالی - ضرایب تصمیم گیری"
     },
-
+    {
+      "code": "Menu_Finance_Class_Fee_Registration",
+      "title": "منوی مالی - ثبت هزینه های کلاس"
+    },
     {
       "code": "Menu_Report",
       "title": "منوی گزارش"

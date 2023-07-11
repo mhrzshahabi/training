@@ -1429,6 +1429,15 @@
         <addForeignKeyConstraint baseColumnNames="f_parameter_value_id" baseTableName="tbl_sub_category_parameter_value" constraintName="FK_parameter_value_id_in_tbl_sub_category_parameter_value" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
-
+    <changeSet author="Montazeri" id="1688548419134">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_fee"
+                                 constraintName="FK_class_in_tbl_class_fee" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_fee_item"
+                                 constraintName="FK_class_in_tbl_fee_item" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class"
+                                 validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

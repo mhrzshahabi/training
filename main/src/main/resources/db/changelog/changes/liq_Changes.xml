@@ -11112,6 +11112,11 @@ DECLARE
         </sql>
     </changeSet>
 
+    <changeSet id="1688879643079" author="Montazeri">
+        <addColumn tableName="tbl_class_fee">
+            <column name="c_class_title" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 

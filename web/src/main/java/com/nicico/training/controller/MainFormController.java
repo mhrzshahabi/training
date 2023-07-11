@@ -695,4 +695,9 @@ public class MainFormController {
     public String showPaymentDocForm() {
         return "finance/paymentDoc";    }
 
+    @RequestMapping("/class-fee-registration")
+    public String showClassFeeRegistrationForm() {
+        return "finance/classFeeRegistration";
+    }
+
 }
