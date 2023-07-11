@@ -3050,7 +3050,7 @@ public class TclassService implements ITclassService {
                 " tbl_class.c_status IN ( 3, 5 ) " +
                 " AND tbl_class_student.scores_state_id IN ( 400, 401 ) " +
                 "     AND tbl_student.national_code = '" + nationalCode + "' " +
-                "   ORDER BY id desc ";
+                "   ORDER BY id desc ) ";
         return queryString;
     }
 
