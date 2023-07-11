@@ -3451,4 +3451,17 @@ public class ElsRestController {
         return response;
     }
 
+    @GetMapping("/passed-classes-file/by-nationalCode/{nationalCode}")
+    public ElsPassedCourses passedClassesFileByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode) {
+        ElsPassedCourses res = new ElsPassedCourses();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            return tclassService.getPassedClassesByNationalCode(nationalCode);
+
+        } else {
+            res.setStatus(401);
+        }
+        return res;
+
+    }
+
 }

@@ -3025,6 +3025,34 @@ public class TclassService implements ITclassService {
         queryString.append(searchQuery);
         return queryString.toString();
     }
+    private String getQuery(String nationalCode) {
+
+        String queryString = " SELECT * FROM ( " +
+                " SELECT tbl_class.id," +
+                "  tbl_course.c_code as courseCode ," +
+                "tbl_course.c_title_fa AS courseTitle, " +
+                " tbl_course.n_theory_duration as courseTheoryDuration," +
+                "  tbl_term.c_title_fa AS termTitle," +
+                "concat( concat( tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa ) AS teacherName, " +
+                "  tbl_class.c_start_date as startDate, " +
+                "tbl_class.c_end_date as endDate, " +
+                " tbl_parameter_value.c_title as scoresState," +
+                "  tbl_class_student.score as score" +
+                "      FROM tbl_student " +
+                " INNER JOIN tbl_class_student ON tbl_class_student.student_id = tbl_student.id " +
+                "  INNER JOIN tbl_class ON tbl_class.id = tbl_class_student.class_id" +
+                " INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id " +
+                "  INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id " +
+                " INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id " +
+                " INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id " +
+                "  INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class_student.scores_state_id " +
+                " WHERE " +
+                " tbl_class.c_status IN ( 3, 5 ) " +
+                " AND tbl_class_student.scores_state_id IN ( 400, 401 ) " +
+                "     AND tbl_student.national_code = '" + nationalCode + "' " +
+                "   ORDER BY id desc ";
+        return queryString;
+    }
 
     private String getActiveCourses(int page, int size, String searchQuery) {
         return String.format(
@@ -3643,6 +3671,46 @@ public class TclassService implements ITclassService {
         } else {
             params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
         }
+    }
+
+    @Override
+    public ElsPassedCourses getPassedClassesByNationalCode(String nationalCode) {
+        ElsPassedCourses res = new ElsPassedCourses();
+        try {
+            String query = getQuery(nationalCode);
+            List<TclassDTO.PassedClasses> passedClassesDTO = new ArrayList<>();
+            List<?> passedClasses = entityManager.createNativeQuery(query).getResultList();
+            if (passedClasses != null) {
+                for (Object passedClass : passedClasses) {
+                    Object[] data = (Object[]) passedClass;
+                    passedClassesDTO.add(new TclassDTO.PassedClasses(
+                            (data[0] != null ? Long.parseLong(data[0].toString()) : 0),
+                            (data[1] != null ? (data[1].toString()) : ""),
+                            (data[2] != null ? (data[2].toString()) : ""),
+                            (data[3] != null ? Float.parseFloat(data[3].toString()) : 0),
+                            (data[4] != null ? (data[4].toString()) : ""),
+                            (data[5] != null ? (data[5].toString()) : ""),
+                            (data[6] != null ? (data[6].toString()) : ""),
+                            (data[7] != null ? (data[7].toString()) : ""),
+                            (data[8] != null ? (data[8].toString()) : ""),
+                            (data[9] != null ? Float.parseFloat(data[9].toString()) : 0),
+                            elsUrl + "/training/certification?classId=" +
+                                    (data[0] != null ? Long.parseLong(data[0].toString()) : 0) + "&nationalCode=" + nationalCode
+                    ));
+                }
+            }
+            res.setPassedClasses(passedClassesDTO);
+            PaginationDto paginationDto = new PaginationDto();
+            res.setPagination(paginationDto);
+            res.setStatus(200);
+
+        } catch (Exception e) {
+            res.setStatus(404);
+
+        }
+
+
+        return res;
     }
 
 
