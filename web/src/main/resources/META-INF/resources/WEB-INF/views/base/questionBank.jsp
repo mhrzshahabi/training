@@ -1190,7 +1190,9 @@
                             QuestionBankDF_questionBank.getItem("classificationId").fetchData();
                             QuestionBankDF_questionBank.getItem("classificationId").enable();
 
-                            if (item.getSelectedRecord().subCategory.needToClassification === true) {
+                            if (tem.getSelectedRecord().subCategory !== undefined && tem.getSelectedRecord().subCategory !== null &&
+                                tem.getSelectedRecord().subCategory.needToClassification !== undefined &&
+                                item.getSelectedRecord().subCategory.needToClassification === true) {
                                 QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
                                 QuestionBankDF_questionBank.getItem("classificationId").setRequired(true);
                             } else {
@@ -2161,7 +2163,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                         QuestionBankDF_questionBank.getItem("classificationId").fetchData();
                         QuestionBankDF_questionBank.getItem("classificationId").enable();
 
-                        if (record.subCategory.needToClassification === true) {
+                        if (record.subCategory !== undefined && record.subCategory !== null && record.subCategory.needToClassification !== undefined &&
+                            record.subCategory.needToClassification === true) {
                             QuestionBankDF_questionBank.getItem("classificationId").clearErrors();
                             QuestionBankDF_questionBank.getItem("classificationId").setRequired(true);
                         } else {
