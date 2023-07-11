@@ -6,7 +6,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.FeeItemDTO;
 import com.nicico.training.iservice.IFeeItemService;
 import com.nicico.training.mapper.FeeItem.FeeItemMapper;
-import com.nicico.training.model.ClassFee;
 import com.nicico.training.model.FeeItem;
 import com.nicico.training.repository.ClassFeeDAO;
 import com.nicico.training.repository.FeeItemDAO;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,13 +88,10 @@ public class FeeItemService implements IFeeItemService {
 
 
     @Override
-    public void deleteAllByParentId(Long id) {
+    public void deleteAllByClassFeeId(Long classFeeId) {
         try {
-            Optional<ClassFee> optionalClassFee = classFeeDAO.findById(id);
-            if (optionalClassFee.isPresent()) {
-                List<FeeItem> allByClassId = feeItemDAO.findAllByClassId(optionalClassFee.get().getClassId());
-                feeItemDAO.deleteAll(allByClassId);
-            }
+            List<FeeItem> feeItems = feeItemDAO.findAllByClassFeeId(classFeeId);
+            feeItemDAO.deleteAll(feeItems);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }

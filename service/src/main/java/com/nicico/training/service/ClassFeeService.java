@@ -7,16 +7,12 @@ import com.nicico.training.dto.ClassFeeDTO;
 import com.nicico.training.iservice.IClassFeeService;
 import com.nicico.training.mapper.ClassFee.ClassFeeMapper;
 import com.nicico.training.model.ClassFee;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.enums.AgreementStatus;
 import com.nicico.training.model.enums.ClassFeeStatus;
 import com.nicico.training.repository.ClassFeeDAO;
 import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +88,7 @@ public class ClassFeeService implements IClassFeeService {
     @Override
     public void delete(Long id) {
         try {
-            feeItemService.deleteAllByParentId(id);
+            feeItemService.deleteAllByClassFeeId(id);
             classFeeDAO.deleteById(id);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
