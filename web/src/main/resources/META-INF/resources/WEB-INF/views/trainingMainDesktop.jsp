@@ -1905,6 +1905,7 @@
     const attendancePersonUrl = rootUrl + "/class-student/attendance-person";
     const numberOfSpecializedCoursesReportUrl = rootUrl + "/class-student/numberOf-specialized-courses-report";
     const financialExpensesOfTheOrganizationUrl = rootUrl + "/class-student/financial-expenses-of-the-organization";
+    const viewTeacherQuestionCountReportUrl = rootUrl + "/teacher-question-count";
 
 
     // -------------------------------------------  Filters  -----------------------------------------------
@@ -3450,6 +3451,12 @@
                                     createTab(this.title, "<spring:url value="web/evaluation-indexes-by-field-report"/>");
                                 }
 
+                            },
+                            {
+                                title: "تعداد سوالات ثبت شده استاد به تفکیک سال",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/teacher-question-count-report"/>");
+                                }
                             },
 
 

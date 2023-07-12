@@ -598,6 +598,11 @@ public class MainFormController {
         return "report/evaluationIndexesByFieldReport";
     }
 
+    @RequestMapping("/teacher-question-count-report")
+    public String teacherQuestionCountReport() {
+        return "report/teacherQuestionCountReport";
+    }
+
     @RequestMapping("/CoursePassedOrUnPassedInNAReport")
     public String CoursePassedOrUnPassedInNAReport() {
         return "report/CoursePassedOrUnPassedInNAReport";
