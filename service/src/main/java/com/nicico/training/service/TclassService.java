@@ -85,7 +85,7 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     @Lazy
     @Autowired
-    private   IClassStudentService iClassStudentService;
+    private IClassStudentService iClassStudentService;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
     private final TclassAuditDAO tclassAuditDAO;
@@ -812,11 +812,11 @@ public class TclassService implements ITclassService {
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
-        presentClassStudents=classStudents.stream().filter(cs -> iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).collect(Collectors.toSet());
+        presentClassStudents = classStudents.stream().filter(cs -> iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).collect(Collectors.toSet());
         teacherId = tclass.getTeacherId();
         trainingId = tclass.getSupervisorId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ReactionEvaluationResult.class);
-        int  absentCount=classStudents.stream().filter(cs -> !iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).toList().size();
+        int absentCount = classStudents.stream().filter(cs -> !iClassStudentService.IsStudentAttendanceAllowable(cs.getId())).toList().size();
 
         Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
         if (reactionEvaluationResult.get("studentsGradeToTeacher") != null)
@@ -903,7 +903,7 @@ public class TclassService implements ITclassService {
             evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms(classStudents));
         if (getNumberOfInCompletedReactionEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms(classStudents));
-        if (getPercenetOfFilledReactionEvaluationForms(presentClassStudents) != null){
+        if (getPercenetOfFilledReactionEvaluationForms(presentClassStudents) != null) {
             evaluationResult.setPercenetOfFilledReactionEvaluationForms(Double.parseDouble(numberFormat.format(getPercenetOfFilledReactionEvaluationForms(presentClassStudents)).toString()));
         }
         if (getNumberOfExportedEvaluationForms(classStudents) != null)
@@ -3018,13 +3018,14 @@ public class TclassService implements ITclassService {
 
         queryString.append("     AND tbl_student.national_code = '").append(nationalCode).append("' ");
         queryString.append("   ORDER BY id desc ");
-        queryString.append("     OFFSET  ").append(page*size);
+        queryString.append("     OFFSET  ").append(page * size);
         queryString.append("     ROWS FETCH NEXT  ").append(size);
         queryString.append("    ROWS ONLY )");
         queryString.append(" WHERE 1=1 ");
         queryString.append(searchQuery);
         return queryString.toString();
     }
+
     private String getQuery(String nationalCode) {
 
         String queryString = " SELECT * FROM ( " +
@@ -3276,7 +3277,7 @@ public class TclassService implements ITclassService {
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
-            params.put("qrCodeData", qrCodeData.replace("/api",""));
+            params.put("qrCodeData", qrCodeData.replace("/api", ""));
             setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
@@ -3412,15 +3413,15 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public QRCodeDataDto getCertificationDataByQRCodeFile(String nationalCode, Long classId)  {
+    public QRCodeDataDto getCertificationDataByQRCodeFile(String nationalCode, Long classId) {
 
         List<?> data = tclassDAO.getCertificationConfirmation(nationalCode, classId);
-        QRCodeDataDto qrCodeDataDto=new QRCodeDataDto();
+        QRCodeDataDto qrCodeDataDto = new QRCodeDataDto();
         if (!data.isEmpty()) {
             Object[] item = (Object[]) data.get(0);
             String scoreStateId = item[0] != null ? item[0].toString() : "";
             String score = item[1] != null ? item[1].toString() : "";
-            String scoreStatus =  "";
+            String scoreStatus = "";
             String firstName = item[2] != null ? item[2].toString() : "";
             String lastName = item[3] != null ? item[3].toString() : "";
 
@@ -3428,11 +3429,11 @@ public class TclassService implements ITclassService {
 
 
             if (scoreStateId.equals("400") || scoreStateId.equals("401")) { // قبول با نمره یا قبول بدون نمره
-                scoreStatus="قبول";
+                scoreStatus = "قبول";
             } else {
-                scoreStatus="مردود";
+                scoreStatus = "مردود";
             }
-            Optional<Tclass> optionalTclass=tclassDAO.findById(classId);
+            Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
             qrCodeDataDto.setCourseCode(optionalTclass.isPresent() ? optionalTclass.get().getCode() : "");
             qrCodeDataDto.setNationalCode(nationalCode);
             qrCodeDataDto.setCourseTitle(course);
@@ -3441,12 +3442,32 @@ public class TclassService implements ITclassService {
             qrCodeDataDto.setScoreStatus(scoreStatus);
             qrCodeDataDto.setScore(score);
             return qrCodeDataDto;
-           } else {
-            return  null;
+        } else {
+            return null;
         }
     }
 
-
+    @Override
+    public List<ElsTeacherClass> teacherClassesFileByNationalCode(String nationalCode) {
+        List<?> data = tclassDAO.teacherClassesFileByNationalCode(nationalCode);
+        List<ElsTeacherClass> list = new ArrayList<>();
+        ElsTeacherClass elsTeacherClass = new ElsTeacherClass();
+        if (!data.isEmpty()) {
+            Object[] item = (Object[]) data.get(0);
+            String code = item[0] != null ? item[0].toString() : "";
+            String endDate = item[1] != null ? item[1].toString() : "";
+            String startDate = item[2] != null ? item[2].toString() : "";
+            String title = item[3] != null ? item[3].toString() : "";
+            String duration = item[4] != null ? item[4].toString() : "";
+            elsTeacherClass.setCode(code);
+            elsTeacherClass.setTitleClass(title);
+            elsTeacherClass.setStartDate(startDate);
+            elsTeacherClass.setEndDate(endDate);
+            elsTeacherClass.setHDuration(duration);
+            list.add(elsTeacherClass);
+        }
+        return list;
+}
     @Override
     public ActiveCoursesDto getActiveCourses(int page, int size, SearchDtoRequest search) {
         ActiveCoursesDto res = new ActiveCoursesDto();
@@ -3455,7 +3476,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveCourses(page*size, size, searchQuery);
+            String query = getActiveCourses(page * size, size, searchQuery);
             List<ActiveCourses> activeCourses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
@@ -3499,7 +3520,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClasses(courseId, page*size, size, searchQuery);
+            String query = getActiveClasses(courseId, page * size, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
@@ -3545,7 +3566,7 @@ public class TclassService implements ITclassService {
             if (search != null && search.getSearchDTOList().size() > 0) {
                 searchQuery = SpecListUtil.SearchQuery(search.getSearchDTOList());
             }
-            String query = getActiveClassesWithUserNationalCode(nationalCode, page*size, size, searchQuery);
+            String query = getActiveClassesWithUserNationalCode(nationalCode, page * size, size, searchQuery);
             List<ActiveClasses> activeClasses = new ArrayList<>();
             List<?> activeData = entityManager.createNativeQuery(query).getResultList();
             ;
@@ -3609,7 +3630,7 @@ public class TclassService implements ITclassService {
             params.put("fullName", fullName);
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
-            params.put("qrCodeData", qrCodeData.replace("/api",""));
+            params.put("qrCodeData", qrCodeData.replace("/api", ""));
             setCertificationBackground(params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +

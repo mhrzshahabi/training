@@ -255,5 +255,7 @@ public interface ITclassService {
     byte[] getCertificationByQRCodeFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, ParseException;
 
     QRCodeDataDto getCertificationDataByQRCodeFile(String nationalCode, Long classId);
+
+    List<ElsTeacherClass> teacherClassesFileByNationalCode(String nationalCode);
 }
 

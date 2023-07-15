@@ -3464,4 +3464,9 @@ public class ElsRestController {
 
     }
 
+    @GetMapping("/teacher-course-file/by-nationalCode/{nationalCode}")
+    public List<ElsTeacherClass> teacherClassesFileByNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode) {
+              return tclassService.teacherClassesFileByNationalCode(nationalCode);
+    }
+
 }
