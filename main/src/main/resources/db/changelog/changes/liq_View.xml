@@ -24394,4 +24394,62 @@ pb as (
         </createView>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1689406649208">
+        <createView viewName="VIEW_TEACHER_QUESTION_COUNT_REPORT" replaceIfExists="true">
+            <![CDATA[
+            SELECT ROWNUM                            AS id,
+                   tbl_course.id                     AS course_id,
+                   tbl_course.c_title_fa             AS course_title,
+                   tbl_course.c_code                 AS course_code,
+                   tbl_teacher.id                    AS teacher_id,
+                   tbl_teacher.c_teacher_code        AS teacher_code,
+                   tbl_personal_info.c_first_name_fa AS teacher_first_name,
+                   tbl_personal_info.c_last_name_fa  AS teacher_last_name,
+                   tbl_personal_info.c_national_code AS teacher_national_code,
+                   year_of_question,
+                   cnt                               AS question_count
+            FROM (SELECT DISTINCT COUNT(qb.f_teacher_id) OVER(
+                    PARTITION BY qb.f_course_id, substr(to_char(CAST(qb.d_created_date AS DATE), 'yyyy/mm/dd', 'nls_calendar=persian'
+                    ), 1, 4)
+                ) AS cnt, qb.f_course_id,
+                                  qb.f_teacher_id,
+                                  substr(to_char(CAST(qb.d_created_date AS DATE), 'yyyy/mm/dd', 'nls_calendar=persian'),
+                                         1, 4) AS        year_of_question
+                  FROM tbl_question_bank qb)
+                     INNER JOIN tbl_teacher ON f_teacher_id = tbl_teacher.id
+                     INNER JOIN tbl_course ON f_course_id = tbl_course.id
+                     INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="Montazeri" id="1689422286072">
+        <createView viewName="VIEW_TEACHER_QUESTION_COUNT_REPORT" replaceIfExists="true">
+            <![CDATA[
+            SELECT ROWNUM                            AS id,
+                   tbl_course.id                     AS course_id,
+                   tbl_course.c_title_fa             AS course_title,
+                   tbl_course.c_code                 AS course_code,
+                   tbl_teacher.id                    AS teacher_id,
+                   tbl_teacher.c_teacher_code        AS teacher_code,
+                   tbl_personal_info.c_first_name_fa AS teacher_first_name,
+                   tbl_personal_info.c_last_name_fa  AS teacher_last_name,
+                   tbl_personal_info.c_national_code AS teacher_national_code,
+                   year_of_question,
+                   cnt                               AS question_count
+            FROM (SELECT DISTINCT COUNT(qb.f_teacher_id) OVER(
+                PARTITION BY qb.f_teacher_id, qb.f_course_id, substr(to_char(CAST(qb.d_created_date AS DATE), 'yyyy/mm/dd', 'nls_calendar=persian'
+                ), 1, 4)
+            ) AS cnt, qb.f_course_id,
+                                  qb.f_teacher_id,
+                                  substr(to_char(CAST(qb.d_created_date AS DATE), 'yyyy/mm/dd', 'nls_calendar=persian'),
+                                         1, 4) AS        year_of_question
+                  FROM tbl_question_bank qb)
+                     INNER JOIN tbl_teacher ON f_teacher_id = tbl_teacher.id
+                     INNER JOIN tbl_course ON f_course_id = tbl_course.id
+                     INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
