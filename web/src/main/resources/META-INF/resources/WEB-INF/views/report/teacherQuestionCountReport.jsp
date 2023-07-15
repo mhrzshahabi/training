@@ -78,6 +78,7 @@
                 defaultToFirstOption: true,
                 type: "float",
                 keyPressFilter: "[0-9]",
+                length: "4"
             },
             {
                 name: "teacherId",
@@ -122,7 +123,7 @@
                 textAlign: "center",
                 titleAlign: "left",
                 required: false,
-                autoFetchData: true,
+                autoFetchData: false,
                 height: "30",
                 width: "*",
                 displayField: "titleFa",
@@ -176,6 +177,9 @@
 
             for (let i = 0; i < dataValues.criteria.size(); i++) {
                 if (dataValues.criteria[i].fieldName === "courseId") {
+                    dataValues.criteria[i].operator = "equals";
+                }
+                if (dataValues.criteria[i].fieldName === "teacherId") {
                     dataValues.criteria[i].operator = "equals";
                 }
             }
