@@ -285,9 +285,9 @@ FROM
 
 
     @Query(value = """
-            SELECT
+             select \s
             \s
-                tbl_class.c_code,
+             tbl_class.c_code,
                 tbl_class.c_end_date,
                 tbl_class.c_start_date,
                 tbl_class.c_title_class,
@@ -296,11 +296,11 @@ FROM
                 tbl_class.n_h_duration
             FROM
                      tbl_class
-                INNER JOIN tbl_teacher ON tbl_class.f_teacher = dev_devtraining.tbl_teacher.id
+                INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
                 WHERE
                 tbl_teacher.c_teacher_code = :nationalCode
                          """, nativeQuery = true)
-    List<?> teacherClassesFileByNationalCode(@Param("nationalcode") String nationalCode);
+    List<?> teacherClassesFileByNationalCode(@Param("nationalCode") String nationalCode);
 
 
 }
