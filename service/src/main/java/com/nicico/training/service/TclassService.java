@@ -3453,18 +3453,21 @@ public class TclassService implements ITclassService {
         List<ElsTeacherClass> list = new ArrayList<>();
         ElsTeacherClass elsTeacherClass = new ElsTeacherClass();
         if (!data.isEmpty()) {
-            Object[] item = (Object[]) data.get(0);
-            String code = item[0] != null ? item[0].toString() : "";
-            String endDate = item[1] != null ? item[1].toString() : "";
-            String startDate = item[2] != null ? item[2].toString() : "";
-            String title = item[3] != null ? item[3].toString() : "";
-            String duration = item[4] != null ? item[4].toString() : "";
-            elsTeacherClass.setCode(code);
-            elsTeacherClass.setTitleClass(title);
-            elsTeacherClass.setStartDate(startDate);
-            elsTeacherClass.setEndDate(endDate);
-            elsTeacherClass.setHDuration(duration);
-            list.add(elsTeacherClass);
+            data.forEach(p ->
+            {
+                Object[] item = (Object[]) p;
+                String code = item[0] != null ? item[0].toString() : "";
+                String endDate = item[1] != null ? item[1].toString() : "";
+                String startDate = item[2] != null ? item[2].toString() : "";
+                String title = item[3] != null ? item[3].toString() : "";
+                String duration = item[4] != null ? item[4].toString() : "";
+                elsTeacherClass.setCode(code);
+                elsTeacherClass.setTitleClass(title);
+                elsTeacherClass.setStartDate(startDate);
+                elsTeacherClass.setEndDate(endDate);
+                elsTeacherClass.setHDuration(duration);
+                list.add(elsTeacherClass);
+            });
         }
         return list;
 }
