@@ -3451,23 +3451,23 @@ public class TclassService implements ITclassService {
     public List<ElsTeacherClass> teacherClassesFileByNationalCode(String nationalCode) {
         List<?> data = tclassDAO.teacherClassesFileByNationalCode(nationalCode);
         List<ElsTeacherClass> list = new ArrayList<>();
-        ElsTeacherClass elsTeacherClass = new ElsTeacherClass();
         if (!data.isEmpty()) {
-            data.forEach(p ->
-            {
-                Object[] item = (Object[]) p;
-                String code = item[0] != null ? item[0].toString() : "";
-                String endDate = item[1] != null ? item[1].toString() : "";
-                String startDate = item[2] != null ? item[2].toString() : "";
-                String title = item[3] != null ? item[3].toString() : "";
-                String duration = item[4] != null ? item[4].toString() : "";
+            for (Object o : data) {
+                Object[] fields = (Object[]) o;
+                ElsTeacherClass elsTeacherClass = new ElsTeacherClass();
+                String code = fields[0] != null ? fields[0].toString() : "";
+                String endDate = fields[1] != null ? fields[1].toString() : "";
+                String startDate = fields[2] != null ? fields[2].toString() : "";
+                String title = fields[3] != null ? fields[3].toString() : "";
+                String duration = fields[4] != null ? fields[4].toString() : "";
                 elsTeacherClass.setCode(code);
                 elsTeacherClass.setTitleClass(title);
                 elsTeacherClass.setStartDate(startDate);
                 elsTeacherClass.setEndDate(endDate);
                 elsTeacherClass.setHDuration(duration);
                 list.add(elsTeacherClass);
-            });
+            }
+
         }
         return list;
 }
