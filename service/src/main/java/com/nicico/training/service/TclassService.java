@@ -3464,6 +3464,7 @@ public class TclassService implements ITclassService {
                 elsTeacherClass.setTitleClass(title);
                 elsTeacherClass.setStartDate(startDate);
                 elsTeacherClass.setEndDate(endDate);
+                elsTeacherClass.setEndDate(nationalCode);
                 elsTeacherClass.setHDuration(duration);
                 list.add(elsTeacherClass);
             }

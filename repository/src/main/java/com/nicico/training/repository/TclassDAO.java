@@ -97,7 +97,8 @@ FROM
             "                case when cs.failure_reason_id is not null then ' <' || pa2.c_title || '>' else '' end AS score_state, " +
             "                cs.failure_reason_id                                                                   AS failure_reason_id, " +
             "                pa2.c_title                                                                            AS failure_reason, " +
-            "                rank() over (order by c.c_end_date desc)                                                  rnk " +
+            "                rank() over (order by c.c_end_date desc)                                                  rnk ," +
+            "                rank() over (order by cs.score desc)                                                  rnk2 " +
             "         FROM tbl_class c " +
             "                  INNER JOIN tbl_class_student cs ON c.id = cs.class_id " +
             "                  INNER JOIN tbl_student s ON s.id = cs.student_id " +
@@ -106,7 +107,7 @@ FROM
             "                  LEFT JOIN tbl_parameter_value pa2 ON cs.failure_reason_id = pa2.id " +
             "         WHERE c.f_course =:courseId " +
             "           and (s.national_code =:national_code " +
-            "             OR s.personnel_no =:personnel_no)) WHERE rnk = 1", nativeQuery = true)
+            "             OR s.personnel_no =:personnel_no)) WHERE rnk2 = 1", nativeQuery = true)
     List<?> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
 
     List<Tclass> findTclassesByCourseId(Long id);

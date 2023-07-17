@@ -78,6 +78,7 @@ public class ViewTrainingFileService implements IViewTrainingFileService {
         queryString.append("             CASE");
         queryString.append("                 WHEN C.C_STATUS = 1 THEN 'برنامه ریزی'");
         queryString.append("                 WHEN C.C_STATUS = 2 THEN 'در حال اجرا'");
+        queryString.append("                 WHEN C.C_STATUS = 5 THEN 'اختتام'");
         queryString.append("                 WHEN C.C_STATUS = 3 THEN 'پایان یافته' END                                         AS CLASS_STATUS,");
         queryString.append("             CS.SCORES_STATE_ID,");
         queryString.append("             PA.C_TITLE ||");
