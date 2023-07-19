@@ -7,7 +7,12 @@
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="qrCodeData" class="java.lang.String"/>
 	<parameter name="text" class="java.lang.String"/>
+	<parameter name="subTitle" class="java.lang.String"/>
 	<parameter name="backImg" class="java.lang.Object"/>
+	<parameter name="signatoryName" class="java.lang.String"/>
+	<parameter name="signatoryJobTitle" class="java.lang.String"/>
+	<parameter name="signImg" class="java.lang.Object"/>
+	<parameter name="complexTitle" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -39,12 +44,27 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="45" splitType="Stretch"/>
+		<band height="68" splitType="Stretch">
+			<textField>
+				<reportElement x="180" y="7" width="400" height="30" uuid="dae50255-1c22-4da2-b0a7-21f98f1418a6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{complexTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="38" width="400" height="28" uuid="35336118-13cd-4d04-b016-79ede62ad80d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subTitle}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<componentElement>
-				<reportElement x="32" y="-46" width="110" height="66" uuid="000efed7-5f9d-4409-822f-9b6278b0ff49"/>
+				<reportElement x="31" y="-69" width="110" height="66" uuid="000efed7-5f9d-4409-822f-9b6278b0ff49"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<jr:codeExpression><![CDATA[$P{qrCodeData}]]></jr:codeExpression>
 				</jr:QRCode>
@@ -52,7 +72,11 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="196" splitType="Stretch">
+		<band height="240" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="181" y="160" width="198" height="80" uuid="47a742d3-bab1-4ac3-9006-642e4b55ca3a"/>
+				<imageExpression><![CDATA[$P{signImg}]]></imageExpression>
+			</image>
 			<textField>
 				<reportElement x="60" y="22" width="540" height="30" uuid="f1bcb11d-9643-4f84-a8df-76d0dd9af833"/>
 				<textElement textAlignment="Center">
@@ -67,6 +91,20 @@
 					<paragraph lineSpacing="Double" lineSpacingSize="1.0"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{text}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="169" width="198" height="30" uuid="8b2b942a-b312-4c32-8c8f-1a070ec04520"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{signatoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="200" width="198" height="40" uuid="04f89492-d167-4bbd-8e1e-b9ab671148d9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{signatoryJobTitle}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

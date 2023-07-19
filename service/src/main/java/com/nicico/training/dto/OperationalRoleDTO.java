@@ -21,6 +21,9 @@ public class OperationalRoleDTO {
     private Set<Long> postIds;
     private Long complexId;
     private String objectType;
+    private String fileName;
+    private String groupId;
+    private String key;
 
     @Getter
     @Setter

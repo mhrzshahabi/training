@@ -95,6 +95,7 @@ import response.teachingHistory.ElsTeachingHistoryRespDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -3165,8 +3166,29 @@ public class ElsRestController {
     }
 
     @GetMapping("/student/certification")
-    public void getStudentCertification(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-        tclassService.getCertification(nationalCode, classId, response);
+    public ResponseEntity<String> getStudentCertification(HttpSession session, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+        try {
+            tclassService.getCertification(nationalCode, classId, session, response);
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            if (ex instanceof TrainingException) {
+                switch (ex.getMessage()) {
+                    case "OperationalRoleNotFound" -> {
+                        return ResponseEntity.badRequest().body("در این مجتمع، نقش عملیاتی مربوط به مسئول صدور گواهینامه آموزشی تعیین نشده است.");
+                    }
+                    case "MultipleOperationalRolesFound" -> {
+                        return ResponseEntity.badRequest().body("نمی تواند بیش از یک نقش عملیاتی به عنوان مسئول صدور گواهینامه آموزشی وجود داشته باشد.");
+                    }
+                    case "UserNotFound" -> {
+                        return ResponseEntity.badRequest().body("کاربر مسئول صدور گواهینامه آموزشی تعیین نشده است.");
+                    }
+                    case "MultipleUsersFound" -> {
+                        return ResponseEntity.badRequest().body("کاربر مسئول صدور گواهینامه آموزشی نمی تواند بیش از یک نفر باشد.");
+                    }
+                }
+            }
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @GetMapping("/student/certification/qr-code/{nationalCode}/{classId}")
@@ -3348,8 +3370,8 @@ public class ElsRestController {
 
 
     @GetMapping("/student/certification/file")
-    public byte[] getCertificationFile(HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-       return tclassService.getCertificationFile(nationalCode, classId, response);
+    public byte[] getCertificationFile(HttpSession session, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+       return tclassService.getCertificationFile(nationalCode, classId, session, response);
     }
 
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")

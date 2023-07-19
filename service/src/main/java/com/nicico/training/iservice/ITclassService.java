@@ -22,6 +22,7 @@ import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -241,8 +242,9 @@ public interface ITclassService {
 
     ElsPassedCourses getPassedClassesByNationalCode(String nationalCode);
 
-    void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
-    byte[] getCertificationFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+    void getCertification(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+
+    byte[] getCertificationFile(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
     void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 

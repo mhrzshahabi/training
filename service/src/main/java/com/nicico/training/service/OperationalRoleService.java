@@ -363,4 +363,8 @@ public class OperationalRoleService implements IOperationalRoleService {
         return courseMapper.toPostCodeDTOList(returnPostCodes);
     }
 
+    @Override
+    public List<OperationalRole> findAllByComplexIdAndObjectTypeEqualCertificationResponsible(Long complexId) {
+        return operationalRoleDAO.findAllByComplexIdAndObjectTypeAndFileNameIsNotNullAndGroupIdIsNotNullAndKeyIsNotNull(complexId, "CERTIFICATION_RESPONSIBLE");
+    }
 }

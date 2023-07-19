@@ -66,4 +66,13 @@ public class OperationalRole extends Auditable {
     @Column(name = "OBJECT_TYPE", unique = true)
     private String objectType;
 
+    @Column(name = "c_file_name")
+    private String fileName;
+
+    @Column(name = "c_group_id")
+    private String groupId;
+
+    @Column(name = "c_key")
+    private String key;
+
 }
