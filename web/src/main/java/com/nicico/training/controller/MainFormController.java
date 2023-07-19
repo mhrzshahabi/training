@@ -233,7 +233,10 @@ public class MainFormController {
     public String showSpecialCoursesForm() { return "evaluation/specialCourses"; }
 
     @RequestMapping("/operationalRole")
-    public String showOperationalRoleForm() {
+    public String showOperationalRoleForm(HttpServletRequest request) {
+        request.setAttribute("groupId", groupId);
+        request.setAttribute("uploadMinioUrl", uploadMinioUrl);
+        request.setAttribute("minioUrl", minioUrl);
         return "security/operationalRole";
     }
 

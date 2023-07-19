@@ -128,4 +128,7 @@ WHERE
     and tbl_course.c_code = :code
 """ , nativeQuery = true)
     List<OperationalRole> findAllByObjectTypeAndPermission(String objectType, String code);
+
+    List<OperationalRole> findAllByComplexIdAndObjectTypeAndFileNameIsNotNullAndGroupIdIsNotNullAndKeyIsNotNull(Long complexId, String objectType);
+
 }

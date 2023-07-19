@@ -1,6 +1,8 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
 // <script>
     "use strict"
@@ -11,6 +13,10 @@
     let departmentCriteria = [];
     let hasRoleCategoriesChanged = false;
     let selected_record = null;
+    let isSignatureFileAttached = false;
+    let fileUploaded = false;
+    let maxFileUploadSize = 3145728;
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*DS*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -733,7 +739,7 @@
 
     var IButton_Save_JspOperationalRole = isc.IButtonSave.create({
         top: 260,
-        click: function () {
+        click: async function () {
             if (!DynamicForm_JspOperationalRole.validate())
                 return;
             if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
@@ -743,11 +749,33 @@
 
             let data = DynamicForm_JspOperationalRole.getValues();
 
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
-                methodOperationalRole,
-                JSON.stringify(data),
-                OperationalRole_save_result));
+            let file = document.getElementById('file_JspSignature').files[0];
+
+            if (data.objectType !== undefined && data.objectType === "CERTIFICATION_RESPONSIBLE" && file === undefined) {
+                createDialog("info", "فایل امضای مسئول صدور گواهینامه آموزشی را آپلود نمایید");
+                return;
+            }
+
+            if (file !== undefined) {
+                if (file.size > maxFileUploadSize) {
+                    createDialog("info", "حداکثر حجم فایل: 3 مگابایت");
+                    return;
+                }
+
+                await uploadEducationManagerSignatureFile(data, file)
+                    .then(res => {
+                        isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
+                            methodOperationalRole,
+                            JSON.stringify(data),
+                            OperationalRole_save_result));
+                    })
+            } else {
+                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
+                    methodOperationalRole,
+                    JSON.stringify(data),
+                    OperationalRole_save_result));
+            }
+
         }
     });
     var IButton_Show_Selected_Posts_JspOperationalRole = isc.ToolStripButton.create({
@@ -843,8 +871,26 @@
         }
     });
 
+    let HLayout_Signature_JspOperationalRole = isc.TrHLayoutButtons.create({
+        width: "100%",
+        height: "100%",
+        layoutRightMargin: 32,
+        align: "right",
+        showEdges: false,
+        edgeImage: "",
+        members: [
+            isc.Label.create({
+                contents: "تصویر امضاء مدیر آموزش:"
+            }),
+            isc.HTMLFlow.create({
+                align: "center",
+                contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form_file_signature\" action=\"\" enctype=\"multipart/form-data\"><input id=\"file_JspSignature\" type=\"file\" name=\"file[]\" name=\"file\" onchange=(function(){uploadingSignatureFileChangeState()})() /></form>"
+            })
+        ]
+    });
+
     var HLayout_SaveOrExit_JspOperationalRole = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
+        layoutMargin: 32,
         showEdges: false,
         edgeImage: "",
         padding: 10,
@@ -860,6 +906,7 @@
         items: [isc.TrVLayout.create({
             members: [
                 DynamicForm_JspOperationalRole,
+                HLayout_Signature_JspOperationalRole,
                 HLayout_SaveOrExit_JspOperationalRole
             ]
         })]
@@ -963,6 +1010,10 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_OperationalRole_Add() {
+        isSignatureFileAttached = false;
+        if (document.getElementById('file_JspSignature') != null) {
+            document.getElementById('file_JspSignature').value = ""
+        }
         methodOperationalRole = "POST";
         // IButton_Show_Selected_Posts_JspOperationalRole.disable();
         IButton_Show_Selected_Posts_JspOperationalRole.hide();
@@ -1318,4 +1369,48 @@
 
     }
 
-//</script>
+    async function uploadEducationManagerSignatureFile(data, file) {
+        wait.show();
+
+        return new Promise(function (resolve, reject) {
+            let formData = new FormData();
+
+            formData.append("file", file);
+
+            let request = new XMLHttpRequest();
+
+            request.open("Post", '${uploadMinioUrl}' + "/" + '${groupId}', true);
+            request.setRequestHeader("contentType", "application/json; charset=utf-8");
+            request.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+            request.setRequestHeader("user-id", "Bearer <%= accessToken %>");
+            request.setRequestHeader("app-id", "Training");
+            request.send(formData);
+            request.onreadystatechange = function () {
+                if (request.readyState === XMLHttpRequest.DONE) {
+                    wait.close();
+                    if (request.status === 200 || request.status === 201) {
+                        fileUploaded = true;
+                        let key = JSON.parse(request.response).key;
+                        data.fileName = file.name;
+                        data.groupId = '${groupId}';
+                        data.key = key;
+                        resolve(request.response);
+                    } else {
+                        fileUploaded = false;
+                        createDialog("info", "<spring:message code="upload.failed"/>");
+                        reject({
+                            status: this.status,
+                            statusText: request.statusText
+                        });
+                    }
+                }
+            };
+        });
+    }
+    
+    this.uploadingSignatureFileChangeState = function uploadingSignatureFileChangeState() {
+        if (document.getElementById('file_JspSignature').files.length !== 0)
+            isSignatureFileAttached = true;
+    }
+    
+    //</script>

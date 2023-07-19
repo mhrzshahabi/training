@@ -131,6 +131,10 @@ public class TrainingException extends NICICOException {
         InvalidClassStatus(405),
         InvalidClassType(405),
         OperationalChartNotFound(404),
+        OperationalRoleNotFound(404),
+        MultipleOperationalRolesFound(300),
+        MultipleUsersFound(300),
+        UserNotFound(404),
         OperationalChartHasChild(404),
         OperationalChartIsDuplicated(409);
 

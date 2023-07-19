@@ -11,6 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.client.oauth.MinIoClient;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +64,7 @@ import response.tclass.dto.TclassDto;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -119,6 +122,7 @@ public class TclassService implements ITclassService {
     private final TestQuestionDAO testQuestionDAO;
     private final QuestionBankDAO questionBankDAO;
     private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
+    private final ISynonymOAUserService userService;
     private final TclassBeanMapper tclassBeanMapper;
     private final SessionBeanMapper sessionBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
@@ -136,6 +140,14 @@ public class TclassService implements ITclassService {
     @Value("${nicico.trainingUrl}")
     private String trainingUrl;
 
+    private IOperationalRoleService operationalRoleService;
+
+    private final MinIoClient minIoClient;
+
+    @Autowired
+    public void setOperationalRoleService(@Lazy IOperationalRoleService operationalRoleService) {
+        this.operationalRoleService = operationalRoleService;
+    }
 
     @Override
     public List<Tclass> getTeacherClasses(Long teacherId) {
@@ -3254,7 +3266,7 @@ public class TclassService implements ITclassService {
 
 
     @Override
-    public void getCertification(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+    public void getCertification(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         if (!data.isEmpty()) {
             Object[] item = (Object[]) data.get(0);
@@ -3278,7 +3290,7 @@ public class TclassService implements ITclassService {
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
             params.put("qrCodeData", qrCodeData.replace("/api", ""));
-            setCertificationBackground(params, complexTitle);
+            setCertificationBackground((String) session.getAttribute(ConstantVARs.ACCESS_TOKEN), params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3606,7 +3618,7 @@ public class TclassService implements ITclassService {
 
 
     @Override
-    public byte[] getCertificationFile(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+    public byte[] getCertificationFile(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
 
@@ -3631,7 +3643,7 @@ public class TclassService implements ITclassService {
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
             params.put("qrCodeData", qrCodeData.replace("/api", ""));
-            setCertificationBackground(params, complexTitle);
+            setCertificationBackground((String) session.getAttribute(ConstantVARs.ACCESS_TOKEN), params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3682,16 +3694,45 @@ public class TclassService implements ITclassService {
         return byteArrayOutputStream;
     }
 
-    private void setCertificationBackground(Map<String, Object> params, String complexTitle) throws IOException {
-        if (complexTitle.contains("آذربایجان")) {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
-        } else if (complexTitle.contains("شهربابک")) {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/shahr-babak.jpg")));
-        } else if (complexTitle.contains("سرچشمه") || complexTitle.equals("")) {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
-        } else {
-            params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/sarcheshmeh.jpg")));
+    private void setCertificationBackground(String token, Map<String, Object> params, String complexTitle) throws IOException {
+        Long classComplexId = complexDAO.getComplexIdByComplexTitle(complexTitle);
+        List<OperationalRole> operationalRoles = operationalRoleService.findAllByComplexIdAndObjectTypeEqualCertificationResponsible(classComplexId);
+
+        if (operationalRoles.isEmpty()) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalRoleNotFound);
+        } else if (operationalRoles.size() > 1) {
+            throw new TrainingException(TrainingException.ErrorType.MultipleOperationalRolesFound);
         }
+
+        OperationalRole operationalRole = operationalRoles.get(0);
+
+        String groupId = operationalRole.getGroupId();
+        String key = operationalRole.getKey();
+        String description = operationalRole.getDescription() != null ? operationalRole.getDescription() : "-";
+        String operationalRoleTitle = operationalRole.getTitle() != null ? operationalRole.getTitle() : "-";
+        List<Long> userIds = operationalRole.getUserIds().stream().toList();
+
+        if (userIds.isEmpty()) {
+            throw new TrainingException(TrainingException.ErrorType.UserNotFound);
+        } else if (userIds.size() > 1) {
+            throw new TrainingException(TrainingException.ErrorType.MultipleUsersFound);
+        }
+
+        String signatoryName = userService.getFullNameByUserId(userIds.get(0));
+
+        if (token != null && !token.contains("Bearer ")) {
+            token = "Bearer " + token;
+        }
+
+        ByteArrayResource byteArrayResource = minIoClient.downloadFile(token, "Training", groupId, key);
+        ByteArrayInputStream signatureImage = new ByteArrayInputStream(byteArrayResource.getByteArray());
+
+        params.put("signImg", ImageIO.read(signatureImage));
+        params.put("complexTitle", complexTitle);
+        params.put("subTitle", description);
+        params.put("signatoryName", signatoryName);
+        params.put("signatoryJobTitle", operationalRoleTitle);
+        params.put("backImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/certificate.jpg")));
     }
 
     @Override

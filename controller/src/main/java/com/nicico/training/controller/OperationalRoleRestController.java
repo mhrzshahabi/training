@@ -6,6 +6,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AgreementDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.iservice.ISynonymOAUserService;

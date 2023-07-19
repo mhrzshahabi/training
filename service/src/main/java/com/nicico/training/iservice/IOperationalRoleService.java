@@ -65,4 +65,6 @@ public interface IOperationalRoleService {
     boolean isSupervisor(Long userId);
 
     Set<Long> findAllByObjectTypeAndPermission(String type, String code);
+
+    List<OperationalRole> findAllByComplexIdAndObjectTypeEqualCertificationResponsible(Long complexId);
 }

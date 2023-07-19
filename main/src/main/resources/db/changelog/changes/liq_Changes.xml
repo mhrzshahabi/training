@@ -11130,6 +11130,14 @@ DECLARE
         </addColumn>
     </changeSet>
 
+    <changeSet id="1689657326032" author="Montazeri">
+        <addColumn tableName="tbl_operational_role">
+            <column name="c_file_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_key" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
