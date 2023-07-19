@@ -67,4 +67,5 @@ public interface IOperationalRoleService {
     Set<Long> findAllByObjectTypeAndPermission(String type, String code);
 
     List<OperationalRole> findAllByComplexIdAndObjectTypeEqualCertificationResponsible(Long complexId);
+    Boolean hasSignatureFile(Long id);
 }

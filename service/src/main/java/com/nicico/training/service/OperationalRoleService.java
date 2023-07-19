@@ -367,4 +367,10 @@ public class OperationalRoleService implements IOperationalRoleService {
     public List<OperationalRole> findAllByComplexIdAndObjectTypeEqualCertificationResponsible(Long complexId) {
         return operationalRoleDAO.findAllByComplexIdAndObjectTypeAndFileNameIsNotNullAndGroupIdIsNotNullAndKeyIsNotNull(complexId, "CERTIFICATION_RESPONSIBLE");
     }
+
+    @Override
+    public Boolean hasSignatureFile(Long id) {
+        Optional<OperationalRole> operationalRole = operationalRoleDAO.findByIdAndFileNameNotNullAndGroupIdNotNullAndKeyNotNull(id);
+        return operationalRole.isPresent();
+    }
 }
