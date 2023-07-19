@@ -11944,7 +11944,11 @@ FROM
         </createView>
     </changeSet>
 
-
+    <changeSet author="namdari (generated)" id="1688888311669-6">
+        <sql>
+            create or replace synonym SYN_HRM_VW_FAMILY_LIST_INSURANCE for DEV_HRM.vw_family_list
+        </sql>
+    </changeSet>
 
 
 </databaseChangeLog>
