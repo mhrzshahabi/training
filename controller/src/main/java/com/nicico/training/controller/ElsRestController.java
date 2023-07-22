@@ -3377,9 +3377,9 @@ public class ElsRestController {
 
 
     @GetMapping("/student/certification/file")
-    public byte[] getCertificationFile(@RequestHeader(name = "X-Auth-Token") String header, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-       log.info("header: {}",  header);
-        return tclassService.getCertificationFile(nationalCode, classId, header, response);
+    public byte[] getCertificationFile(HttpServletResponse response,@RequestBody CertificationDTO certificationDTO) throws JRException, SQLException, IOException, ParseException {
+       log.info("header: {}",  certificationDTO.getToken());
+        return tclassService.getCertificationFile(certificationDTO.getNationalCode(), certificationDTO.getClassId(), certificationDTO.getToken(), response);
     }
 
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
