@@ -71,6 +71,9 @@ public class OperationalRoleRestController {
             updating.setUserIds(request.getUserIds());
 
             updating.setObjectType(request.getObjectType());
+            updating.setFileName(request.getFileName());
+            updating.setGroupId(request.getGroupId());
+            updating.setKey(request.getKey());
             updating.setTitle(request.getTitle());
             updating.setComplexId(request.getComplexId());
             updating.setOperationalUnitId(request.getOperationalUnitId());
@@ -230,7 +233,11 @@ public class OperationalRoleRestController {
 
     }
 
-
+    @Loggable
+    @GetMapping(value = "/has-signature/{id}")
+    public ResponseEntity<Boolean> hasSignatureFile(@PathVariable Long id) {
+        return ResponseEntity.ok().body(operationalRoleService.hasSignatureFile(id));
+    }
 
 
 }

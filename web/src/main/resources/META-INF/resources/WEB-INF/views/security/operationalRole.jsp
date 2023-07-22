@@ -15,7 +15,7 @@
     let selected_record = null;
     let isSignatureFileAttached = false;
     let fileUploaded = false;
-    let maxFileUploadSize = 3145728;
+    let maxFileUploadSize = 31457280;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*DS*/
@@ -742,10 +742,6 @@
         click: async function () {
             if (!DynamicForm_JspOperationalRole.validate())
                 return;
-            if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
-                Window_JspOperationalRole.close();
-                return;
-            }
 
             let data = DynamicForm_JspOperationalRole.getValues();
 
@@ -758,7 +754,7 @@
 
             if (file !== undefined) {
                 if (file.size > maxFileUploadSize) {
-                    createDialog("info", "حداکثر حجم فایل: 3 مگابایت");
+                    createDialog("info", "حداکثر حجم فایل: 30 مگابایت");
                     return;
                 }
 
@@ -1065,6 +1061,7 @@
     function OperationalRole_save_result(resp) {
         wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            isSignatureFileAttached = true
             refreshLG(ListGrid_JspOperationalRole);
             Window_JspOperationalRole.close();
             createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -1411,6 +1408,15 @@
     this.uploadingSignatureFileChangeState = function uploadingSignatureFileChangeState() {
         if (document.getElementById('file_JspSignature').files.length !== 0)
             isSignatureFileAttached = true;
+    }
+
+    async function hasSignature(id) {
+        return new Promise(function (resolve) {
+            isc.RPCManager.sendRequest(TrDSRequest(operationalRoleUrl + "/has-signature/" + id, "GET", null, function (resp) {
+                wait.close();
+                resolve(resp.data);
+            }));
+        })
     }
     
     //</script>

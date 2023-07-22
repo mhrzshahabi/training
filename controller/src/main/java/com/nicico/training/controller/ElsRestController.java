@@ -34,6 +34,7 @@ import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
+import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.SynHrmViewFetchParentPostDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
@@ -181,6 +182,7 @@ public class ElsRestController {
     private final TclassBeanMapper tclassBeanMapper;
     private final IElsService elsService;
     private final IQuestionBankService iQuestionBankService;
+    private final ComplexDAO complexDAO;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -3172,18 +3174,23 @@ public class ElsRestController {
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             if (ex instanceof TrainingException) {
+                String complexTitle = complexDAO.getComplexTitleByComplexId(tclassService.getTClass(classId).getComplexId());
                 switch (ex.getMessage()) {
                     case "OperationalRoleNotFound" -> {
-                        return ResponseEntity.badRequest().body("در این مجتمع، نقش عملیاتی مربوط به مسئول صدور گواهینامه آموزشی تعیین نشده است.");
+                        String message = String.format("در این مجتمع(%s)، نقش عملیاتی مربوط به مسئول صدور گواهینامه آموزشی تعیین نشده است.", complexTitle);
+                        return ResponseEntity.badRequest().body(message);
                     }
                     case "MultipleOperationalRolesFound" -> {
-                        return ResponseEntity.badRequest().body("نمی تواند بیش از یک نقش عملیاتی به عنوان مسئول صدور گواهینامه آموزشی وجود داشته باشد.");
+                        String message = String.format("نمی تواند بیش از یک نقش عملیاتی به عنوان مسئول صدور گواهینامه آموزشی این مجتمع(%s) وجود داشته باشد.", complexTitle);
+                        return ResponseEntity.badRequest().body(message);
                     }
                     case "UserNotFound" -> {
-                        return ResponseEntity.badRequest().body("کاربر مسئول صدور گواهینامه آموزشی تعیین نشده است.");
+                        String message = String.format("کاربر مسئول صدور گواهینامه آموزشی این مجتمع(%s) تعیین نشده است.", complexTitle);
+                        return ResponseEntity.badRequest().body(message);
                     }
                     case "MultipleUsersFound" -> {
-                        return ResponseEntity.badRequest().body("کاربر مسئول صدور گواهینامه آموزشی نمی تواند بیش از یک نفر باشد.");
+                        String message = String.format("کاربر مسئول صدور گواهینامه آموزشی این مجتمع(%s) نمی تواند بیش از یک نفر باشد.", complexTitle);
+                        return ResponseEntity.badRequest().body(message);
                     }
                 }
             }
@@ -3370,8 +3377,8 @@ public class ElsRestController {
 
 
     @GetMapping("/student/certification/file")
-    public byte[] getCertificationFile(HttpSession session, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-       return tclassService.getCertificationFile(nationalCode, classId, session, response);
+    public byte[] getCertificationFile(@RequestHeader(name = "user-id") String header, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+       return tclassService.getCertificationFile(nationalCode, classId, header, response);
     }
 
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
