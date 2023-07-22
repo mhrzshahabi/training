@@ -259,7 +259,9 @@
 
 
                                                     let id = [];
-                                                    JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber).forEach(p => id.push(p.id));
+                                                    JSON.parse(resp.data).response.data.filter(p =>p.student.contactInfo!==null && p.student.contactInfo!== undefined &&
+                                                        p.student.contactInfo.smSMobileNumber!==null && p.student.contactInfo.smSMobileNumber!== undefined &&
+                                                        p.student.contactInfo.smSMobileNumber).forEach(p => id.push(p.id));
 
                                                     MSG_sendTypesItems = [];
                                                     MSG_msgContent.type = [];
@@ -311,7 +313,9 @@
                                                     MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
                                                     MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
                                                     MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                                        let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.contactInfo.smSMobileNumber).map(function (item) {
+                                                        let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => p.student.contactInfo!==null && p.student.contactInfo!== undefined &&
+                                                            p.student.contactInfo.smSMobileNumber!==null && p.student.contactInfo.smSMobileNumber!== undefined &&
+                                                            !p.student.contactInfo.smSMobileNumber).map(function (item) {
                                                             return item.id;
                                                         });
 
@@ -331,9 +335,18 @@
                                                     // MSG_contentEditor.setValue(MSG_textEditorValue);
 
 
-                                                    if (JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length != 0) {
-                                                        ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length + ' فراگیر، شماره موبایل تعریف نشده است.');
-                                                    } else if (JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber).length == 0) {
+                                                    if (JSON.parse(resp.data).response.data.filter(p =>
+                                                        p.student.contactInfo!==null && p.student.contactInfo!== undefined &&
+                                                        p.student.contactInfo.smSMobileNumber!==null && p.student.contactInfo.smSMobileNumber!== undefined &&
+                                                        !p.student.contactInfo.smSMobileNumber).length != 0) {
+                                                        ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p =>
+                                                            p.student.contactInfo!==null && p.student.contactInfo!== undefined &&
+                                                            p.student.contactInfo.smSMobileNumber!==null && p.student.contactInfo.smSMobileNumber!== undefined &&
+                                                            !p.student.contactInfo.smSMobileNumber).length + ' فراگیر، شماره موبایل تعریف نشده است.');
+                                                    } else if (JSON.parse(resp.data).response.data.filter(p =>
+                                                        p.student.contactInfo!==null && p.student.contactInfo!== undefined &&
+                                                        p.student.contactInfo.smSMobileNumber!==null && p.student.contactInfo.smSMobileNumber!== undefined &&
+                                                        p.student.contactInfo.smSMobileNumber).length == 0) {
                                                         ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
                                                     } else {
                                                         ErrorMsg.setContents('');
@@ -557,6 +570,12 @@
             members: [
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "SynonymPersonnelsCount_student"}),
+            ]
+        });
+        let FamilyTS_student = isc.ToolStrip.create({
+            members: [
+                isc.LayoutSpacer.create({width: "*"}),
+                isc.Label.create({ID: "FamilyCount_student"}),
             ]
         });
 
@@ -1624,6 +1643,46 @@
             ],
             fetchDataURL: personnelUrl + "/Synonym/iscList"
         });
+        var FamilyDS_student = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "familyFirstName",
+                    title: "نام فرد تحت تکفل",
+                    filterOperator: "iContains"
+                },{
+                    name: "familyLastName",
+                    title: "نام خانوادگی فرد تحت تکفل",
+                    filterOperator: "iContains"
+                },{
+                    name: "familyNationalCode",
+                    title: "کد ملی فرد تحت تکفل",
+                    filterOperator: "iContains"
+                },{
+                    name: "familyFatherName",
+                    title: "نام پدر فرد تحت تکفل",
+                    filterOperator: "iContains"
+                },{
+                    name: "personnelFirstName",
+                    title: "نام  فرد اصلی",
+                    filterOperator: "iContains"
+                },{
+                    name: "personnelLastName",
+                    title: "نام خانوادگی فرد اصلی",
+                    filterOperator: "iContains"
+                },{
+                    name: "personnelFatherName",
+                    title: "نام پدر فرد اصلی",
+                    filterOperator: "iContains"
+                },{
+                    name: "personnelNationalCode",
+                    title: "کد ملی فرد اصلی",
+                    filterOperator: "iContains"
+                },
+
+            ],
+            fetchDataURL: familyUrl + "/spec-list"
+        });
 
         let PersonnelsLG_student = isc.TrLG.create({
             ID: "PersonnelsLG_student",
@@ -1998,16 +2057,130 @@
                 }
             }
         });
+        let family_lsLG_student = isc.TrLG.create({
+            ID: "family_lsLG_student",
+            dataSource: FamilyDS_student,
+            selectionType: "single",
+            fields: [
+                {name: "id", hidden: true},
+                {name: "familyFirstName"},
+                {name: "familyLastName"},
+                {name: "familyFatherName"},
+                {
+                    name: "familyNationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "personnelFirstName"},
+                {name: "personnelLastName"},
+                {name: "personnelFatherName"},
+                {
+                    name: "personnelNationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                }
+            ],
+            gridComponents: [FamilyTS_student, "filterEditor", "header", "body"],
+            selectionAppearance: "checkbox",
+            getCellCSSText: rowStyle,
+            rowClick: function (record, recordNum, fieldNum) {
+                if (Object.keys(previousSelectedRow).length > 1) {
+                    previousSelectedRow.data.isClicked = !previousSelectedRow.data.isClicked;
+                    this.getCellCSSText(previousSelectedRow.data, previousSelectedRow.row, previousSelectedRow.col);
+                    family_lsLG_student.redraw();
+                }
+                record.isClicked = true;
+                selectedRow = record;
+                previousSelectedRow = {data: selectedRow, row: recordNum, col: fieldNum};
+                listGridType = "family_lsLG_student";
+                this.getCellCSSText(record, recordNum, fieldNum);
+            },
+            dataChanged: function () {
+                this.Super("dataChanged", arguments);
+                totalRows = this.data.getLength();
+                if (totalRows >= 0 && this.data.lengthIsKnown()) {
+                    FamilyCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                } else {
+                    FamilyCount_student.setContents("&nbsp;");
+                }
+            },
+            selectionUpdated: function () {
 
-        // let criteria_ActivePersonnel = {
-        //     _constructor: "AdvancedCriteria",
-        //     operator: "and",
-        //     criteria: [
-        //         {fieldName: "active", operator: "equals", value: 1}
-        //     ]
-        // };
+                if (studentSelection) {
+                    return;
+                }
 
-        // PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
+                let current = family_lsLG_student.getSelection().filter(function (x) {
+                    return x.enabled != false
+                })[0];//.filter(p->p.enabled==false);
+
+                if (typeof (current) == "undefined") {
+                    return;
+                }
+
+                if (current.familyNationalCode == "" || current.familyNationalCode == null || typeof (current.familyNationalCode) == "undefined") {
+                    isc.Dialog.create({
+                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+
+                    studentSelection = true;
+                    family_lsLG_student.deselectRecord(current)
+                    studentSelection = false;
+                } else if (!nationalCodeExists(current.familyNationalCode)) {
+                    if (checkIfAlreadyExist(current)) {
+                        return '';
+                    } else {
+                        current.presenceTypeId = studentDefaultPresenceId;
+                        current.registerTypeId = 3;
+                        current.firstName = current.familyFirstName;
+                        current.lastName = current.familyLastName;
+                        current.nationalCode = current.familyNationalCode;
+
+
+
+                        SelectedPersonnelsLG_student.addData({...current});
+                        family_lsLG_student.findAll({
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [{fieldName: "familyNationalCode", operator: "equals", value: current.nationalCode}]
+                        }).setProperty("enabled", false);
+
+                        delete current.isClicked;
+                        current.isChecked = true;
+
+                        family_lsLG_student.redraw();
+                        // }
+                    }
+
+                    function checkIfAlreadyExist(currentVal) {
+                        return SelectedPersonnelsLG_student.data.some(function (item) {
+                            return (item.nationalCode === currentVal.nationalCode);
+                        });
+                    }
+                } else {
+                    isc.Dialog.create({
+                        message: "<spring:message code="student.is.duplicate"/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                    studentSelection = true;
+                    family_lsLG_student.deselectRecord(current);
+                    studentSelection = false;
+                }
+            }
+        });
 
         function nationalCodeExists(nationalCode) {
             return StudentsLG_student.data.localData.some(function (el) {
@@ -2395,6 +2568,25 @@
                 }),
             ]
         });
+        let family_List_VLayout = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            autoDraw: false,
+            border: "0px solid red", layoutMargin: 5,
+            members: [
+                isc.SectionStack.create({
+                    sections: [{
+                        title: "<spring:message code="all.persons"/>",
+                        expanded: true,
+                        canCollapse: false,
+                        align: "center",
+                        items: [
+                            family_lsLG_student
+                        ]
+                    }]
+                }),
+            ]
+        });
 
         let personnelTabs = isc.TabSet.create({
             height: "50%",
@@ -2412,6 +2604,10 @@
                 {
                     title: "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>",
                     pane: synonym_Personnel_List_VLayout
+                },
+                {
+                    title: "افراد تحت تکفل",
+                    pane: family_List_VLayout
                 }
             ]
         });
@@ -2740,6 +2936,8 @@
             PersonnelsLG_student.fetchData();
             SynonymPersonnelsLG_student.invalidateCache();
             SynonymPersonnelsLG_student.fetchData();
+            family_lsLG_student.invalidateCache();
+            family_lsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();
             SelectedPersonnelsLG_student.setData([]);

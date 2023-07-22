@@ -1769,6 +1769,7 @@
     const attachmentUrl = rootUrl + "/attachment";
     const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
+    const familyUrl = rootUrl + "/family";
     const viewActivePersonnelUrl = rootUrl + "/view_active_personnel";
     const viewActivePersonnelInRegisteringUrl = rootUrl + "/view-active-personnel-in-registering";
     const personnelRegUrl = rootUrl + "/personnelRegistered";

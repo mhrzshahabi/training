@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
@@ -43,8 +44,10 @@ public class ClassStudentService implements IClassStudentService {
     private final ClassStudentHistoryService classStudentHistoryService;
     private final ITclassService tclassService;
     private final IStudentService studentService;
+    private final IFamilyPersonnelService familyPersonnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
+    private final StudentMapper studentMapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final PersonnelService personnelService;
     private final ITeacherService iTeacherService;
@@ -116,6 +119,8 @@ public class ClassStudentService implements IClassStudentService {
                     student.setDeleted(null);
                 } else if (c.getRegisterTypeId() == 2) {
                     mapper.map(personnelRegisteredService.getByPersonnelCodeAndNationalCode(c.getNationalCode(), c.getPersonnelNo()), student);
+                } else if (c.getRegisterTypeId() == 3) {
+                    student = studentMapper.toStudent(familyPersonnelService.getById(c.getId()));
                 }
 
                 /*SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();

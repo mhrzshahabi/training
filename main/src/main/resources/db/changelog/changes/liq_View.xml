@@ -24452,4 +24452,26 @@ pb as (
         </createView>
     </changeSet>
 
+    <changeSet author="namdari" id="1661158628187-11">
+        <createView viewName="VIEW_FAMILY_LIST" replaceIfExists="true">
+            <![CDATA[
+SELECT
+ROWNUM as id,
+    syn_hrm_vw_family_list_insurance.c_national_code,
+    syn_hrm_vw_family_list_insurance.c_first_name,
+    syn_hrm_vw_family_list_insurance.c_last_name,
+    syn_hrm_vw_family_list_insurance.c_father_name,
+    syn_hrm_vw_family_list_insurance.c_mobile,
+    syn_hrm_vw_family_list_insurance.gen_desc,
+    syn_hrm_vw_family_list_insurance.a_c_national_code,
+    syn_hrm_vw_family_list_insurance.a_c_first_name,
+    syn_hrm_vw_family_list_insurance.a_c_last_name,
+    syn_hrm_vw_family_list_insurance.a_c_father_name
+FROM
+    syn_hrm_vw_family_list_insurance
+            ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
