@@ -244,7 +244,7 @@ public interface ITclassService {
 
     void getCertification(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
-    byte[] getCertificationFile(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
+    byte[] getCertificationFile(String nationalCode, Long classId, String token, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 
     void getCertificationByQRCode(String nationalCode, Long classId, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException;
 

@@ -25,6 +25,7 @@ import com.nicico.training.repository.*;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import com.nicico.training.utility.SpecListUtil;
 import com.nicico.training.utility.persianDate.MyUtils;
+import com.nicico.training.enumeration.CertificationClientType;
 import dto.QRCodeDataDto;
 import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.enumeration.CertificationClientType.*;
 import static com.nicico.training.utility.persianDate.MyUtils.getPrograms2;
 import static com.nicico.training.utility.persianDate.PersianDate.findDuration;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
@@ -3290,7 +3292,7 @@ public class TclassService implements ITclassService {
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
             params.put("qrCodeData", qrCodeData.replace("/api", ""));
-            setCertificationBackground((String) session.getAttribute(ConstantVARs.ACCESS_TOKEN), params, complexTitle);
+            setCertificationBackground(TRAINING, (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN), params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3622,7 +3624,7 @@ public class TclassService implements ITclassService {
 
 
     @Override
-    public byte[] getCertificationFile(String nationalCode, Long classId, HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
+    public byte[] getCertificationFile(String nationalCode, Long classId, String token, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
         List<?> data = tclassDAO.getCertification(nationalCode, classId, PageRequest.of(0, 1));
         String z = "{" + "\"content\": " + "[{\"row\":1},{\"row\":2},{\"row\":3},{\"row\":4},{\"row\":5},{\"row\":6},{\"row\":7},{\"row\":8},{\"row\":9},{\"row\":10},{\"row\":11},{\"row\":12},{\"row\":13},{\"row\":14},{\"row\":15},{\"row\":16},{\"row\":17},{\"row\":18},{\"row\":19},{\"row\":20}]}";
 
@@ -3647,7 +3649,7 @@ public class TclassService implements ITclassService {
             params.put("letterNum", letterNum);
             String qrCodeData = elsUrl + "/#/certification/qr-code/" + nationalCode + "/" + classId;
             params.put("qrCodeData", qrCodeData.replace("/api", ""));
-            setCertificationBackground((String) session.getAttribute(ConstantVARs.ACCESS_TOKEN), params, complexTitle);
+            setCertificationBackground(ELS, token, params, complexTitle);
             String text = "با کد ملی " + nationalCode +
                     " دوره آموزشی " + course +
                     " که از تاریخ " + MyUtils.changeDateDirection(from) +
@@ -3698,7 +3700,7 @@ public class TclassService implements ITclassService {
         return byteArrayOutputStream;
     }
 
-    private void setCertificationBackground(String token, Map<String, Object> params, String complexTitle) throws IOException {
+    private void setCertificationBackground(CertificationClientType certificationClientType, String token, Map<String, Object> params, String complexTitle) throws IOException {
         Long classComplexId = complexDAO.getComplexIdByComplexTitle(complexTitle);
         List<OperationalRole> operationalRoles = operationalRoleService.findAllByComplexIdAndObjectTypeEqualCertificationResponsible(classComplexId);
 
@@ -3724,11 +3726,13 @@ public class TclassService implements ITclassService {
 
         String signatoryName = userService.getFullNameByUserId(userIds.get(0));
 
-        if (token != null && !token.contains("Bearer ")) {
+        if (certificationClientType == TRAINING && token != null && !token.contains("Bearer ")) {
             token = "Bearer " + token;
         }
 
-        ByteArrayResource byteArrayResource = minIoClient.downloadFile(token, "Training", groupId, key);
+        String appId = certificationClientType == TRAINING ? "Training" : certificationClientType == ELS ? "ELS" : null;
+
+        ByteArrayResource byteArrayResource = minIoClient.downloadFile(token, appId, groupId, key);
         ByteArrayInputStream signatureImage = new ByteArrayInputStream(byteArrayResource.getByteArray());
 
         params.put("signImg", ImageIO.read(signatureImage));

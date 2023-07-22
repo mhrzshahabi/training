@@ -3377,8 +3377,8 @@ public class ElsRestController {
 
 
     @GetMapping("/student/certification/file")
-    public byte[] getCertificationFile(HttpSession session, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
-       return tclassService.getCertificationFile(nationalCode, classId, session, response);
+    public byte[] getCertificationFile(@RequestHeader(name = "user-id") String header, HttpServletResponse response, @RequestParam String nationalCode, @RequestParam Long classId) throws JRException, SQLException, IOException, ParseException {
+       return tclassService.getCertificationFile(nationalCode, classId, header, response);
     }
 
     @GetMapping("/student/certification/qr-code/file/{nationalCode}/{classId}")
