@@ -203,6 +203,8 @@ public class StudentDTO {
         private String postCode;
         private String gender;
         private ContactInfoDTO.Info contactInfo;
+        private boolean family;
+
     }
 
     @Getter

@@ -228,5 +228,5 @@ public class Student extends Auditable {
 
 
     @Column(name = "is_family")
-    private boolean isFamily;
+    private boolean family;
 }

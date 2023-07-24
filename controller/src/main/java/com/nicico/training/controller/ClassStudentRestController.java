@@ -136,6 +136,7 @@ public class ClassStudentRestController {
         for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
 //            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfoMap.get(studentInfo.getStudentId()), ContactInfoDTO.Info.class));
             studentInfo.setClassAttendanceStatus(iClassStudentService.IsStudentAttendanceAllowable(studentInfo.getId()));
+            studentInfo.setFamily(studentInfo.getStudent().isFamily());
         }
 
         if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
