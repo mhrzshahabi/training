@@ -670,11 +670,14 @@ public class RequestItemService implements IRequestItemService {
             if (coursesAssigneeList.stream().anyMatch(item -> item.getSupervisorAssigneeList().size() != 1)) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
             } else {
-                Collection<String> supervisorAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                 Collection<String> courseCodeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getCourseCode).collect(Collectors.toList());
+                Map<String, String> noObjCourseAssigneeList = new HashMap<>();
+                coursesAssigneeList.forEach(item -> {
+                    noObjCourseAssigneeList.put(item.getCourseCode(), item.getSupervisorAssigneeList().get(0));
+                });
                 Map<String, Object> map = reviewTaskRequest.getVariables();
-                map.put("supervisorAssigneeList", supervisorAssigneeList);
                 map.put("noObjCoursesList", courseCodeList);
+                map.put("noObjCourseAssigneeList", noObjCourseAssigneeList);
                 requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunSupervisorToHoldingCourses"));
                 requestItemDAO.saveAndFlush(requestItem);
                 response.setStatus(200);
@@ -724,32 +727,41 @@ public class RequestItemService implements IRequestItemService {
 
                 if (appointmentCoursesAssigneeList.size() != 0) {
                     // دوره های انتصاب سمت
-                    Collection<String> appointmentAssigneeList = appointmentCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                     Collection<String> appCourseCodeList = appointmentCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getCourseCode).collect(Collectors.toList());
+                    Map<String, String> appCourseAssigneeList = new HashMap<>();
+                    appointmentCoursesAssigneeList.forEach(item -> {
+                        appCourseAssigneeList.put(item.getCourseCode(), item.getSupervisorAssigneeList().get(0));
+                    });
                     if (otherCoursesAssigneeList.size() != 0) {
                         // سایر دوره ها
-                        Collection<String> otherAssigneeList = otherCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                         List<String> courseCodeList = otherCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getCourseCode).collect(Collectors.toList());
+                        Map<String, String> courseAssigneeList = new HashMap<>();
+                        otherCoursesAssigneeList.forEach(item -> {
+                            courseAssigneeList.put(item.getCourseCode(), item.getSupervisorAssigneeList().get(0));
+                        });
                         map.put("haveAppointment", true);
-                        map.put("supervisorAssigneeList", appointmentAssigneeList);
                         map.put("appCoursesList", appCourseCodeList);
+                        map.put("appCourseAssigneeList", appCourseAssigneeList);
                         map.put("haveOthers", true);
-                        map.put("supervisorAssigneeListOther", otherAssigneeList);
                         map.put("coursesList", courseCodeList);
+                        map.put("courseAssigneeList", courseAssigneeList);
                     } else {
                         map.put("haveAppointment", true);
-                        map.put("supervisorAssigneeList", appointmentAssigneeList);
                         map.put("appCoursesList", appCourseCodeList);
+                        map.put("appCourseAssigneeList", appCourseAssigneeList);
                         map.put("haveOthers", false);
                     }
                 } else {
                     // سایر دوره ها
-                    Collection<String> otherAssigneeList = otherCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                     List<String> courseCodeList = otherCoursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getCourseCode).collect(Collectors.toList());
+                    Map<String, String> courseAssigneeList = new HashMap<>();
+                    otherCoursesAssigneeList.forEach(item -> {
+                        courseAssigneeList.put(item.getCourseCode(), item.getSupervisorAssigneeList().get(0));
+                    });
                     map.put("haveAppointment", false);
                     map.put("haveOthers", true);
-                    map.put("supervisorAssigneeListOther", otherAssigneeList);
                     map.put("coursesList", courseCodeList);
+                    map.put("courseAssigneeList", courseAssigneeList);
                 }
                 requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunSupervisorToHoldingCourses"));
                 requestItemDAO.saveAndFlush(requestItem);
