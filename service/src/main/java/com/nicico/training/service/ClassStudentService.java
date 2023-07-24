@@ -121,6 +121,7 @@ public class ClassStudentService implements IClassStudentService {
                     mapper.map(personnelRegisteredService.getByPersonnelCodeAndNationalCode(c.getNationalCode(), c.getPersonnelNo()), student);
                 } else if (c.getRegisterTypeId() == 3) {
                     student = studentMapper.toStudent(familyPersonnelService.getById(c.getId()));
+                    student.setFamily(true);
                 }
 
                 /*SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();

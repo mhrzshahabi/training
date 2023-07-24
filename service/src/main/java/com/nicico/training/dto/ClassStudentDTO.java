@@ -28,6 +28,7 @@ public class ClassStudentDTO implements Serializable {
     private Long tclassId;
     private boolean classAttendanceStatus;
     private boolean elsStatus;
+    private boolean isFamily;
 
     @Getter
     @Setter

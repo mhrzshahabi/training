@@ -693,6 +693,15 @@
                     autoFitWidth: true
                 },
                 {
+                    name: "family",
+                    title: "فراگیر تحت تکفل",
+                    valueMap: {
+                        "true": "تحت تکفل",
+                        "false": "فراگیر عادی",
+                        "null": "فراگیر عادی"
+                    }
+                },
+                {
                     name: "student.companyName",
                     title: "<spring:message code="company.name"/>",
                     filterOperator: "iContains",
@@ -1005,6 +1014,17 @@
                     autoFitWidth: true,
                     sortNormalizer: function (record) {
                         return record.student.personnelNo2;
+                    }
+                },
+                {
+                    name: "family",
+                    canFilter: false,
+                    autoFitWidth: true,
+                    title: "فراگیر تحت تکفل",
+                    valueMap: {
+                        "true": "تحت تکفل",
+                        "false": "فراگیر عادی",
+                        "null": "فراگیر عادی"
                     }
                 },
                 {

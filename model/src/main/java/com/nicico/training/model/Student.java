@@ -225,4 +225,8 @@ public class Student extends Auditable {
 
     @Column(name = "b_has_preparation_test")
     private boolean hasPreparationTest;
+
+
+    @Column(name = "is_family")
+    private boolean isFamily;
 }

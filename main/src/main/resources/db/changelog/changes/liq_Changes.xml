@@ -12028,6 +12028,14 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari" id="1689657326032-01">
+        <addColumn tableName="tbl_student">
+            <column name="is_family" type="number(1, 0)" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+
+
 </databaseChangeLog>
 
 
