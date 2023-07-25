@@ -753,7 +753,7 @@
             }
 
             if (data.objectType === undefined && file !== undefined) {
-                createDialog("info", "نوع نقش مربوطه را مشخص نمایید");
+                createDialog("info", "نوع نقش مربوطه (صاحب امضاء) را مشخص نمایید");
                 return;
             }
 
