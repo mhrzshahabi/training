@@ -221,7 +221,7 @@
         dataSource: RestDataSource_JspCalenderBasicGoals,
         // contextMenu: Menu_JspOperationalChart,
         sortField: 0,
-        sortDirection: "descending",
+        // sortDirection: "descending",
         dataPageSize: 200,
         autoFetchData: false,
         showFilterEditor: true,
@@ -273,7 +273,7 @@
     ListGrid_Calender_Prerequaires = isc.ListGrid.create({
         dataSource: RestDataSource_JspCalenderPrerequisite,
         sortField: 0,
-        sortDirection: "descending",
+        // sortDirection: "descending",
         dataPageSize: 200,
         autoFetchData: false,
         showFilterEditor: true,
@@ -321,7 +321,7 @@
     ListGrid_Calender_Headlines = isc.ListGrid.create({
         dataSource: RestDataSource_JspCalenderHeadlines,
         sortField: 0,
-        sortDirection: "descending",
+        // sortDirection: "descending",
         dataPageSize: 200,
         autoFetchData: false,
         showFilterEditor: true,
