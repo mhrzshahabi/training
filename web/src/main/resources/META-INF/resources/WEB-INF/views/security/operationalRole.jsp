@@ -752,6 +752,11 @@
                 return;
             }
 
+            if (data.objectType === undefined && file !== undefined) {
+                createDialog("info", "نوع نقش مربوطه (صاحب امضاء) را مشخص نمایید");
+                return;
+            }
+
             if (file !== undefined) {
                 if (file.size > maxFileUploadSize) {
                     createDialog("info", "حداکثر حجم فایل: 30 مگابایت");
@@ -766,6 +771,10 @@
                             OperationalRole_save_result));
                     })
             } else {
+                data.fileName = null;
+                data.groupId = null;
+                data.key = null;
+
                 isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
                     methodOperationalRole,
                     JSON.stringify(data),
@@ -870,13 +879,20 @@
     let HLayout_Signature_JspOperationalRole = isc.TrHLayoutButtons.create({
         width: "100%",
         height: "100%",
-        layoutRightMargin: 32,
+        layoutRightMargin: 40,
         align: "right",
         showEdges: false,
         edgeImage: "",
         members: [
             isc.Label.create({
                 contents: "تصویر امضاء مدیر آموزش:"
+            }),
+            isc.IconButton.create({
+                icon: "[SKIN]/actions/remove.png",
+                showButtonTitle:false,
+                click: function () {
+                    deleteSignatureFile();
+                }
             }),
             isc.HTMLFlow.create({
                 align: "center",
@@ -905,7 +921,10 @@
                 HLayout_Signature_JspOperationalRole,
                 HLayout_SaveOrExit_JspOperationalRole
             ]
-        })]
+        })],
+        // show() {
+        //     this.Super("show", arguments);
+        // }
     });
 
     var DynamicForm_departmentFilter_Filter = isc.DynamicForm.create({
@@ -1406,8 +1425,16 @@
     }
     
     this.uploadingSignatureFileChangeState = function uploadingSignatureFileChangeState() {
-        if (document.getElementById('file_JspSignature').files.length !== 0)
+        let files = document.getElementById('file_JspSignature').files;
+        if (files.length !== 0) {
+            let fileType = files[0].type;
+
+            if (!fileType.startsWith('image')) {
+                createDialog("info", "فایل انتخاب شده قابل قبول نمی باشد.");
+            }
+
             isSignatureFileAttached = true;
+        }
     }
 
     async function hasSignature(id) {
@@ -1418,5 +1445,12 @@
             }));
         })
     }
-    
+
+    function deleteSignatureFile() {
+        if (document.getElementById('file_JspSignature') != null) {
+            document.getElementById('file_JspSignature').value = ""
+        }
+    }
+
+
     //</script>
