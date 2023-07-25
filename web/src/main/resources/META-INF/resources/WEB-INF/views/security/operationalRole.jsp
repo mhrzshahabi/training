@@ -757,8 +757,6 @@
                 return;
             }
 
-            debugger
-
             if (file !== undefined) {
                 if (file.size > maxFileUploadSize) {
                     createDialog("info", "حداکثر حجم فایل: 30 مگابایت");
