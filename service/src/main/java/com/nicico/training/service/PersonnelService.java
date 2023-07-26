@@ -95,7 +95,7 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public List<PersonnelDTO.InfoForStudent> checkPersonnelNos(List<String> personnelNos, Long courseId) {
         List<PersonnelDTO.InfoForStudent> result = new ArrayList<>();
-        String query = "SELECT PERSONNEL_NO,IS_IN_NA,CLASS_STUDENT_SCORES_STATE_ID FROM view_active_personnel_for_register_in_class WHERE ";
+        String query = "SELECT PERSONNEL_NO,IS_IN_NA,CLASS_STUDENT_SCORES_STATE_ID,emp_no FROM view_active_personnel_for_register_in_class WHERE ";
         String query1 = "";
 
         List<Personnel> list = personnelDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos, personnelNos);
@@ -123,7 +123,7 @@ public class PersonnelService implements IPersonnelService {
                 listNA.stream().forEach(p ->
                         {
                             Object[] item = (Object[]) p;
-                            PersonnelDTO.InfoForStudent tmp = (PersonnelDTO.InfoForStudent) result.stream().filter(c -> c.getPersonnelNo() != null && c.getPersonnelNo().equals(item[0].toString())).toArray()[0];
+                            PersonnelDTO.InfoForStudent tmp = (PersonnelDTO.InfoForStudent) result.stream().filter(c -> (c.getPersonnelNo() != null && c.getPersonnelNo().equals(item[0].toString())) || (c.getPersonnelNo2() != null && c.getPersonnelNo2().equals(item[3].toString()))).toArray()[0];
                             tmp.setIsInNA(item[1] == null ? null : Boolean.parseBoolean(item[1].toString()));
                             tmp.setScoreState(item[2] == null ? null : Long.parseLong(item[2].toString()));
                         }
