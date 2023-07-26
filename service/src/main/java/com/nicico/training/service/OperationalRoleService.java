@@ -368,9 +368,4 @@ public class OperationalRoleService implements IOperationalRoleService {
         return operationalRoleDAO.findAllByComplexIdAndObjectTypeAndFileNameIsNotNullAndGroupIdIsNotNullAndKeyIsNotNull(complexId, "CERTIFICATION_RESPONSIBLE");
     }
 
-    @Override
-    public Boolean hasSignatureFile(Long id) {
-        Optional<OperationalRole> operationalRole = operationalRoleDAO.findByIdAndFileNameNotNullAndGroupIdNotNullAndKeyNotNull(id);
-        return operationalRole.isPresent();
-    }
 }

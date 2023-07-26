@@ -233,11 +233,4 @@ public class OperationalRoleRestController {
 
     }
 
-    @Loggable
-    @GetMapping(value = "/has-signature/{id}")
-    public ResponseEntity<Boolean> hasSignatureFile(@PathVariable Long id) {
-        return ResponseEntity.ok().body(operationalRoleService.hasSignatureFile(id));
-    }
-
-
 }
