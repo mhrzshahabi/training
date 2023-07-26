@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -111,7 +110,7 @@ public class PersonnelService implements IPersonnelService {
             } else {
                 prs = list2.get(0);
                 result.add(modelMapper.map(prs, PersonnelDTO.InfoForStudent.class));
-                query1 += "(PERSONNEL_NO='" + prs.getPersonnelNo() + "' and COURSE_ID=" + courseId + " ) OR ";
+                query1 += "( (PERSONNEL_NO='" + prs.getPersonnelNo() + "' or emp_no = '" + prs.getPersonnelNo2() + "' ) and COURSE_ID=" + courseId + " ) OR ";
             }
         }
 
