@@ -131,6 +131,4 @@ WHERE
 
     List<OperationalRole> findAllByComplexIdAndObjectTypeAndFileNameIsNotNullAndGroupIdIsNotNullAndKeyIsNotNull(Long complexId, String objectType);
 
-    Optional<OperationalRole> findByIdAndFileNameNotNullAndGroupIdNotNullAndKeyNotNull(Long id);
-
 }

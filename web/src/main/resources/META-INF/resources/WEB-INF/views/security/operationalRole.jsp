@@ -757,6 +757,11 @@
                 return;
             }
 
+            if (data.objectType === "CERTIFICATION_RESPONSIBLE" && file !== undefined && DynamicForm_JspOperationalRole.getValue("userIds").size() === 0) {
+                createDialog("info", "کاربر مربوطه را مشخص نمایید");
+                return;
+            }
+
             if (file !== undefined) {
                 if (file.size > maxFileUploadSize) {
                     createDialog("info", "حداکثر حجم فایل: 30 مگابایت");
@@ -891,7 +896,7 @@
                 icon: "[SKIN]/actions/remove.png",
                 showButtonTitle:false,
                 click: function () {
-                    deleteSignatureFile();
+                    removeSignatureFile();
                 }
             }),
             isc.HTMLFlow.create({
@@ -922,9 +927,33 @@
                 HLayout_SaveOrExit_JspOperationalRole
             ]
         })],
-        // show() {
-        //     this.Super("show", arguments);
-        // }
+        async show() {
+            this.Super("show", arguments);
+
+            let selectedRecord = ListGrid_JspOperationalRole.getSelectedRecord();
+            let fileName = selectedRecord.fileName;
+
+            if (fileName !== undefined) {
+                let url = minIoUrl + "/downloadFile/" + selectedRecord.groupId + "/" + selectedRecord.key + "/" + selectedRecord.fileName;
+                await isc.RPCManager.sendRequest(TrDSRequest(url, "Get", null, function (resp) {
+                    wait.close();
+
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        const fileInput = document.querySelector('input[type="file"]');
+                        const myFile = new File([fileName], fileName, {
+                            type: resp.data.type,
+                            lastModified: new Date(),
+                        });
+
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(myFile);
+                        fileInput.files = dataTransfer.files;
+                    }
+                }));
+            } else {
+                document.getElementById('file_JspSignature').value = ""
+            }
+        }
     });
 
     var DynamicForm_departmentFilter_Filter = isc.DynamicForm.create({
@@ -1437,16 +1466,7 @@
         }
     }
 
-    async function hasSignature(id) {
-        return new Promise(function (resolve) {
-            isc.RPCManager.sendRequest(TrDSRequest(operationalRoleUrl + "/has-signature/" + id, "GET", null, function (resp) {
-                wait.close();
-                resolve(resp.data);
-            }));
-        })
-    }
-
-    function deleteSignatureFile() {
+    function removeSignatureFile() {
         if (document.getElementById('file_JspSignature') != null) {
             document.getElementById('file_JspSignature').value = ""
         }
